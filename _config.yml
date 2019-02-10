@@ -1,0 +1,12 @@
+# Site settings
+title: Sirix
+email: johannes.lichtenberger@sirix.io
+description: >- # this means to ignore newlines until "baseurl:"
+    Sirix facilitates effective and efficient storing and querying of your temporal data through snapshotting and a novel versioning approach called sliding snapshot. Currently we support the storage and querying of XML-documents in our binary format through a RESTful-API, an XQuery-API and a low-level, transactional, cursor based API (also for JSON).
+baseurl: "sirixdb" # the subpath of your site, e.g. /blog/
+url: "" # the base hostname & protocol for your site
+twitter_username: sirixdb
+github_username:  sirixdb
+
+# Build settings
+markdown: kramdown
