@@ -1,8 +1,6 @@
 ---
-layout: default
+layout: documentation
 ---
-
-{% include article-head.html title="Transactional cursor based API" %}
 
 Some API examples:
 
@@ -259,6 +257,4 @@ public enum VisitResult {
 ```
 
 Temporal axis to navigate not only in space, but also in time are also available (for instance to iterate over all future revisions, all past revisions, the last revision, the first revision, a specific revision, the previous revision, the next revision...)
-
-{% include article-foot.html %}
 
