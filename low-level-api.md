@@ -5,9 +5,9 @@ layout: default
 <article id="main">
     <header class="special container">
         <span class="icon fa-mobile"></span>
-        <h2>My <strong>Transaction cursor based API</strong></h2>
+        <h2><strong>Transaction cursor based API</strong></h2>
     </header>
-    <section class="wrapper style4 container">
+    <section class="style4 container">
 
 Some API examples:
 
