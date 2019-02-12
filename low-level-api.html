@@ -2,16 +2,9 @@
 layout: default
 ---
 
-        <article id="main">
-                <header class="special container">
-                    <span class="icon fa-mobile"></span>
-                    <h2><strong>Transaction cursor based API</strong></h2>
-                </header>
-                <section class="wrapper style4 container">
-                    <div class="content">
-			 <section>
+{% include article-head.html title="Transactional cursor based API" %}
 
-<p>Some API examples:
+Some API examples:
 
 ```java
 // Create database configuration.
@@ -139,7 +132,6 @@ try (final Database database = Databases.openXdmDatabase(file)) {
     }
   }
 ```
-</p>
 For printing the whole XML document:
 ```java
 final var serializer = XmlSerializer.newBuilder(manager, System.out).prettyPrint().build();
