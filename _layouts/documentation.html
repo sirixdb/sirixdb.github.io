@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+  {% include head.html %}
+
+  <body class="no-sidebar">
+
+    {% include header.html %}
+    <div class="page-content">
+        {% include article-head.html title="Transactional cursor based API" %}
+            {{ content }}
+        {% include article-foot.html %}
+    </div>
+    {% include footer.html %}
+
+  </body>
+
+</html>
