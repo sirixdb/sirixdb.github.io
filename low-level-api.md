@@ -6,7 +6,8 @@ layout: post
 
 Some API examples:
 
-~~~ java
+{% highlight java %}
+
 // Create database configuration.
 final Path file = Paths.get("db");
 final DatabaseConfiguration dbConfig = new DatabaseConfiguration(file);
@@ -131,7 +132,9 @@ try (final Database database = Databases.openXdmDatabase(file)) {
         throw new IllegalStateException("Node kind not known!");
     }
   }
-~~~
+  
+{% endhighlight %}
+  
 For printing the whole XML document:
 ```java
 final var serializer = XmlSerializer.newBuilder(manager, System.out).prettyPrint().build();
