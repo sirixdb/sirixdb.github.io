@@ -11,3 +11,9 @@ Duis in purus sit amet elit ullamcorper venenatis vel a diam. Pellentesque habit
 
 Duis ut blandit lorem. Suspendisse potenti. Donec maximus blandit neque dapibus hendrerit. Praesent dignissim turpis eu nisl varius tempor. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur in volutpat felis. Sed eget neque vel risus fermentum maximus a vel arcu. Vivamus non lorem mattis, vehicula metus eu, pellentesque mauris. Nunc fermentum efficitur justo, et rutrum mi finibus non. Sed vehicula eros id elit elementum rhoncus. Nullam quis tellus vitae metus eleifend pharetra eget interdum nulla. Integer sit amet imperdiet urna.
 
+```java
+// Create database configuration.
+final Path file = Paths.get("db");
+final DatabaseConfiguration dbConfig = new DatabaseConfiguration(file);
+```
+
