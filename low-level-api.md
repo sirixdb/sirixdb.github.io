@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 ---
 
 ## Transaction cursor based API
