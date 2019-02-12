@@ -8,6 +8,10 @@ layout: default
         <h2><strong>Transaction cursor based API</strong></h2>
     </header>
     <section class="style4 container">
+        
+        						<!-- Content -->
+							<div class="content">
+								<section>
 
 Some API examples:
 
@@ -265,6 +269,9 @@ public enum VisitResult {
 ```
 
 Temporal axis to navigate not only in space, but also in time are also available (for instance to iterate over all future revisions, all past revisions, the last revision, the first revision, a specific revision, the previous revision, the next revision...)
+
+</section>
+</div>
 
 </section>
 </article>
