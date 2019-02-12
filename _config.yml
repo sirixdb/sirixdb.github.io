@@ -11,3 +11,8 @@ github_username:  sirixdb
 # Build settings
 markdown: kramdown
 
+kramdown:
+  input: GFM
+  hard_wrap: false
+  auto_ids: true
+  syntax_highlighter: rouge
