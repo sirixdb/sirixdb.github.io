@@ -6,7 +6,7 @@ layout: post
 
 Some API examples:
 
-~~~java
+~~~ java
 // Create database configuration.
 final Path file = Paths.get("db");
 final DatabaseConfiguration dbConfig = new DatabaseConfiguration(file);
