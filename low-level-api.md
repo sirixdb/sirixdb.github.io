@@ -2,7 +2,7 @@
 layout: post
 ---
 
-##Transaction cursor based API
+## Transaction cursor based API
 
 Some API examples:
 
