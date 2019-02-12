@@ -2,14 +2,7 @@
 layout: default
 ---
 
-        <article id="main">
-                <header class="special container">
-                    <span class="icon fa-mobile"></span>
-                    <h2><strong>Transactional cursor based API</strong></h2>
-                </header>
-                <section class="wrapper style4 container">
-                    <div class="content">
-			 <section markdown="1">
+{% include article-head.html title="Transactional cursor based API" %}
 
 Some API examples:
 
@@ -267,9 +260,5 @@ public enum VisitResult {
 
 Temporal axis to navigate not only in space, but also in time are also available (for instance to iterate over all future revisions, all past revisions, the last revision, the first revision, a specific revision, the previous revision, the next revision...)
 
-</section>
-</div>
-
-</section>
-</article>
+{% include article-foot.html %}
 
