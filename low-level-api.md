@@ -8,10 +8,8 @@ layout: default
         <h2><strong>Transaction cursor based API</strong></h2>
     </header>
     <section class="style4 container">
-        
-        						<!-- Content -->
-							<div class="content">
-								<section>
+        <div class="content">
+	<section>
 
 Some API examples:
 
