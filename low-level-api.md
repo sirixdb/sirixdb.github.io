@@ -1,3 +1,9 @@
+---
+layout: default-page
+---
+
+## Transaction cursor based API
+
 Some API examples:
 
 ```java
