@@ -2,7 +2,7 @@
 layout: default
 ---
 
-## Transaction cursor based API
+Transaction cursor based API
 
 Some API examples:
 
