@@ -7,7 +7,7 @@ layout: default
         <span class="icon fa-mobile"></span>
         <h2><strong>Transaction cursor based API</strong></h2>
     </header>
-    <section class="style4 container">
+    <section class="wrapper style4 container">
         <div class="content">
 	<section>
 
