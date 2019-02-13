@@ -1122,6 +1122,7 @@ pre.highlight {
 code {
   font-family: monospace;
   font-size: 0.8em;
+  font-style: normal;
 }
 
 .highlight .hll { background-color: #ffffcc }
