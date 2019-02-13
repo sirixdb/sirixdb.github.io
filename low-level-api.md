@@ -130,7 +130,15 @@ final var axis = VisitorDescendantAxis.newBuilder(rtx).includeSelf().visitor(new
 while (axis.hasNext()) axis.next();
 ```
 
+We provide all possible `XPath` axis. Note, that the `PrecedingAxis` and the `PrecedingSiblingAxis` do not deliver nodes in document order, but in the natural encountered order. Furthermore a `PostOrderAxis` is available, which traverses the tree in a postorder traversal. Similarly a `LevelOrderAxis` traverses the tree in a breath first manner.
 
+We provide several filters, which can be plugged in through a `FilterAxis`. The following code for instance traverses all children of a node and filters them for nodes with the local name "a".
+
+```java
+new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new NameFilter(rtx, new QNm("a")))
+```
+
+The `FilterAxis` optionally takes more than one filter.
 
      // Commit second version.
      wtx.commit();
