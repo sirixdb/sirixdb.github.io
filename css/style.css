@@ -1105,8 +1105,8 @@
 
 .highlight {
   border: 1px solid #dbdbdb;
-  background-color: #272822;
-  border-radius: 3px;
+  background-color: #ffffcc;
+  border-radius: 1px;
 
 /** This part **/
   max-height: 300px;
