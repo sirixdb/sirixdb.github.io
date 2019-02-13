@@ -1103,11 +1103,8 @@
 			width: 5em;
 		}
 
-code {
-  margin: 0.5em;
-}
-
 pre.highlight {
+  font-size: 12px;
   padding: 0.5em;
   /** border: 1px solid #dbdbdb; **/
   background-color: #efefef;
