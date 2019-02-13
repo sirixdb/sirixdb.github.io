@@ -1104,8 +1104,9 @@
 		}
 
 .highlight {
+  padding: 1em;
   border: 1px solid #dbdbdb;
-  background-color: #ffffcc;
+  background-color: #eeeeee;
   border-radius: 1px;
   overflow-x: auto;
 }
