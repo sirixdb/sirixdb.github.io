@@ -83,13 +83,48 @@ However as this is such a common case to iterate over structual and non-structur
 new NonStructuralWrapperAxis(new DescendantAxis(rtx))
 ```
 
-     
-     
-     
+For sure we also have a `NamespaceAxis` and an `AttributeAxis`.
+
+As it's very common to do something based on the different node-types we implemented the visitor pattern. As such you can simply plugin a visitor in another `descendant-axis` called `VisitorDescendantAxis`. A visitor must implement methods as follows for each node:
+
+```java
+  /**
+   * Do something when visiting a {@link ImmutableElement}.
+   * 
+   * @param node the {@link ImmutableElement}
+   */
+  VisitResult visit(ImmutableElement node);
+```
+
+The only implementation of the `VisitResult` interface is the following enum:
+
+```java
+/**
+ * The result type of an {@link XdmNodeVisitor} implementation.
+ * 
+ * @author Johannes Lichtenberger, University of Konstanz
+ */
+public enum VisitResultType implements VisitResult {
+  /** Continue without visiting the siblings of this node. */
+  SKIPSIBLINGS,
+
+  /** Continue without visiting the descendants of this node. */
+  SKIPSUBTREE,
+
+  /** Continue traversal. */
+  CONTINUE,
+
+  /** Terminate traversal. */
+  TERMINATE
+}
+```
+
+
+
      // Executes a modification visitor for each descendant node.
      for (final long nodeKey :
        DescendantAxis.builder(wtx).includeSelf().visitor(
-         Optional.of(new ModificationVisitor(wtx, wtx.getNodeKey()))).build()) {
+         new ModificationVisitor(wtx, wtx.getNodeKey()).build()) {
        ...
      }
 
