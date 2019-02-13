@@ -1127,8 +1127,8 @@ pre.highlight {
   font-family: monospace;
 }
 
-pre.highlight > code {
- line-height:initial;
+div.highlight {
+ line-height: initial;
 }
 
 code {
