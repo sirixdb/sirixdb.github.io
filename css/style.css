@@ -1116,7 +1116,7 @@ section.markdown > p {
 }
 
 section.markdown > span {
-  line-height: 1em;
+  line-height: .5em;
 }
 
 pre.highlight {
