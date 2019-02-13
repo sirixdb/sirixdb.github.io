@@ -1125,10 +1125,11 @@ pre.highlight {
   border-radius: 1px;
   overflow-x: auto;
   font-family: monospace;
+  line-height: 1.2em;
 }
 
 div.highlight {
- line-height: initial;
+  line-height: initial;
 }
 
 code {
