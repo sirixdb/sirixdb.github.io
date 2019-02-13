@@ -2,27 +2,32 @@
 layout: documentation
 ---
 
-## Create an empty database
-First, we want to show how to create an empty database with a bootstrapped empty resource.
+## Create a database with a single resource file
+First, we want to show how to create a database with a single resource (the resource imported and shreddered from an XML-document in our internal format).
 
 ```java
+// XML-file to import.
+final var pathToXmlFile = Paths.get("xmlFile");
+
 // Create database configuration.
-final var file = Paths.get("db");
-final var dbConfig = new DatabaseConfiguration(file);
+final var databaseFile = Paths.get("database");
+final var dbConfig = new DatabaseConfiguration(databaseFile);
 
 // Create a new lightweight database structure.
 Databases.createXdmDatabase(dbConfig);
 
 // Open the database.
-try (final var database = Databases.openXdmDatabase(file)) {
-  // Create a first resource without text-value compression but with DeweyIDs.
+try (final var database = Databases.openXdmDatabase(databaseFile)) {
+  // Create a first resource without text-value compression but with DeweyIDs which are hierarchical node labels.
   database.createResource(ResourceConfiguration.builder("shredded").useTextCompression(false).useDeweyIDs(true).build());
 
   try (// Open a resource manager.
-       final var manager = database.getResourceManager("resource");
+       final var manager = database.openResourceManager("resource");
        // Open only write transaction on the resource (transaction provides a cursor for navigation
        // through moveToX-methods).
-       final var wtx = manager.beginNodeTrx()) {
+       final var wtx = manager.beginNodeTrx();
+       final var fis = new FileInputStream(pathToXmlFile.toFile())) {
+       
        // Import an XML document.
        wtx.insertSubtreeAsFirstChild(XmlShredder.createFileReader(fis));
 
@@ -32,7 +37,7 @@ try (final var database = Databases.openXdmDatabase(file)) {
 }
 ```
 
-    
+Now, that we have imported a first resource and persisted it in our binary-structure, we are able to open it again (alternatively the single node `read/write-transaction` handle can be reused after issuing the commit.   
     
 ```java
       // Transaction handle can be reused.
