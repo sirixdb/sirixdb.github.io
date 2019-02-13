@@ -2,7 +2,7 @@
 layout: documentation
 ---
 
-## Create a database with a single resource file
+### Create a database with a single resource file
 First, we want to show how to create a database with a single resource (the resource is going to be imported from an XML-document and shredded into our internal format).
 
 ```java
@@ -36,6 +36,7 @@ try (final var database = Databases.openXdmDatabase(databaseFile)) {
   }
 }
 ```
+### Open the database and the resource manager again
 
 Now, that we have imported a first resource and persisted it in our binary-structure, we are able to open it again at any time (alternatively the single node `read/write-transaction` handle can be reused after issuing the commit).
 
@@ -76,7 +77,7 @@ try (final var database = Databases.openXdmDatabase(databaseFile);
   });
 }
 ```
-
+### Axis
 However as this is such a common case to iterate over structual and non-structural nodes as for instance namespace- and attribute-nodes we also provide a simple wrapper axis:
 
 ```java
