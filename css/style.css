@@ -1125,7 +1125,7 @@ pre.highlight {
 }
 
 div.content {
-  line-height: 1.2em;
+  line-height: initial;
 }
 
 div.highlight {
