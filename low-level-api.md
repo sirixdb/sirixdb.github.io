@@ -119,7 +119,7 @@ public enum VisitResultType implements VisitResult {
 }
 ```
 
-The `VisitorDescendantAxis` takes care and skips a whole subtree if the return type is SKIPSUBTREE, or skips the traversal of all further right-siblings of the current node. You can also terminate the whole traversal.
+The `VisitorDescendantAxis` takes care and skips a whole subtree if the return type is `VisitResultType.SKIPSUBTREE`, or skips the traversal of all further right-siblings of the current node (`VisitResultType.SKIPSIBLINGS`). You can also terminate the whole traversal with `VisitResultType.TERMINATE`.
 
 The default implementation of each method in the `Visitor`-interface returns `VisitResultType.CONTINUE` for each node-type, such that you only have to implement the methods (for the nodes), which you're interested in. If you've implemented a class called `MyVisitor` you can use the `VisitorDescendantAxis` in the following way:
 
