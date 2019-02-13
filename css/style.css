@@ -1104,13 +1104,10 @@
 		}
 
 .highlight {
- /** border: 1px solid #dbdbdb;
+  border: 1px solid #dbdbdb;
   background-color: #ffffcc;
-  border-radius: 1px; **/
-
-/** This part **/
-  max-height: 300px;
-  overflow-y: auto;
+  border-radius: 1px;
+  overflow-x: auto;
 }
 
 .highlight .hll { background-color: #ffffcc }
