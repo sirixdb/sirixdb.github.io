@@ -1112,11 +1112,11 @@ section.markdown > p {
   padding-bottom: .4em;
   margin-top: .4em;
   padding-bottom: .4em;
-  line-height: normal;
+  line-height: 1em;
 }
 
 section.markdown > span {
-  line-height: normal;
+  line-height: 1em;
 }
 
 pre.highlight {
