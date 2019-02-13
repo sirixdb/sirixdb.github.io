@@ -1105,7 +1105,6 @@
 
 section.markdown {
   font-size: 0.9em;
-  line-height: initial;
 }
 
 section.markdown > p {
@@ -1126,6 +1125,10 @@ pre.highlight {
   border-radius: 1px;
   overflow-x: auto;
   font-family: monospace;
+}
+
+pre.highlight > code {
+ line-height:initial;
 }
 
 code {
