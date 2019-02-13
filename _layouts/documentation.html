@@ -7,7 +7,7 @@
 
     {% include header.html %}
     <div class="page-content">
-        {% include article-head.html title="Transactional cursor based API" %}
+        {% include article-head.html title="{{ include.title }}" %}
             {{ content }}
         {% include article-foot.html %}
     </div>
