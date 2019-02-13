@@ -1124,6 +1124,10 @@ pre.highlight {
   font-family: monospace;
 }
 
+div.content {
+  line-height: 1.2em;
+}
+
 div.highlight {
   line-height: initial;
 }
