@@ -138,7 +138,7 @@ We provide several filters, which can be plugged in through a `FilterAxis`. The 
 new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new NameFilter(rtx, new QNm("a")))
 ```
 
-The `FilterAxis` optionally takes more than one filter.
+The `FilterAxis` optionally takes more than one filter. The filter either is a `NameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
 
      // Commit second version.
      wtx.commit();
