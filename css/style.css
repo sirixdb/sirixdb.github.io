@@ -1115,6 +1115,10 @@ section.markdown > p {
   line-height: normal;
 }
 
+section.markdown > span {
+  line-height: normal;
+}
+
 pre.highlight {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
