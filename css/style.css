@@ -1103,11 +1103,14 @@
 			width: 5em;
 		}
 
-pre.highlight {
+code {
   margin: 0.5em;
+}
+
+pre.highlight {
   padding: 0.5em;
   /** border: 1px solid #dbdbdb; **/
-  background-color: #fefefe;
+  background-color: #efefef;
   border-radius: 1px;
   overflow-x: auto;
 }
