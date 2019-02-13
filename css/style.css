@@ -1105,6 +1105,7 @@
 
 section.markdown {
   font-size: 0.9em;
+  line-height: initial;
 }
 
 section.markdown > p {
@@ -1113,10 +1114,6 @@ section.markdown > p {
   margin-top: .4em;
   padding-bottom: .4em;
   line-height: 1em;
-}
-
-section.markdown > span {
-  line-height: .5em;
 }
 
 pre.highlight {
