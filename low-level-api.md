@@ -85,15 +85,15 @@ new NonStructuralWrapperAxis(new DescendantAxis(rtx))
 
 For sure we also have a `NamespaceAxis` and an `AttributeAxis`.
 
-As it's very common to do something based on the different node-types we implemented the visitor pattern. As such you can simply plugin a visitor in another `descendant-axis` called `VisitorDescendantAxis`. A visitor must implement methods as follows for each node:
+As it's very common to do something based on the different node-types we implemented the visitor pattern. As such you can simply plugin a visitor in another `descendant-axis` called `VisitorDescendantAxis`, which is a special axis taking care of the return types from the visit-methods. A visitor must implement methods as follows for each node:
 
 ```java
-  /**
-   * Do something when visiting a {@link ImmutableElement}.
-   * 
-   * @param node the {@link ImmutableElement}
-   */
-  VisitResult visit(ImmutableElement node);
+/**
+ * Do something when visiting a {@link ImmutableElement}.
+ * 
+ * @param node the {@link ImmutableElement}
+ */
+VisitResult visit(ImmutableElement node);
 ```
 
 The only implementation of the `VisitResult` interface is the following enum:
@@ -119,14 +119,18 @@ public enum VisitResultType implements VisitResult {
 }
 ```
 
+The `VisitorDescendantAxis` takes care and skips a whole subtree if the return type is SKIPSUBTREE, or skips the traversal of all further right-siblings of the current node. You can also terminate the whole traversal.
+
+The default implementation of each method in the `Visitor`-interface returns `VisitResultType.CONTINUE` for each node-type, such that you only have to implement the methods (for the nodes), which you're interested in. If you've implemented a class called `MyVisitor` you can use the `VisitorDescendantAxis` in the following way:
+
+```java
+// Executes a modification visitor for each descendant node.
+final var axis = VisitorDescendantAxis.newBuilder(rtx).includeSelf().visitor(new MyVisitor().build());
+     
+while (axis.hasNext()) axis.next();
+```
 
 
-     // Executes a modification visitor for each descendant node.
-     for (final long nodeKey :
-       DescendantAxis.builder(wtx).includeSelf().visitor(
-         new ModificationVisitor(wtx, wtx.getNodeKey()).build()) {
-       ...
-     }
 
      // Commit second version.
      wtx.commit();
