@@ -1103,8 +1103,8 @@
 			width: 5em;
 		}
 
-.highlight {
-  margin: 0.5em
+pre.highlight {
+  margin: 0.5em;
   padding: 0.5em;
   /** border: 1px solid #dbdbdb; **/
   background-color: #fefefe;
