@@ -1118,6 +1118,11 @@ pre.highlight {
   overflow-x: auto;
   font-family: monospace;
 }
+
+code {
+  font-family: monospace;
+}
+
 .highlight .hll { background-color: #ffffcc }
 .highlight .c { color: #999988; font-style: italic } /* Comment */
 .highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
