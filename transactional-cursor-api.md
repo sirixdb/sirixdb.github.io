@@ -20,7 +20,7 @@ Databases.createXdmDatabase(dbConfig);
 // Open the database.
 try (final var database = Databases.openXdmDatabase(databaseFile)) {
   // Create a first resource without text-value compression but with DeweyIDs which are hierarchical node labels.
-  database.createResource(ResourceConfiguration.builder("shredded").useTextCompression(false).useDeweyIDs(true).build());
+  database.createResource(ResourceConfiguration.builder("resource").useTextCompression(false).useDeweyIDs(true).build());
 
   try (// Open a resource manager.
        final var manager = database.openResourceManager("resource");
