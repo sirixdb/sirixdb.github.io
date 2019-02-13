@@ -2,33 +2,39 @@
 layout: documentation
 ---
 
-Some API examples:
+## Create an empty database
+First, we want to show how to create an empty database with a bootstrapped empty resource.
 
 ```java
 // Create database configuration.
-final Path file = Paths.get("db");
-final DatabaseConfiguration dbConfig = new DatabaseConfiguration(file);
+final var file = Paths.get("db");
+final var dbConfig = new DatabaseConfiguration(file);
 
 // Create a new lightweight database structure.
 Databases.createXdmDatabase(dbConfig);
 
 // Open the database.
-try (final Database database = Databases.openXdmDatabase(file)) {
+try (final var database = Databases.openXdmDatabase(file)) {
   // Create a first resource without text-value compression but with DeweyIDs.
   database.createResource(ResourceConfiguration.builder("shredded").useTextCompression(false).useDeweyIDs(true).build());
 
-  try (
-    // Open a resource manager.
-    final XdmResourceManager manager = database.getResourceManager("resource");
-    // Open only write transaction on the resource (transaction provides a cursor for navigation
-    // through moveToX-methods).
-    final XdmNodeTrx wtx = manager.beginNodeTrx()) {
-      // Import an XML document.
-      wtx.insertSubtree(XmlShredder.createFileReader(xml), Insert.AS_FIRST_CHILD);
+  try (// Open a resource manager.
+       final var manager = database.getResourceManager("resource");
+       // Open only write transaction on the resource (transaction provides a cursor for navigation
+       // through moveToX-methods).
+       final var wtx = manager.beginNodeTrx()) {
+       // Import an XML document.
+       wtx.insertSubtreeAsFirstChild(XmlShredder.createFileReader(fis));
 
-      // Commit and persist the changes.
-      wtx.commit();
+       // Commit and persist the changes.
+       wtx.commit();
+  }
+}
+```
 
+    
+    
+```java
       // Transaction handle can be reused.
       wtx.moveToDocumentRoot();
 
