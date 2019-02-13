@@ -3,7 +3,7 @@ layout: documentation
 ---
 
 ## Create a database with a single resource file
-First, we want to show how to create a database with a single resource (the resource imported and shreddered from an XML-document in our internal format).
+First, we want to show how to create a database with a single resource (the resource is going to be imported from an XML-document and shredded into our internal format).
 
 ```java
 // XML-file to import.
