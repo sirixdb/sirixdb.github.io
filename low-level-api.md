@@ -37,21 +37,64 @@ try (final var database = Databases.openXdmDatabase(databaseFile)) {
 }
 ```
 
-Now, that we have imported a first resource and persisted it in our binary-structure, we are able to open it again (alternatively the single node `read/write-transaction` handle can be reused after issuing the commit.   
-    
+Now, that we have imported a first resource and persisted it in our binary-structure, we are able to open it again at any time (alternatively the single node `read/write-transaction` handle can be reused after issuing the commit).
+
 ```java
-      // Transaction handle can be reused.
-      wtx.moveToDocumentRoot();
+// Open the database.
+try (final var database = Databases.openXdmDatabase(databaseFile);
+     final var manager = database.openResourceManager("resource");
+     // Now open a read-only transaction again.
+     final var rtx = manager.beginNodeReadOnlyTrx()) {
+    
+  // Use the descendant axis to iterate over all structural descendant nodes (each node with the exception of namespace- and attribute-nodes) in pre-order (depth-first).
+  new DescendantAxis(rtx, IncludeSelf.YES).forEach((unused) -> {
+    // The transaction-cursor is moved to each structural node (all nodes, except for namespace- and attributes in preorder).
+    switch (rtx.getKind()) {
+      case ELEMENT:
+        // In order to process namespace-nodes we could do the following and log the full qualified name of each node.
+        for (int i = 0, nspCount = rtx.getNamespaceCount(); i < nspCount; i++) {
+          rtx.moveToNamespace(i);
+          LOGGER.info(rtx.getName());
+          rtx.moveToParent();
+        }
 
-      // Executes a modification visitor for each descendant node.
-      for (final long nodeKey :
-        DescendantAxis.builder(wtx).includeSelf().visitor(
-          Optional.of(new ModificationVisitor(wtx, wtx.getNodeKey()))).build()) {
-        ...
-      }
+        // In order to process attribute-nodes we could do the following and log the full qualified name of each node. 
+        for (int i = 0, attrCount = rtx.getAttributeCount(); i < attrCount; i++) {
+          rtx.moveToAttribute(i);
+          LOGGER.info(rtx.getName());
+          rtx.moveToParent();
+        }
+        break;
+      case TEXT:
+        // Log the text-value.
+        LOGGER.info(rtx.getValue());
+        break;
+      // Other node types omitted.
+      default:
+        // Do nothing.
+    };
+  });
+}
+```
 
-      // Commit second version.
-      wtx.commit();
+However as this is such a common case to iterate over structual and non-structural nodes as for instance namespace- and attribute-nodes we also provide a simple wrapper axis:
+
+```java
+new NonStructuralWrapperAxis(new DescendantAxis(rtx))
+```
+
+     
+     
+     
+     // Executes a modification visitor for each descendant node.
+     for (final long nodeKey :
+       DescendantAxis.builder(wtx).includeSelf().visitor(
+         Optional.of(new ModificationVisitor(wtx, wtx.getNodeKey()))).build()) {
+       ...
+     }
+
+     // Commit second version.
+     wtx.commit();
 
       // Transaction handle is relocated at the document node of the new revision; iterate over "normal" descendant axis.
       final Axis axis = new DescendantAxis(wtx);
@@ -60,7 +103,19 @@ Now, that we have imported a first resource and persisted it in our binary-struc
 
         switch (wtx.getKind()) {
         case ELEMENT:
-          // Do something.
+          // In order to process namespace-nodes we could do the following and log the full qualified name of each node.
+          for (int i = 0, nspCount = rtx.getNamespaceCount(); i < nspCount; i++) {
+            rtx.moveToNamespace(i);
+            LOGGER.info(rtx.getName());
+            rtx.moveToParent();
+          }
+
+          // In order to process attribute-nodes we could do the following and log the full qualified name of each node. 
+          for (int i = 0, attrCount = rtx.getAttributeCount(); i < attrCount; i++) {
+            rtx.moveToAttribute(i);
+            LOGGER.info(rtx.getName());
+            rtx.moveToParent();
+          }
           break;
         default:
           // Do nothing.
