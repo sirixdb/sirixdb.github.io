@@ -1,5 +1,6 @@
 ---
 layout: documentation
+title: Transactional cursor based API
 ---
 
 ### Create a database with a single resource file
