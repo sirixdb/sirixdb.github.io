@@ -1136,6 +1136,10 @@ div.highlight > pre {
   line-height: 1.2em;
 }
 
+div.highlighter-rouge + h3 {
+  margin-top: 2em;
+}
+
 code {
   font-family: monospace;
   font-size: 0.8em;
