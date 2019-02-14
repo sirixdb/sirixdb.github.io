@@ -63,7 +63,8 @@ try (final var database = Databases.openXdmDatabase(databaseFile);
         // In order to process attribute-nodes we could do the following and log the full qualified name of each node. 
         for (int i = 0, attrCount = rtx.getAttributeCount(); i < attrCount; i++) {
           rtx.moveToAttribute(i);
-          LOGGER.info(rtx.getName());
+          LOGGER.info("Attribute name:" + rtx.getName());
+          LOGGER.info("Attribute value:" + rtx.getValue());
           rtx.moveToParent();
         }
         break;
@@ -78,7 +79,7 @@ try (final var database = Databases.openXdmDatabase(databaseFile);
   });
 }
 ```
-### Axis
+### Axis to navigate in space and in time
 However as this is such a common case to iterate over structual and non-structural nodes as for instance namespace- and attribute-nodes we also provide a simple wrapper axis:
 
 ```java
@@ -141,6 +142,8 @@ new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new NameFilter(rtx, new Q
 ```
 
 The `FilterAxis` optionally takes more than one filter. The filter either is a `NameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
+
+
 
      // Commit second version.
      wtx.commit();
