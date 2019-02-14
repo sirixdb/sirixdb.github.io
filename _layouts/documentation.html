@@ -7,7 +7,7 @@
 
     {% include header.html %}
     <div class="page-content">
-        {% include article-head.html title="bla" %}
+        {% include article-head.html title="{{ page.title }}" %}
             {{ content }}
         {% include article-foot.html %}
     </div>
