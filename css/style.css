@@ -1110,6 +1110,7 @@ section.markdown {
 section.markdown > p {
   margin: 1.3em 0;
   padding: 0;
+  line-height: 1.5em;
 }
 
 pre.highlight {
