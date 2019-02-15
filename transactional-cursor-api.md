@@ -3,6 +3,36 @@ layout: documentation
 doctitle: Transactional cursor based API
 ---
 
+### Maven artifacts
+
+At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
+
+```xml
+<repository>
+  <id>sonatype-nexus-snapshots</id>
+  <name>Sonatype Nexus Snapshots</name>
+  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  <releases>
+    <enabled>false</enabled>
+  </releases>
+  <snapshots>
+    <enabled>true</enabled>
+  </snapshots>
+</repository>
+```
+
+Maven artifacts are deployed to the central maven repository (however please use the SNAPSHOT-variants as of now). Currently the following artifacts are available:
+
+Core project:
+
+```xml
+<dependency>
+  <groupId>io.sirix</groupId>
+  <artifactId>sirix-core</artifactId>
+  <version>0.9.0-SNAPSHOT</version>
+</dependency>
+```
+
 ### Create a database with a single resource file
 First, we want to show how to create a database with a single resource (the resource is going to be imported from an XML-document and shredded into our internal format).
 
