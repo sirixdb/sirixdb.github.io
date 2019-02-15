@@ -1115,13 +1115,14 @@ section.markdown > p {
 pre.highlight {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
-  padding: 0.5em;
+  padding: .2em;
   /** border: 1px solid #dbdbdb; **/
   background-color: #efefef;
   color: #000000;
   border-radius: 1px;
   overflow-x: auto;
   font-family: monospace;
+  border-left: 3px solid #d01040;
 }
 
 div.content {
