@@ -1146,6 +1146,10 @@ section.markdown ol {
   line-height: 1.5em;
 }
 
+section.markdown * {
+  line-height: 1.5em;
+}
+
 div.highlight > pre {
   line-height: 1.2em;
 }
