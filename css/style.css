@@ -1132,7 +1132,7 @@ div.highlight {
   line-height: initial;
 }
 
-div.highlight h3 {
+section.markdown h3 {
   border-bottom: 3px solid #CCC;
   float: left;
   width: 100%;
