@@ -1143,11 +1143,15 @@ section.markdown h2, section.markdown h3, section.markdown h4, section.markdown 
 
 section.markdown ol {
   list-style-type: decimal;
-  line-height: 1.5em;
+  padding-left: 2em;
+}
+
+section.markdown ul {
+  padding-left: 2em;
 }
 
 section.markdown * {
-  line-height: 1.5em;
+  line-height: 1.3em;
 }
 
 div.highlight > pre {
