@@ -1132,6 +1132,13 @@ div.highlight {
   line-height: initial;
 }
 
+div.highlight h3 {
+  border-bottom: 3px solid #CCC;
+  float: left;
+  width: 100%;
+  padding-bottom: 3px;
+}
+
 div.highlight > pre {
   line-height: 1.2em;
 }
