@@ -1151,11 +1151,12 @@ section.markdown ul {
 }
 
 section.markdown {
-  line-height: 1.3em;
+  line-height: 1.2em;
 }
 
 section.markdown li {
-  display: inline;
+  margin-top: .2em;
+  margin-bottom: .2em;
 }
 
 div.highlight > pre {
