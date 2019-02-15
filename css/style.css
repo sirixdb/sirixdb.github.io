@@ -1154,6 +1154,10 @@ section.markdown {
   line-height: 1.3em;
 }
 
+section.markdown li {
+  display: inline;
+}
+
 div.highlight > pre {
   line-height: 1.2em;
 }
