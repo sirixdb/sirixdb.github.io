@@ -1150,7 +1150,7 @@ section.markdown ul {
   padding-left: 2em;
 }
 
-section.markdown * {
+section.markdown {
   line-height: 1.3em;
 }
 
