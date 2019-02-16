@@ -215,7 +215,7 @@ final var text = new FilterAxis(new ChildAxis(rtx), new TextFilter(rtx));
 final var axis = new NestedAxis(new NestedAxis(childA, childB), text);
 ```
 
-#### ConcurrentAxis
+#### Concurrent Axis
 We also provide a ConcurrentAxis to fetch nodes concurrently. In order to execute an XPath-query as for instance `//regions/africa//location` it would look like that:
 
 ```java
@@ -230,7 +230,7 @@ final Axis axis = new NestedAxis(
             new DescendantAxis(thirdRtx, IncludeSelf.YES), new NameFilter(thirdRtx, "location"))));
 ```
 
-#### PredicateAxis
+#### Predicate Axis
 In order to test for a predicate for instance select all nodes which have a child element with name "foo" you could use:
 
 ```java
@@ -248,6 +248,8 @@ For instance you can use one of the following axis to navigate in time:
 `FirstAxis`, `LastAxis`, `PreviousAxis`, `NextAxis`, `AllTimeAxis`, `FutureAxis`, `PastAxis`.
 
 Each of the constructors of these time-travel axis takes a transactional cursor as the only parameter and opens the node, the cursor currently points to in each of the revisions (if it exists).
+
+
 
      // Commit second version.
      wtx.commit();
