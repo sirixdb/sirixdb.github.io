@@ -198,7 +198,7 @@ Alternatively you could simply stream over your axis (without using the `FilterA
 final var axis = new PostOrderAxis(rtx);
 final var axisStream = StreamSupport.stream(axis.spliterator(), false);
 
-axisStream.filter(unusedNodeKey -> new NameFilter(rtx, new QNm("a"))).forEach((unused) -> // So something Witz the transactional cursor);
+axisStream.filter(unusedNodeKey -> new NameFilter(rtx, new QNm("a"))).forEach((unused) -> /* Do something with the transactional cursor */);
 ```
 
 In order to achieve much more query power you can chain several axis with the `NestedAxis`. The following example shows how a simple XPath query can be processed. However, we think it's much more convenient simply use the XPath query with our Brackit binding.
