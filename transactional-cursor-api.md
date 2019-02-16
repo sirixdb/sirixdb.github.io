@@ -215,6 +215,22 @@ final var text = new FilterAxis(new ChildAxis(rtx), new TextFilter(rtx));
 final var axis = new NestedAxis(new NestedAxis(childA, childB), text);
 ```
 
+#### ConcurrentAxis
+We also provide a ConcurrentAxis to fetch nodes concurrently. In order to execute an XPath-query as for instance `//regions/africa//location` it would look like that:
+
+```java
+final Axis axis = new NestedAxis(
+        new NestedAxis(
+            new ConcurrentAxis(firstConcurrRtx,
+                new FilterAxis(new DescendantAxis(firstRtx, IncludeSelf.YES),
+                    new NameFilter(firstRtx, "regions"))),
+            new ConcurrentAxis(secondConcurrRtx,
+                new FilterAxis(new ChildAxis(secondRtx), new NameFilter(secondRtx, "africa")))),
+        new ConcurrentAxis(thirdConcurrRtx, new FilterAxis(
+            new DescendantAxis(thirdRtx, IncludeSelf.YES), new NameFilter(thirdRtx, "location"))));
+```
+
+#### PredicateAxis
 In order to test for a predicate for instance select all nodes which have a child element with name "foo" you could use:
 
 ```java
@@ -223,6 +239,8 @@ final var descendantAxis = new DescendantAxis();
 final var predicateAxisFilter = new PredicateAxis(rtx, childAxisFilter);
 final var nestedAxis = new NestedAxis(descendantAxis, predicateAxisFilter);
 ```
+
+#### Time Travel axis
 
 However, we not only support navigational axis within one revision, we also allow navigation on the time axis.
 
