@@ -5,7 +5,7 @@ doctitle: Transactional cursor based API
 
 ### Maven artifacts
 
-At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
+First, you have to get the decency on our Sirix core project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
 
 ```xml
 <repository>
@@ -21,7 +21,19 @@ At this stage of development please use the latest SNAPSHOT artifacts from the O
 </repository>
 ```
 
-Maven artifacts are deployed to the central maven repository (however please use the SNAPSHOT-variants as of now). Currently the following artifacts are available:
+Or for Gradle:
+```gradle
+apply plugin: 'java'
+apply plugin: 'maven'
+
+repositories {
+    maven {
+          url "https://oss.sonatype.org/content/repositories/snapshot"
+    }
+}
+```
+
+Maven artifacts are deployed to the central maven repository (however please use the SNAPSHOT-variants as of now). Currently the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
 
 Core project:
 
@@ -31,6 +43,13 @@ Core project:
   <artifactId>sirix-core</artifactId>
   <version>0.9.0-SNAPSHOT</version>
 </dependency>
+```
+
+To add the dependency in Gradle:
+```gradle
+dependencies {
+  compile 'io.sirix:sirix-core:0.9.0-SNAPSHOT'
+}
 ```
 
 ### Create a database with a single resource file
@@ -173,7 +192,28 @@ new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new NameFilter(rtx, new Q
 
 The `FilterAxis` optionally takes more than one filter. The filter either is a `NameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
 
+Alternatively you could simply stream over your axis (without using the `FilterAxis` at all) and then filter by predicate. `rtx` is a `NodeReadOnlyTrx` in the following example:
 
+```java
+final var axis = new PostOrderAxis(rtx);
+final var axisStream = StreamSupport.stream(axis.spliterator(), false);
+
+axisStream.filter(unusedNodeKey -> new NameFilter(rtx, new QNm("a"))).forEach((unused) -> // So something Witz the transactional cursor);
+```
+
+In order to achieve much more query power you can chain several axis with the `NestedAxis`. The following example shows how a simple XPath query can be processed. However, we think it's much more convenient simply use the XPath query with our Brackit binding.
+
+```java
+// XPath expression /p:a/b/text()
+// Part: /p:a
+final var childA = new FilterAxis(new ChildAxis(rtx), new NameFilter(rtx, "p:a"));
+// Part: /b
+final var childB = new FilterAxis(new ChildAxis(rtx), new NameFilter(rtx, "b"));
+// Part: /text()
+final var text = new FilterAxis(new ChildAxis(rtx), new TextFilter(rtx));
+// Part: /p:a/b/text()
+final var axis = new NestedAxis(new NestedAxis(childA, childB), text);
+```
 
      // Commit second version.
      wtx.commit();
