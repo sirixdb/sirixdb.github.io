@@ -243,7 +243,6 @@ final var nestedAxis = new NestedAxis(descendantAxis, predicateAxisFilter);
 ```
 
 #### Time Travel axis
-
 However, we not only support navigational axis within one revision, we also allow navigation on the time axis.
 
 For instance you can use one of the following axis to navigate in time:
@@ -281,7 +280,11 @@ if (wtx.isElement()) wtx.setName(new QNm("foo"))
 if (wtx.isText()) wtx.setValue("foo")
 ```
 
-Or we can insert new elements via `insertElementAsFirstChild(new QNm("foo"))`/`insertElementAsLeftSibling(new QNm("foo"))`/`insertElementAsRightSibling(new QNm("foo"))`. Similar methods exist for all other node types.
+Or we can insert new elements via `insertElementAsFirstChild(new QNm("foo"))`/`insertElementAsLeftSibling(new QNm("foo"))`/`insertElementAsRightSibling(new QNm("foo"))`. Similar methods exist for all other node types. We for sure always check for consistency and if calling the method on a specific node type should be allowed or not.
+
+Attributes for instance can only be inserted (`insertAttribute(new QNm("name", "value"))`), if the cursor is located on an element node.
+
+More sophisticated bulk insertion methods exist, too (as you have already seen when we imported an XML-document).
 
 Then we are able to
       // Transaction handle is relocated at the document node of the new revision; iterate over "normal" descendant axis.
