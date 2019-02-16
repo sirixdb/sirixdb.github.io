@@ -218,11 +218,18 @@ final var axis = new NestedAxis(new NestedAxis(childA, childB), text);
 In order to test for a predicate for instance select all nodes which have a child element with name "foo" you could use:
 
 ```java
-final var childAxis = new FilterAxis(new ChildAxis(rtx), new ElementFilter(rtx), new NameFilter("foo"));
+final var childAxisFilter = new FilterAxis(new ChildAxis(rtx), new ElementFilter(rtx), new NameFilter("foo"));
 final var descendantAxis = new DescendantAxis();
-final var predicateAxis = new PredicateAxis(rtx, childAxis);
-final var nestedAxis = new NestedAxis(DescendantAxis, predicateAxis);
+final var predicateAxisFilter = new PredicateAxis(rtx, childAxisFilter);
+final var nestedAxis = new NestedAxis(descendantAxis, predicateAxisFilter);
 ```
+
+However, we not only support navigational axis within one revision, we also allow navigation on the time axis.
+
+For instance you can use one of the following axis to navigate in time:
+`FirstAxis`, `LastAxis`, `PreviousAxis`, `NextAxis`, `AllTimeAxis`, `FutureAxis`, `PastAxis`.
+
+Each of the constructors of these time-travel axis takes a transactional cursor as the only parameter and opens the node, the cursor currently points to in each of the revisions (if it exists).
 
      // Commit second version.
      wtx.commit();
