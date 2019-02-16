@@ -269,9 +269,19 @@ Note, that we now have to use a transaction, which is able to modify stuff (`Nod
 
 We can then navigate to a specific node, either via axis, filters and so on or if we know the node key simply through the method `moveTo(long)` whereas the long parameter is the node key of the node we want to select.
 
-We provide several navigational primitives/methods. After the resource/document is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to it's first child which is the XML root element via `moveToFirstChild()`. Similar, we can move to a right sibling with `moveToRightSibling()`, or move to the left sibling (`moveToLeftSibling()`). Furthermore many more methods to navigate through the tree are available. For instance `moveToLastChild()` or `moveToAttribute(int)`/`moveToNamespace(int)` if we reside an element node. Further more we added the ability to move to the next node in preorder (`moveToNext()`) or to the previous node in preorder (`moveToPrevious()`).
+We provide several navigational primitives/methods. After the resource/document is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to it's first child which is the XML root element via `moveToFirstChild()`. Similar, we can move to a right sibling with `moveToRightSibling()`, or move to the left sibling (`moveToLeftSibling()`). Furthermore many more methods to navigate through the tree are available. For instance `moveToLastChild()` or `moveToAttribute(int)`/`moveToAttributeByName(new QNm("foobar"))`/`moveToNamespace(int)` if we reside an element node. Further more we added the ability to move to the next node in preorder (`moveToNext()`) or to the previous node in preorder (`moveToPrevious()`). Or for instance to the next node on the XPath `following::`-axis.
 
 Once we navigated to the node, we are able to either update for instance the name or the value (depending on the node type).
+
+```java
+// Cursor for instance points to an element node.
+if (wtx.isElement()) wtx.setName(new QNm("foo"))
+
+// Or a text node
+if (wtx.isText()) wtx.setValue("foo")
+```
+
+Or we can insert new elements via `insertElementAsFirstChild(new QNm("foo"))`/`insertElementAsLeftSibling(new QNm("foo"))`/`insertElementAsRightSibling(new QNm("foo"))`. Similar methods exist for all other node types.
 
 Then we are able to
       // Transaction handle is relocated at the document node of the new revision; iterate over "normal" descendant axis.
