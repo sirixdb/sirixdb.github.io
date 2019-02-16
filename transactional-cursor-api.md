@@ -215,6 +215,15 @@ final var text = new FilterAxis(new ChildAxis(rtx), new TextFilter(rtx));
 final var axis = new NestedAxis(new NestedAxis(childA, childB), text);
 ```
 
+In order to test for a predicate for instance select all nodes which have a child element with name "foo" you could use:
+
+```java
+final var childAxis = new FilterAxis(new ChildAxis(rtx), new ElementFilter(rtx), new NameFilter("foo"));
+final var descendantAxis = new DescendantAxis();
+final var predicateAxis = new PredicateAxis(rtx, childAxis);
+final var nestedAxis = new NestedAxis(DescendantAxis, predicateAxis);
+```
+
      // Commit second version.
      wtx.commit();
 
