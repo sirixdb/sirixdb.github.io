@@ -230,6 +230,8 @@ final Axis axis = new NestedAxis(
             new DescendantAxis(thirdRtx, IncludeSelf.YES), new NameFilter(thirdRtx, "location"))));
 ```
 
+Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision).
+
 #### Predicate Axis
 In order to test for a predicate for instance select all nodes which have a child element with name "foo" you could use:
 
@@ -249,11 +251,29 @@ For instance you can use one of the following axis to navigate in time:
 
 Each of the constructors of these time-travel axis takes a transactional cursor as the only parameter and opens the node, the cursor currently points to in each of the revisions (if it exists).
 
+In order to use time travel axis, however first a few more revisions have to be created through committing a bunch of changes.
 
+### Open and modify a resource in a database
+First, we have to open the resource again:
+```java
+// Open the database.
+try (final var database = Databases.openXdmDatabase(databaseFile);
+     final var manager = database.openResourceManager("resource");
+     // Now open a read-only transaction again.
+     final var wtx = manager.beginNodeTrx()) {
+  ...
+}
+```
 
-     // Commit second version.
-     wtx.commit();
+Note, that we now have to use a transaction, which is able to modify stuff (`NodeTrx`) instead of a read-only transaction.
 
+We can then navigate to a specific node, either via axis, filters and so on or if we know the node key simply through the method `moveTo(long)` whereas the long parameter is the node key of the node we want to select.
+
+We provide several navigational primitives/methods. After the resource/document is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to it's first child which is the XML root element via `moveToFirstChild()`. Similar, we can move to a right sibling with `moveToRightSibling()`, or move to the left sibling (`moveToLeftSibling()`). Furthermore many more methods to navigate through the tree are available. For instance `moveToLastChild()` or `moveToAttribute(int)`/`moveToNamespace(int)` if we reside an element node. Further more we added the ability to move to the next node in preorder (`moveToNext()`) or to the previous node in preorder (`moveToPrevious()`).
+
+Once we navigated to the node, we are able to either update for instance the name or the value (depending on the node type).
+
+Then we are able to
       // Transaction handle is relocated at the document node of the new revision; iterate over "normal" descendant axis.
       final Axis axis = new DescendantAxis(wtx);
       if (axis.hasNext()) {
