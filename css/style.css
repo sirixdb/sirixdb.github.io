@@ -1163,7 +1163,8 @@ div.highlight > pre {
   line-height: 1.2em;
 }
 
-div.highlighter-rouge + h3 {
+div.highlighter-rouge + h2, div.highlighter-rouge + h3, 
+div.highlighter-rouge + h4 {
   margin-top: 2em;
 }
 
