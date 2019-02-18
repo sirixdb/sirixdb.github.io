@@ -117,6 +117,20 @@ try (final var database = Databases.openXdmDatabase(databaseFile);
           rtx.moveToParent();
         }
         break;
+        
+        LOGGER.info(rtx.getDescendantCount());
+        LOGGER.info(rtx.getChildCount());
+        /* 
+         * Hash of a node, build bottom up for all nodes (depends on descendant hashes, however only
+         * ancestor nodes are updated during a normal edit-operation. During bulk inserts with 
+         * insertSubtree(...) the hashes are generated during a postorder-traversal, just like the 
+         * descendant-count of each structural node.
+         */
+        LOGGER.info(rtx.getHash());
+        break;
+      case COMMENT:
+        LOGGER.info(rtx.getValue());
+        break;
       case TEXT:
         // Log the text-value.
         LOGGER.info(rtx.getValue());
@@ -268,7 +282,31 @@ Note, that we now have to use a transaction, which is able to modify stuff (`Nod
 
 We can then navigate to a specific node, either via axis, filters and so on or if we know the node key simply through the method `moveTo(long)` whereas the long parameter is the node key of the node we want to select.
 
-We provide several navigational primitives/methods. After the resource/document is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to it's first child which is the XML root element via `moveToFirstChild()`. Similar, we can move to a right sibling with `moveToRightSibling()`, or move to the left sibling (`moveToLeftSibling()`). Furthermore many more methods to navigate through the tree are available. For instance `moveToLastChild()` or `moveToAttribute(int)`/`moveToAttributeByName(new QNm("foobar"))`/`moveToNamespace(int)` if we reside an element node. Further more we added the ability to move to the next node in preorder (`moveToNext()`) or to the previous node in preorder (`moveToPrevious()`). Or for instance to the next node on the XPath `following::`-axis.
+We provide several navigational primitives/methods. After the resource/document is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to it's first child which is the XML root element via `moveToFirstChild()`. Similar, we can move to a right sibling with `moveToRightSibling()`, or move to the left sibling (`moveToLeftSibling()`). Furthermore many more methods to navigate through the tree are available. For instance `moveToLastChild()` or `moveToAttribute(int)`/`moveToAttributeByName(new QNm("foobar"))`/`moveToNamespace(int)` if we reside an element node. Further more we added the ability to move to the next node in preorder (`moveToNext()`) or to the previous node in preorder (`moveToPrevious()`). Or for instance to the next node on the XPath `following::`-axis. A simple example is this:
+
+```java
+// A fluent call would be if you know a node has a right sibling and there's a first child of the right sibling.
+rtx.moveToRightSibling().getCursor().moveToFirstChild().getCursor();
+
+// Can be tested before.
+if (rtx.hasRightSibling()) {
+  rtx.moveToRightSibling();
+}
+
+// Or test afterwards.
+if (rtx.moveToRightSibling().hasMoved()) {
+  // Do something.
+}
+
+// Move to next node in the XPath following::-axis.
+rtx.moveToNextFollowing();
+
+// Move to previous node in preorder.
+rtx.moveToPrevious();
+
+// Move to next node in preorder.
+rtx.moveToNext();
+```
 
 Once we navigated to the node, we are able to either update for instance the name or the value (depending on the node type).
 
@@ -286,114 +324,29 @@ Attributes for instance can only be inserted (`insertAttribute(new QNm("name", "
 
 More sophisticated bulk insertion methods exist, too (as you have already seen when we imported an XML-document). We provide a method to insert an XML-fragment as a first child (`XdmNodeTrx insertSubtreeAsFirstChild(XMLEventReader)`), as a left sibling (`XdmNodeTrx insertSubtreeAsLeftSibling(XMLEventReader)`) and as a right sibling (`XdmNodeTrx insertSubtreeAsRightSibling(XMLEventReader)`).
 
+To insert a new subtree based on a String you can simply use
 
-Then we are able to
-      // Transaction handle is relocated at the document node of the new revision; iterate over "normal" descendant axis.
-      final Axis axis = new DescendantAxis(wtx);
-      if (axis.hasNext()) {
-        axis.next();
-
-        switch (wtx.getKind()) {
-        case ELEMENT:
-          // In order to process namespace-nodes we could do the following and log the full qualified name of each node.
-          for (int i = 0, nspCount = rtx.getNamespaceCount(); i < nspCount; i++) {
-            rtx.moveToNamespace(i);
-            LOGGER.info(rtx.getName());
-            rtx.moveToParent();
-          }
-
-          // In order to process attribute-nodes we could do the following and log the full qualified name of each node. 
-          for (int i = 0, attrCount = rtx.getAttributeCount(); i < attrCount; i++) {
-            rtx.moveToAttribute(i);
-            LOGGER.info(rtx.getName());
-            rtx.moveToParent();
-          }
-          break;
-        default:
-          // Do nothing.
-      }
-      if (wtx.moveTo(axis.peek()).get().isComment()) {
-        LOGGER.info(wtx.getValue());
-      }
-
-      // Begin a reading transaction on revision 0 concurrently to the write-transaction on revision 1 (the very first commited revision).
-      try (final var rtx = resource.beginNodeReadOnlyTrx(0);) {
-        // moveToX-methods returns either Moved or NotMoved whereas you can query if it has been moved or not, for instance via
-        rtx.moveToFirstChild();
-
-        if (rtx.moveToFirstChild().hasMoved())
-          // Do something.
-
-        // A fluent call would be if you know a node has a right sibling and there's a first child of the right sibling.
-        rtx.moveToRightSibling().get().moveToFirstChild().get();
-
-        // Can be tested before.
-        if (rtx.hasRightSibling()) {
-          rtx.moveToRightSibling();
-        }
-
-        // Move to next node in the XPath following::-axis.
-        rtx.moveToNextFollowing();
-
-        // Move to previous node in preorder.
-        rtx.moveToPrevious();
-
-        // Move to next node in preorder.
-        rtx.moveToNext();
-
-        /* 
-         * Or simply within the move-operation and a postcondition check. If hasMoved() returns false, the transaction isn't moved.
-         */
-        if (rtx.moveToRightSibling().hasMoved()) {
-          // Do something.
-        }
-
-      // Instead of the following, a visitor is useable!
-      switch (rtx.getKind()) {
-      case ELEMENT:
-        for (int i = 0, nspCount = rtx.getNamespaceCount(); i < nspCount; i++) {
-          rtx.moveToNamespace(i);
-          LOGGER.info(rtx.getName());
-          rtx.moveToParent();
-        }
-
-        for (int i = 0, attrCount = rtx.getAttributeCount(); i < attrCount; i++) {
-          rtx.moveToAttribute(i);
-          LOGGER.info(rtx.getName());
-          rtx.moveToParent();
-        }
-
-        // Move to the specified attribute by name.
-        rtx.moveToAttributeByName(new QNm("foobar"));
-        rtx.moveToParent();
-        
-        LOGGER.info(rtx.getDescendantCount());
-        LOGGER.info(rtx.getChildCount());
-        /* 
-         * Hash of a node, build bottom up for all nodes (depends on descendant hashes, however only
-         * ancestor nodes are updated during a normal edit-operation. During bulk inserts with 
-         * insertSubtree(...) the hashes are generated during a postorder-traversal, just like the 
-         * descendant-count of each structural node.
-         */
-        LOGGER.info(rtx.getHash());
-        break;
-      case TEXT:
-        LOGGER.info(rtx.getValue());
-        break;
-      case COMMENT:
-        LOGGER.info(rtx.getValue());
-        break;
-      default:
-        throw new IllegalStateException("Node kind not known!");
-    }
-  }
+```java
+wtx.insertSubtreeAsFirstChild(XmlShredder.createStringReader("<foo>bar<baz/></foo>"))`
 ```
-For printing the whole XML document:
+
+Changes are always done in-memory and only ever flushed to disk or the flash drive on a transaction commit. You can either commit or abort the transaction:
+
+```java
+wtx.commit() or wtx.abort()
+```
+
+Note that the transaction handle simply can be reused after a `commit()` or `abort()` method call.
+
+In order to serialize the (most recent) revision as XML pretty printed to STDOUT:
+
 ```java
 final var serializer = XmlSerializer.newBuilder(manager, System.out).prettyPrint().build();
 serializer.call();
 ```
+
 Or write it to string:
+
 ```java
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 PrintStream writer = new PrintStream(baos);
@@ -401,15 +354,6 @@ final XmlSerializer serializer = XmlSerializer.newBuilder(manager, writer).prett
 serializer.call();
 String content = baos.toString(StandardCharsets.UTF8);
 ```
-
-Note that we aim to support all the Guava flavor. Just imagine how nice the following is:
-```java
-final Iterator<Long> results = FluentIterable.from(new DescendantAxis(rtx)).filter(new ElementFilter(rtx)).limit(2).iterator();
-```
-
-to filter all element nodes and skip after the first 2 elements are found. The resulting iterator contains at most 2 resulting unique node-keys (IDs) to which we can navigate through rtx.moveTo(long).
-
-Furthermore a FilterAxis(Axis, Filter, Filter...) is usable. It's first parameter is the axis to use, the second parameter is a filter. Optionally further filters are usable (third varargs parameter).
 
 To update a resource with algorithmically found differences between two tree-structures, use something like the following:
 
