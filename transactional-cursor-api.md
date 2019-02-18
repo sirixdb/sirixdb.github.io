@@ -206,6 +206,15 @@ new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new NameFilter(rtx, new Q
 
 The `FilterAxis` optionally takes more than one filter. The filter either is a `NameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
 
+It can be used as follows:
+
+```java
+// Filter by name (first argument is the axis, next arguments are filters (which implement org.sirix.axis.filter.Filter).
+for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(new VisitorDescendantAxis.Builder(rtx).includeSelf().visitor(myVisitor).build(), new NameFilter(rtx, "foobar")); axis.hasNext();) {
+  axis.next();
+}
+```
+
 Alternatively you could simply stream over your axis (without using the `FilterAxis` at all) and then filter by predicate. `rtx` is a `NodeReadOnlyTrx` in the following example:
 
 ```java
@@ -426,13 +435,15 @@ final var resNewRev = Paths.get(args[1]);
 FMSEImport.xdmDataImport(resOldRev, resNewRev);
 ```
 
-Furthermore a special filter-axis is provided:
+Once we have committed more than one revision we can open it either by specifying the exact revision number or by a timestamp in which case the revision, which has been stored closest to the given timestamp is opened.
 
 ```java
-// Filter by name (first argument is the axis, next arguments are filters (which implement org.sirix.axis.filter.Filter).
-for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(new VisitorDescendantAxis.Builder(rtx).includeSelf().visitor(myVisitor).build(), new NameFilter(rtx, "foobar")); axis.hasNext();) {
-  axis.next();
-}
-```
+// To open a transactional read-only cursor on revision two.
+final var rtx = resourceManager.beginNodeReadOnlyTrx(2)
 
+// Or by a timestamp:
+final var dateTime = LocalDateTime.of(2019, Month.JUNE, 15, 13, 39);
+final var instant = dateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant();
+final var rtx = resourceManager.beginNodeReadOnlyTrx(instant)
+```
 
