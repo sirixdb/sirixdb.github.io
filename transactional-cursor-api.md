@@ -229,6 +229,46 @@ final var text = new FilterAxis(new ChildAxis(rtx), new TextFilter(rtx));
 final var axis = new NestedAxis(new NestedAxis(childA, childB), text);
 ```
 
+Simple examples with the `PostOrderAxis`:
+
+whole bunch of axis are usable (all XPath axis and a few more):
+
+```java
+// A postorder-axis which iterates in postorder through a (sub)tree.
+final var axis = new PostOrderAxis<XdmNodeReadOnlyTrx>(rtx); 
+while (axis.hasNext()) {
+  // Unique node identifier (nodeKey) however not needed here.
+  final long nodeKey = axis.next();
+  // axis.getTrx() or directly use rtx.
+  switch(axis.getTrx().getKind()) {
+  case TEXT:
+    // Do something.
+    break;
+  }
+}
+```
+
+or more elegantly:
+
+```java
+// Iterate and use a visitor implementation to describe the behavior for the individual node types.
+final var visitor = new MyVisitor(rtx);
+final var axis = new PostOrderAxis<XdmNodeReadOnlyTrx>(rtx); 
+while (axis.hasNext()) {
+  axis.next();
+  rtx.acceptVisitor(visitor);
+}
+```
+
+or with the foreach-loop:
+```java
+// Iterate and use a visitor implementation to describe the behavior for the individual node types.
+final var visitor = new MyVisitor(rtx);
+for (final long nodeKey : new PostOrderAxis(rtx)) {
+  rtx.acceptVisitor(visitor);
+}
+```
+
 #### Concurrent Axis
 We also provide a ConcurrentAxis to fetch nodes concurrently. In order to execute an XPath-query as for instance `//regions/africa//location` it would look like that:
 
@@ -244,7 +284,7 @@ final Axis axis = new NestedAxis(
             new DescendantAxis(thirdRtx, IncludeSelf.YES), new NameFilter(thirdRtx, "location"))));
 ```
 
-Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision).
+Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision). We also provide a `ConcurrentUnionAxis` and a `ConcurrentExceptAxis`.
 
 #### Predicate Axis
 In order to test for a predicate for instance select all nodes which have a child element with name "foo" you could use:
@@ -386,44 +426,6 @@ Similarly moveToX()-methods are usable:
 wtx.moveTo(15).getNodeCursor().moveToRightSibling().getNodeCursor().moveToFirstChild().getNodeCursor().insertCommentAsFirstChild("foo");
 ```
 
-A whole bunch of axis are usable (all XPath axis and a few more):
-
-```java
-// Simple postorder-axis which iterates in postorder through a (sub)tree.
-final var axis = new PostOrderAxis<XdmNodeReadOnlyTrx>(rtx); 
-while (axis.hasNext()) {
-  // Unique node identifier (nodeKey) however not needed here.
-  final long nodeKey = axis.next();
-  // axis.getTrx() or directly use rtx.
-  switch(axis.getTrx().getKind()) {
-  case TEXT:
-    // Do something.
-    break;
-  }
-}
-```
-
-or more elegantly:
-
-```java
-// Iterate and use a visitor implementation to describe the behavior for the individual node types.
-final var visitor = new MyVisitor(rtx);
-final var axis = new PostOrderAxis<XdmNodeReadOnlyTrx>(rtx); 
-while (axis.hasNext()) {
-  axis.next();
-  rtx.acceptVisitor(visitor);
-}
-```
-
-or with the foreach-loop:
-```java
-// Iterate and use a visitor implementation to describe the behavior for the individual node types.
-final var visitor = new MyVisitor(rtx);
-for (final long nodeKey : new PostOrderAxis(rtx)) {
-  rtx.acceptVisitor(visitor);
-}
-```
-
 Furthermore a special filter-axis is provided:
 
 ``` 
@@ -436,27 +438,4 @@ for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(new VisitorDescendantAx
 Further filters can be specified. All XPath axis are also available, plus a LevelOrderAxis, a ConcurrentAxis which executes the specified axis concurrently. Furthermore a ConcurrentUnionAxis, ConcurrentExceptAxis, ConcurrentIntersectAxis are provided. To allow chained axis, a `NestedAxis` is available which takes two axis as arguments.
 
 The VisitorDescendantAxis above is especially useful as it executes a visitor as one of the first things in the hasNext() iterator-method. The return value of the visitor is used to guide the preorder traversal:
-
-```java
-/**
- * The result type of a {@link Visitor} implementation.
- * 
- * @author Johannes Lichtenberger, University of Konstanz
- */
-public enum VisitResult {
-  /** Continue without visiting the siblings of this structural node. */
-  SKIPSIBLINGS,
-
-  /** Continue without visiting the descendants of this element. */
-  SKIPSUBTREE,
-
-  /** Continue traversal. */
-  CONTINUE,
-
-  /** Terminate traversal. */
-  TERMINATE,
-}
-```
-
-Temporal axis to navigate not only in space, but also in time are also available (for instance to iterate over all future revisions, all past revisions, the last revision, the first revision, a specific revision, the previous revision, the next revision...)
 
