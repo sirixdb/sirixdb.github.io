@@ -284,7 +284,7 @@ final Axis axis = new NestedAxis(
             new DescendantAxis(thirdRtx, IncludeSelf.YES), new NameFilter(thirdRtx, "location"))));
 ```
 
-Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision). We also provide a `ConcurrentUnionAxis` and a `ConcurrentExceptAxis`.
+Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision). We also provide a `ConcurrentUnionAxis`, a `ConcurrentExceptAxis` and a `ConcurrentIntersectAxis`.
 
 #### Predicate Axis
 In order to test for a predicate for instance select all nodes which have a child element with name "foo" you could use:
@@ -348,6 +348,13 @@ rtx.moveToPrevious();
 rtx.moveToNext();
 ```
 
+The API is fluent:
+
+```java
+// getCursor() returns the transaction cursor currently used. However in this case the caller must be sure that a right sibling of the node denoted by node-key 15 and his right sibling and the right sibling's first child exists.
+wtx.moveTo(15).getCursor().moveToRightSibling().getCursor().moveToFirstChild().getCursor().insertCommentAsFirstChild("foo");
+```
+
 Once we navigated to the node, we are able to either update for instance the name or the value (depending on the node type).
 
 ```java
@@ -368,6 +375,16 @@ To insert a new subtree based on a String you can simply use
 
 ```java
 wtx.insertSubtreeAsFirstChild(XmlShredder.createStringReader("<foo>bar<baz/></foo>"))`
+```
+
+Updating methods can be chained:
+
+```java
+// Assertion: wtx is located at element node.
+wtx.insertAttribute(new QNm("foo"), "bar", Move.PARENT).insertElementAsRightSibling(new QNm("baz"));
+
+// Copy subtree of the node the read-transaction is located at as a new right sibling.
+wtx.copySubtreeAsRightSibling(rtx);
 ```
 
 Changes are always done in-memory and only ever flushed to disk or the flash drive on a transaction commit. You can either commit or abort the transaction:
@@ -409,33 +426,13 @@ final var resNewRev = Paths.get(args[1]);
 FMSEImport.xdmDataImport(resOldRev, resNewRev);
 ```
 
-Method chaining for insertions:
-
-```java
-// Setup everything omitted... write transaction opened. Assertion: wtx is located at element node.
-wtx.insertAttribute(new QNm("foo"), "bar", Move.PARENT).insertElementAsRightSibling(new QNm("baz"));
-
-// Copy subtree of the node the read-transaction is located at as a new right sibling.
-wtx.copySubtreeAsRightSibling(rtx);
-```
-
-Similarly moveToX()-methods are usable:
-
-```java
-// Get returns the transaction cursor currently used. However in this case the caller must be sure that a right sibling of the node denoted by node-key 15 and his right sibling and the right sibling's first child exists.
-wtx.moveTo(15).getNodeCursor().moveToRightSibling().getNodeCursor().moveToFirstChild().getNodeCursor().insertCommentAsFirstChild("foo");
-```
-
 Furthermore a special filter-axis is provided:
 
-``` 
+```java
 // Filter by name (first argument is the axis, next arguments are filters (which implement org.sirix.axis.filter.Filter).
-for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(new VisitorDescendantAxis.Builder(rtx).includeSelf().visitor(Optional.of(visitor)).build(), new NameFilter(rtx, "foobar")); axis.hasNext();) {
+for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(new VisitorDescendantAxis.Builder(rtx).includeSelf().visitor(myVisitor).build(), new NameFilter(rtx, "foobar")); axis.hasNext();) {
   axis.next();
 }
 ```
 
-Further filters can be specified. All XPath axis are also available, plus a LevelOrderAxis, a ConcurrentAxis which executes the specified axis concurrently. Furthermore a ConcurrentUnionAxis, ConcurrentExceptAxis, ConcurrentIntersectAxis are provided. To allow chained axis, a `NestedAxis` is available which takes two axis as arguments.
-
-The VisitorDescendantAxis above is especially useful as it executes a visitor as one of the first things in the hasNext() iterator-method. The return value of the visitor is used to guide the preorder traversal:
 
