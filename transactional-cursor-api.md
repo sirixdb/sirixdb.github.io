@@ -421,6 +421,17 @@ You're also able to start a read/write Transaction and then revert to a former r
 // Open a read/write transaction on the most recent revision, then revert to revision two and commit as a new revision.
 resourceManager.beginNodeTrx().revertTo(2).commit()
 ```
+Once we have committed more than one revision we can open it either by specifying the exact revision number or by a timestamp in which case the revision, which has been stored closest to the given timestamp is opened.
+
+```java
+// To open a transactional read-only cursor on revision two.
+final var rtx = resourceManager.beginNodeReadOnlyTrx(2)
+
+// Or by a timestamp:
+final var dateTime = LocalDateTime.of(2019, Month.JUNE, 15, 13, 39);
+final var instant = dateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant();
+final var rtx = resourceManager.beginNodeReadOnlyTrx(instant)
+```
 
 In order to serialize the (most recent) revision as XML pretty printed to STDOUT:
 
@@ -452,16 +463,3 @@ final var resNewRev = Paths.get("foo.xml");
 // provided XML document.
 FMSEImport.xdmDataImport(resOldRev, resNewRev);
 ```
-
-Once we have committed more than one revision we can open it either by specifying the exact revision number or by a timestamp in which case the revision, which has been stored closest to the given timestamp is opened.
-
-```java
-// To open a transactional read-only cursor on revision two.
-final var rtx = resourceManager.beginNodeReadOnlyTrx(2)
-
-// Or by a timestamp:
-final var dateTime = LocalDateTime.of(2019, Month.JUNE, 15, 13, 39);
-final var instant = dateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant();
-final var rtx = resourceManager.beginNodeReadOnlyTrx(instant)
-```
-
