@@ -191,7 +191,7 @@ The default implementation of each method in the `Visitor`-interface returns `Vi
 
 ```java
 // Executes a modification visitor for each descendant node.
-final var axis = VisitorDescendantAxis.newBuilder(rtx).includeSelf().visitor(new MyVisitor().build());
+final var axis = VisitorDescendantAxis.newBuilder(rtx).includeSelf().visitor(new MyVisitor()).build();
      
 while (axis.hasNext()) axis.next();
 ```
@@ -396,13 +396,31 @@ wtx.insertAttribute(new QNm("foo"), "bar", Move.PARENT).insertElementAsRightSibl
 wtx.copySubtreeAsRightSibling(rtx);
 ```
 
-Changes are always done in-memory and only ever flushed to disk or the flash drive on a transaction commit. You can either commit or abort the transaction:
+Changes are always done in-memory and only ever flushed to disk or the flash drive on a transaction commit. You can either commit or rollback the transaction:
 
 ```java
-wtx.commit() or wtx.abort()
+wtx.commit() or wtx.rollback()
 ```
 
-Note that the transaction handle simply can be reused after a `commit()` or `abort()` method call.
+Note that the transaction handle simply can be reused after a `commit()` or `rollback()` method call.
+
+You can also start an auto-commit transactional cursor:
+
+```java
+// Auto-commit every 30 seconds.
+resourceManager.beginNodeTrx(TimeUnit.SECONDS, 30);
+// Auto-commit after every 1000th modification.
+resourceManager.beginNodeTrx(1000);
+// Auto-commit every 30 seconds and every 1000th modification.
+resourceManager.beginNodeTrx(1000, TimeUnit.SECONDS, 30);
+```
+
+You're also able to start a read/write Transaction and then revert to a former revision:
+
+```java
+// Open a read/write transaction on the most recent revision, then revert to revision two and commit as a new revision.
+resourceManager.beginNodeTrx().revertTo(2).commit()
+```
 
 In order to serialize the (most recent) revision as XML pretty printed to STDOUT:
 
@@ -425,10 +443,10 @@ To update a resource with algorithmically found differences between two tree-str
 
 ```java
 // Old Sirix resource to update.
-final var resOldRev = Paths.get(args[0]);
+final var resOldRev = Paths.get("resource");
 
 // XML document which should be imported as the new revision.
-final var resNewRev = Paths.get(args[1]);
+final var resNewRev = Paths.get("foo.xml");
 
 // Determine and import differences between the sirix resource and the
 // provided XML document.
