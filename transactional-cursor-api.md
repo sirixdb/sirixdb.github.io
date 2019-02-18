@@ -284,7 +284,8 @@ Or we can insert new elements via `insertElementAsFirstChild(new QNm("foo"))`/`i
 
 Attributes for instance can only be inserted (`insertAttribute(new QNm("name", "value"))`), if the cursor is located on an element node.
 
-More sophisticated bulk insertion methods exist, too (as you have already seen when we imported an XML-document).
+More sophisticated bulk insertion methods exist, too (as you have already seen when we imported an XML-document). We provide a method to insert an XML-fragment as a first child (`XdmNodeTrx insertSubtreeAsFirstChild(XMLEventReader)`), as a left sibling (`XdmNodeTrx insertSubtreeAsLeftSibling(XMLEventReader)`) and as a right sibling (`XdmNodeTrx insertSubtreeAsRightSibling(XMLEventReader)`).
+
 
 Then we are able to
       // Transaction handle is relocated at the document node of the new revision; iterate over "normal" descendant axis.
