@@ -433,6 +433,8 @@ final var instant = dateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant();
 final var rtx = resourceManager.beginNodeReadOnlyTrx(instant)
 ```
 
+### Seialize as XML
+
 In order to serialize the (most recent) revision as XML pretty printed to STDOUT:
 
 ```java
@@ -453,8 +455,11 @@ final var content = baos.toString(StandardCharsets.UTF8);
 In order to serialize revision 1, 2 and 3 of a resource with an XML declaration and the internal node keys for element nodes:
 
 ```java
-new XmlSerializerBuilder(manager, out, 1, 2, 3).emitXMLDeclaration().emitIds().build();
+final var serializer = XmlSerializer.newBuilder(manager, out, 1, 2, 3).emitXMLDeclaration().emitIds().build();
+serialize.call()
 ```
+
+### Import differences between an initially stored revision and a second version of a XML-document
 
 To update a resource with algorithmically found differences between two tree-structures, use something like the following:
 
