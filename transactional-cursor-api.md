@@ -443,11 +443,17 @@ serializer.call();
 Or write it to string:
 
 ```java
-ByteArrayOutputStream baos = new ByteArrayOutputStream();
-PrintStream writer = new PrintStream(baos);
-final XmlSerializer serializer = XmlSerializer.newBuilder(manager, writer).prettyPrint().build();
+final var baos = new ByteArrayOutputStream();
+final var writer = new PrintStream(baos);
+final var serializer = XmlSerializer.newBuilder(manager, writer).prettyPrint().build();
 serializer.call();
-String content = baos.toString(StandardCharsets.UTF8);
+final var content = baos.toString(StandardCharsets.UTF8);
+```
+
+In order to serialize revision 1, 2 and 3 of a resource with an XML declaration and the internal node keys for element nodes:
+
+```Java
+new XmlSerializerBuilder(manager, out, 1, 2, 3).emitXMLDeclaration().emitIds().build();
 ```
 
 To update a resource with algorithmically found differences between two tree-structures, use something like the following:
