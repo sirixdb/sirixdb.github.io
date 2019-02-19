@@ -190,11 +190,6 @@ This means the `resource1` from `database` is opened in the first revision. Then
 
 The following sections give a complete specification of the routes:
 
-### RESTful-API
-
-
-Our routes are very simple.
-
 `PUT https://localhost:9443/database/resource` creates a database and a resource (content being the body of the request -- as of now XML, but we'll implement JSON resources in the very near future).
 
 `GET https://localhost:9443/database/resource` simply serializes the internal binary tree representation back to XML. Optional URL-parameters are
@@ -215,6 +210,3 @@ If both parameters are omitted the root-node (and its subtree) is going to be re
 Using a POST HTTP-request to `https://localhost:9443` can be used to send a longer XQuery-expression in the body.
 
 `DELETE https://localhost:9443/database/resource` removes the resource from the database. Omitting the resource in the URL, the whole database is going to be deleted. The optional parameter once again is `nodeId` to remove a node or in case the nodeId references an element node to remove the whole subtree and the element node itself.
-
-
-https://github.com/sirixdb/sirix/wiki/RESTful-API gives an overview about the API.
