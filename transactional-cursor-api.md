@@ -452,7 +452,7 @@ final var content = baos.toString(StandardCharsets.UTF8);
 
 In order to serialize revision 1, 2 and 3 of a resource with an XML declaration and the internal node keys for element nodes:
 
-```Java
+```java
 new XmlSerializerBuilder(manager, out, 1, 2, 3).emitXMLDeclaration().emitIds().build();
 ```
 
