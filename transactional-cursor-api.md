@@ -53,11 +53,15 @@ dependencies {
 ```
 
 ### Tree-Encoding in Sirix
-Our encoding is pretty simple. We do not use range-encodings or hierarchical labels. Instead, every node once stored in Sirix references other nodes by a `firstChild`/`leftSibling`/`rightSibling`/`parent`/`nodeKey` encoding.
+Our encoding is pretty simple. We do not use range-encodings or hierarchical labels (the latter optionally for imported XML-documents in order to provide fast document order determination). Instead, every node once stored in Sirix references other nodes by a `firstChild`/`leftSibling`/`rightSibling`/`parent`/`nodeKey` encoding. Think of it as a persistent DOM.
 
 <div class="img_container">
 ![encoding](images/encoding.png)
 </div>
+
+The numbers are auto-generated unique, stable node-IDs or nodeKeys. Every structural node might have a first child, a left sibling, a right sibling and a parent node. Namespace- and attributes- are the only non-structural nodes in XML/XDM data. They just have a parent pointer. In our JSON to tree mapping however, every node is a structural node.
+
+Note that we're able to store both XML- and JSON-documents in the same encoding.
 
 ### Create a database with a single resource file
 First, we want to show how to create a database with a single resource (the resource is going to be imported from an XML-document and shredded into our internal format).
@@ -93,6 +97,41 @@ try (final var database = Databases.openXdmDatabase(databaseFile)) {
   }
 }
 ```
+
+In order to import a single JSON file we almost do the same:
+
+```java
+// JSON-file to import.
+final var pathToJsonFile = Paths.get("jsonFile");
+
+// Create database configuration.
+final var databaseFile = Paths.get("database");
+final var dbConfig = new DatabaseConfiguration(databaseFile);
+
+// Create a new lightweight database structure.
+Databases.createJsonDatabase(dbConfig);
+
+// Open the database.
+try (final var database = Databases.openJsonDatabase(databaseFile)) {
+  // Create a first resource without text-value compression but with DeweyIDs which are hierarchical node labels.
+  database.createResource(ResourceConfiguration.builder("resource").useTextCompression(false).useDeweyIDs(true).build());
+
+  try (// Open a resource manager.
+       final var manager = database.openResourceManager("resource");
+       // Open only write transaction on the resource (transaction provides a cursor for navigation
+       // through moveToX-methods).
+       final var wtx = manager.beginNodeTrx();
+       final var fis = new FileInputStream(pathToJsonFile.toFile())) {
+       
+       // Import a JSON-document.
+       wtx.insertSubtreeAsFirstChild(XmlShredder.createFileReader(fis));
+
+       // Commit and persist the changes.
+       wtx.commit();
+  }
+}
+```
+
 ### Open the database and the resource manager again
 
 Now, that we have imported a first resource and persisted it in our binary-structure, we are able to open it again at any time (alternatively the single node `read/write-transaction` handle can be reused after issuing the commit).
@@ -149,6 +188,35 @@ try (final var database = Databases.openXdmDatabase(databaseFile);
   });
 }
 ```
+
+In JSON we obvisouly have no namespace- or attribute-nodes, but with this exception the axis can be used in the same way:
+
+```java
+// Open the database.
+try (final var database = Databases.openJsonDatabase(databaseFile);
+     final var manager = database.openResourceManager("resource");
+     // Now open a read-only transaction again.
+     final var rtx = manager.beginNodeReadOnlyTrx()) {
+    
+  // Use the descendant axis to iterate over all structural descendant nodes (each node with the exception of namespace- and attribute-nodes) in pre-order (depth-first).
+  new DescendantAxis(rtx, IncludeSelf.YES).forEach((unused) -> {
+    // The transaction-cursor is moved to each structural node (all nodes, except for namespace- and attributes in preorder).
+    switch (rtx.getKind()) {
+      case OBJECT_KEY:
+        LOGGER.info(rtx.getName());
+        break;
+      case STRING_VALUE:
+      case BOOLEAN_VALUE:
+      case NUMBER_VALUE:
+      case NULL_VALUE:
+        LOGGER.info(rtx.getValue());
+        break;
+      default:
+        // ARRAY- and OBJECT-nodes omitted.
+    }
+  });
+```
+
 ### Axis to navigate in space and in time
 However as this is such a common case to iterate over structual and non-structural nodes as for instance namespace- and attribute-nodes we also provide a simple wrapper axis:
 
@@ -323,12 +391,24 @@ Each of the constructors of these time-travel axis takes a transactional cursor 
 In order to use time travel axis, however first a few more revisions have to be created through committing a bunch of changes.
 
 ### Open and modify a resource in a database
-First, we have to open the resource again:
+First, we have to open the resource again. For XDM (with XML-data) databases it is:
 ```java
 // Open the database.
 try (final var database = Databases.openXdmDatabase(databaseFile);
      final var manager = database.openResourceManager("resource");
-     // Now open a read-only transaction again.
+     // Now open a read/write transaction again.
+     final var wtx = manager.beginNodeTrx()) {
+  ...
+}
+```
+
+For JSON databases it is:
+
+```java
+// Open the database.
+try (final var database = Databases.openJsonDatabase(databaseFile);
+     final var manager = database.openResourceManager("resource");
+     // Now open a read/write transaction again.
      final var wtx = manager.beginNodeTrx()) {
   ...
 }
