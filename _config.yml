@@ -11,4 +11,7 @@ github_username:  sirixdb
 # Build settings
 markdown: kramdown
 
+kramdown:
+  parse_block_html: true
+
 highlighter: rouge
