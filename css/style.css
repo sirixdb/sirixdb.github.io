@@ -1107,6 +1107,10 @@ section.markdown {
   font-size: 0.9em;
 }
 
+.img_container {
+  text-align: center;
+}
+
 section.markdown > p {
   margin: 1.3em 0;
   padding: 0;
