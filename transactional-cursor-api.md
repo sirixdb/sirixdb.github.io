@@ -124,7 +124,7 @@ try (final var database = Databases.openJsonDatabase(databaseFile)) {
        final var fis = new FileInputStream(pathToJsonFile.toFile())) {
        
        // Import a JSON-document.
-       wtx.insertSubtreeAsFirstChild(XmlShredder.createFileReader(fis));
+       wtx.insertSubtreeAsFirstChild(JsonShredder.createFileReader(fis));
 
        // Commit and persist the changes.
        wtx.commit();
@@ -218,7 +218,9 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
 ```
 
 ### Axis to navigate in space and in time
-However as this is such a common case to iterate over structual and non-structural nodes as for instance namespace- and attribute-nodes we also provide a simple wrapper axis:
+We provide several axis to navigate through the tree structur. Namely all of the axis known from XPath for both XML/XDM- as well as JSON-databases.
+
+For instance as it's a common case to iterate over structual and non-structural nodes in our XDM representation as for instance  iterating over namespace- and attribute-nodes of elements we also provide a simple wrapper axis:
 
 ```java
 new NonStructuralWrapperAxis(new DescendantAxis(rtx))
@@ -236,6 +238,7 @@ As it's very common to do something based on the different node-types we impleme
  */
 VisitResult visit(ImmutableElement node);
 ```
+Another visitor exists for JSON-resources.
 
 The only implementation of the `VisitResult` interface is the following enum:
 
@@ -273,15 +276,19 @@ while (axis.hasNext()) axis.next();
 
 We provide all possible `XPath` axis. Note, that the `PrecedingAxis` and the `PrecedingSiblingAxis` do not deliver nodes in document order, but in the natural encountered order. Furthermore a `PostOrderAxis` is available, which traverses the tree in a postorder traversal. Similarly a `LevelOrderAxis` traverses the tree in a breath first manner.
 
-We provide several filters, which can be plugged in through a `FilterAxis`. The following code for instance traverses all children of a node and filters them for nodes with the local name "a".
+We provide several filters, which can be plugged in through a `FilterAxis`. The following code for instance traverses all children of a node and filters them for nodes with the local name "a" in a XML-resource.
 
 ```java
 new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new NameFilter(rtx, new QNm("a")))
 ```
 
+For JSON-resources it's as simple as changing the generics argument `XdmNodeReadOnlyTrx` with `JsonNodeReadOnlyTrx`.
+
 The `FilterAxis` optionally takes more than one filter. The filter either is a `NameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
 
-It can be used as follows:
+In JSON object records have names and all value-nodes can be filtered by a value filter. Node kind filters are `ObjectFilter`,`ObjectRecordFilter`, `ArrayFilter`, `StringValueFilter`, `NumberValueFilter`, `BooleanValueFilter` and `NullValueFilter`.
+
+It can be used as follows for XML/XDM-resources:
 
 ```java
 // Filter by name (first argument is the axis, next arguments are filters (which implement org.sirix.axis.filter.Filter).
@@ -289,6 +296,8 @@ for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(new VisitorDescendantAx
   axis.next();
 }
 ```
+
+and for JSON-resources it's again simply changing the generics argument from `XdmNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx`.
 
 Alternatively you could simply stream over your axis (without using the `FilterAxis` at all) and then filter by predicate. `rtx` is a `NodeReadOnlyTrx` in the following example:
 
@@ -418,7 +427,7 @@ Note, that we now have to use a transaction, which is able to modify stuff (`Nod
 
 We can then navigate to a specific node, either via axis, filters and so on or if we know the node key simply through the method `moveTo(long)` whereas the long parameter is the node key of the node we want to select.
 
-We provide several navigational primitives/methods. After the resource/document is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to it's first child which is the XML root element via `moveToFirstChild()`. Similar, we can move to a right sibling with `moveToRightSibling()`, or move to the left sibling (`moveToLeftSibling()`). Furthermore many more methods to navigate through the tree are available. For instance `moveToLastChild()` or `moveToAttribute(int)`/`moveToAttributeByName(new QNm("foobar"))`/`moveToNamespace(int)` if we reside an element node. Further more we added the ability to move to the next node in preorder (`moveToNext()`) or to the previous node in preorder (`moveToPrevious()`). Or for instance to the next node on the XPath `following::`-axis. A simple example is this:
+We provide several navigational primitives/methods. After the resource/document is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to it's first child which is the XML root element via `moveToFirstChild()`. Similar, we can move to a right sibling with `moveToRightSibling()`, or move to the left sibling (`moveToLeftSibling()`). Furthermore many more methods to navigate through the tree are available. For instance `moveToLastChild()` or `moveToAttribute(int)`/`moveToAttributeByName(new QNm("foobar"))`/`moveToNamespace(int)` if we reside an element node. For JSON-resources the moveTo-methods for attributes and namespaces are obviously not available. Furthermore we added the ability to move to the next node in preorder (`moveToNext()`) or to the previous node in preorder (`moveToPrevious()`). Or for instance to the next node on the XPath `following::`-axis. A simple example is this:
 
 ```java
 // A fluent call would be if you know a node has a right sibling and there's a first child of the right sibling.
@@ -454,11 +463,21 @@ wtx.moveTo(15).getCursor().moveToRightSibling().getCursor().moveToFirstChild().g
 Once we navigated to the node, we are able to either update for instance the name or the value (depending on the node type).
 
 ```java
-// Cursor for instance points to an element node.
+// Cursor resides on an element node.
 if (wtx.isElement()) wtx.setName(new QNm("foo"))
 
 // Or a text node
 if (wtx.isText()) wtx.setValue("foo")
+```
+
+or for JSON-resources:
+
+```java
+// Cursor resides on an object key.
+if (wtx.isObjectKey()) wtx.setName(new QNm("foo"))
+
+// Or a string value node node
+if (wtx.isStringValue()) wtx.setValue("foo")
 ```
 
 Or we can insert new elements via `insertElementAsFirstChild(new QNm("foo"))`/`insertElementAsLeftSibling(new QNm("foo"))`/`insertElementAsRightSibling(new QNm("foo"))`. Similar methods exist for all other node types. We for sure always check for consistency and if calling the method on a specific node type should be allowed or not.
