@@ -55,7 +55,9 @@ dependencies {
 ### Tree-Encoding in Sirix
 Our encoding is pretty simple. We do not use range-encodings or hierarchical labels. Instead, every node once stored in Sirix references other nodes by a `firstChild`/`leftSibling`/`rightSibling`/`parent`/`nodeKey` encoding.
 
+<div class="img_container">
 ![encoding](images/encoding.png)
+</div>
 
 ### Create a database with a single resource file
 First, we want to show how to create a database with a single resource (the resource is going to be imported from an XML-document and shredded into our internal format).
