@@ -282,7 +282,7 @@ We provide several filters, which can be plugged in through a `FilterAxis`. The 
 new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new NameFilter(rtx, new QNm("a")))
 ```
 
-For JSON-resources it's as simple as changing the generics argument `XdmNodeReadOnlyTrx` with `JsonNodeReadOnlyTrx`.
+For JSON-resources it's as simple as changing the generic argument from `XdmNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx` (to change the transaction argument type).
 
 The `FilterAxis` optionally takes more than one filter. The filter either is a `NameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
 
@@ -366,26 +366,26 @@ for (final long nodeKey : new PostOrderAxis(rtx)) {
 We also provide a ConcurrentAxis to fetch nodes concurrently. In order to execute an XPath-query as for instance `//regions/africa//location` it would look like that:
 
 ```java
-final Axis axis = new NestedAxis(
+final var axis = new NestedAxis(
         new NestedAxis(
-            new ConcurrentAxis(firstConcurrRtx,
-                new FilterAxis(new DescendantAxis(firstRtx, IncludeSelf.YES),
+            new ConcurrentAxis<>(firstConcurrRtx,
+                new FilterAxis<>(new DescendantAxis(firstRtx, IncludeSelf.YES),
                     new NameFilter(firstRtx, "regions"))),
-            new ConcurrentAxis(secondConcurrRtx,
-                new FilterAxis(new ChildAxis(secondRtx), new NameFilter(secondRtx, "africa")))),
-        new ConcurrentAxis(thirdConcurrRtx, new FilterAxis(
+            new ConcurrentAxis<>(secondConcurrRtx,
+                new FilterAxis<>(new ChildAxis(secondRtx), new NameFilter(secondRtx, "africa")))),
+        new ConcurrentAxis<>(thirdConcurrRtx, new FilterAxis<>(
             new DescendantAxis(thirdRtx, IncludeSelf.YES), new NameFilter(thirdRtx, "location"))));
 ```
 
-Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision). We also provide a `ConcurrentUnionAxis`, a `ConcurrentExceptAxis` and a `ConcurrentIntersectAxis`.
+Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision). We also provide a `ConcurrentUnionAxis`, a `ConcurrentExceptAxis` and a `ConcurrentIntersectAxis`. The transactional cursors can be of both types, `XdmNodeReadOnlyTrx` and `JsonNodeReadOnlyTrx`.
 
 #### Predicate Axis
-In order to test for a predicate for instance select all nodes which have a child element with name "foo" you could use:
+In order to test for a predicate for instance select all element nodes in an XML-resource which have a child element with name "foo" you could use:
 
 ```java
-final var childAxisFilter = new FilterAxis(new ChildAxis(rtx), new ElementFilter(rtx), new NameFilter("foo"));
+final var childAxisFilter = new FilterAxis<>(new ChildAxis(rtx), new ElementFilter(rtx), new NameFilter("foo"));
 final var descendantAxis = new DescendantAxis();
-final var predicateAxisFilter = new PredicateAxis(rtx, childAxisFilter);
+final var predicateAxisFilter = new PredicateFilterAxis<>(rtx, childAxisFilter);
 final var nestedAxis = new NestedAxis(descendantAxis, predicateAxisFilter);
 ```
 
