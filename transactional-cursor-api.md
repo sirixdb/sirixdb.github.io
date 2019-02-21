@@ -198,7 +198,7 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
      // Now open a read-only transaction again.
      final var rtx = manager.beginNodeReadOnlyTrx()) {
     
-  // Use the descendant axis to iterate over all structural descendant nodes (each node with the exception of namespace- and attribute-nodes) in pre-order (depth-first).
+  // Use the descendant axis to iterate over all descendant nodes in pre-order (depth-first).
   new DescendantAxis(rtx, IncludeSelf.YES).forEach((unused) -> {
     // The transaction-cursor is moved to each structural node (all nodes, except for namespace- and attributes in preorder).
     switch (rtx.getKind()) {
@@ -218,13 +218,15 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
 ```
 
 ### Axis to navigate in space and in time
-We provide several axis to navigate through the tree structur. Namely all of the axis known from XPath for both XML/XDM- as well as JSON-databases.
+We provide several axis to navigate through the tree structure. Namely all of the axis known from XPath for both XML/XDM- as well as JSON-databases/resources.
 
-For instance as it's a common case to iterate over structual and non-structural nodes in our XDM representation as for instance  iterating over namespace- and attribute-nodes of elements we also provide a simple wrapper axis:
+For instance as it's a common case to iterate over structual and non-structural nodes in our internal XML representation (iterating over namespace- and attribute-nodes of elements) we also provide a simple wrapper axis:
 
 ```java
 new NonStructuralWrapperAxis(new DescendantAxis(rtx))
 ```
+
+This axis simply iterates over structural and non-structural nodes and it's only available for XML/XDM-resources.
 
 For sure we also have a `NamespaceAxis` and an `AttributeAxis`.
 
@@ -313,11 +315,11 @@ In order to achieve much more query power you can chain several axis with the `N
 ```java
 // XPath expression /p:a/b/text()
 // Part: /p:a
-final var childA = new FilterAxis<XdmNodeReadTrx>(new ChildAxis(rtx), new NameFilter(rtx, "p:a"));
+final var childA = new FilterAxis<>(new ChildAxis(rtx), new NameFilter(rtx, "p:a"));
 // Part: /b
-final var childB = new FilterAxis<XdmNodeReadTrx>(new ChildAxis(rtx), new NameFilter(rtx, "b"));
+final var childB = new FilterAxis<>(new ChildAxis(rtx), new NameFilter(rtx, "b"));
 // Part: /text()
-final var text = new FilterAxis<XdmNodeReadTrx>(new ChildAxis(rtx), new TextFilter(rtx));
+final var text = new FilterAxis<>(new ChildAxis(rtx), new TextFilter(rtx));
 // Part: /p:a/b/text()
 final var axis = new NestedAxis(new NestedAxis(childA, childB), text);
 ```
