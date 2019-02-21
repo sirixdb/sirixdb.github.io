@@ -313,11 +313,11 @@ In order to achieve much more query power you can chain several axis with the `N
 ```java
 // XPath expression /p:a/b/text()
 // Part: /p:a
-final var childA = new FilterAxis(new ChildAxis(rtx), new NameFilter(rtx, "p:a"));
+final var childA = new FilterAxis<XdmNodeReadTrx>(new ChildAxis(rtx), new NameFilter(rtx, "p:a"));
 // Part: /b
-final var childB = new FilterAxis(new ChildAxis(rtx), new NameFilter(rtx, "b"));
+final var childB = new FilterAxis<XdmNodeReadTrx>(new ChildAxis(rtx), new NameFilter(rtx, "b"));
 // Part: /text()
-final var text = new FilterAxis(new ChildAxis(rtx), new TextFilter(rtx));
+final var text = new FilterAxis<XdmNodeReadTrx>(new ChildAxis(rtx), new TextFilter(rtx));
 // Part: /p:a/b/text()
 final var axis = new NestedAxis(new NestedAxis(childA, childB), text);
 ```
@@ -385,7 +385,7 @@ In order to test for a predicate for instance select all element nodes in an XML
 ```java
 final var childAxisFilter = new FilterAxis<>(new ChildAxis(rtx), new ElementFilter(rtx), new NameFilter("foo"));
 final var descendantAxis = new DescendantAxis();
-final var predicateAxisFilter = new PredicateFilterAxis<>(rtx, childAxisFilter);
+final var predicateAxisFilter = new PredicateFilterAxis(rtx, childAxisFilter);
 final var nestedAxis = new NestedAxis(descendantAxis, predicateAxisFilter);
 ```
 
