@@ -14,6 +14,6 @@ We not only support all XPath axis (as well as a few more like as for instance a
 
 ### API documentation
 
-The [transactional XDM cursor API](/transactional-cursor-api.html) is a powerful low-level API. On top of this API we built a [Brackit.org](http://brackit.org) binding to provide to ability to use XQuery.
+The [transactional cursor API](/transactional-cursor-api.html) is a powerful low-level API. On top of this API we built a [Brackit.org](http://brackit.org) binding to provide to ability to use XQuery.
 
 We provide a powerful, asynchronous, non-blocking [RESTful-API](/rest-api.html) to interact with a Sirix HTTP-server. Authorization is done via Keycloak.  
