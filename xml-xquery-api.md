@@ -81,3 +81,35 @@ try (final var store = BasicDBStore.newBuilder().build()) {
   System.out.println();
 }
 ```
+
+In order to update a resource you're able to use XQuery Update statements. First we load an XML-document again into a `database/resource` whereas the database is named `mycol.xml` and the resource `mydoc.xml`. Then we open the database/resource again in their most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. The result is serialized to STDOUT again.
+
+```java
+// Prepare sample document.
+final var doc = generateSampleDoc("sample");
+
+// Initialize query context and store.
+try (final var store = BasicDBStore.newBuilder().build()) {
+  final var ctx1 = new SirixQueryContext(store);
+
+  // Use XQuery to load sample document into store.
+  System.out.println("Loading document:");
+  final var docUri = doc.toUri();
+  final var xq1 = String.format("sdb:load('mycol.xml', 'mydoc.xml', '%s')", docUri.toString());
+  System.out.println(xq1);
+  new XQuery(xq1).evaluate(ctx1);
+
+  // Reuse store and query loaded document.
+  final var ctx2 = new SirixQueryContext(store);
+  System.out.println();
+  System.out.println("Query loaded document:");
+  final var xq2 = "let $doc := sdb:doc('mycol.xml', 'mydoc.xml')\n" + "let $log = $doc/log return \n"
+    + "( insert nodes <a><b/></a> into $log )\n";
+  System.out.println(xq2);
+  new XQuery(xq2).execute(ctx2);
+
+  final var query = new XQuery("sdb:doc('mycol.xml', 'mydoc.xml')");
+  query.prettyPrint().serialize(ctx2, System.out);
+  System.out.println();
+}
+```
