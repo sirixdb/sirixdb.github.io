@@ -541,7 +541,7 @@ final var instant = dateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant();
 final var rtx = resourceManager.beginNodeReadOnlyTrx(instant)
 ```
 
-### Seialize as XML
+### Serialize as XML
 
 In order to serialize the (most recent) revision as XML pretty printed to STDOUT:
 
