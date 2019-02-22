@@ -12,6 +12,10 @@ Sirix is a storage system, which brings versioning to a sub-file granular level 
 
 We not only support all XPath axis (as well as a few more like as for instance a PostOrderAxis) to query a resource in one revision but also novel temporal axis which facilitate navigation in time. A transaction (cursor) on a resource can be started either by specifying a specific revision number (to open a revision/version/snapshot of a resource) or by a given point in time. The latter starts a transaction on the revision number which was committed closest to the given timestamp.
 
+<div class="img_container">
+![sunburstview](images/sunburstview-cut.png) ![moves](images/moves-cut.png)
+</div>
+
 ### API documentation
 We provide several APIs to interact with Sirix.
 
