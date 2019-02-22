@@ -175,3 +175,52 @@ try (final var store = BasicDBStore.newBuilder().build()) {
 }
 ```
 
+In order to create a path index on all paths in the resource we can use:
+
+```java
+// Create and commit path index on all elements.
+try (final var store = BasicDBStore.newBuilder().build()) {
+  final var ctx = new QueryContext(store);
+  System.out.println();
+  System.out.println("Create path index for all elements (all paths):");
+  final var query =
+      new XQuery(new SirixCompileChain(store), "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
+          + "let $stats := sdb:create-path-index($doc, '//*') " + "return <rev>{sdb:commit($doc)}</rev>");
+  query.serialize(ctx, System.out);
+  System.out.println();
+  System.out.println("Path index creation done.");
+}
+```
+
+And in order to query the path index again some time later:
+
+```java
+// Query path index which are children of the log-element (only elements).
+try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
+  System.out.println("");
+  System.out.println("Find path index for all elements which are children of the log-element (only elements).");
+  final var ctx = new SirixQueryContext(store);
+  final DBNode node = (DBNode) new XQuery(new SirixCompileChain(store), "doc('mydocs.col')").execute(ctx);
+  final Optional<IndexDef> index = node.getTrx()
+                                       .getResourceManager()
+                                       .getRtxIndexController(node.getTrx().getRevisionNumber())
+                                       .getIndexes()
+                                       .findPathIndex(org.brackit.xquery.util.path.Path.parse("//log/*"));
+  System.out.println(index);
+  // last param '()' queries whole index.
+  final String query = "let $doc := sdb:doc('mydocs.col', 'resource1') " + "return sdb:scan-path-index($doc, "
+      + index.get().getID() + ", '//log/*')";
+  final Sequence seq = new XQuery(new SirixCompileChain(store), query).execute(ctx3);
+  final Comparator<Tuple> comparator = (o1, o2) -> ((Node<?>) o1).cmp((Node<?>) o2);
+  final Sequence sortedSeq = new SortedNodeSequence(comparator, seq, true);
+  final Iter sortedIter = sortedSeq.iterate();
+
+  System.out.println("Sorted index entries in document order: ");
+  for (Item item = sortedIter.next(); item != null; item = sortedIter.next()) {
+    System.out.println(item);
+  }
+}
+```
+
+Not that in this example we showed how to get access to the low-level transactional cursor API of Sirix.
+```
