@@ -136,3 +136,42 @@ try (final var store = BasicDBStore.newBuilder().build()) {
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
+
+### Index structures
+Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on alement- or attribute-nodes in XML/XDM resources or name indexes on JSON object record keys, path indexes and so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
+
+First, we create an element index on elements `src` and `msg`:
+
+```
+// Create and commit name index on all elements with QName 'src'.
+try (final var store = BasicDBStore.newBuilder().build()) {
+  final var ctx = new SirixQueryContext(store, CommitStrategy.EXPLICIT);
+  System.out.println();
+  System.out.println("Create name index for all elements with name 'src':");
+  final var query = new XQuery(new SirixCompileChain(store),
+        "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
+            + "let $stats := sdb:create-name-index($doc, fn:QName((), 'src')) "
+            + "return <rev>{sdb:commit($doc)}</rev>");
+  query.serialize(ctx, System.out);
+  System.out.println();
+  System.out.println("Name index creation done.");
+}
+```
+
+And in order to query the name index again some time later:
+
+```java
+// Query name index.
+try (final var store = BasicDBStore.newBuilder().build()) {
+  System.out.println("");
+  System.out.println("Query name index (src-element).");
+  final var ctx = new QueryContext(store);
+  final var queryString = "let $doc := sdb:doc('mydocs.col', 'resource1')"
+      + " let $sequence := sdb:scan-name-index($doc, sdb:find-name-index($doc, fn:QName((), 'src')), fn:QName((), 'src'))"
+      + " return sdb:sort($sequence)";
+  final var query = new XQuery(new SirixCompileChain(store), queryString);
+  query.prettyPrint();
+  query.serialize(ctx, System.out);
+}
+```
+
