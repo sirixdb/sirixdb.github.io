@@ -115,3 +115,24 @@ try (final var store = BasicDBStore.newBuilder().build()) {
 }
 ```
 Note, that a transaction is auto-commited in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case we open the most recent revision, which is revision two (bootstrapped revision is 0 with only a document-root node and revision 1 was the initially imported XML-document) and serialize it to `System.out`.
+
+### Temporal axis
+We not only provide all standard XPath axis, but also temporal XPath axis, which can be used to analyse how a resource or a subtree therein has changed between several revisions.
+
+Temporal axis are compatible with node tests:
+
+`<temporalaxis>::<nodetest>` is defined as `<temporalaxis>::*/self::<nodetest>`
+
+For instance to simply serialize all revisions, we can use the axis `all-time::`
+
+```java
+try (final var store = BasicDBStore.newBuilder().build()) {
+  final var ctx = new SirixQueryContext(store);
+  System.out.println();
+  System.out.println("Query loaded document:");
+  final var queryString = "sdb:doc('mycol.xml', 'mydoc.xml')/log/all-time::*";
+  System.out.println(xq3);
+  final var query = new XQuery(new SirixCompileChain(store), queryString);
+  query.prettyPrint().serialize(ctx, System.out);
+}
+```
