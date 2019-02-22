@@ -209,7 +209,7 @@ try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
   System.out.println(index);
   // last param '()' queries whole index.
   final var query = "let $doc := sdb:doc('mydocs.col', 'resource1') " + "return sdb:scan-path-index($doc, "
-      + sdb:find-path-index($doc, '//log/*'), '//log/*')";
+      + "sdb:find-path-index($doc, '//log/*'), '//log/*')";
   final var seq = new XQuery(new SirixCompileChain(store), query).execute(ctx3);
   final var comparator = (o1, o2) -> ((Node<?>) o1).cmp((Node<?>) o2);
   final var sortedSeq = new SortedNodeSequence(comparator, seq, true);
