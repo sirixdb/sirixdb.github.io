@@ -5,7 +5,7 @@ doctitle: DOM-alike API
 
 ### Maven artifacts
 
-First, you have to get the decency on our Sirix xquery project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
+First, you have to get the dependeny on our Sirix xquery project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
 
 ```xml
 <repository>
