@@ -53,14 +53,14 @@ dependencies {
 ```
 
 ### First steps
-First, you might want to import an XML-document into Sirix and create a first database with the shredded/imported XML-document as a single resource file. Then loading the resource again and execute your first XPath query:
+First, you might want to import an XML-document into Sirix and create a first database with the shredded/imported XML-document as a single resource file with the XQuery function `sdb:load(xs:string, xs:string, xs:string)`. The first argument is the database to create, the second the resource which represents the imported XML-document and the third parameter is the resource to import. Then loading the resource again and execute your first query (`sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
 
 ```java
 final var doc = Paths.get("src", "main", "resources", "orga.xml");
 
 // Initialize query context and store.
-try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
-  final QueryContext ctx1 = new SirixQueryContext(store);
+try (final var store = BasicDBStore.newBuilder().build()) {
+  final var ctx1 = new SirixQueryContext(store);
 
   // Use XQuery to load sample document into store.
   System.out.println("Loading document:");
@@ -70,12 +70,12 @@ try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
   new XQuery(query1).evaluate(ctx1);
 
   // Reuse store and query loaded document.
-  final QueryContext ctx2 = new SirixQueryContext(store);
+  final var ctx2 = new SirixQueryContext(store);
   System.out.println();
   System.out.println("Query loaded document:");
-  final String xq2 = "sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']";
+  final var xq2 = "sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']";
   System.out.println(xq2);
-  final XQuery query = new XQuery(new SirixCompileChain(store), xq2);
+  final var query = new XQuery(new SirixCompileChain(store), xq2);
   query.prettyPrint().serialize(ctx2, System.out);
 
   System.out.println();
