@@ -1159,8 +1159,8 @@ section.markdown {
 }
 
 section.markdown li {
-  margin-top: .2em;
-  margin-bottom: .2em;
+  margin-top: .5em;
+  margin-bottom: .5em;
 }
 
 div.highlight > pre {
