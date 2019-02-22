@@ -1,6 +1,6 @@
 ---
 layout: documentation
-doctitle: XML/XDM XQuery-API
+doctitle: XQuery-API
 ---
 
 ### Maven artifacts
@@ -140,9 +140,9 @@ try (final var store = BasicDBStore.newBuilder().build()) {
 ### Index structures
 Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on alement- or attribute-nodes in XML/XDM resources or name indexes on JSON object record keys, path indexes and so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
 
-First, we create an element index on elements `src` and `msg`:
+First, we create an element index on elements with the local name `src`:
 
-```
+```java
 // Create and commit name index on all elements with QName 'src'.
 try (final var store = BasicDBStore.newBuilder().build()) {
   final var ctx = new SirixQueryContext(store, CommitStrategy.EXPLICIT);
