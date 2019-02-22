@@ -52,4 +52,34 @@ dependencies {
 }
 ```
 
-### TODO
+### First steps
+First, you might want to import an XML-document into Sirix and make sure it's serialized form represents the same XML-document:
+
+```java
+final var doc = Paths.get("src", "main", "resources", "test.xml");
+
+// Initialize query context and store.
+try (final var store = BasicDBStore.newBuilder().build()) {
+  final var compileChain = new SirixCompileChain(store);
+  final var ctx1 = new SirixQueryContext(store);
+
+  // Use XQuery to load sample document into store.
+  System.out.println("Loading document:");
+  final var docUri = doc.toUri();
+  final var xq1 = String.format("bit:load('mydoc.xml', '%s')", docUri.toString());
+  System.out.println(xq1);
+  new XQuery(xq1).evaluate(ctx1);
+
+  // Reuse store and query loaded document.
+  final var ctx2 = new SirixQueryContext(store);
+  System.out.println();
+  System.out.println("Query loaded document:");
+  final String xq2 = "doc('mydoc.xml')//*";
+  
+  System.out.println(xq2);
+  final var query = new XQuery(compileChain, xq2);
+  query.prettyPrint().serialize(ctx2, System.out);
+
+  System.out.println();
+}
+```
