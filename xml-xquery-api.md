@@ -245,7 +245,7 @@ try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
 }
 ```
 
-And to fina and query the CAS-index (for all attribute values) again:
+And to find and query the CAS-index (for all attribute values) again:
 
 ```java
 // Query CAS index.
@@ -265,5 +265,4 @@ try (final var store = BasicDBStore.newBuilder().build()) {
     System.out.println(item);
   }
 }
-
 ```
