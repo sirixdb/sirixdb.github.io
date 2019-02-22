@@ -52,7 +52,7 @@ dependencies {
 }
 ```
 
-### First steps
+### Load/Import your first XML-document into a Sirix database / resource and execute your first query
 First, you might want to import an XML-document into Sirix and create a first database with the shredded/imported XML-document as a single resource file with the XQuery function `sdb:load(xs:string, xs:string, xs:string)`. The first argument is the database to create, the second the resource which represents the imported XML-document and the third parameter is the resource to import. Then loading the resource again and execute your first query (`sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
 
 ```java
@@ -81,6 +81,7 @@ try (final var store = BasicDBStore.newBuilder().build()) {
   System.out.println();
 }
 ```
+### Update the resource
 
 In order to update a resource you're able to use XQuery Update statements. First we load an XML-document again into a `database/resource` whereas the database is named `mycol.xml` and the resource `mydoc.xml`. Then we open the database/resource again in their most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. The result is serialized to `STDOUT` again.
 
