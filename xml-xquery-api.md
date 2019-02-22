@@ -223,4 +223,47 @@ try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
 ```
 
 Not that in this example we showed how to get access to the low-level transactional cursor API of Sirix.
+
+In order to create a CAS index for all attributes, another one for text-nodes and a third one for all integers text-nodes:
+
+```java
+// Create and commit CAS indexes on all attribute- and text-nodes.
+try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
+  final QueryContext ctx = new QueryContext(store);
+  System.out.println();
+  System.out.println(
+      "Create a CAS index for all attributes and another one for text-nodes. A third one is created for all integers:");
+  final var query = new XQuery(new SirixCompileChain(store),
+      "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
+          + "let $casStats1 := sdb:create-cas-index($doc, 'xs:string', '//@*') "
+          + "let $casStats2 := sdb:create-cas-index($doc, 'xs:string', '//*') "
+          + "let $casStats3 := sdb:create-cas-index($doc, 'xs:integer', '//*') "
+          + "return <rev>{sdb:commit($doc)}</rev>");
+  query.serialize(ctx, System.out);
+  System.out.println();
+  System.out.println("CAS index creation done.");
+}
+```
+
+And to fina and query the CAS-index (for all attribute values) again:
+
+```java
+// Query CAS index.
+try (final var store = BasicDBStore.newBuilder().build()) {
+  System.out.println("");
+  System.out.println("Find CAS index for all attribute values.");
+  final var ctx = new SirixQueryContext(store);
+  final var query =
+      "let $doc := sdb:doc('mydocs.col', 'resource1') return sdb:scan-cas-index($doc, sdb:find-cas-index($doc, 'xs:string', '//@*'), 'bar', true(), 0, ())";
+  final var seq = new XQuery(new SirixCompileChain(store), query).execute(ctx);
+  final var comparator = (o1, o2) -> ((Node<?>) o1).cmp((Node<?>) o2);
+  final var sortedSeq = new SortedNodeSequence(comparator, seq, true);
+  final var sortedIter = sortedSeq.iterate();
+
+  System.out.println("Sorted index entries in document order: ");
+  for (final var item = sortedIter.next(); item != null; item = sortedIter.next()) {
+    System.out.println(item);
+  }
+}
+
 ```
