@@ -200,23 +200,23 @@ try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
   System.out.println("");
   System.out.println("Find path index for all elements which are children of the log-element (only elements).");
   final var ctx = new SirixQueryContext(store);
-  final DBNode node = (DBNode) new XQuery(new SirixCompileChain(store), "doc('mydocs.col')").execute(ctx);
-  final Optional<IndexDef> index = node.getTrx()
-                                       .getResourceManager()
-                                       .getRtxIndexController(node.getTrx().getRevisionNumber())
-                                       .getIndexes()
-                                       .findPathIndex(org.brackit.xquery.util.path.Path.parse("//log/*"));
+  final var node = (DBNode) new XQuery(new SirixCompileChain(store), "doc('mydocs.col')").execute(ctx);
+  final var index = node.getTrx()
+                        .getResourceManager()
+                        .getRtxIndexController(node.getTrx().getRevisionNumber())
+                        .getIndexes()
+                        .findPathIndex(org.brackit.xquery.util.path.Path.parse("//log/*"));
   System.out.println(index);
   // last param '()' queries whole index.
-  final String query = "let $doc := sdb:doc('mydocs.col', 'resource1') " + "return sdb:scan-path-index($doc, "
+  final var query = "let $doc := sdb:doc('mydocs.col', 'resource1') " + "return sdb:scan-path-index($doc, "
       + index.get().getID() + ", '//log/*')";
-  final Sequence seq = new XQuery(new SirixCompileChain(store), query).execute(ctx3);
-  final Comparator<Tuple> comparator = (o1, o2) -> ((Node<?>) o1).cmp((Node<?>) o2);
-  final Sequence sortedSeq = new SortedNodeSequence(comparator, seq, true);
-  final Iter sortedIter = sortedSeq.iterate();
+  final var seq = new XQuery(new SirixCompileChain(store), query).execute(ctx3);
+  final var comparator = (o1, o2) -> ((Node<?>) o1).cmp((Node<?>) o2);
+  final var sortedSeq = new SortedNodeSequence(comparator, seq, true);
+  final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
-  for (Item item = sortedIter.next(); item != null; item = sortedIter.next()) {
+  for (var item = sortedIter.next(); item != null; item = sortedIter.next()) {
     System.out.println(item);
   }
 }
