@@ -201,15 +201,18 @@ try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
   System.out.println("Find path index for all elements which are children of the log-element (only elements).");
   final var ctx = new SirixQueryContext(store);
   final var node = (DBNode) new XQuery(new SirixCompileChain(store), "doc('mydocs.col')").execute(ctx);
-  final var index = node.getTrx()
-                        .getResourceManager()
-                        .getRtxIndexController(node.getTrx().getRevisionNumber())
-                        .getIndexes()
-                        .findPathIndex(org.brackit.xquery.util.path.Path.parse("//log/*"));
+  // We could find the index number through our low-level transactional cursor API.
+  final var indexNumber = node.getTrx()
+                              .getResourceManager()
+                              .getRtxIndexController(node.getTrx().getRevisionNumber())
+                              .getIndexes()
+                              .findPathIndex(org.brackit.xquery.util.path.Path.parse("//log/*"));
   System.out.println(index);
-  // last param '()' queries whole index.
+  // Or simply use sdb:find-path-index('xs:node', 'xs:string') to find the appropriate index number and then scan the index.
   final var query = "let $doc := sdb:doc('mydocs.col', 'resource1') " + "return sdb:scan-path-index($doc, "
       + "sdb:find-path-index($doc, '//log/*'), '//log/*')";
+  // We can then sort via Java code (or we could have stored the index sequence in a variable and
+  // simply use sdb:sort($sequence) as seen, when we quried the name index)
   final var seq = new XQuery(new SirixCompileChain(store), query).execute(ctx3);
   final var comparator = (o1, o2) -> ((Node<?>) o1).cmp((Node<?>) o2);
   final var sortedSeq = new SortedNodeSequence(comparator, seq, true);
@@ -222,7 +225,7 @@ try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
 }
 ```
 
-Not that in this example we showed how to get access to the low-level transactional cursor API of Sirix.
+Not that in this example we showed how to get access to the low-level transactional cursor API of Sirix and use this API.
 
 In order to create a CAS index for all attributes, another one for text-nodes and a third one for all integers text-nodes:
 
