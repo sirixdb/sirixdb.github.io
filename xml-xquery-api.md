@@ -163,6 +163,38 @@ try (final var store = BasicDBStore.newBuilder().build()) {
 
 We support a whole bunch of temporal axis: `first::` to get a node in the first revision, `last::` to get a node in the last revision, `previous::` to get the node in the previous revision, `next::` to get the node in the next revision, `future::` and `future-or-self::` to get a node in all future revisions or the current and future revisions, `past::` and `past-or-self::` to get a node in past revisions or the current and past revisions. We have already seen the `all-time::`-axis which iterates over a node in all revisions.
 
+### Open a specific revision
+Once you've stored a few revisions of a resource in Sirix you might want to open a specific revision again. This can simply be done by using a third parameter to the doc-function in the sirix-namespace For instance using 
+
+`sdb:doc('mycol.xml', 'mydoc.xml', 1)`
+
+This opens the database `mycol.xml` and the resource `mydoc.xml` in revision one. Without the additional revision-number parameter the most recent revision is going to be opened.
+
+However, you might also be interested in loading a revision by a given timestamp. You might simply use
+
+```java
+try (final var store = BasicDBStore.newBuilder().build()) {
+  final var ctx = new SirixQueryContext(store);
+  System.out.println();
+  System.out.println("Query loaded document:");
+  final var dateTime = LocalDateTime.of(2019, Month.JUNE, 15, 13, 39);
+  final var instant = dateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant();
+  final var epochMillis = instant.toEpochMilli();
+  final var queryString = "sdb:open('mycol.xml', 'mydoc.xml', epochMillis)/log";
+  System.out.println(xq3);
+  final var query = new XQuery(new SirixCompileChain(store), queryString);
+  query.prettyPrint().serialize(ctx, System.out);
+}
+```
+
+Note that the third parameter are the milliseconds from 1970 (Unix epoch).
+
+`sdb:open('mycol.xml', 'mydoc.xml', bit:now())`
+
+or
+
+`sdb:open('mycol.xml', 'mydoc.xml', sdb:millis(xs:dateTime(\"2019-04-01T05:00:00-00:00\"))`
+
 ### Index structures
 Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on alement- or attribute-nodes in XML/XDM resources or name indexes on JSON object record keys, path indexes and so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
 
