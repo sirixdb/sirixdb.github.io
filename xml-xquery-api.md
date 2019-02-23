@@ -81,6 +81,21 @@ try (final var store = BasicDBStore.newBuilder().build()) {
   System.out.println();
 }
 ```
+
+Storing a collection of XML files in Sirix is as simple as using the following query for instance (dir is a directory path and you're importing all files with an `.xml` suffix):
+
+```java
+final var query = String.format("bit:load('mydocs.col', io:ls('%s', '\\.xml$'))", dir);
+new XQuery(query).evaluate(ctx);
+```
+
+And querying the collection is as simple as using the function collection:
+
+```java
+for $doc in collection('mydocs.col')
+return $doc
+```
+
 ### Update the resource
 
 In order to update a resource you're able to use XQuery Update statements. First we load an XML-document again into a `database/resource` whereas the database is named `mycol.xml` and the resource `mydoc.xml`. Then we open the database/resource again in their most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. The result is serialized to `STDOUT` again.
