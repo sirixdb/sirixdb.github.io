@@ -276,3 +276,5 @@ try (final var store = BasicDBStore.newBuilder().build()) {
   }
 }
 ```
+
+In general for each index-type we have a function to create the index, to find the index-number for a given query again (the index definition must match) and to query the index.
