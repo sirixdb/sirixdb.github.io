@@ -82,6 +82,13 @@ try (final var store = BasicDBStore.newBuilder().build()) {
 }
 ```
 
+In the above example you are loading an XML-document from a file into Sirix. You can do the same with XML-documents stored as simple Strings with the store-function:
+
+```xquery
+let $doc := "<xml>foo<bar/></xml>"
+sdb:store('mydoc.col', 'mydoc.xml', $doc)
+```
+
 Storing a collection of XML files in Sirix is as simple as using the following query for instance (dir is a directory path and you're importing all files with an `.xml` suffix):
 
 ```java
