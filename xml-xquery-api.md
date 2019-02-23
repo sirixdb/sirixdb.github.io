@@ -201,25 +201,17 @@ try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
   System.out.println("Find path index for all elements which are children of the log-element (only elements).");
   final var ctx = new SirixQueryContext(store);
   final var node = (DBNode) new XQuery(new SirixCompileChain(store), "doc('mydocs.col')").execute(ctx);
-  // We could find the index number through our low-level transactional cursor API.
-  final var indexNumber = node.getTrx()
-                              .getResourceManager()
-                              .getRtxIndexController(node.getTrx().getRevisionNumber())
-                              .getIndexes()
-                              .findPathIndex(org.brackit.xquery.util.path.Path.parse("//log/*"));
+  // We could do anything with the DBnode, for instance also getting the [transaction node cursor](/transactional-cursor-api.html) 
+  // with the method getTrx().
   System.out.println(index);
   // Or simply use sdb:find-path-index('xs:node', 'xs:string') to find the appropriate index number and then scan the index.
-  final var query = "let $doc := sdb:doc('mydocs.col', 'resource1') " + "return sdb:scan-path-index($doc, "
-      + "sdb:find-path-index($doc, '//log/*'), '//log/*')";
-  // We can then sort via Java code (or we could have stored the index sequence in a variable and
-  // simply use sdb:sort($sequence) as seen, when we quried the name index)
-  final var seq = new XQuery(new SirixCompileChain(store), query).execute(ctx3);
-  final var comparator = (o1, o2) -> ((Node<?>) o1).cmp((Node<?>) o2);
-  final var sortedSeq = new SortedNodeSequence(comparator, seq, true);
+  final var query = "let $doc := sdb:doc('mydocs.col', 'resource1') " + "return sdb:sort(sdb:scan-path-index($doc, "
+      + "sdb:find-path-index($doc, '//log/*'), '//log/*'))";
+  final var sortedSeq = new XQuery(new SirixCompileChain(store), query).execute(ctx3);
   final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
-  for (var item = sortedIter.next(); item != null; item = sortedIter.next()) {
+  for (final var item = sortedIter.next(); item != null; item = sortedIter.next()) {
     System.out.println(item);
   }
 }
@@ -256,11 +248,9 @@ try (final var store = BasicDBStore.newBuilder().build()) {
   System.out.println("");
   System.out.println("Find CAS index for all attribute values.");
   final var ctx = new SirixQueryContext(store);
-  final var query =
-      "let $doc := sdb:doc('mydocs.col', 'resource1') return sdb:scan-cas-index($doc, sdb:find-cas-index($doc, 'xs:string', '//@*'), 'bar', true(), 0, ())";
-  final var seq = new XQuery(new SirixCompileChain(store), query).execute(ctx);
-  final var comparator = (o1, o2) -> ((Node<?>) o1).cmp((Node<?>) o2);
-  final var sortedSeq = new SortedNodeSequence(comparator, seq, true);
+  final var sortedSeq =
+      "let $doc := sdb:doc('mydocs.col', 'resource1') return sdb:sort(sdb:scan-cas-index($doc, sdb:find-cas-index($doc, 'xs:string', '//@*'), 'bar', true(), 0, ()))";
+  final var sortedSeq = new XQuery(new SirixCompileChain(store), query).execute(ctx);
   final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
