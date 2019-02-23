@@ -85,6 +85,7 @@ try (final var store = BasicDBStore.newBuilder().build()) {
 Storing a collection of XML files in Sirix is as simple as using the following query for instance (dir is a directory path and you're importing all files with an `.xml` suffix):
 
 ```java
+final var ctx = new SirixQueryContext(store);
 final var query = String.format("bit:load('mydocs.col', io:ls('%s', '\\.xml$'))", dir);
 new XQuery(query).evaluate(ctx);
 ```
@@ -92,8 +93,9 @@ new XQuery(query).evaluate(ctx);
 And querying the collection is as simple as using the function collection:
 
 ```java
-for $doc in collection('mydocs.col')
-return $doc
+final var ctx = new SirixQueryContext(store);
+final var query = "for $doc in collection('mydocs.col') return $doc";
+new XQuery(query).setPrettyPrint(true).serialize(ctx, System.out);
 ```
 
 ### Update the resource
