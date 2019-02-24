@@ -1,6 +1,6 @@
 ---
 layout: documentation
-doctitle: 
+doctitle: Comparison with other temporal database systems
 ---
 
 ### Comparison with other temporal database systems
