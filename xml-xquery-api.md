@@ -170,7 +170,7 @@ Once you've stored a few revisions of a resource in Sirix you might want to open
 
 This opens the database `mycol.xml` and the resource `mydoc.xml` in revision one. Without the additional revision-number parameter the most recent revision is going to be opened.
 
-However, you might also be interested in loading a revision by a given timestamp/point in time. You might simply use the function `sdb:open('xs:string','xs:string','xs:dateTime')`.
+However, you might also be interested in loading a revision by a given timestamp/point in time. You might simply use the function `sdb:open($database as xs:string, $resource as xs:string, $pointInTime as xs:dateTime) as $doc`.
 
 ```java
 try (final var store = BasicDBStore.newBuilder().build()) {
@@ -184,36 +184,56 @@ try (final var store = BasicDBStore.newBuilder().build()) {
 }
 ```
 
+with the following function you're able to load the database/resource how it looked like between two revisions. Sirix searches for the closest revisions to the given timestamps. The function returns the document node in all revisions, which have been committed in-between.
+
+`sdb:open-revisions($database as xs:string, $resource as xs:string, $startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as item()*`
+
+A simple example is
+
+```java
+try (final var store = BasicDBStore.newBuilder().build()) {
+  final var ctx = new SirixQueryContext(store);
+  System.out.println();
+  System.out.println("Query loaded document:");
+  final var queryString = "sdb:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2018-04-01T05:00:00-00:00\"), xs:dateTime(\"2019-04-01T05:00:00-00:00\"))/log";
+  System.out.println(xq3);
+  final var query = new XQuery(new SirixCompileChain(store), queryString);
+  query.prettyPrint().serialize(ctx, System.out);
+}
+```
+
 ### Transactional cursor based functions
 We also provide a few functions, which are based on the fact that currently when importing data with XQuery we generate hashes for each node as well as the number of descendants. Furthermore we always store the number of children of each node. You can use the function
 
-`sdb:descendant-count($doc as xs:node) as xs:long`
+`sdb:descendant-count($node as xs:node) as xs:long`
 
 to retrieve the number of descendants of a node,
 
-`sdb:child-count($doc as xs:node) as xs:int`
+`sdb:child-count($node as xs:node) as xs:int`
 
 to retrieve the number of children of a node and
 
-`sdb:hash($doc as xs:node) as xs:string`
+`sdb:hash($node as xs:node) as xs:string`
 
 to retrieve the stored hash of a node.
 
 With the function
 
-`sdb:attribute-count($doc as xs:node) as xs:int`
+`sdb:attribute-count($node as xs:node) as xs:int`
 
 you'll get the number of attributes of a node (an element node).
 
 You can get the most recent revision number with the function
 
-`sdb:most-recent-revision($doc as xs:node) as xs:int`
+`sdb:most-recent-revision($node as xs:node) as xs:int`
 
 The unique, stable key/ID of a node with
 
-`sdb:nodekey($doc as xs:node) as xs:long`
+`sdb:nodekey($node as xs:node) as xs:long`
 
+To commit a transaction if no auto-commit is enabled
 
+`sdb:commit($node as xs:node) as xs:node`
 
 ### Index structures
 Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on alement- or attribute-nodes in XML/XDM resources or name indexes on JSON object record keys, path indexes and so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
