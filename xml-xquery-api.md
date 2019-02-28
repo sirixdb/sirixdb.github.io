@@ -235,6 +235,14 @@ To commit a transaction if no auto-commit is enabled
 
 `sdb:commit($node as xs:node) as xs:node`
 
+To rollback a transaction (result item is the aborted revision number)
+
+`sdb:rollback($node as xs:node) as xs:int`
+
+To get the revision timestamp of a node (the timestamp when the transaction has been committed)
+
+`sdb:timestamp($node as xs:node) as xs:dateTime``
+
 ### Index structures
 Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on alement- or attribute-nodes in XML/XDM resources or name indexes on JSON object record keys, path indexes and so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
 
