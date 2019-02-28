@@ -195,7 +195,7 @@ try (final var store = BasicDBStore.newBuilder().build()) {
   final var ctx = new SirixQueryContext(store);
   System.out.println();
   System.out.println("Query loaded document:");
-  final var queryString = "sdb:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2018-04-01T05:00:00-00:00\"), xs:dateTime(\"2019-04-01T05:00:00-00:00\"))/log";
+  final var queryString = "sdb:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2018-04-01T05:00:00-00:00\"), xs:dateTime(\"2019-04-01T05:00:00-00:00\"))";
   System.out.println(xq3);
   final var query = new XQuery(new SirixCompileChain(store), queryString);
   query.prettyPrint().serialize(ctx, System.out);
@@ -241,7 +241,7 @@ To rollback a transaction (result item is the aborted revision number)
 
 To get the revision timestamp of a node (the timestamp when the transaction has been committed)
 
-`sdb:timestamp($node as xs:node) as xs:dateTime``
+`sdb:timestamp($node as xs:node) as xs:dateTime`
 
 ### Index structures
 Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on alement- or attribute-nodes in XML/XDM resources or name indexes on JSON object record keys, path indexes and so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
