@@ -75,10 +75,10 @@ final var databaseFile = Paths.get("database");
 final var dbConfig = new DatabaseConfiguration(databaseFile);
 
 // Create a new lightweight database structure.
-Databases.createXdmDatabase(dbConfig);
+Databases.createXmlDatabase(dbConfig);
 
 // Open the database.
-try (final var database = Databases.openXdmDatabase(databaseFile)) {
+try (final var database = Databases.openXmlDatabase(databaseFile)) {
   // Create a first resource without text-value compression but with DeweyIDs which are hierarchical node labels.
   database.createResource(ResourceConfiguration.builder("resource").useTextCompression(false).useDeweyIDs(true).build());
 
@@ -138,7 +138,7 @@ Now, that we have imported a first resource and persisted it in our binary-struc
 
 ```java
 // Open the database.
-try (final var database = Databases.openXdmDatabase(databaseFile);
+try (final var database = Databases.openXmlDatabase(databaseFile);
      final var manager = database.openResourceManager("resource");
      // Now open a read-only transaction again.
      final var rtx = manager.beginNodeReadOnlyTrx()) {
