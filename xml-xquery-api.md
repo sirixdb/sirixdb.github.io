@@ -59,7 +59,7 @@ First, you might want to import an XML-document into Sirix and create a first da
 final var doc = Paths.get("src", "main", "resources", "orga.xml");
 
 // Initialize query context and store.
-try (final var store = BasicDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build()) {
   final var ctx1 = new SirixQueryContext(store);
 
   // Use XQuery to load sample document into store.
@@ -114,7 +114,7 @@ In order to update a resource you're able to use XQuery Update statements. First
 final var doc = generateSampleDoc("sample");
 
 // Initialize query context and store.
-try (final var store = BasicDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build()) {
   final var ctx1 = new SirixQueryContext(store);
 
   // Use XQuery to load sample document into store.
@@ -150,7 +150,7 @@ Temporal axis are compatible with node tests:
 For instance to simply serialize all revisions, we can use the axis `all-time::`
 
 ```java
-try (final var store = BasicDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build()) {
   final var ctx = new SirixQueryContext(store);
   System.out.println();
   System.out.println("Query loaded document:");
@@ -173,7 +173,7 @@ This opens the database `mycol.xml` and the resource `mydoc.xml` in revision one
 However, you might also be interested in loading a revision by a given timestamp/point in time. You might simply use the function `sdb:open($database as xs:string, $resource as xs:string, $pointInTime as xs:dateTime) as $doc`.
 
 ```java
-try (final var store = BasicDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build()) {
   final var ctx = new SirixQueryContext(store);
   System.out.println();
   System.out.println("Query loaded document:");
@@ -250,7 +250,7 @@ First, we create an element index on elements with the local name `src`:
 
 ```java
 // Create and commit name index on all elements with QName 'src'.
-try (final var store = BasicDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build()) {
   final var ctx = new SirixQueryContext(store, CommitStrategy.EXPLICIT);
   System.out.println();
   System.out.println("Create name index for all elements with name 'src':");
@@ -268,7 +268,7 @@ And in order to query the name index again some time later:
 
 ```java
 // Query name index.
-try (final var store = BasicDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build()) {
   System.out.println("");
   System.out.println("Query name index (src-element).");
   final var ctx = new QueryContext(store);
@@ -285,7 +285,7 @@ In order to create a path index on all paths in the resource we can use:
 
 ```java
 // Create and commit path index on all elements.
-try (final var store = BasicDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build()) {
   final var ctx = new QueryContext(store);
   System.out.println();
   System.out.println("Create path index for all elements (all paths):");
@@ -302,7 +302,7 @@ And in order to query the path index again some time later:
 
 ```java
 // Query path index which are children of the log-element (only elements).
-try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
+try (final BasicDBStore store = BasicXmlDBStore.newBuilder().build()) {
   System.out.println("");
   System.out.println("Find path index for all elements which are children of the log-element (only elements).");
   final var ctx = new SirixQueryContext(store);
@@ -329,7 +329,7 @@ In order to create a CAS index for all attributes, another one for text-nodes an
 
 ```java
 // Create and commit CAS indexes on all attribute- and text-nodes.
-try (final BasicDBStore store = BasicDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build()) {
   final QueryContext ctx = new QueryContext(store);
   System.out.println();
   System.out.println(
@@ -350,7 +350,7 @@ And to find and query the CAS-index (for all attribute values) again:
 
 ```java
 // Query CAS index.
-try (final var store = BasicDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build()) {
   System.out.println("");
   System.out.println("Find CAS index for all attribute values.");
   final var ctx = new SirixQueryContext(store);
