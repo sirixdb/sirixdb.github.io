@@ -560,10 +560,17 @@ serializer.call();
 final var content = baos.toString(StandardCharsets.UTF8);
 ```
 
-In order to serialize revision 1, 2 and 3 of a resource with an XML declaration and the internal node keys for element nodes:
+In order to serialize revision 1, 2 and 3 of a resource with an XML declaration and the internal node keys for element nodes (pretty printed):
 
 ```java
-final var serializer = XmlSerializer.newBuilder(manager, out, 1, 2, 3).emitXMLDeclaration().emitIds().build();
+final var serializer = XmlSerializer.newBuilder(manager, out, 1, 2, 3).emitXMLDeclaration().emitIds().prettyPrint().build();
+serialize.call()
+```
+
+In order to serialize all stored revisions with the internal node keys and pretty printed:
+
+```java
+final var serializer = XmlSerializer.newBuilder(manager, out, -1).emitXMLDeclaration().emitIds().prettyPrint().build();
 serialize.call()
 ```
 
