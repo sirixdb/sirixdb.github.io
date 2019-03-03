@@ -558,7 +558,7 @@ final var baos = new ByteArrayOutputStream();
 final var writer = new PrintStream(baos);
 final var serializer = XmlSerializer.newBuilder(manager, writer).prettyPrint().build();
 serializer.call();
-final var content = baos.toString(StandardCharsets.UTF8);
+final var content = baos.toString(StandardCharsets.UTF_8);
 ```
 
 In order to serialize revision 1, 2 and 3 of a resource with an XML declaration and the internal node keys for element nodes (pretty printed):
