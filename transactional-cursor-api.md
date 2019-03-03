@@ -215,6 +215,7 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
         // ARRAY- and OBJECT-nodes omitted.
     }
   });
+}
 ```
 
 ### Axis to navigate in space and in time
