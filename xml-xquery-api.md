@@ -317,7 +317,7 @@ try (final BasicDBStore store = BasicXmlDBStore.newBuilder().build()) {
   final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
-  for (final var item = sortedIter.next(); item != null; item = sortedIter.next()) {
+  for (var item = sortedIter.next(); item != null; item = sortedIter.next()) {
     System.out.println(item);
   }
 }
