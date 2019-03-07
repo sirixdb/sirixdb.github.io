@@ -588,5 +588,5 @@ final var resNewRev = Paths.get("foo.xml");
 
 // Determine and import differences between the sirix resource and the
 // provided XML document.
-FMSEImport.xmlDataImport(resOldRev, resNewRev);
+new FMSEImport().xmlDataImport(resOldRev, resNewRev);
 ```
