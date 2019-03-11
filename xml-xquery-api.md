@@ -53,7 +53,7 @@ dependencies {
 ```
 
 ### Import and query
-First, you might want to import an XML-document into Sirix and create a first database with the shredded/imported XML-document as a single resource file with the XQuery function `sdb:load(xs:string, xs:string, xs:string)`. The first argument is the database to create, the second the resource which represents the imported XML-document and the third parameter is the resource to import. Then loading the resource again and execute your first query (`sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
+First, you might want to import an XML-document into Sirix and create a first database with the shredded/imported XML-document as a single resource file with the XQuery function `sdb:load(xs:string, xs:string, xs:string) as as node()`. The first argument is the database to create, the second the resource which represents the imported XML-document and the third parameter is the resource to import. Then loading the resource again and execute your first query (`sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
 
 ```java
 final var doc = Paths.get("src", "main", "resources", "orga.xml");
@@ -84,9 +84,10 @@ try (final var store = BasicXmlDBStore.newBuilder().build()) {
 
 In the above example you are loading an XML-document from a file into Sirix. You can do the same with XML-documents stored as simple Strings with the store-function:
 
-```xquery
-let $doc := "<xml>foo<bar/></xml>"
-sdb:store('mydoc.col', 'mydoc.xml', $doc)
+```java
+final var ctx = new SirixQueryContext(store);
+final var query = "sdb:store('mydoc.col', 'mydoc.xml', '<xml>foo<bar/></xml>')";
+new XQuery(query).evaluate(ctx);
 ```
 
 Storing a collection of XML files in Sirix is as simple as using the following query for instance (dir is a directory path and you're importing all files with an `.xml` suffix):
@@ -186,7 +187,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build()) {
 
 with the following function you're able to load the database/resource how it looked like between two revisions. Sirix searches for the closest revisions to the given timestamps. The function returns the document node in all revisions, which have been committed in-between.
 
-`sdb:open-revisions($database as xs:string, $resource as xs:string, $startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as item()*`
+`sdb:open-revisions($database as xs:string, $resource as xs:string, $startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as node()*`
 
 A simple example is
 
@@ -205,43 +206,43 @@ try (final var store = BasicDBStore.newBuilder().build()) {
 ### Transactional cursor based functions
 We also provide a few functions, which are based on the fact that currently when importing data with XQuery we generate hashes for each node as well as the number of descendants. Furthermore we always store the number of children of each node. You can use the function
 
-`sdb:descendant-count($node as xs:node) as xs:long`
+`sdb:descendant-count($node as node()) as xs:long`
 
 to retrieve the number of descendants of a node,
 
-`sdb:child-count($node as xs:node) as xs:int`
+`sdb:child-count($node as node()) as xs:int`
 
 to retrieve the number of children of a node and
 
-`sdb:hash($node as xs:node) as xs:string`
+`sdb:hash($node as node()) as xs:string`
 
 to retrieve the stored hash of a node.
 
 With the function
 
-`sdb:attribute-count($node as xs:node) as xs:int`
+`sdb:attribute-count($node as node()) as xs:int`
 
 you'll get the number of attributes of a node (an element node).
 
 You can get the most recent revision number with the function
 
-`sdb:most-recent-revision($node as xs:node) as xs:int`
+`sdb:most-recent-revision($node as node()) as xs:int`
 
 The unique, stable key/ID of a node with
 
-`sdb:nodekey($node as xs:node) as xs:long`
+`sdb:nodekey($node as node()) as xs:long`
 
 To commit a transaction if no auto-commit is enabled
 
-`sdb:commit($node as xs:node) as xs:node`
+`sdb:commit($node as node()) as xs:node`
 
 To rollback a transaction (result item is the aborted revision number)
 
-`sdb:rollback($node as xs:node) as xs:int`
+`sdb:rollback($node as node()) as xs:int`
 
 To get the revision timestamp of a node (the timestamp when the transaction has been committed)
 
-`sdb:timestamp($node as xs:node) as xs:dateTime`
+`sdb:timestamp($node as node()) as xs:dateTime`
 
 ### Index structures
 Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on alement- or attribute-nodes in XML/XDM resources or name indexes on JSON object record keys, path indexes and so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
