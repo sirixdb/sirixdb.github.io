@@ -60,7 +60,7 @@ final var doc = Paths.get("src", "main", "resources", "orga.xml");
 
 // Initialize query context and store.
 try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final var ctx1 = new SirixQueryContext(store);
+  final var ctx1 = SirixQueryContext.createWithNodeStore(store);
 
   // Use XQuery to load sample document into store.
   System.out.println("Loading document:");
@@ -70,12 +70,12 @@ try (final var store = BasicXmlDBStore.newBuilder().build()) {
   new XQuery(query1).evaluate(ctx1);
 
   // Reuse store and query loaded document.
-  final var ctx2 = new SirixQueryContext(store);
+  final var ctx2 = SirixQueryContext.createWithNodeStore(store);
   System.out.println();
   System.out.println("Query loaded document:");
   final var xq2 = "sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']";
   System.out.println(xq2);
-  final var query = new XQuery(new SirixCompileChain(store), xq2);
+  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store), xq2);
   query.prettyPrint().serialize(ctx2, System.out);
 
   System.out.println();
@@ -85,7 +85,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build()) {
 In the above example you are loading an XML-document from a file into Sirix. You can do the same with XML-documents stored as simple Strings with the store-function:
 
 ```java
-final var ctx = new SirixQueryContext(store);
+final var ctx = SirixQueryContext.createWithNodeStore(store);
 final var query = "sdb:store('mydoc.col', 'mydoc.xml', '<xml>foo<bar/></xml>')";
 new XQuery(query).evaluate(ctx);
 ```
@@ -93,7 +93,7 @@ new XQuery(query).evaluate(ctx);
 Storing a collection of XML files in Sirix is as simple as using the following query for instance (dir is a directory path and you're importing all files with an `.xml` suffix):
 
 ```java
-final var ctx = new SirixQueryContext(store);
+final var ctx = SirixQueryContext.createWithNodeStore(store);
 final var query = String.format("bit:load('mydocs.col', io:ls('%s', '\\.xml$'))", dir);
 new XQuery(query).evaluate(ctx);
 ```
@@ -101,9 +101,9 @@ new XQuery(query).evaluate(ctx);
 And querying the collection is as simple as using the function collection:
 
 ```java
-final var ctx = new SirixQueryContext(store);
+final var ctx = SirixQueryContext.createWithNodeStore(store);
 final var query = "for $doc in collection('mydocs.col') return $doc";
-new XQuery(query).setPrettyPrint(true).serialize(ctx, System.out);
+new XQuery(query).prettyPrint().serialize(ctx, System.out);
 ```
 
 ### Update the resource
@@ -116,7 +116,7 @@ final var doc = generateSampleDoc("sample");
 
 // Initialize query context and store.
 try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final var ctx1 = new SirixQueryContext(store);
+  final var ctx1 = SirixQueryContext.createWithNodeStore(store);
 
   // Use XQuery to load sample document into store.
   System.out.println("Loading document:");
@@ -126,7 +126,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build()) {
   new XQuery(xq1).evaluate(ctx1);
 
   // Reuse store and query loaded document.
-  final var ctx2 = new SirixQueryContext(store);
+  final var ctx2 = SirixQueryContext.createWithNodeStore(store);
   System.out.println();
   System.out.println("Query loaded document:");
   final var xq2 = "let $doc := sdb:doc('mycol.xml', 'mydoc.xml')\n" + "let $log = $doc/log return \n"
@@ -152,12 +152,12 @@ For instance to simply serialize all revisions, we can use the axis `all-time::`
 
 ```java
 try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final var ctx = new SirixQueryContext(store);
+  final var ctx = SirixQueryContext.createWithNodeStore(store);
   System.out.println();
   System.out.println("Query loaded document:");
   final var queryString = "sdb:doc('mycol.xml', 'mydoc.xml')/log/all-time::*";
   System.out.println(xq3);
-  final var query = new XQuery(new SirixCompileChain(store), queryString);
+  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store), queryString);
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
@@ -175,12 +175,12 @@ However, you might also be interested in loading a revision by a given timestamp
 
 ```java
 try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final var ctx = new SirixQueryContext(store);
+  final var ctx = SirixQueryContext.createWithNodeStore(store);
   System.out.println();
   System.out.println("Query loaded document:");
   final var queryString = "sdb:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2019-04-01T05:00:00-00:00\"))/log";
   System.out.println(xq3);
-  final var query = new XQuery(new SirixCompileChain(store), queryString);
+  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store), queryString);
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
@@ -193,12 +193,12 @@ A simple example is
 
 ```java
 try (final var store = BasicDBStore.newBuilder().build()) {
-  final var ctx = new SirixQueryContext(store);
+  final var ctx = SirixQueryContext.createWithNodeStore(store);
   System.out.println();
   System.out.println("Query loaded document:");
   final var queryString = "sdb:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2018-04-01T05:00:00-00:00\"), xs:dateTime(\"2019-04-01T05:00:00-00:00\"))";
   System.out.println(xq3);
-  final var query = new XQuery(new SirixCompileChain(store), queryString);
+  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store), queryString);
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
@@ -252,7 +252,7 @@ First, we create an element index on elements with the local name `src`:
 ```java
 // Create and commit name index on all elements with QName 'src'.
 try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final var ctx = new SirixQueryContext(store, CommitStrategy.EXPLICIT);
+  final var ctx = SirixQueryContext.createWithNodeStoreAndCommitStrategy(store, CommitStrategy.EXPLICIT);
   System.out.println();
   System.out.println("Create name index for all elements with name 'src':");
   final var query = new XQuery(new SirixCompileChain(store),
@@ -272,11 +272,11 @@ And in order to query the name index again some time later:
 try (final var store = BasicXmlDBStore.newBuilder().build()) {
   System.out.println("");
   System.out.println("Query name index (src-element).");
-  final var ctx = new QueryContext(store);
+  final var ctx = SirixQueryContext.createWithNodeStore(store);
   final var queryString = "let $doc := sdb:doc('mydocs.col', 'resource1')"
       + " let $sequence := sdb:scan-name-index($doc, sdb:find-name-index($doc, fn:QName((), 'src')), fn:QName((), 'src'))"
       + " return sdb:sort($sequence)";
-  final var query = new XQuery(new SirixCompileChain(store), queryString);
+  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store), queryString);
   query.prettyPrint();
   query.serialize(ctx, System.out);
 }
@@ -287,11 +287,11 @@ In order to create a path index on all paths in the resource we can use:
 ```java
 // Create and commit path index on all elements.
 try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final var ctx = new QueryContext(store);
+  final var ctx = SirixQueryContext.createWithNodeStore(store);
   System.out.println();
   System.out.println("Create path index for all elements (all paths):");
   final var query =
-      new XQuery(new SirixCompileChain(store), "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
+      new XQuery(SirixCompileChain.createWithNodeStore(store), "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
           + "let $stats := sdb:create-path-index($doc, '//*') " + "return <rev>{sdb:commit($doc)}</rev>");
   query.serialize(ctx, System.out);
   System.out.println();
@@ -306,7 +306,7 @@ And in order to query the path index again some time later:
 try (final BasicDBStore store = BasicXmlDBStore.newBuilder().build()) {
   System.out.println("");
   System.out.println("Find path index for all elements which are children of the log-element (only elements).");
-  final var ctx = new SirixQueryContext(store);
+  final var ctx = SirixQueryContext.createWithNodeStore(store);
   final var node = (DBNode) new XQuery(new SirixCompileChain(store), "doc('mydocs.col')").execute(ctx);
   // We could do anything with the DBnode, for instance also getting the [transaction node cursor](/transactional-cursor-api.html) 
   // with the method getTrx().
@@ -314,7 +314,7 @@ try (final BasicDBStore store = BasicXmlDBStore.newBuilder().build()) {
   // Or simply use sdb:find-path-index('xs:node', 'xs:string') to find the appropriate index number and then scan the index.
   final var query = "let $doc := sdb:doc('mydocs.col', 'resource1') " + "return sdb:sort(sdb:scan-path-index($doc, "
       + "sdb:find-path-index($doc, '//log/*'), '//log/*'))";
-  final var sortedSeq = new XQuery(new SirixCompileChain(store), query).execute(ctx3);
+  final var sortedSeq = new XQuery(SirixCompileChain.createWithNodeStore(store), query).execute(ctx3);
   final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
@@ -331,11 +331,11 @@ In order to create a CAS index for all attributes, another one for text-nodes an
 ```java
 // Create and commit CAS indexes on all attribute- and text-nodes.
 try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final QueryContext ctx = new QueryContext(store);
+  final QueryContext ctx = SirixQueryContext.createWithNodeStore(store);
   System.out.println();
   System.out.println(
       "Create a CAS index for all attributes and another one for text-nodes. A third one is created for all integers:");
-  final var query = new XQuery(new SirixCompileChain(store),
+  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store),
       "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
           + "let $casStats1 := sdb:create-cas-index($doc, 'xs:string', '//@*') "
           + "let $casStats2 := sdb:create-cas-index($doc, 'xs:string', '//*') "
@@ -354,10 +354,10 @@ And to find and query the CAS-index (for all attribute values) again:
 try (final var store = BasicXmlDBStore.newBuilder().build()) {
   System.out.println("");
   System.out.println("Find CAS index for all attribute values.");
-  final var ctx = new SirixQueryContext(store);
+  final var ctx = SirixQueryContext.createWithNodeStore(store);
   final var sortedSeq =
       "let $doc := sdb:doc('mydocs.col', 'resource1') return sdb:sort(sdb:scan-cas-index($doc, sdb:find-cas-index($doc, 'xs:string', '//@*'), 'bar', true(), 0, ()))";
-  final var sortedSeq = new XQuery(new SirixCompileChain(store), query).execute(ctx);
+  final var sortedSeq = new XQuery(SirixCompileChain.createWithNodeStore(store), query).execute(ctx);
   final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
