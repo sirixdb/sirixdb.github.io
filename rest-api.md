@@ -3,7 +3,7 @@ layout: documentation
 doctitle: RESTful-API
 ---
 
-### Introducation
+## Introduction
 This API is asynchronous at its very core. We use Vert.x which is a toolkit, built on top of Netty. It is heavily inspired by Node.js but for the JVM. As such it uses event loop(s), that is thread(s), which never should by blocked by long running CPU tasks or disk bound I/O. We are using Kotlin with coroutines to keep the code simple.
 Authorization is done via OAuth2 (Password Credentials/Resource Owner Flow) using a Keycloak authorization server instance. Keycloak can be set up as described in this excellent [tutorial](
 https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/).
