@@ -149,6 +149,24 @@ try (final var store = BasicJsonDBStore.newBuilder().build();
 
 In this case the resource is simply added to the `mycol.jn` database as `mydoc.jn`.
 
+You can open the stored resources again, either via a jn:collection(...) function to retrieve all resources in a database:
+
+```java
+final var ctx = SirixQueryContext.createWithNodeStore(store);
+final var query = "for $doc in jn:collection('mydocs.col') return $doc";
+new XQuery(query).prettyPrint().serialize(ctx, System.out);
+```
+
+or via `jn:doc(xs:string, xs:string, xs:int) as json-item()`, which is almost identical as the version to open XML-resources. The first parameter is the database to open, the second parameter the resource and the last one is the optional revision to open (without the last parameter it opens the most recent revision).
+
+For instance if we have stored the following very simple JSON-string as a resource in Sirix `{"sirix":{"revisionNumber":1}}`, then you can retrieve the revisionNumber simply via:
+
+`jn:doc('mycol.jn','mydoc.jn')=>sirix=>revisionNumber`
+
+This shows the `deref`-operator `=>` which is used to select object/record values by their key name.
+
+We'll save other JSON-stuff for later on. But first we want to show how to update XML- and JSON-resources.
+
 ### Update the resource
 
 In order to update a resource you're able to use XQuery Update statements. First we load an XML-document again into a `database/resource` whereas the database is named `mycol.xml` and the resource `mydoc.xml`. Then we open the database/resource again in their most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. The result is serialized to `STDOUT` again.
@@ -181,6 +199,31 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 }
 ```
 Note, that a transaction is auto-commited in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case we open the most recent revision, which is revision two (bootstrapped revision is 0 with only a document-root node and revision 1 was the initially imported XML-document) and serialize it to `System.out`.
+
+Regarding JSON we're currently working on update expressions for our XQuery extension (mainly JSONiq). For now you have to use our transactional cursor based API to update JSON-resources. You could for instance simply open the database with XQuery and get the transactional cursor via the `getTrx()`-method on the result sequence:
+
+```java
+final var seq = new XQuery(compileChain, query).execute(ctx);
+final var rtx = seq.getTrx();
+```
+
+In Java or Kotlin we can simply use the transaction to insert whole Object-structures, Arrays, String, Number, Boolean and Null-values.
+
+For instance you can simply insert whole JSON-structures as first childs of arrays or as right siblings of array items for instance like this:
+
+`JsonNodeTrx insertSubtreeAsFirstChild(JsonReader reader)`
+
+`JsonNodeTrx insertSubtreeAsRightSibling(JsonReader reader)`
+
+If the cursor is located on an object node we can insert records (key/value pairs) like this:
+
+`JsonNodeTrx insertObjectRecordAsFirstChild(String key, ObjectRecordValue<?> value)`
+
+Object record values can be all JSON node types (`ArrayValue`, `ObjectValue`, `BooleanValue`, `StringValue`, `NumberValue` and `NullValue`). If the cursor is located on an object key you can insert other JSON records as right siblings:
+
+`JsonNodeTrx insertObjectRecordAsRightSibling(String key, ObjectRecordValue<?> value)`
+
+All possible methods can be found in the interface `org.sirix.api.json.JsonNodeTrx`.
 
 ### Temporal axis
 We not only provide all standard XPath axis for the XML-documents stored in Sirix, but also temporal XPath axis, which can be used to analyse how a resource or a subtree therein has changed between several revisions.
