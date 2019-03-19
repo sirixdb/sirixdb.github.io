@@ -34,5 +34,5 @@ https://www.dataversity.net/bitemporal-data-modeling-learn-history/
 We provide several APIs to interact with Sirix.
 
 1. The [transactional cursor API](/transactional-cursor-api.html) is a powerful low-level API.
-2. On top of this API we built a [Brackit.org](http://brackit.org) binding to provide the ability to use Sirix with a more [DOM-alike API](/dom-alike-api.html) with in-memory nodes and an [XQuery API](/xml-xquery-api.html).
+2. On top of this API we built a [Brackit.org](http://brackit.org) binding to provide the ability to use Sirix with a more [DOM-alike API](/dom-alike-api.html) with in-memory nodes and an [XQuery API](/xquery-api.html).
 3. We provide a powerful, asynchronous, non-blocking [RESTful-API](/rest-api.html) to interact with a Sirix HTTP-server. Authorization is done via Keycloak.  
