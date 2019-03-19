@@ -127,7 +127,7 @@ try (final var store = BasicJsonDBStore.newBuilder().build();
     final var chain = SirixCompileChain.createWithJsonStore(store)) {
   // Use XQuery to store multiple JSON strings into the store.
   System.out.println("Storing strings:");
-  final String query = "jn:store('mycol.jn',(),('[\"bla\", \"blubb\"]','{\"foo\": true}'))";
+  final var query = "jn:store('mycol.jn',(),('[\"bla\", \"blubb\"]','{\"foo\": true}'))";
   System.out.println(query);
   new XQuery(chain, query).evaluate(ctx);
 }
