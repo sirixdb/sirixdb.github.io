@@ -88,7 +88,7 @@ final var query = "sdb:store('mydoc.col', 'mydoc.xml', '<xml>foo<bar/></xml>')";
 new XQuery(query).evaluate(ctx);
 ```
 
-Storing a collection of XML files in Sirix is as simple as using the following query for instance (dir is a directory path and you're importing all files with an `.xml` suffix):
+Loading a collection of XML files in Sirix is as simple as using the following query for instance (dir is a directory path and you're importing all files with an `.xml` suffix):
 
 ```java
 final var ctx = SirixQueryContext.createWithNodeStore(store);
@@ -103,39 +103,6 @@ final var ctx = SirixQueryContext.createWithNodeStore(store);
 final var query = "for $doc in collection('mydocs.col') return $doc";
 new XQuery(query).prettyPrint().serialize(ctx, System.out);
 ```
-
-### Update the resource
-
-In order to update a resource you're able to use XQuery Update statements. First we load an XML-document again into a `database/resource` whereas the database is named `mycol.xml` and the resource `mydoc.xml`. Then we open the database/resource again in their most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. The result is serialized to `STDOUT` again.
-
-```java
-// Prepare sample document.
-final var doc = generateSampleDoc("sample");
-
-// Initialize query context and store.
-try (final var store = BasicXmlDBStore.newBuilder().build();
-    final var ctx = SirixQueryContext.createWithNodeStore(store)) {
-  // Use XQuery to load sample document into store.
-  System.out.println("Loading document:");
-  final var docUri = doc.toUri();
-  final var xq1 = String.format("sdb:load('mycol.xml', 'mydoc.xml', '%s')", docUri.toString());
-  System.out.println(xq1);
-  new XQuery(xq1).evaluate(ctx);
-
-  // Reuse store and query loaded document.
-  System.out.println();
-  System.out.println("Query loaded document:");
-  final var xq2 = "let $doc := sdb:doc('mycol.xml', 'mydoc.xml')\n" + "let $log = $doc/log return \n"
-    + "( insert nodes <a><b/></a> into $log )\n";
-  System.out.println(xq2);
-  new XQuery(xq2).execute(ctx);
-
-  final var query = new XQuery("sdb:doc('mycol.xml', 'mydoc.xml')");
-  query.prettyPrint().serialize(ctx, System.out);
-  System.out.println();
-}
-```
-Note, that a transaction is auto-commited in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case we open the most recent revision, which is revision two (bootstrapped revision is 0 with only a document-root node and revision 1 was the initially imported XML-document) and serialize it to `System.out`.
 
 In order to store JSON-documents into Sirix the store-function within another namespace (`js`) is used:
 
@@ -181,6 +148,39 @@ try (final var store = BasicJsonDBStore.newBuilder().build();
 ```
 
 In this case the resource is simply added to the `mycol.jn` database as `mydoc.jn`.
+
+### Update the resource
+
+In order to update a resource you're able to use XQuery Update statements. First we load an XML-document again into a `database/resource` whereas the database is named `mycol.xml` and the resource `mydoc.xml`. Then we open the database/resource again in their most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. The result is serialized to `STDOUT` again.
+
+```java
+// Prepare sample document.
+final var doc = generateSampleDoc("sample");
+
+// Initialize query context and store.
+try (final var store = BasicXmlDBStore.newBuilder().build();
+    final var ctx = SirixQueryContext.createWithNodeStore(store)) {
+  // Use XQuery to load sample document into store.
+  System.out.println("Loading document:");
+  final var docUri = doc.toUri();
+  final var xq1 = String.format("sdb:load('mycol.xml', 'mydoc.xml', '%s')", docUri.toString());
+  System.out.println(xq1);
+  new XQuery(xq1).evaluate(ctx);
+
+  // Reuse store and query loaded document.
+  System.out.println();
+  System.out.println("Query loaded document:");
+  final var xq2 = "let $doc := sdb:doc('mycol.xml', 'mydoc.xml')\n" + "let $log = $doc/log return \n"
+    + "( insert nodes <a><b/></a> into $log )\n";
+  System.out.println(xq2);
+  new XQuery(xq2).execute(ctx);
+
+  final var query = new XQuery("sdb:doc('mycol.xml', 'mydoc.xml')");
+  query.prettyPrint().serialize(ctx, System.out);
+  System.out.println();
+}
+```
+Note, that a transaction is auto-commited in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case we open the most recent revision, which is revision two (bootstrapped revision is 0 with only a document-root node and revision 1 was the initially imported XML-document) and serialize it to `System.out`.
 
 ### Temporal axis
 We not only provide all standard XPath axis for the XML-documents stored in Sirix, but also temporal XPath axis, which can be used to analyse how a resource or a subtree therein has changed between several revisions.
