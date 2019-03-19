@@ -59,26 +59,24 @@ First, you might want to import an XML-document into Sirix and create a first da
 final var doc = Paths.get("src", "main", "resources", "orga.xml");
 
 // Initialize query context and store.
-try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final var ctx1 = SirixQueryContext.createWithNodeStore(store);
-
+try (final var store = BasicXmlDBStore.newBuilder().build();
+     final var ctx = SirixQueryContext.createWithNodeStore(store);
+     final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   // Use XQuery to load sample document into store.
   System.out.println("Loading document:");
   final var docUri = doc.toUri();
-  final var query1 = String.format("sdb:load('mydoc.col', 'mydoc.xml', '%s')", docUri.toString());
-  System.out.println(xq1);
-  new XQuery(query1).evaluate(ctx1);
+  final var queryLoadIntoSirix = String.format("sdb:load('mydoc.col', 'mydoc.xml', '%s')", docUri.toString());
+  System.out.println(queryLoadIntoSirix);
+  new XQuery(queryLoadIntoSirix).evaluate(ctx);
 
-  // Reuse store and query loaded document.
-  final var ctx2 = SirixQueryContext.createWithNodeStore(store);
-  System.out.println();
+  System.out.println("");
   System.out.println("Query loaded document:");
-  final var xq2 = "sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']";
-  System.out.println(xq2);
-  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store), xq2);
-  query.prettyPrint().serialize(ctx2, System.out);
+  final var query = "sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']";
+  System.out.println(query);
+  final var query = new XQuery(compileChain, query);
+  query.prettyPrint().serialize(ctx, System.out);
 
-  System.out.println();
+  System.out.println("");
 }
 ```
 
@@ -115,34 +113,77 @@ In order to update a resource you're able to use XQuery Update statements. First
 final var doc = generateSampleDoc("sample");
 
 // Initialize query context and store.
-try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final var ctx1 = SirixQueryContext.createWithNodeStore(store);
-
+try (final var store = BasicXmlDBStore.newBuilder().build();
+    final var ctx = SirixQueryContext.createWithNodeStore(store)) {
   // Use XQuery to load sample document into store.
   System.out.println("Loading document:");
   final var docUri = doc.toUri();
   final var xq1 = String.format("sdb:load('mycol.xml', 'mydoc.xml', '%s')", docUri.toString());
   System.out.println(xq1);
-  new XQuery(xq1).evaluate(ctx1);
+  new XQuery(xq1).evaluate(ctx);
 
   // Reuse store and query loaded document.
-  final var ctx2 = SirixQueryContext.createWithNodeStore(store);
   System.out.println();
   System.out.println("Query loaded document:");
   final var xq2 = "let $doc := sdb:doc('mycol.xml', 'mydoc.xml')\n" + "let $log = $doc/log return \n"
     + "( insert nodes <a><b/></a> into $log )\n";
   System.out.println(xq2);
-  new XQuery(xq2).execute(ctx2);
+  new XQuery(xq2).execute(ctx);
 
   final var query = new XQuery("sdb:doc('mycol.xml', 'mydoc.xml')");
-  query.prettyPrint().serialize(ctx2, System.out);
+  query.prettyPrint().serialize(ctx, System.out);
   System.out.println();
 }
 ```
 Note, that a transaction is auto-commited in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case we open the most recent revision, which is revision two (bootstrapped revision is 0 with only a document-root node and revision 1 was the initially imported XML-document) and serialize it to `System.out`.
 
+In order to store JSON-documents into Sirix the store-function within another namespace (`js`) is used:
+
+```java
+// Initialize query context and store.
+try (final var store = BasicJsonDBStore.newBuilder().build();
+    final var ctx = SirixQueryContext.createWithJsonStore(store);
+    final var chain = SirixCompileChain.createWithJsonStore(store)) {
+  // Use XQuery to store a JSON string into the store.
+  System.out.println("Storing document:");
+  final var storeQuery = "jn:store('mycol.jn','mydoc.jn','[\"bla\", \"blubb\"]')";
+  System.out.println(storeQuery);
+  new XQuery(chain, storeQuery).evaluate(ctx);
+}
+```
+
+For sure you can also store a bunch of JSON-strings within several resources in the database (`mycol.jn`):
+
+```java
+try (final var store = BasicJsonDBStore.newBuilder().build();
+    final var ctx = SirixQueryContext.createWithJsonStore(store);
+    final var chain = SirixCompileChain.createWithJsonStore(store)) {
+  // Use XQuery to store multiple JSON strings into the store.
+  System.out.println("Storing strings:");
+  final String query = "jn:store('mycol.jn',(),('[\"bla\", \"blubb\"]','{\"foo\": true}'))";
+  System.out.println(query);
+  new XQuery(chain, query).evaluate(ctx);
+}
+```
+
+In that case the second parameter, which otherwise denotes the resource-name is not used. Furthermore in both cases the database is implicitly created. However a fourth boolean parameter (`true()` if a new database should be created or `false()` if the resource should simply be added to an existing database) can be used to simply add resources like this:
+
+```java
+try (final var store = BasicJsonDBStore.newBuilder().build();
+    final var ctx = SirixQueryContext.createWithJsonStore(store);
+    final var chain = SirixCompileChain.createWithJsonStore(store)) {
+  // Use XQuery to add a JSON string to the collection.
+  System.out.println("Storing strings:");
+  final var queryAdd = "jn:store('mycol.jn','mydoc.jn','[\"foo\", \"bar\"]',false())";
+  System.out.println(queryAdd);
+  new XQuery(chain, queryAdd).evaluate(ctx);
+}
+```
+
+In this case the resource is simply added to the `mycol.jn` database as `mydoc.jn`.
+
 ### Temporal axis
-We not only provide all standard XPath axis, but also temporal XPath axis, which can be used to analyse how a resource or a subtree therein has changed between several revisions.
+We not only provide all standard XPath axis for the XML-documents stored in Sirix, but also temporal XPath axis, which can be used to analyse how a resource or a subtree therein has changed between several revisions.
 
 Temporal axis are compatible with node tests:
 
@@ -151,13 +192,14 @@ Temporal axis are compatible with node tests:
 For instance to simply serialize all revisions, we can use the axis `all-time::`
 
 ```java
-try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final var ctx = SirixQueryContext.createWithNodeStore(store);
+try (final var store = BasicXmlDBStore.newBuilder().build();
+     final var ctx = SirixQueryContext.createWithNodeStore(store);
+     final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   System.out.println();
   System.out.println("Query loaded document:");
   final var queryString = "sdb:doc('mycol.xml', 'mydoc.xml')/log/all-time::*";
-  System.out.println(xq3);
-  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store), queryString);
+  System.out.println(queryString);
+  final var query = new XQuery(compileChain, queryString);
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
@@ -174,13 +216,14 @@ This opens the database `mycol.xml` and the resource `mydoc.xml` in revision one
 However, you might also be interested in loading a revision by a given timestamp/point in time. You might simply use the function `sdb:open($database as xs:string, $resource as xs:string, $pointInTime as xs:dateTime) as $doc`.
 
 ```java
-try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final var ctx = SirixQueryContext.createWithNodeStore(store);
+try (final var store = BasicXmlDBStore.newBuilder().build();
+     final var ctx = SirixQueryContext.createWithNodeStore(store);
+     final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   System.out.println();
   System.out.println("Query loaded document:");
   final var queryString = "sdb:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2019-04-01T05:00:00-00:00\"))/log";
   System.out.println(xq3);
-  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store), queryString);
+  final var query = new XQuery(compileChain, queryString);
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
@@ -192,13 +235,14 @@ with the following function you're able to load the database/resource how it loo
 A simple example is
 
 ```java
-try (final var store = BasicDBStore.newBuilder().build()) {
-  final var ctx = SirixQueryContext.createWithNodeStore(store);
-  System.out.println();
+try (final var store = BasicDBStore.newBuilder().build()
+     final var ctx = SirixQueryContext.createWithNodeStore(store);
+     final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
+  System.out.println("");
   System.out.println("Query loaded document:");
   final var queryString = "sdb:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2018-04-01T05:00:00-00:00\"), xs:dateTime(\"2019-04-01T05:00:00-00:00\"))";
-  System.out.println(xq3);
-  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store), queryString);
+  System.out.println(queryString);
+  final var query = new XQuery(compileChain, queryString);
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
@@ -251,16 +295,17 @@ First, we create an element index on elements with the local name `src`:
 
 ```java
 // Create and commit name index on all elements with QName 'src'.
-try (final var store = BasicXmlDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build()
   final var ctx = SirixQueryContext.createWithNodeStoreAndCommitStrategy(store, CommitStrategy.EXPLICIT);
-  System.out.println();
+  final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
+  System.out.println("");
   System.out.println("Create name index for all elements with name 'src':");
-  final var query = new XQuery(new SirixCompileChain(store),
+  final var query = new XQuery(compileChain,
         "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
             + "let $stats := sdb:create-name-index($doc, fn:QName((), 'src')) "
             + "return <rev>{sdb:commit($doc)}</rev>");
   query.serialize(ctx, System.out);
-  System.out.println();
+  System.out.println("");
   System.out.println("Name index creation done.");
 }
 ```
@@ -269,14 +314,16 @@ And in order to query the name index again some time later:
 
 ```java
 // Query name index.
-try (final var store = BasicXmlDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build();
+     final var ctx = SirixQueryContext.createWithNodeStore(store);
+     final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   System.out.println("");
   System.out.println("Query name index (src-element).");
-  final var ctx = SirixQueryContext.createWithNodeStore(store);
+ 
   final var queryString = "let $doc := sdb:doc('mydocs.col', 'resource1')"
       + " let $sequence := sdb:scan-name-index($doc, sdb:find-name-index($doc, fn:QName((), 'src')), fn:QName((), 'src'))"
       + " return sdb:sort($sequence)";
-  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store), queryString);
+  final var query = new XQuery(compileChain, queryString);
   query.prettyPrint();
   query.serialize(ctx, System.out);
 }
@@ -286,15 +333,16 @@ In order to create a path index on all paths in the resource we can use:
 
 ```java
 // Create and commit path index on all elements.
-try (final var store = BasicXmlDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build();
   final var ctx = SirixQueryContext.createWithNodeStore(store);
-  System.out.println();
+  final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
+  System.out.println("");
   System.out.println("Create path index for all elements (all paths):");
   final var query =
-      new XQuery(SirixCompileChain.createWithNodeStore(store), "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
+      new XQuery(compileChain, "let $doc := sdb:doc('mydocs.col', 'resource1', (), true()) "
           + "let $stats := sdb:create-path-index($doc, '//*') " + "return <rev>{sdb:commit($doc)}</rev>");
   query.serialize(ctx, System.out);
-  System.out.println();
+  System.out.println("");
   System.out.println("Path index creation done.");
 }
 ```
@@ -303,18 +351,18 @@ And in order to query the path index again some time later:
 
 ```java
 // Query path index which are children of the log-element (only elements).
-try (final BasicDBStore store = BasicXmlDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build();
+  final var ctx = SirixQueryContext.createWithNodeStore(store);
+  final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   System.out.println("");
   System.out.println("Find path index for all elements which are children of the log-element (only elements).");
-  final var ctx = SirixQueryContext.createWithNodeStore(store);
+  
   final var node = (DBNode) new XQuery(new SirixCompileChain(store), "doc('mydocs.col')").execute(ctx);
-  // We could do anything with the DBnode, for instance also getting the [transaction node cursor](/transactional-cursor-api.html) 
-  // with the method getTrx().
-  System.out.println(index);
-  // Or simply use sdb:find-path-index('xs:node', 'xs:string') to find the appropriate index number and then scan the index.
+
+  // We can simply use sdb:find-path-index('xs:node', 'xs:string') to find the appropriate index number and then scan the index.
   final var query = "let $doc := sdb:doc('mydocs.col', 'resource1') " + "return sdb:sort(sdb:scan-path-index($doc, "
       + "sdb:find-path-index($doc, '//log/*'), '//log/*'))";
-  final var sortedSeq = new XQuery(SirixCompileChain.createWithNodeStore(store), query).execute(ctx3);
+  final var sortedSeq = new XQuery(compileChain, query).execute(ctx);
   final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
@@ -330,19 +378,20 @@ In order to create a CAS index for all attributes, another one for text-nodes an
 
 ```java
 // Create and commit CAS indexes on all attribute- and text-nodes.
-try (final var store = BasicXmlDBStore.newBuilder().build()) {
-  final QueryContext ctx = SirixQueryContext.createWithNodeStore(store);
-  System.out.println();
+try (final var store = BasicXmlDBStore.newBuilder().build()
+  final var ctx = SirixQueryContext.createWithNodeStore(store);
+  final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
+  System.out.println("");
   System.out.println(
       "Create a CAS index for all attributes and another one for text-nodes. A third one is created for all integers:");
-  final var query = new XQuery(SirixCompileChain.createWithNodeStore(store),
+  final var query = new XQuery(compileChain,
       "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
           + "let $casStats1 := sdb:create-cas-index($doc, 'xs:string', '//@*') "
           + "let $casStats2 := sdb:create-cas-index($doc, 'xs:string', '//*') "
           + "let $casStats3 := sdb:create-cas-index($doc, 'xs:integer', '//*') "
           + "return <rev>{sdb:commit($doc)}</rev>");
   query.serialize(ctx, System.out);
-  System.out.println();
+  System.out.println("");
   System.out.println("CAS index creation done.");
 }
 ```
@@ -351,13 +400,15 @@ And to find and query the CAS-index (for all attribute values) again:
 
 ```java
 // Query CAS index.
-try (final var store = BasicXmlDBStore.newBuilder().build()) {
+try (final var store = BasicXmlDBStore.newBuilder().build();
+  final var ctx = SirixQueryContext.createWithNodeStore(store);
+  final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   System.out.println("");
   System.out.println("Find CAS index for all attribute values.");
-  final var ctx = SirixQueryContext.createWithNodeStore(store);
+  
   final var sortedSeq =
       "let $doc := sdb:doc('mydocs.col', 'resource1') return sdb:sort(sdb:scan-cas-index($doc, sdb:find-cas-index($doc, 'xs:string', '//@*'), 'bar', true(), 0, ()))";
-  final var sortedSeq = new XQuery(SirixCompileChain.createWithNodeStore(store), query).execute(ctx);
+  final var sortedSeq = new XQuery(, query).execute(ctx);
   final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
