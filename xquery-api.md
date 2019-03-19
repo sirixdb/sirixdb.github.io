@@ -293,43 +293,43 @@ try (final var store = BasicDBStore.newBuilder().build()
 ### Transactional cursor based functions
 We also provide a few functions, which are based on the fact that currently when importing data with XQuery we generate hashes for each node as well as the number of descendants. Furthermore we always store the number of children of each node. You can use the function
 
-`sdb:descendant-count($node as node()) as xs:long`
+`sdb:descendant-count($node as structured-item()) as xs:long`
 
 to retrieve the number of descendants of a node,
 
-`sdb:child-count($node as node()) as xs:int`
+`sdb:child-count($node as structured-item()) as xs:int`
 
 to retrieve the number of children of a node and
 
-`sdb:hash($node as node()) as xs:string`
+`sdb:hash($node as structured-item()) as xs:string`
 
 to retrieve the stored hash of a node.
 
 With the function
 
-`sdb:attribute-count($node as node()) as xs:int`
+`sdb:attribute-count($node as structured-item()) as xs:int`
 
 you'll get the number of attributes of a node (an element node).
 
 You can get the most recent revision number with the function
 
-`sdb:most-recent-revision($node as node()) as xs:int`
+`sdb:most-recent-revision($node as structured-item()) as xs:int`
 
 The unique, stable key/ID of a node with
 
-`sdb:nodekey($node as node()) as xs:long`
+`sdb:nodekey($node as structured-item()) as xs:long`
 
 To commit a transaction if no auto-commit is enabled
 
-`sdb:commit($node as node()) as xs:node`
+`sdb:commit($node as structured-item()) as xs:node`
 
 To rollback a transaction (result item is the aborted revision number)
 
-`sdb:rollback($node as node()) as xs:int`
+`sdb:rollback($node as structured-item()) as xs:int`
 
 To get the revision timestamp of a node (the timestamp when the transaction has been committed)
 
-`sdb:timestamp($node as node()) as xs:dateTime`
+`sdb:timestamp($node as structured-item()) as xs:dateTime`
 
 ### Index structures
 Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on alement- or attribute-nodes in XML/XDM resources or name indexes on JSON object record keys, path indexes and so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
@@ -344,7 +344,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build()
   System.out.println("");
   System.out.println("Create name index for all elements with name 'src':");
   final var query = new XQuery(compileChain,
-        "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
+        "let $doc := sdb:doc('mydocs.col', 'resource1') "
             + "let $stats := sdb:create-name-index($doc, fn:QName((), 'src')) "
             + "return <rev>{sdb:commit($doc)}</rev>");
   query.serialize(ctx, System.out);
@@ -382,7 +382,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println("");
   System.out.println("Create path index for all elements (all paths):");
   final var query =
-      new XQuery(compileChain, "let $doc := sdb:doc('mydocs.col', 'resource1', (), true()) "
+      new XQuery(compileChain, "let $doc := sdb:doc('mydocs.col', 'resource1') "
           + "let $stats := sdb:create-path-index($doc, '//*') " + "return <rev>{sdb:commit($doc)}</rev>");
   query.serialize(ctx, System.out);
   System.out.println("");
@@ -428,7 +428,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build()
   System.out.println(
       "Create a CAS index for all attributes and another one for text-nodes. A third one is created for all integers:");
   final var query = new XQuery(compileChain,
-      "let $doc := sdb:doc('mydocs.col', 'resource1', (), fn:boolean(1)) "
+      "let $doc := sdb:doc('mydocs.col', 'resource1') "
           + "let $casStats1 := sdb:create-cas-index($doc, 'xs:string', '//@*') "
           + "let $casStats2 := sdb:create-cas-index($doc, 'xs:string', '//*') "
           + "let $casStats3 := sdb:create-cas-index($doc, 'xs:integer', '//*') "
@@ -450,8 +450,8 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println("Find CAS index for all attribute values.");
   
   final var sortedSeq =
-      "let $doc := sdb:doc('mydocs.col', 'resource1') return sdb:sort(sdb:scan-cas-index($doc, sdb:find-cas-index($doc, 'xs:string', '//@*'), 'bar', true(), 0, ()))";
-  final var sortedSeq = new XQuery(, query).execute(ctx);
+      "let $doc := sdb:doc('mydocs.col', 'resource1') return sdb:sort(sdb:scan-cas-index($doc, sdb:find-cas-index($doc, 'xs:string', '//@*'), 'bar', true(), true(), 0, ()))";
+  final var sortedSeq = new XQuery(compileChain, query).execute(ctx);
   final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
