@@ -347,7 +347,7 @@ Everything is designed to simplify joint processing of XDM and JSON and to maxim
 
 Arrays can be created using an extended version of the standard JSON array syntax:
 
-```XQuery
+```xquery
 (: statically create an array with 3 elements of different types: 1, 2.0, "3" :)
 [ 1, 2.0, "3" ]
 
@@ -384,7 +384,7 @@ bit:len([ 1, 2, ]) (: yields 2 :)
 
 Records provide an alternative to XML to represent structured data. Like with arrays we support an extended version of the standard JSON object syntax:
 
-```XQuery
+```xquery
 (: statically create a record with three fields named 'a', 'b' and 'c' :)
 { "a": 1, "b" : 2, "c" : 3 }
 
@@ -424,7 +424,7 @@ let $r := {x : 1, y : 2, z : (3, 4) } return bit:values($r) (: yields the array 
 
 ### Parsing JSON
 
-```XQuery
+```xquery
 (: the utility function json:parse() can be used to parse JSON data dynamically
    from a given xs:string
 :)
