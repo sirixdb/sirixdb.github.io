@@ -249,6 +249,10 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 
 We support a whole bunch of temporal axis: `first::` to get a node in the first revision, `last::` to get a node in the last revision, `previous::` to get the node in the previous revision, `next::` to get the node in the next revision, `future::` and `future-or-self::` to get a node in all future revisions or the current and future revisions, `past::` and `past-or-self::` to get a node in past revisions or the current and past revisions. We have already seen the `all-time::`-axis which iterates over a node in all revisions.
 
+JSON instead has no notion of navigational axis, instead we provide custom functions:
+
+TODO
+
 ### Open a specific revision
 Once you've stored a few revisions of a resource in Sirix you might want to open a specific revision again. This can simply be done by using a third parameter to the doc-function in the sirix-namespace For instance using 
 
