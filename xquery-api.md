@@ -251,7 +251,19 @@ We support a whole bunch of temporal axis: `first::` to get a node in the first 
 
 JSON instead has no notion of navigational axis, instead we provide custom functions:
 
-TODO
+- jn:future($doc as json-item(), $includeSelf as xs:boolean) as json-item()*
+
+- jn:past($doc as json-item(), $includeSelf as xs:boolean) as json-item()*
+
+- jn:all-times($doc as json-item()) as json-item()+
+
+- jn:first($doc as json-item()) as json-item()?
+
+- jn:last($doc as json-item()) as json-item()?
+
+- jn:previous($doc as json-item()) as json-item()?
+
+- jn:next($doc as json-item()) as json-item()?
 
 ### Open a specific revision
 Once you've stored a few revisions of a resource in Sirix you might want to open a specific revision again. This can simply be done by using a third parameter to the doc-function in the sirix-namespace For instance using 
