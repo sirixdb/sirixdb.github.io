@@ -251,19 +251,19 @@ We support a whole bunch of temporal axis: `first::` to get a node in the first 
 
 JSON instead has no notion of navigational axis, instead we provide custom functions:
 
-- jn:future($doc as json-item(), $includeSelf as xs:boolean) as json-item()*
+- `jn:future($doc as json-item(), $includeSelf as xs:boolean) as json-item()*`: Function for selecting a node in the future or the future-or-self. The first parameter is the context item. Second parameter is if the current item should be included in the result or not.
 
-- jn:past($doc as json-item(), $includeSelf as xs:boolean) as json-item()*
+- `jn:past($doc as json-item(), $includeSelf as xs:boolean) as json-item()*`: Function for selecting a node in the past or the past-or-self. The first parameter is the context item. Second parameter is if the current item should be included in the result or not.
 
-- jn:all-times($doc as json-item()) as json-item()+
+- `jn:all-times($doc as json-item()) as json-item()+`: Function for selecting a node in all revisions.
 
-- jn:first($doc as json-item()) as json-item()?
+- `jn:first($doc as json-item()) as json-item()?`: Function for selecting a node in the first revision.
 
-- jn:last($doc as json-item()) as json-item()?
+- `jn:last($doc as json-item()) as json-item()?`: Function for selecting a node in the last / most-recent revision.
 
-- jn:previous($doc as json-item()) as json-item()?
+- `jn:previous($doc as json-item()) as json-item()?`: Function for selecting a node in the previous revision.
 
-- jn:next($doc as json-item()) as json-item()?
+- `jn:next($doc as json-item()) as json-item()?`: Function for selecting a node in the next revision.
 
 ### Open a specific revision
 Once you've stored a few revisions of a resource in Sirix you might want to open a specific revision again. This can simply be done by using a third parameter to the doc-function in the sirix-namespace For instance using 
