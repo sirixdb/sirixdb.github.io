@@ -5,6 +5,7 @@ doctitle: Features
 
 ### Features in a nutshell
 - Transactional, versioned, typed user-defined index-structures, which are automatically updated once a transaction commits.
+
 - Through XPath-axis extensions we support the navigation not only in space but also in time (future::, past::, first::, last::...). Furthermore we provide several temporal XQuery functions due to our integral versioning approach.
 - An in memory path summary, which is persisted during a transaction commit and always kept up-to-date.
 - Configurable versioning at the database level (full, incremental, differential and a new sliding snapshot algorithm which balances reads and writes without introducing write-peaks, which are usually generated during intermediate full dumps, which are usually written to).
