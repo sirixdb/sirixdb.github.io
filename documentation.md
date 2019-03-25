@@ -28,7 +28,7 @@ We not only support all XPath axis (as well as a few more like as for instance a
 ![sunburstview](images/sunburstview-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"} ![moves](images/moves-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"}
 </div>
 
-https://www.dataversity.net/bitemporal-data-modeling-learn-history/
+You may find a quick overview about the [main features](/features.) useful.
 
 ### API documentation
 We provide several APIs to interact with Sirix.
