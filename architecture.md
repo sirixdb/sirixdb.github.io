@@ -4,9 +4,14 @@ doctitle: Architecture
 ---
 
 ## Introduction
-en timestamp.
+Sirix is a temporal storage system and never overwrites data.
 
 <div class="img_container">
-![pageStructure](images/pageStructure.png){: style="max-width: 1200px; height: 800px; margin: 1.5em"}
+![pageStructure](images/pageStructureOneRev.png){: style="max-width: 1200px; height: 800px; margin: 1.5em"}
+</div>
+
+
+<div class="img_container">
+![pageStructure](images/copy-on-write.png){: style="max-width: 1200px; height: 800px; margin: 1.5em"}
 </div>
 
