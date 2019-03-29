@@ -40,7 +40,7 @@ We borrowed the ideas from the filesystem ZFS and hash-array based tries as we a
 
 As IndirectPages may have many `null`-pointers we use a bitset to keep track of which array indices are really set and thus are able to store a compact array or list in-memory.
 
-
+The `RevisionRootPage` is the main entry point to a revision. It stores the author-ID, an optional commit-message and a timestamp in the form of the unix epoch (milliseconds since 1970). Furthermore it stores a reference to a `PathPage`, a `CASPage` (if it exists), a `NamePage` and an `IndirectPage`. The indirect page is the entry point to the data stored in the leaf `RecordPage`s. The `PathPage` has a reference to a `PathSummary` page, which in its subtree stores a lightweight path summary in the linked `RecordPage`s. Other references to indirect pages are added, once path indexes are created. Each path index has a unique number which also denotes which reference to use.
 
 <div class="img_container">
 ![pageStructure](images/copy-on-write.png){: style="max-width: 100%; height: auto; margin: 0em"}
