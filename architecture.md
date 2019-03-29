@@ -16,6 +16,7 @@ Let’s turn or focus to the question why historical data hasn’t been retained
 As Marc Kramis points out in his paper “Growing Persistent Trees into the 21st Century”:
 
 > The switch to flash drives keenly motivates to shift from the “current state’’ paradigm towards remembering the evolutionary steps leading to this state.
+
 The main insight is that flash drives as for instance SSDs, which are common nowadays have zero seek time while not being able to do in-place modifications of the data. Flash drives are organized into pages and blocks, whereas blocks Due to their characteristics they are able to read data on a fine-granular page-level, but can only erase data at the coarser block-level. Blocks first have to be erased, before they can be updated. Thus, updated data first is written to another place. A garbage collector marks the data, which has been rewritten to the new place as erased, such that new data can be stored in the future. Furthermore index-structures are updated.
 
 Evolution of state through fine grained modifications
