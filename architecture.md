@@ -31,7 +31,7 @@ Instead, it is copied and appended to a file in a post-order traversal of the in
 The page-structure for one revision is depicted in the following figure:
 
 <div class="img_container">
-![pageStructure](images/pageStructureOneRev.png){: style="max-width: 600px; height: auto; margin: 1.5em"}
+![pageStructure](images/pageStructureOneRev.png){: style="max-width: 100%; height: auto; margin: 0em"}
 </div>
 
 The `UberPage` is the main entry point. It contains header information about the configuration of the resource as well as a reference to an `IndirectPage`. A reference contains the offset of the IndirectPage in the data-file or the transaction-intent log and an in-memory pointer. IndirectPages are used to increase the fanout of the tree. We currently store 512 references to either another layer of indirect pages or the `RevisionRootPage`/`RecordPage`. A new level of indirect pages is added whenever we run out of the number of records we can store in the leaf pages (either revisions or records), which are referenced by the `IndirectPage`s.
@@ -41,6 +41,6 @@ We borrowed the ideas from the filesystem ZFS and hash-array based tries as we a
 
 
 <div class="img_container">
-![pageStructure](images/copy-on-write.png){: style="max-width: 600px; height: auto; margin: 1.5em"}
+![pageStructure](images/copy-on-write.png){: style="max-width: 100%; height: auto; margin: 0em"}
 </div>
 
