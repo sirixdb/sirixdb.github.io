@@ -16,7 +16,6 @@ Let’s turn or focus to the question why historical data hasn’t been retained
 As Marc Kramis points out in his paper “Growing Persistent Trees into the 21st Century”:
 
 > The switch to flash drives keenly motivates to shift from the “current state’’ paradigm towards remembering the evolutionary steps leading to this state.
-
 The main insight is that flash drives as for instance SSDs, which are common nowadays have zero seek time while not being able to do in-place modifications of the data. Flash drives are organized into pages and blocks, whereas blocks Due to their characteristics they are able to read data on a fine-granular page-level, but can only erase data at the coarser block-level. Blocks first have to be erased, before they can be updated. Thus, updated data first is written to another place. A garbage collector marks the data, which has been rewritten to the new place as erased, such that new data can be stored in the future. Furthermore index-structures are updated.
 
 Evolution of state through fine grained modifications
@@ -34,7 +33,9 @@ The page-structure for one revision is depicted in the following figure:
 ![pageStructure](images/pageStructureOneRev.png){: style="max-width: 1200px; height: 800px; margin: 1.5em"}
 </div>
 
-We borrowed ideas from the filesystem ZFS as for instance checksums stored in parent database-pages/page-fragments, which forms a self-validating merkle-tree as well as our internal tree-structure of databases-pages.
+The `UberPage` is the main entry point. It contains header information about the configuration of the resource as well as a reference to an `IndirectPage`. A reference contains the offset of the IndirectPage in the data-file or the transaction-intent log and an in-memory pointer. IndirectPages are used to increase the fanout of the tree. We currently store 512 references to either another layer of indirect pages or the `RevisionRootPage`/`RecordPage`. A new level of indirect pages is added whenever we run out of the number of records we can store in the leaf pages (either revisions or records), which are referenced by the `IndirectPage`s.
+
+We borrowed the ideas from the filesystem ZFS and hash-array based tries as we also store checksums in parent database-pages/page-fragments, which in turn form a self-validating merkle-tree.
 
 
 
