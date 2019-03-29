@@ -4,7 +4,7 @@ doctitle: Architecture
 ---
 
 ## Introduction
-Sirix is a temporal database system and never overwrites data. Let's define what a temporal database system is all about.
+Sirix is a temporal database system and never overwrites data. Let's first define what a temporal database system is all about.
 
 It is a term used to describe, that a system is capable of retrieving past states of your data. Typically a temporal database stores both valid time, how long a fact is true in the real world as well as transaction time, when the data actually is committed to the database.
 
@@ -15,7 +15,8 @@ Let’s turn or focus to the question why historical data hasn’t been retained
 ## Advantages and disadvantages of flash drives as for instance SSDs
 As Marc Kramis points out in his paper “Growing Persistent Trees into the 21st Century”:
 
-The switch to flash drives keenly motivates to shift from the “current state’’ paradigm towards remembering the evolutionary steps leading to this state.
+> The switch to flash drives keenly motivates to shift from the “current state’’ paradigm towards remembering the evolutionary steps leading to this state.
+
 The main insight is that flash drives as for instance SSDs, which are common nowadays have zero seek time while not being able to do in-place modifications of the data. Flash drives are organized into pages and blocks, whereas blocks Due to their characteristics they are able to read data on a fine-granular page-level, but can only erase data at the coarser block-level. Blocks first have to be erased, before they can be updated. Thus, updated data first is written to another place. A garbage collector marks the data, which has been rewritten to the new place as erased, such that new data can be stored in the future. Furthermore index-structures are updated.
 
 Evolution of state through fine grained modifications
