@@ -44,6 +44,10 @@ The `RevisionRootPage` is the main entry point to a revision. It stores the auth
 
 The right subtree of the `RevisionRootPage` started by the `IndirectPage` actually is the main entry point to our data stored in the leaf nodes, the `RecordPage`s once again.
 
+To support fast access to a RevisionRootPage we store a second file with just the offsets to specific revisions in a revisions-file, which is read into main-memory on startup.
+
+In order to support the efficient storage/retrieval of small and large records we introduced `OverflowPage`s for large records, which only have to be read, if they are directly selected, as we usually store byte-arrays and once deserialized the reconstructed instances in in-memory maps.
+
 <div class="img_container">
 ![pageStructure](images/copy-on-write.png){: style="max-width: 100%; height: auto; margin: 0em"}
 </div>
