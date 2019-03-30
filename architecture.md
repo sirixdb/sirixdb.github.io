@@ -61,3 +61,26 @@ Note, that we have to update the ancestor path of each changed `RecordPage`. How
 One of the dictinctive features of Sirix is that we are versioning the `RecordPage`s and not just copy all records in the page, even if only a single record has been modified. The new record page fragment always contains a reference to the former version. Thus, our versioning algorithms are able to dereference a fixed predefined number of page-fragments at max to reconstruct a `RecordPage` in-memory.
 
 We currently support one read/write-transaction concurrent to N-read only transactions. Thus, our architecture supports concurrency very well (note the difference between concurrency and parallel computations, the former simply is a prerequisite for the latter). If we ever want to allow concurrent writes to the same resource we could introduce a form of serializable snapshot isolation (which we think is not feasable for tree-structured data as XML- and JSON, at least if we store hashes of the nodes and the number of descendants).
+
+
+### Versioning algorithms for storing and retrieving record-level snapshots
+
+As most database system we store at most a fixed number of records, that is the actual data per database-page (currently 512 records at most). The records themselves are of variable size. Overlong records, which exceed a predefined length in bytes are stored in additional overflow pages and only referenced in the record-pages.
+
+We implemented a number of versioning strategies best known from backup systems for copy-on-write operations of record-pages. Namely we either copy
+
+- the full record-pages, that is any record in the page (full)
+- only the changed records in a record-page regarding the former version (incremental)
+- only the changed records in a record-page since a full page dump (differential)
+
+Incremental-versioning is the other extreme and write-performance is best, as it stores the optimum (only changed records), but on the other hand reconstructing a page needs intermittent full snapshots of pages, such that the performance doesn’t deteriorate with each new revision of the page as the number of increments increases with each new version.
+
+Differential-versioning tries to balance reads and writes a bit better, but is still not optimal. Each time records in a page are modified a new page is written, with all changed records since a past full dump of the page. This means that only ever two revisions of the page-fragment have to be read to reconstruct a record-page. However write-performance also deteriorates with each new revision of the page.
+
+Incremental versioning in regards to write performance, due to the requirement of intermittent full dumps of the page results in write-peaks. Differential versioning also suffers from a similar problem. Without an intermittent full dump a lot of data would have to be duplicated on each new write.
+
+Marc Kramis came up with the idea of a novel sliding snapshot algorithm, which balances read/write-performance to circumvent any write-peaks.
+
+The algorithm makes use of a sliding windows. First, any changed record must be stored, second any record, which is older than a predefined length N of the window and which has not been changed during these N-revisions. Only these N-revisions at max have to be read. The fetching of the page-fragments could be done in parallel or we simply stop once the full-page has been reconstructed starting with the most recent revision.
+
+Once we made sure our storage system scaled linear for fetching old-revisions as well as the most recent revision and logarithmic for fetching and storing single records as well as whole revisions we focused our attention to upper layers.
