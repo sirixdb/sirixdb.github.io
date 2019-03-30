@@ -1162,6 +1162,10 @@ section.markdown {
   line-height: 1.2em;
 }
 
+section.markdown ul {
+  list-style-type: disc;
+}
+
 section.markdown li {
   margin-top: .5em;
   margin-bottom: .5em;
