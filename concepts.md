@@ -1,6 +1,6 @@
 ---
 layout: documentation
-doctitle: Architecture
+doctitle: Concepts
 ---
 
 ## Introduction
