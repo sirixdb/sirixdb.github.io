@@ -48,7 +48,14 @@ To support fast access to a RevisionRootPage we store a second file with just th
 
 In order to support the efficient storage/retrieval of small and large records we introduced `OverflowPage`s for large records, which only have to be read, if they are directly selected, as we usually store byte-arrays and once deserialized the reconstructed instances in in-memory maps.
 
+The next figure depicts what happens during a transaction-commit.
+
 <div class="img_container">
 ![pageStructure](images/copy-on-write.png){: style="max-width: 100%; height: auto; margin: 0em"}
 </div>
 
+We assume that we have inserted/updated/deleted a record in the leftmost RecordPage. What happens is that depending on the versioning algorithm the modified record as well as probably some other records of the page are copied to a new page fragment. First, all changes are stored in an in-memory transaction (intent) log, which can be persisted, if needed. Second, during a transaction commit the page-structure of the current `RevisionRootPage` is serialized in a postorder traversal. All changed `RecordPage`s are written to disk / a flash drive, from the left most `IndirectPage` which has been updated. Then the indirect page is written with updated references to the new persistent locations of the record page fragments. We also store checksums in the parent pointers as in ZFS, such that the storage in the future is able to detect data corruption and heal itself, once we partition and especially replicate the data. The whole page-structure is serialized in this manner. We also want to store an encryption key in the references in the future, to support encryption at rest. 
+
+Note, that we have to update the ancestor path of each changed `RecordPage`. However note, that storing indirect pages as well as the `RevisionRootPage`/`CASPage`,`PathSummaryPage` and the `PathPage` is cheap. We currently store copies of the `NamePage`s, but in the future might also version these according to the chosen versioning algorithm, just like `RecordPage`s, just we do not need to copy the whole dictionaries and save storage costs thereof.
+
+One of the dictinctive features of Sirix is that we are versioning the `RecordPage`s and not just copy even if only a single record has been modified. The new record page fragment always contains a reference to the former version. Thus our algorithms are able to dereference a fixed number of page-fragments at max to reconstruct a `RecordPage` in-memory.
