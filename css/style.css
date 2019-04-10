@@ -1137,6 +1137,19 @@
 			width: 5em;
 		}
 
+blockquote {
+    margin-block-end: 21px;
+    margin-block-start: 21px;
+    margin-inline-end: 40px;
+    margin-inline-start: 40px;
+    margin: 21px 40px;
+    font-size: 1.4rem;
+}
+
+blockquote p {
+    width: 60%;
+}
+
 section.markdown {
   font-family: et-bembo, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
   font-size: 0.9em;
