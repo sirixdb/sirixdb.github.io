@@ -61,7 +61,7 @@
 
 	body, input, select, textarea {
 		color: #7c8081;
-		font-family: 'Lato', sans-serif;
+		font-family: et-bembo, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
 		font-size: 15pt;
 		font-weight: 300;
 		letter-spacing: 0.025em;
