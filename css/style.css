@@ -1148,9 +1148,9 @@ blockquote {
 blockquote p {
     margin: 0;
     padding: .5em;
-    font-size: 1.1rem;
-    line-height: 1.1rem;
-/*    width: 60%; */
+    font-size: 1.3rem;
+    line-height: 1.5rem;
+    width: 90%;
 }
 
 section.markdown {
