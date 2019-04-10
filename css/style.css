@@ -1,5 +1,8 @@
 @charset "UTF-8";
 
+@import url("font-awesome.min.css");
+@import url("http://fonts.googleapis.com/css?family=Lato:300,400,900");
+
 @font-face {
     font-family: "et-bembo";
     src: local('ET Bembo RomanLF'), local('ETBembo-RomanLF'),
@@ -27,9 +30,6 @@
     font-style: normal;
     font-display: swap;
 }
-
-@import url("font-awesome.min.css");
-@import url("http://fonts.googleapis.com/css?family=Lato:300,400,900");
 
 /*
 	Twenty by HTML5 UP
