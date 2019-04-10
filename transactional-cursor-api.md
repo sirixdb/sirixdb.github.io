@@ -492,7 +492,7 @@ More sophisticated bulk insertion methods exist, too (as you have already seen w
 To insert a new subtree based on a String you can simply use
 
 ```java
-wtx.insertSubtreeAsFirstChild(XmlShredder.createStringReader("<foo>bar<baz/></foo>"))`
+wtx.insertSubtreeAsFirstChild(XmlShredder.createStringReader("<foo>bar<baz/></foo>"))
 ```
 
 Updating methods can be chained:
