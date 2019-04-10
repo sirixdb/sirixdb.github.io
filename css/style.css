@@ -1143,13 +1143,13 @@ blockquote {
     margin-inline-end: 40px;
     margin-inline-start: 40px;
     margin: 21px 40px;
-    font-size: 1.1rem;
-    line-height: 1.3rem;
 }
 
 blockquote p {
     margin: 0;
     padding: .5em;
+    font-size: 1.1rem;
+    line-height: 1.1rem;
 /*    width: 60%; */
 }
 
