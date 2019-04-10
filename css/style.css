@@ -38,6 +38,9 @@
 */
 
 /* Basic */
+	body {
+		font-family: et-bembo, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+	}
 
 	body, #skel-layers-wrapper {
 		background: #f3f6fa;
