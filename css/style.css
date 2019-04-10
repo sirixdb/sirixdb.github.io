@@ -1195,7 +1195,6 @@ section.markdown blockquote {
 
 section.markdown h2, section.markdown h3, section.markdown h4, section.markdown h5 {
   border-bottom: 3px solid #CCC;
-  float: left;
   width: 100%;
   padding-bottom: 3px;
 }
