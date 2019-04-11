@@ -1138,6 +1138,12 @@
 			width: 5em;
 		}
 
+.container {
+ margin-left:auto;
+ margin-right:auto;
+ width:1200px;
+}
+
 blockquote {
     margin-block-end: 21px;
     margin-block-start: 21px;
