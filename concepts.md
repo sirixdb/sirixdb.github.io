@@ -63,6 +63,8 @@ RecordPage
 OverflowPage
 : `OverflowPage`s are used to store records, which exceeds a predefined size in bytes. As record pages have to be read into memory and potentially only a small fraction of records in the page have to be retrieved and reconstructed from byte-arrays in-memory we're able to delay this reconstruction until the overlong record really has to be fetched by our storage engine.
 
+## Transaction commit
+
 The next figure depicts what happens during a transaction-commit.
 
 <div class="img_container">
@@ -77,8 +79,7 @@ One of the dictinctive features of Sirix is that we are versioning the `RecordPa
 
 We currently support one read/write-transaction concurrent to N-read only transactions. Thus, our architecture supports concurrency very well (note the difference between concurrency and parallel computations, the former simply is a prerequisite for the latter). If we ever want to allow concurrent writes to the same resource we could introduce a form of serializable snapshot isolation (which we think is not feasable for tree-structured data as XML- and JSON, at least if we store hashes of the nodes and the number of descendants).
 
-
-### Versioning algorithms for storing and retrieving record-level snapshots
+## Versioning algorithms for storing and retrieving record-level snapshots
 
 As most database system we store at most a fixed number of records, that is the actual data per database-page (currently 512 records at most). The records themselves are of variable size. Overlong records, which exceed a predefined length in bytes are stored in additional overflow pages and only referenced in the record-pages.
 
