@@ -6,21 +6,23 @@ doctitle: Concepts
 ## Introduction
 Sirix is a temporal database system and never overwrites data. Let's first define what a temporal database system is all about.
 
-It is a term used to describe, that a system is capable of retrieving past states of your data. Typically a temporal database stores both valid time, how long a fact is true in the real world as well as transaction time, when the data actually is committed to the database.
+A temporal database is capable of retrieving past states of your data. Typically it stores both valid time, that is how long a fact is true in the real world as well as transaction time, when the data actually is committed to the database.
 
-Questions such as: Give me last month’s history of the Dollar-Pound Euro exchange rate. What was the customers address on July 12th in 2015 as it was recorded back in the day? Did they move or did we correct an error? Did we have errors in the database, which were corrected later on?
+Questions such as: Give me last month's history of the Dollar-Pound Euro exchange rate. What was the customers address on July 12th in 2015 as it was recorded back in the day? Did they move or did we correct an error? Did we have errors in the database, which were corrected later on?
 
-Let’s turn or focus to the question why historical data hasn’t been retained in the past and how new storage advances in recent years made it possible, to build sophisticated solutions to help answer these questions without the hurdle, state-of-the-art systems bring.
+Let's turn or focus to the question why historical data hasn't been retained in the past and how new storage advances in recent years made it possible, to build sophisticated solutions to help answer these questions without the hurdle, state-of-the-art systems bring.
 
 ## Advantages and disadvantages of flash drives as for instance SSDs
 As Marc Kramis points out in his paper “Growing Persistent Trees into the 21st Century”:
 
-> The switch to flash drives keenly motivates to shift from the “current state’’ paradigm towards remembering the evolutionary steps leading to this state.
+> The switch to flash drives keenly motivates to shift from the "current state" paradigm towards remembering the evolutionary steps leading to this state.
 
 The main insight is that flash drives as for instance SSDs, which are common nowadays have zero seek time while not being able to do in-place modifications of the data. Flash drives are organized into pages and blocks. Due to their characteristics they are able to read data on a fine-granular page-level, but can only erase data at the coarser block-level. Furthermore, blocks first have to be erased, before they can be updated. Thus, updated data is written to another place. A garbage collector marks the data, which has been rewritten to the new place as erased at the previous block location, such that new data can be stored in the future. Index-structures to find the data at the new location are updated.
 
 ### Evolution of state through fine grained modifications
 Furthermore Marc points out, that small modifications, because of clustering requirements due to slow random reads of traditionally mechanical disk head seek times, usually involves writing not only the modified data, but also all other records in the modified page as well as a number of pages with unmodified data. This clearly is an undesired effect.
+
+Instead, from a storage point of view it is desirable to only store the changes. As we'll see it boils down to a trade off between read- and write-performance, that is having to reconstruct a page in-memory from scattered incremental changes or having to store more records than necessarily changed.
 
 ## How we built an Open Source storage system based on these observations from scratch
 
