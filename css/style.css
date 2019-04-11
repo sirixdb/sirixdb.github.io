@@ -1169,8 +1169,9 @@ section.markdown > p {
   line-height: 1.5em;
 }
 
-dl {
-  margin-top: 1.5em;
+dt {
+  margin-top: 1.1em;
+  font-style: oblique;
 }
 
 dd {
