@@ -56,6 +56,12 @@ NamePage
 CASPage
 : A `CASPage` is the main entry point to store and retrieve CAS- (content-and-structure) indexes. They are a hybrid consisting of path class definitions and typed content. `/book/published[xs:dateTime]` for instance indexes the path `/book/published` and the content as `xs:dateTime`. The indexes are as always stored in AVL-trees.
 
+RecordPage
+: `RecordPage`s store the actual data. Currently we store 512 records in a record page. Each record page also has a pointer to the previous record page, which stores the offset of the previous version of this record page. This is crucial for our versioning algorithms, which have to retrieve several record pages (or record page fragments) in order to reconstruct a record page in-memory. Furthermore, records, which exceed a predefined size are stored in so called `OverflowPage`s and referenced in a record page.
+
+OverflowPage
+: `OverflowPage`s are used to store a record, which exceeds a predefined size in bytes. As record pages have to be read into memory and potentially only a small fraction of records in the page have to be retrieved and reconstructed from byte-arrays in-memory we're able to delay this reconstruction until the overlong record really has to be fetched by our storage engine.
+
 To support fast access to a RevisionRootPage we store a second file with just the offsets to specific revisions in a revisions-file, which is read into main-memory on startup.
 
 In order to support the efficient storage/retrieval of small and large records we introduced `OverflowPage`s for large records, which only have to be read, if they are directly selected, as we usually store byte-arrays and once deserialized the reconstructed instances in in-memory maps.
