@@ -25,10 +25,9 @@ Furthermore Marc points out, that small modifications, because of clustering req
 Instead, from a storage point of view it is desirable to only store the changes. As we'll see it boils down to a trade off between read- and write-performance, that is having to reconstruct a page in-memory from scattered incremental changes or having to store more records than necessarily changed.
 
 ## How we built an Open Source storage system based on these observations from scratch
-
 Sirix stores per revision and per page-deltas. Due to zero seek time of flash drives we do not have to cluster data. Sirix only ever clusters data during transaction commits. It is based on an append-only storage. Data is never modified in-place.
 
-Instead, database pages are copied to memory, updated and synced to a file in a post-order traversal of the internal tree-structure in batches once a transaction commits.
+Instead, database pages are copied to memory, updated and synced to a file in batches by means of a post-order traversal of the internal tree-structure once a transaction commits.
 
 The page-structure for one revision is depicted in the following figure:
 
