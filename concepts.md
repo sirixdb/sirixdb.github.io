@@ -43,6 +43,7 @@ IndirectPage
 
 RevisionRootPage
 : The `RevisionRootPage` is the main entry point to a revision. It stores the author-ID, an optional commit-message and a timestamp in the form of the unix epoch (milliseconds since 1970). Furthermore it stores a reference to a `PathPage`, a `CASPage` (if it exists), a `NamePage` and an `IndirectPage`. The indirect page is the entry point to the data stored in the leaf `RecordPage`s. The right subtree of the `RevisionRootPage` started by the `IndirectPage` actually is the main entry point to our data stored in the leaf nodes, the `RecordPage`s once again.
+To support fast access to a RevisionRootPage we store a second file with just the offsets to specific revisions in a revisions-file, which is read into main-memory on startup.
 
 PathPage
 : The `PathPage` has references to `IndirectPage`s, whereas each of the indirect pages is the root entry point to a user defined path index. A unique index ID is also the reference offset in the path page to retrieve the according path index / IndirectPage subtree root. References to indirect pages are added, once path indexes are created. In the leaf pages (the `RecordPage`s), which are referenced by the indirect pages, an AVL-tree is stored for each individual index. The index contains path nodes as keys as well as an array of record-identifiers in the values. Furthermore a path page contains a reference to a `PathSummary` page.
@@ -60,11 +61,7 @@ RecordPage
 : `RecordPage`s store the actual data. Currently we store 512 records in a record page. Each record page also has a pointer to the previous record page, which stores the offset of the previous version of this record page. This is crucial for our versioning algorithms, which have to retrieve several record pages (or record page fragments) in order to reconstruct a record page in-memory. Furthermore, records, which exceed a predefined size are stored in so called `OverflowPage`s and referenced in a record page.
 
 OverflowPage
-: `OverflowPage`s are used to store a record, which exceeds a predefined size in bytes. As record pages have to be read into memory and potentially only a small fraction of records in the page have to be retrieved and reconstructed from byte-arrays in-memory we're able to delay this reconstruction until the overlong record really has to be fetched by our storage engine.
-
-To support fast access to a RevisionRootPage we store a second file with just the offsets to specific revisions in a revisions-file, which is read into main-memory on startup.
-
-In order to support the efficient storage/retrieval of small and large records we introduced `OverflowPage`s for large records, which only have to be read, if they are directly selected, as we usually store byte-arrays and once deserialized the reconstructed instances in in-memory maps.
+: `OverflowPage`s are used to store records, which exceeds a predefined size in bytes. As record pages have to be read into memory and potentially only a small fraction of records in the page have to be retrieved and reconstructed from byte-arrays in-memory we're able to delay this reconstruction until the overlong record really has to be fetched by our storage engine.
 
 The next figure depicts what happens during a transaction-commit.
 
