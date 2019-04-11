@@ -1169,6 +1169,14 @@ section.markdown > p {
   line-height: 1.5em;
 }
 
+dl {
+  margin-top: 1.5em;
+}
+
+dd {
+  line-height: 1.5em;
+}
+
 pre.highlight {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
