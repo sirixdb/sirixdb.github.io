@@ -1190,7 +1190,7 @@ pre.highlight {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
   padding: 1.2em;
-  background-color: #efefef;
+  /* background-color: #efefef; */
   color: #000000;
   border-radius: 1px;
   overflow-x: auto;
