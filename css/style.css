@@ -1196,6 +1196,7 @@ pre.highlight {
   overflow-x: auto;
   font-family: monospace;
   border-left: 3px solid #d01040;
+  text-align: left;
 }
 
 div.content {
