@@ -11,13 +11,15 @@ layout: landing-page
 					We store per revision and per page changes.</h2>
 					<p>Sirix is especially well suited for flash drives as for instance SSDs due to its log structured <strong>copy-on-write</strong> nature.
 					<br />
-					We allow <strong>time-travel</strong> queries for your <strong>XML</strong> as well as <strong>JSON</strong> data and store both in our binary on-disk structure or a lightweight in-memory structure. 
+					We allow <strong>time-travel</strong> queries for your <strong>XML</strong> as well as <strong>JSON</strong> data and 
+					<br />
+					store both in our binary on-disk structure or a lightweight in-memory structure. 
 					<br />
 					It is released for free under <a href="https://opensource.org/licenses/BSD-3-Clause">The 3-Clause BSD License</a> license. Have fun!
 					<br />
-					The following XQuery for JSON snippet shows a simple query, which opens a resource in a specific revision based 
+					The following XQuery for JSON query basically opens a database/resource in a specific revision based 
 					<br />
-				        on a timestamp and search for a status, which didn't exist in the previous revision.</p>
+				        on a timestamp and searchs for a status, which didn't exist in the previous revision.</p>
 					<div class="hightlight"><code><pre class="highlight">let $statuses := jn:open('mycol.jn','mydoc.jn', xs:dateTime('2019-04-13T16:24:27Z'))=>statuses
 let $foundStatus := for $status in bit:array-values($statuses)
   let $dateTimeCreated := xs:dateTime($status=>created_at)
