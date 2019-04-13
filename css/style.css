@@ -1186,10 +1186,10 @@ dd {
 }
 
 pre.highlight {
+  text-align: left;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
   padding: 1.2em;
-  /** border: 1px solid #dbdbdb; **/
   background-color: #efefef;
   color: #000000;
   border-radius: 1px;
