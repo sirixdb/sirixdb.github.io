@@ -15,7 +15,8 @@ layout: landing-page
 					<br />
 					and store both in our binary on-disk structure or a lightweight in-memory structure. 
 					<br />
-					It is released for free under <a href="https://opensource.org/licenses/BSD-3-Clause">The 3-Clause BSD License</a> license. Have fun! f</p>
+					It is released for free under <a href="https://opensource.org/licenses/BSD-3-Clause">The 3-Clause BSD License</a> license. Have fun!</p>
+					
 				<p><code><pre class="highlight">let $statuses := jn:open('mycol.jn','mydoc.jn', xs:dateTime('2019-04-13T16:24:27Z'))=>statuses
 let $foundStatus := for $status in bit:array-values($statuses)
   let $dateTimeCreated := xs:dateTime($status=>created_at)
