@@ -16,7 +16,7 @@ layout: landing-page
 					and store both in our binary on-disk structure or a lightweight in-memory structure. 
 					<br />
 					It is released for free under <a href="https://opensource.org/licenses/BSD-3-Clause">The 3-Clause BSD License</a> license. Have fun!</p>
-					<p>&nbsp;</p>
+					
 					<p>The following XQuery for JSON query basically opens a database/resource in a specific revision based 
 					<br />
 				        on a timestamp and searchs for a status, which didn't exist in the previous revision.</p>
@@ -30,6 +30,8 @@ let $foundStatus := for $status in bit:array-values($statuses)
   return $status
 return {"revision": sdb:revision($foundStatus), $foundStatus{text}}
 </code></pre></div></div>
+					
+					<p>&nbsp;</p>
 				</header>
 					
 				<!-- One -->
