@@ -28,7 +28,7 @@ let $foundStatus := for $status in bit:array-values($statuses)
   order by $dateTimeCreated
   return $status
 return {"revision": sdb:revision($foundStatus), $foundStatus{text}}
-</p></code></div>
+</pre></code></p>
 				</header>
 					
 				<!-- One -->
