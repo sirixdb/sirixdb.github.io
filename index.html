@@ -17,6 +17,10 @@ layout: landing-page
 					<br />
 					It is released for free under <a href="https://opensource.org/licenses/BSD-3-Clause">The 3-Clause BSD License</a> license. Have fun!</p>
 					<p>&nbsp;</p>
+					<p>The following XQuery for JSON query basically opens a database/resource in a specific revision based 
+					<br />
+				        on a timestamp and searchs for a status, which didn't exist in the previous revision.</p>
+					<p>&nbsp;</p>
 					
 				<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let $statuses := jn:open('mycol.jn','mydoc.jn', xs:dateTime('2019-04-13T16:24:27Z'))=>statuses
 let $foundStatus := for $status in bit:array-values($statuses)
