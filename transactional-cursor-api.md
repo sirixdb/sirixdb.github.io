@@ -33,6 +33,8 @@ repositories {
 }
 ```
 
+However, if you prefer, we just released version 0.9.0 of Sirix in Maven Central.
+
 Maven artifacts are deployed to the central maven repository (however please use the SNAPSHOT-variants as of now). Currently the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
 
 Core project:
@@ -41,14 +43,14 @@ Core project:
 <dependency>
   <groupId>io.sirix</groupId>
   <artifactId>sirix-core</artifactId>
-  <version>0.9.0-SNAPSHOT</version>
+  <version>0.9.1-SNAPSHOT</version>
 </dependency>
 ```
 
 To add the dependency in Gradle:
 ```gradle
 dependencies {
-  compile 'io.sirix:sirix-core:0.9.0-SNAPSHOT'
+  compile 'io.sirix:sirix-core:0.9.1-SNAPSHOT'
 }
 ```
 
