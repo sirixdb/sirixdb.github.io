@@ -6,9 +6,9 @@ doctitle: Concepts
 ## Introduction
 Sirix is a temporal database system and never overwrites data. Let's first define what a temporal database system is all about.
 
-A temporal database is capable of retrieving past states of your data. Typically it stores both valid time, that is how long a fact is true in the real world as well as transaction time, when the data actually is committed to the database.
+A temporal database is capable of retrieving past states of your data. Typically it stores valid time, that is how long a fact is true in the real world. If we also store the valid time, that is when a fact is true in the real world we model we have a bitempiral relation, that is two time axis.
 
-Questions such as: Give me last month's history of the Dollar-Pound Euro exchange rate. What was the customers address on July 12th in 2015 as it was recorded back in the day? Did they move or did we correct an error? Did we have errors in the database, which were corrected later on?
+Questions such as the following are supported by temporal database systems without a lot of hurdle: Give me last month's history of the Dollar-Pound Euro exchange rate. What was the customers address on July 12th in 2015 as it was recorded back in the day? Did they move or did we correct an error? Did we have errors in the database, which were corrected later on?
 
 Let's turn or focus to the question why historical data hasn't been retained in the past and how new storage advances in recent years made it possible, to build sophisticated solutions to help answer these questions without the hurdle, state-of-the-art systems bring.
 
