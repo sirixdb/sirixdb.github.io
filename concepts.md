@@ -4,9 +4,9 @@ doctitle: Concepts
 ---
 
 ## Introduction
-Sirix is a temporal database system and never overwrites data. Let's first define what a temporal database system is all about.
+Sirix is a temporal database system and never overwrites data. It is based on a log-structured copy-on-write approach, whereas versioning takes place at the page- as well as record/node-level.  Let's first define what a temporal database system is all about.
 
-A temporal database is capable of retrieving past states of your data. Typically it stores transaction time, that is the time a transaction commits data. If we also store the valid time, that is when a fact is true in the real world we model we have a bitempiral relation, that is two time axis.
+A temporal database is capable of retrieving past states, that is snapshots of your data. Typically it stores transaction time, that is the time a transaction commits data. If we also store the valid time, that is when a fact is true in the real world we have a bitempiral relation, that is two time axis.
 
 Questions such as the following might be easily answered: Give me last month's history of the Dollar-Pound Euro exchange rate. What was the customers address on July 12th in 2015 as it was recorded back in the day? Did they move or did we correct an error? Did we have errors in the database, which were corrected later on?
 
