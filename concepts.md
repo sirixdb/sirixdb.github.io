@@ -29,7 +29,7 @@ Sirix stores per revision and per page-deltas. Due to zero seek time of flash dr
 
 Instead, database pages are copied to memory, updated and synced to a file in batches by means of a post-order traversal of the internal tree-structure once a transaction commits.
 
-Our page-structure is heavily inspired by the operating system ZFS. However, we used some of the ideas to store and version data on a sub-file level. We'll see that Marc Kramis came up with a novel sliding snapshot algorithm to version record pages, based on observed shortcomings of versioning approaches from backup systems. 
+Our page-structure is heavily inspired by the operating system ZFS. However, we used some of the ideas to store and version data on a sub-file level. We will see that Marc Kramis came up with a novel sliding snapshot algorithm to version record pages, based on observed shortcomings of versioning approaches from backup systems. 
 
 ### Page structure
 
