@@ -10,22 +10,22 @@ A temporal database is capable of retrieving past states, that is snapshots of y
 
 Questions such as the following might be easily answered: Give me last month's history of the Dollar-Pound Euro exchange rate. What was the customers address on July 12th in 2015 as it was recorded back in the day? Did they move or did we correct an error? Did we have errors in the database, which were corrected later on?
 
-Let's turn or focus to the question why historical data hasn't been retained in the past and how new storage advances in recent years made it possible, to build sophisticated solutions to help answer these questions without the hurdle, state-of-the-art systems bring.
+Let us turn or focus to the question why historical data has not been retained in the past and how new storage advances in recent years made it possible, to build sophisticated solutions to help answer these questions without the hurdle, state-of-the-art systems bring.
 
 ## Advantages and disadvantages of flash drives as for instance SSDs
 As Marc Kramis points out in his paper “Growing Persistent Trees into the 21st Century”:
 
 > The switch to flash drives keenly motivates to shift from the "current state" paradigm towards remembering the evolutionary steps leading to this state.
 
-The main insight is that flash drives as for instance SSDs, which are common nowadays have zero seek time while not being able to do in-place modifications of the data. Flash drives are organized into pages and blocks. Due to their characteristics they are able to read data on a fine-granular page-level, but can only erase data at the coarser block-level. Furthermore, blocks first have to be erased, before they can be updated. Thus, updated data is written to another place. A garbage collector marks the data, which has been rewritten to the new place as erased at the previous block location, such that new data can be stored in the future. Index-structures to find the data at the new location are updated.
+The main insight is that flash drives as for instance SSDs, which are common nowadays have zero seek time while not being able to do in-place modifications of the data. Flash drives are organized into pages and blocks. Due to their characteristics they are able to read data on a fine-granular page-level, but can only erase data at the coarser block-level. Furthermore, blocks first have to be erased, before they can be updated. Thus, updated data is written to another place. A garbage collector marks the data, which has been rewritten to the new place as erased at the previous block location, such that new data can be stored in the future. Metadata to find the data at the new location is updated.
 
 ### Evolution of state through fine grained modifications
 Furthermore Marc points out, that small modifications, because of clustering requirements due to slow random reads of traditionally mechanical disk head seek times, usually involves writing not only the modified data, but also all other records in the modified page as well as a number of pages with unmodified data. This clearly is an undesired effect.
 
-Instead, from a storage point of view it is desirable to only store the changes. As we'll see it boils down to a trade off between read- and write-performance, that is having to reconstruct a page in-memory from scattered incremental changes or having to store more records than necessarily changed.
+Instead, from a storage point of view it is desirable to only store the changes. As we will see it boils down to a trade off between read- and write-performance, that is having to reconstruct a page in-memory from scattered incremental changes or having to store more records than necessarily have changed.
 
 ## How we built an Open Source storage system based on these observations from scratch
-Sirix stores per revision and per page-deltas. Due to zero seek time of flash drives we do not have to cluster data. Sirix only ever clusters data during transaction commits. It is based on an append-only storage. Data is never modified in-place.
+Sirix stores per revision and per page-deltas. Due to zero seek time of flash drives we do not have to cluster data. Sirix only ever clusters data during transaction commits. It is based on an append-only, log-structured storage. Data is never modified in-place.
 
 Instead, database pages are copied to memory, updated and synced to a file in batches by means of a post-order traversal of the internal tree-structure once a transaction commits.
 
