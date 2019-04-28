@@ -4,11 +4,13 @@ doctitle: Features
 ---
 
 ### Features in a nutshell
-- Currently native XML and JSON storage (other data types might follow),
+- Currently native XML and JSON storage (other data types might follow).
+- No write-ahead log needed, always consistent on the flash drive as the UberPage is the main entry point to the storage and written last to a new location.
+- Natural multiversion concurrency control (MVCC), each read-only transaction operates on one revision/snapshot, only one read/write transaction can co-exist. We only need a lock for the single writer (in the future we might apply optimistic concurrency control On the database level) 
 - Transactional, versioned, typed user-defined index-structures, which are automatically updated once a transaction commits.
 - Through XPath-axis extensions we support the navigation not only in space but also in time (future::, past::, first::, last::...). Furthermore we provide several temporal XQuery functions due to our integral versioning approach. Temporal navigation for JSON resources is done via builtin XQuery functions.
 - An in memory path summary, which is persisted during a transaction commit and always kept up-to-date.
-- Configurable versioning at the database level (full, incremental, differential and a new sliding snapshot algorithm which balances reads and writes without introducing write-peaks, which are usually generated during intermediate full dumps, which are usually written to).
+- Configurable versioning at the database level (full, incremental, differential and a novel sliding snapshot algorithm which balances reads and writes without introducing write-peaks, which are usually generated during intermediate full dumps, which are usually written to).
 - Log-structured sequential writes and random reads due to transactional copy-on-write (COW) semantics. This offers nice benefits as for instance no locking for concurrent reading-transactions and it takes full advantage of flash disks while avoiding their weaknesses.
 - Complete isolation of currently N read-transactions and a single write-transaction per resource.
 - The page-structure is heavily inspired by ZFS and therefore also forms a tree. We'll implement a similar merkle-tree and store hashes of each page in parent-pointers for integrity checks.
