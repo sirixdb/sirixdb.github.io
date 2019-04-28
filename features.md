@@ -6,6 +6,7 @@ doctitle: Features
 ### Features in a nutshell
 - Currently native XML and JSON storage (other data types might follow).
 - No write-ahead log needed, always consistent on the flash drive as the UberPage is the main entry point to the storage and written last to a new location.
+- No background compaction process or gradual merging/compaction is needed as in LSM-trees.
 - Natural multiversion concurrency control (MVCC), each read-only transaction operates on one revision/snapshot, only one read/write transaction can co-exist. We only need a lock for the single writer (in the future we might apply optimistic concurrency control On the database level)
 - Rollback to a past revision of a document/resource is supported, which encourages doing experiments or to solve human- or application-errors.
 - Transactional, versioned, typed user-defined index-structures, which are automatically updated once a transaction commits.
