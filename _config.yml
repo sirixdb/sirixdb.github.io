@@ -15,6 +15,3 @@ kramdown:
   parse_block_html: true
 
 highlighter: rouge
-
-# Google Analytics
-google_analytics: UA—139533596-1
