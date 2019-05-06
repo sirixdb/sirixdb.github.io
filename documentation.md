@@ -48,9 +48,7 @@ Articles published on Medium:
 
 Sirix was forked from Treetank (which is not maintained anymore), but as a university project it was subject to some publications.
 
-A lot of the ideas still are based on the Ph.D. thesis of Marc Kramis: Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications
-
-http://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/Kramis2014.pdf
+A lot of the ideas still are based on the Ph.D. thesis of Marc Kramis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/Kramis2014.pdf)
 
 As well as from Sebastian Graft's work and thesis:
 
@@ -58,13 +56,13 @@ https://kops.uni-konstanz.de/handle/123456789/27250
 
 Other publications include:
 
-- Versatile Key Management for Secure Cloud Storage; DISCCO12: http://nbn-resolving.de/urn:nbn:de:bsz:352-200971
-- A legal and technical perspective on secure cloud Storage; DFN Forum12: http://nbn-resolving.de/urn:nbn:de:bsz:352-192389
-- A Secure Cloud Gateway based upon XML and Web Services; ECOWS11, PhD Symposium: http://nbn-resolving.de/urn:nbn:de:bsz:352-154112
-- Treetank, Designing a Versioned XML Storage; XMLPrague11: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-126912
-- Hecate, Managing Authorization with RESTful XML; WS-REST11: http://nbn-resolving.de/urn:nbn:de:bsz:352-126237
-- Rolling Boles, Optimal XML Structure Integrity for Updating Operations; WWW11, Poster: http://nbn-resolving.de/urn:nbn:de:bsz:352-126226
-- JAX-RX - Unified REST Access to XML Resources; TechReport10: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-120511
-- Integrity Assurance for RESTful XML; WISM10: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-123507
-- Temporal REST, How to really exploit XML; IADIS WWW/Internet08: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84476
-- Distributing XML with focus on parallel evaluation; DBISP2P08: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84487
+- [Versatile Key Management for Secure Cloud Storage](http://nbn-resolving.de/urn:nbn:de:bsz:352-200971) (DISCCO12) 
+- [A legal and technical perspective on secure cloud Storage](http://nbn-resolving.de/urn:nbn:de:bsz:352-192389) (DFN Forum12) 
+- [A Secure Cloud Gateway based upon XML and Web Services](http://nbn-resolving.de/urn:nbn:de:bsz:352-154112) (ECOWS11, PhD Symposium)
+- [Treetank, Designing a Versioned XML Storage](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-126912) (XMLPrague11)
+- [Hecate, Managing Authorization with RESTful XML](http://nbn-resolving.de/urn:nbn:de:bsz:352-126237) (WS-REST11)
+- [Rolling Boles, Optimal XML Structure Integrity for Updating Operations](http://nbn-resolving.de/urn:nbn:de:bsz:352-126226) (WWW11, Poster)   
+- [JAX-RX - Unified REST Access to XML Resources](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-120511) (TechReport10)
+- [Integrity Assurance for RESTful XML](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-123507)  (WISM100) 
+- [Temporal REST, How to really exploit XML](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84476) (IADIS WWW/Internet08)
+- [Distributing XML with focus on parallel evaluation](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84487) (DBISP2P08)
