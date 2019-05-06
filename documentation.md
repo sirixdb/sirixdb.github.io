@@ -45,3 +45,16 @@ Articles published on Medium:
 - [Pushing Database Versioning to Its Limits by Means of a Novel Sliding Snapshot Algorithm and Efficient Time Travel Queries](https://medium.com/sirixdb-sirix-io-how-we-built-a-novel-temporal/why-and-how-we-built-a-temporal-database-system-called-sirixdb-open-source-from-scratch-a7446f56f201)
 - [How we built an asynchronous, temporal RESTful API based on Vert.x, Keycloak and Kotlin/Coroutines for Sirix.io (Open Source)](https://medium.com/sirixdb-sirix-io-how-we-built-a-novel-temporal/how-we-built-an-asynchronous-temporal-restful-api-based-on-vert-x-4570f681a3)
 - [Why Copy-on-Write Semantics and Node-Level-Versioning are Key to Efficient Snapshots](https://hackernoon.com/sirix-io-why-copy-on-write-semantics-and-node-level-versioning-are-key-to-efficient-snapshots-754ba834d3bb)
+
+Sirix was forked from Treetank (which is not maintained anymore), but as a university project it was subject to some publications:
+
+- Versatile Key Management for Secure Cloud Storage; DISCCO12: http://nbn-resolving.de/urn:nbn:de:bsz:352-200971
+- A legal and technical perspective on secure cloud Storage; DFN Forum12: http://nbn-resolving.de/urn:nbn:de:bsz:352-192389
+- A Secure Cloud Gateway based upon XML and Web Services; ECOWS11, PhD Symposium: http://nbn-resolving.de/urn:nbn:de:bsz:352-154112
+- Treetank, Designing a Versioned XML Storage; XMLPrague11: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-126912
+- Hecate, Managing Authorization with RESTful XML; WS-REST11: http://nbn-resolving.de/urn:nbn:de:bsz:352-126237
+- Rolling Boles, Optimal XML Structure Integrity for Updating Operations; WWW11, Poster: http://nbn-resolving.de/urn:nbn:de:bsz:352-126226
+- JAX-RX - Unified REST Access to XML Resources; TechReport10: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-120511
+- Integrity Assurance for RESTful XML; WISM10: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-123507
+- Temporal REST, How to really exploit XML; IADIS WWW/Internet08: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84476
+- Distributing XML with focus on parallel evaluation; DBISP2P08: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84487
