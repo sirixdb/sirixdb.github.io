@@ -3,6 +3,8 @@ layout: documentation
 doctitle: Documentation
 ---
 
+[Go directly to the API documentation](#api-documentation)
+
 ## Introduction
 Usually database systems simply either overwrite data in-place or do a copy-on-write operation followed by a removal of the outdated data (the latter maybe some time later from a background process). Data however naturally evolves over time. It is often times of great value to keep the history. We for instance might record the payroll of an employee at the first of march in 2019. Let's say it's 5000€ / month. Then as of 15th april we notice, that the recorded payroll was wrong and correct it to 5300€. Now, what's the answer to what the payroll was on march, first in 2019? Database Systems, which only preserve the most recent version don't even know that the payroll wasn't right. Our answer to this question depends on what source we consider most authoritative: the record or reality? The fact that they disagree effectively splits this payroll event into two tracks of time, rendering neither source entirely accurate. Questions such as these might be easily answered by temporal database systems such as Sirix. We provide at all times the system / transaction time, which is set, once a transaction commits (when is a fact valid in the database / the record). Application or valid time has to be set by the application itself (when is a fact valid in the real world/reality?).
 
