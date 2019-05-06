@@ -3,7 +3,7 @@ layout: documentation
 doctitle: Documentation
 ---
 
-[Go directly to the API documentation](#api-documentation)
+[Go directly to the API documentation](#api-documentation) or [to the publications](#publications).
 
 ## Introduction
 Usually database systems simply either overwrite data in-place or do a copy-on-write operation followed by a removal of the outdated data (the latter maybe some time later from a background process). Data however naturally evolves over time. It is often times of great value to keep the history. We for instance might record the payroll of an employee at the first of march in 2019. Let's say it's 5000€ / month. Then as of 15th april we notice, that the recorded payroll was wrong and correct it to 5300€. Now, what's the answer to what the payroll was on march, first in 2019? Database Systems, which only preserve the most recent version don't even know that the payroll wasn't right. Our answer to this question depends on what source we consider most authoritative: the record or reality? The fact that they disagree effectively splits this payroll event into two tracks of time, rendering neither source entirely accurate. Questions such as these might be easily answered by temporal database systems such as Sirix. We provide at all times the system / transaction time, which is set, once a transaction commits (when is a fact valid in the database / the record). Application or valid time has to be set by the application itself (when is a fact valid in the real world/reality?).
@@ -46,7 +46,17 @@ Articles published on Medium:
 - [How we built an asynchronous, temporal RESTful API based on Vert.x, Keycloak and Kotlin/Coroutines for Sirix.io (Open Source)](https://medium.com/sirixdb-sirix-io-how-we-built-a-novel-temporal/how-we-built-an-asynchronous-temporal-restful-api-based-on-vert-x-4570f681a3)
 - [Why Copy-on-Write Semantics and Node-Level-Versioning are Key to Efficient Snapshots](https://hackernoon.com/sirix-io-why-copy-on-write-semantics-and-node-level-versioning-are-key-to-efficient-snapshots-754ba834d3bb)
 
-Sirix was forked from Treetank (which is not maintained anymore), but as a university project it was subject to some publications:
+Sirix was forked from Treetank (which is not maintained anymore), but as a university project it was subject to some publications.
+
+A lot of the ideas still are based on the Ph.D. thesis of Marc Kramis: Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications
+
+http://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/Kramis2014.pdf
+
+As well as from Sebastian Graft's work and thesis:
+
+https://kops.uni-konstanz.de/handle/123456789/27250
+
+Other publications include:
 
 - Versatile Key Management for Secure Cloud Storage; DISCCO12: http://nbn-resolving.de/urn:nbn:de:bsz:352-200971
 - A legal and technical perspective on secure cloud Storage; DFN Forum12: http://nbn-resolving.de/urn:nbn:de:bsz:352-192389
