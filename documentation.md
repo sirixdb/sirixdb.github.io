@@ -50,9 +50,7 @@ Sirix was forked from Treetank (which is not maintained anymore), but as a unive
 
 A lot of the ideas still are based on the Ph.D. thesis of Marc Kramis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/Kramis2014.pdf)
 
-As well as from Sebastian Graft's work and thesis:
-
-https://kops.uni-konstanz.de/handle/123456789/27250
+As well as from Sebastian Graft's work and thesis: [Flexible Secure Cloud Storage](https://kops.uni-konstanz.de/handle/123456789/27250)
 
 Other publications include:
 
