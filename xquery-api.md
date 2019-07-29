@@ -33,7 +33,7 @@ repositories {
 }
 ```
 
-However, if you prefer, we just released version 0.9.1 of Sirix in Maven Central.
+However, if you prefer, we just released version 0.9.3 of Sirix in Maven Central.
 
 Maven artifacts are deployed to the central maven repository (however please use the SNAPSHOT-variants as of now). Currently the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
 
