@@ -41,14 +41,14 @@ XQuery project:
 <dependency>
   <groupId>io.sirix</groupId>
   <artifactId>sirix-xquery</artifactId>
-  <version>0.9.2-SNAPSHOT</version>
+  <version>0.9.4-SNAPSHOT</version>
 </dependency>
 ```
 
 To add the dependency in Gradle:
 ```gradle
 dependencies {
-  compile 'io.sirix:sirix-xquery:0.9.2-SNAPSHOT'
+  compile 'io.sirix:sirix-xquery:0.9.4-SNAPSHOT'
 }
 ```
 
