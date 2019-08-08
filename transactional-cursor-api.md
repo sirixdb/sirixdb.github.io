@@ -220,6 +220,10 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
 }
 ```
 
+We use the descendant axis to iterate over all structural descendant nodes in preorder (depth-first). Recall that structural nodes are all nodes except for namespace- and attribute-nodes. Hashes of nodes are built bottom-up for all nodes per default depending on the resource configuration. Only ancestor nodes are updated during a normal edit-operation.
+
+During bulk insertions with one of the insertSubtree-methods, the hashes are generated during a postorder-traversal, just like the descendant-count of each structural node. They're created after the nodes have been added to a transaction-intent log. The log is an in-memory buffer of writes, backed by a persistent append-only file, which is written to the data file preferably on a flash drive during a commit().
+
 In JSON we obvisouly have no namespace- or attribute-nodes, but with this exception the axis can be used in the same way:
 
 ```java
