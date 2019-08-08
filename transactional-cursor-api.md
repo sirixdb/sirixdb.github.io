@@ -5,7 +5,7 @@ doctitle: Transactional cursor based API
 
 ### Maven artifacts
 
-First, you have to get the dependeny on our Sirix core project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
+First, you have to get the dependeny on our SirixDB core project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
 
 ```xml
 <repository>
@@ -33,9 +33,9 @@ repositories {
 }
 ```
 
-However, if you prefer, we just released version 0.9.3 of Sirix in Maven Central.
+However, if you prefer, we just released version 0.9.3 of SirixDB in Maven Central.
 
-Maven artifacts are deployed to the central maven repository (however please use the SNAPSHOT-variants as of now). Currently the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
+Maven artifacts are deployed to maven central (however feel free to use the SNAPSHOT-variants as of now). Currently the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
 
 Core project:
 
@@ -54,19 +54,31 @@ dependencies {
 }
 ```
 
-### Tree-Encoding in Sirix
-Our encoding is pretty simple. We do not use range-encodings or hierarchical labels (the latter optionally for imported XML-documents in order to provide fast document order determination). Instead, every node once stored in Sirix references other nodes by a `firstChild`/`leftSibling`/`rightSibling`/`parent`/`nodeKey` encoding. Think of it as a persistent DOM.
+### Tree-Encoding in SirixDB
+The encoding of the underlying tree structure of both XML- and JSON-documents in SirixDB is simple.
+
+SirixDB doesn't use range-encodings (not update-friendly) or hierarchical labels (B+-tree index-structure traversal might be too expensive). However, we can specify that SirixDB stores hierarchical labels (DeweyIDs) for XML-resources to provide fast document order determination.
+
+Instead of the aforementioned encodings, a node in SirixDB references other nodes by a firstChild/leftSibling/rightSibling/parentNodeKey/nodeKey encoding. Think of it as a persistent DOM:
 
 <div class="img_container">
 ![encoding](images/encoding.png)
 </div>
 
-The numbers are auto-generated unique, stable node-IDs or nodeKeys. Every structural node might have a first child, a left sibling, a right sibling and a parent node. Namespace- and attributes- are the only non-structural nodes in XML/XDM data. They just have a parent pointer. In our JSON to tree mapping however, every node is a structural node.
+The numbers in the figure are auto-generated unique, stable node-IDs or node-keys generated with a simple sequential number generator.
 
-Note that we're able to store both XML- and JSON-documents in the same encoding.
+Every structural node might have a first child, a left sibling, a right sibling, and a parent node.
+
+Namespace- and attributes- are the only non-structural nodes in XML-resources. They have a parent pointer and are referenceable through special moveToAttribute and moveToNamespace methods if the transactional cursor is located on an element node.
+
+In the JSON-to-tree mapping, however, every node is a structural node. To support fine granular versioning of nodes and to be able to reuse the axis-implementations, SirixDB uses the same encoding for JSON resources as we've seen.
+
+Thus we'll introduce a unique API, which we're going to use for both traversing and updating XML and JSON resource with only subtle differences.
+
+**Note that the binary JSON-format in SirixDB allows duplicate object record keys, which are ordered. Upper layers, however, may simply store object records in a hash map, thus not keeping track of the order nor supporting duplicate record keys.**
 
 ### Create a database with a single resource file
-First, we want to show how to create a database with a single resource (the resource is going to be imported from an XML-document and shredded into our internal format).
+First, we want to show how to create a database with a single resource.
 
 ```java
 // XML-file to import.
@@ -82,7 +94,13 @@ Databases.createXmlDatabase(dbConfig);
 // Open the database.
 try (final var database = Databases.openXmlDatabase(databaseFile)) {
   // Create a first resource without text-value compression but with DeweyIDs which are hierarchical node labels.
-  database.createResource(ResourceConfiguration.builder("resource").useTextCompression(false).useDeweyIDs(true).build());
+  database.createResource(ResourceConfiguration.builder("resource")
+                                               .useTextCompression(false)
+                                               .useDeweyIDs(true)
+                                               .versioningApproach(VersioningType.DIFFERENTIAL)
+                                               .revisionsToRestore(3)
+                                               .buildPathSummary(true)
+                                               .build());
 
   try (// Open a resource manager.
        final var manager = database.openResourceManager("resource");
@@ -99,6 +117,13 @@ try (final var database = Databases.openXmlDatabase(databaseFile)) {
   }
 }
 ```
+The resource is built with text node-compression disabled and so-called DeweyIDs enabled. DeweyIDs are a form of hierarchical node labels for instance used by an XQuery processor to determine quick document-order (preorder).
+
+We specify the differential versioning approach, that SirixDB is going to use to version data-pages. Default is the sliding snapshot algorithm, which is the best option in most cases. However we want to demonstrate the most commonly used builder options.
+
+The revisionsToRestore(int)-method is used in conjunction with the versioning approach. When specifying the differential- or incremental-versioning approach it denotes after how many revisions a new full page snapshot should be serialized. In case we specify the sliding snapshot it is the windows-size. It has no effect when we use full-versioning.
+
+The method buildPathSummary(boolean) specifies if SirixDB should build and automatically keep a summary of all paths up-to-date. We omit other builder options here for brevity as for instance specifying a byte handler pipeline, which is used to serialize/deserialize page-fragments.
 
 In order to import a single JSON file we almost do the same:
 
