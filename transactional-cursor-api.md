@@ -3,7 +3,7 @@ layout: documentation
 doctitle: Transactional cursor based API
 ---
 
-### Maven artifacts
+## Maven artifacts
 
 First, you have to get the dependeny on our SirixDB core project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
 
@@ -54,7 +54,7 @@ dependencies {
 }
 ```
 
-### Tree-Encoding in SirixDB
+## Tree-Encoding in SirixDB
 The encoding of the underlying tree structure of both XML- and JSON-documents in SirixDB is simple.
 
 SirixDB doesn't use range-encodings (not update-friendly) or hierarchical labels (B+-tree index-structure traversal might be too expensive). However, we can specify that SirixDB stores hierarchical labels (DeweyIDs) for XML-resources to provide fast document order determination.
@@ -77,8 +77,10 @@ Thus we'll introduce a unique API, which we're going to use for both traversing 
 
 **Note that the binary JSON-format in SirixDB allows duplicate object record keys, which are ordered. Upper layers, however, may simply store object records in a hash map, thus not keeping track of the order nor supporting duplicate record keys.**
 
-### Create a database with a single resource file
+## Create a Database With a Single Resource
 First, we want to show how to create a database with a single resource.
+
+### Create an XML Database and Resource
 
 ```java
 // XML-file to import.
@@ -124,6 +126,8 @@ We specify the differential versioning approach, that SirixDB is going to use to
 The revisionsToRestore(int)-method is used in conjunction with the versioning approach. When specifying the differential- or incremental-versioning approach it denotes after how many revisions a new full page snapshot should be serialized. In case we specify the sliding snapshot it is the windows-size. It has no effect when we use full-versioning.
 
 The method buildPathSummary(boolean) specifies if SirixDB should build and automatically keep a summary of all paths up-to-date. We omit other builder options here for brevity as for instance specifying a byte handler pipeline, which is used to serialize/deserialize page-fragments.
+
+### Create a JSON Database and Resource
 
 In order to import a single JSON file we almost do the same:
 
