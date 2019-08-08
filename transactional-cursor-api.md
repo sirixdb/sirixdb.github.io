@@ -540,13 +540,7 @@ wtx.insertAttribute(new QNm("foo"), "bar", Move.PARENT).insertElementAsRightSibl
 wtx.copySubtreeAsRightSibling(rtx);
 ```
 
-Changes are always done in-memory and only ever flushed to disk or the flash drive on a transaction commit. You can either commit or rollback the transaction:
-
-```java
-wtx.commit() or wtx.rollback()
-```
-
-Note that the transaction handle simply can be reused after a `commit()` or `rollback()` method call.
+SirixDB always applies changes in-memory and then flush them to a disk or the flash drive during a transaction commit. The only exception is if the in-memory cache has to evict some entries into a file due to memory constraints. We can either commit() or rollback() the transaction. Note that we can reuse the transaction after a commit() or rollback() method call.
 
 You can also start an auto-commit transactional cursor:
 
