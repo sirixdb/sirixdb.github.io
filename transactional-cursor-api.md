@@ -442,12 +442,17 @@ We also provide a ConcurrentAxis to fetch nodes concurrently. To execute an XPat
 final var axis = new NestedAxis(
         new NestedAxis(
             new ConcurrentAxis<>(firstConcurrRtx,
-                new FilterAxis<>(new DescendantAxis(firstRtx, IncludeSelf.YES),
+                new FilterAxis<>(
+                    new DescendantAxis(firstRtx, IncludeSelf.YES),
                     new NameFilter(firstRtx, "regions"))),
             new ConcurrentAxis<>(secondConcurrRtx,
-                new FilterAxis<>(new ChildAxis(secondRtx), new NameFilter(secondRtx, "africa")))),
-        new ConcurrentAxis<>(thirdConcurrRtx, new FilterAxis<>(
-            new DescendantAxis(thirdRtx, IncludeSelf.YES), new NameFilter(thirdRtx, "location"))));
+                new FilterAxis<>(
+                    new ChildAxis(secondRtx),
+                    new NameFilter(secondRtx, "africa")))),
+        new ConcurrentAxis<>(thirdConcurrRtx,
+            new FilterAxis<>(
+                new DescendantAxis(thirdRtx, IncludeSelf.YES),
+                new NameFilter(thirdRtx, "location"))));
 ```
 
 Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision). SirixDB also provides a `ConcurrentUnionAxis`, a `ConcurrentExceptAxis` and a `ConcurrentIntersectAxis`. The transactional cursors can be of both types, `XdmNodeReadOnlyTrx` and `JsonNodeReadOnlyTrx`.
@@ -634,10 +639,11 @@ final var dateTime = LocalDateTime.of(2019, Month.JUNE, 15, 13, 39);
 final var instant = dateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant();
 final var rtx = resourceManager.beginNodeReadOnlyTrx(instant)
 ```
+## Serialize a Resource in a Database
 
 ### Serialize as XML
 
-In order to serialize the (most recent) revision as XML pretty printed to STDOUT:
+In order to serialize the (most recent) revision of a resource in an XML database pretty printed to STDOUT:
 
 ```java
 final var serializer = XmlSerializer.newBuilder(manager, System.out).prettyPrint().build();
@@ -677,6 +683,34 @@ final var serializer = XmlSerializer.newBuilder(manager, out, -1)
                                     .build();
 serialize.call()
 ```
+
+### Serialize to JSON
+Serializing a resource from a JSON database is very similar:
+
+```java
+var writer = new StringWriter();
+var serializer = new JsonSerializer.Builder(resourceManager, writer).build();
+serializer.call();
+```
+Here we serialized the most recent revision.
+
+To serialize revision 1 and 2:
+
+```java
+var serializer = new
+JsonSerializer.Builder(resourceManager, writer, 1, 2).build();
+serializer.call();
+```
+
+And all stored revisions:
+
+```java
+var serializer = new
+JsonSerializer.Builder(resourceManager, writer, -1).build();
+serializer.call();
+```
+
+## Diffing
 
 ### Import differences between an initially stored revision and the second version of an XML document
 
