@@ -1197,29 +1197,36 @@ pre.highlight {
   font-family: monospace;
   border-left: 3px solid #d01040;
   text-align: left;
-  white-space: pre-wrap;
   margin-left: 8em;
+  display: table;
+  table-layout: fixed;
+  width: 100%; /* anything but auto, otherwise fixed layout not guaranteed */
+  white-space: pre-wrap;
 }
 
-pre.highlight:before {
-  counter-reset: listing;
+pre.code::before {
+    counter-reset: linenum;
 }
-
-pre.highlight code {
-  counter-increment: listing;
-  text-align: left;
-  float: left;
-  clear: left;
+pre.code code span.tr {
+    display: table-row;
+    counter-increment: linenum;
 }
-
-pre.highlight code::before {
-  content: counter(listing) ". ";
-  display: inline-block;
-  float: left;
-  height: 3em;
-  padding-left: auto;
-  margin-left: auto;
-  text-align: right;
+pre.code code span.th { /* used for line numbers */
+    display: table-cell;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+pre.code code span.th::before {
+    content: counter(linenum);
+    text-align: right;
+    display: block;
+}
+pre.code code span.th {
+    width: 4em; /* or whatever the desired width of the numbers column is */
+}
+pre.code code {
+    display: table-cell;
 }
 
 div.content {
