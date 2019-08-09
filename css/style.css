@@ -1197,6 +1197,29 @@ pre.highlight {
   font-family: monospace;
   border-left: 3px solid #d01040;
   text-align: left;
+  white-space: pre-wrap;
+  margin-left: 8em;
+}
+
+pre.highlight:before {
+  counter-reset: listing;
+}
+
+pre.highlight code {
+  counter-increment: listing;
+  text-align: left;
+  float: left;
+  clear: left;
+}
+
+pre.highlight code::before {
+  content: counter(listing) ". ";
+  display: inline-block;
+  float: left;
+  height: 3em;
+  padding-left: auto;
+  margin-left: auto;
+  text-align: right;
 }
 
 div.content {
