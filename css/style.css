@@ -1203,29 +1203,14 @@ pre.highlight {
   white-space: pre-wrap;
 }
 
-pre.highlight::before {
-    counter-reset: linenum;
-}
-pre.highlight code span.tr {
-    display: table-row;
-    counter-increment: linenum;
-}
-pre.highlight code span.th { /* used for line numbers */
-    display: table-cell;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-}
-pre.highlight code span.th::before {
-    content: counter(linenum);
-    text-align: right;
-    display: block;
-}
-pre.highlight code span.th {
-    width: 4em; /* or whatever the desired width of the numbers column is */
-}
-pre.highlight code {
-    display: table-cell;
+pre.highlight code span::before {
+  content: counter(listing) ". ";
+  display: inline-block;
+  float: left;
+  height: 3em;
+  padding-left: auto;
+  margin-left: auto;
+  text-align: right;
 }
 
 div.content {
