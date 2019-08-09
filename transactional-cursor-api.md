@@ -84,7 +84,7 @@ First, we want to show how to create a database with a single resource:
 // XML-file to import.
 final var pathToXmlFile = Paths.get("xmlFile");
 
-// Create database configuration.
+// Path to create the database at.
 final var databaseFile = Paths.get("database");
 
 // Create a new lightweight database structure.
@@ -94,13 +94,14 @@ Databases.createXmlDatabase(new DatabaseConfiguration(databaseFile));
 try (final var database = Databases.openXmlDatabase(databaseFile)) {
   // Create a first resource without text-value compression but with DeweyIDs which are
   // hierarchical node labels.
-  database.createResource(ResourceConfiguration.builder("resource")
-                                               .useTextCompression(false)
-                                               .useDeweyIDs(true)
-                                               .versioningApproach(VersioningType.DIFFERENTIAL)
-                                               .revisionsToRestore(3)
-                                               .buildPathSummary(true)
-                                               .build());
+  database.createResource(
+    ResourceConfiguration.builder("resource")
+                         .useTextCompression(false)
+                         .useDeweyIDs(true)
+                         .versioningApproach(VersioningType.DIFFERENTIAL)
+                         .revisionsToRestore(3)
+                         .buildPathSummary(true)
+                         .build());
 
   try (// Open a resource manager.
        final var manager = database.openResourceManager("resource");
