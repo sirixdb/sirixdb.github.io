@@ -1225,6 +1225,14 @@ section.markdown h2, section.markdown h3, section.markdown h4, section.markdown 
   text-transform: none;
 }
 
+section.markdown h2 {
+  margin-top: 2em;
+}
+
+section.markdown h3 {
+  margin-top: 1.5em;
+}
+
 section.markdown ol {
   list-style-type: decimal;
   padding-left: 2em;
@@ -1245,7 +1253,7 @@ section.markdown li {
 }
 
 div.highlight > pre {
-  line-height: 1.2}}}}em;
+  line-height: 1.2em;
 }
 
 div.highlighter-rouge + h2, div.highlighter-rouge + h3, 
