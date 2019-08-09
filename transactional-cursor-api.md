@@ -86,10 +86,9 @@ final var pathToXmlFile = Paths.get("xmlFile");
 
 // Create database configuration.
 final var databaseFile = Paths.get("database");
-final var dbConfig = new DatabaseConfiguration(databaseFile);
 
 // Create a new lightweight database structure.
-Databases.createXmlDatabase(dbConfig);
+Databases.createXmlDatabase(new DatabaseConfiguration(databaseFile));
 
 // Open the database.
 try (final var database = Databases.openXmlDatabase(databaseFile)) {
@@ -127,7 +126,7 @@ The method buildPathSummary(boolean) specifies if SirixDB should build and autom
 
 ### Create a JSON Database and Resource
 
-In order to import a single JSON file we almost do the same:
+In order to import a single JSON file we almost use the same API:
 
 ```java
 // JSON-file to import.
@@ -135,15 +134,14 @@ final var pathToJsonFile = Paths.get("jsonFile");
 
 // Create database configuration.
 final var databaseFile = Paths.get("database");
-final var dbConfig = new DatabaseConfiguration(databaseFile);
 
 // Create a new lightweight database structure.
-Databases.createJsonDatabase(dbConfig);
+Databases.createJsonDatabase(new DatabaseConfiguration(databaseFile));
 
 // Open the database.
 try (final var database = Databases.openJsonDatabase(databaseFile)) {
-  // Create a first resource without text-value compression but with DeweyIDs which are hierarchical node labels.
-  database.createResource(ResourceConfiguration.builder("resource").useTextCompression(false).useDeweyIDs(true).build());
+  // Create a first resource with all standard builder settings set.
+  database.createResource(ResourceConfiguration.builder("resource").build());
 
   try (// Open a resource manager.
        final var manager = database.openResourceManager("resource");
@@ -160,10 +158,11 @@ try (final var database = Databases.openJsonDatabase(databaseFile)) {
   }
 }
 ```
+## Open a Resource in a Database and Iterate
 
-### Open the database and the resource manager again
+### Preorder Navigation in an XML resource
 
-Now, that we have imported the first resource into SirixDB, we can reuse the read-write transaction after issuing the commit. Alternatively, we can open the resource manager again and start a new read-only transaction:
+Now, that we have imported the first resource into SirixDB, we can reuse the read-write transaction after issuing the commit. Alternatively, we can open the resource manager again and start a new read-only transaction.
 
 ```java
 // Open the database.
@@ -218,11 +217,13 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
 }
 ```
 
-We use the descendant axis to iterate over all structural descendant nodes in preorder (depth-first). Recall that structural nodes are all nodes except for namespace- and attribute-nodes. Hashes of nodes are built bottom-up for all nodes per default depending on the resource configuration. Only ancestor nodes are updated during a normal edit-operation.
+We use the descendant axis to iterate over all structural descendant nodes in preorder (depth-first). Recall that structural nodes are all nodes except for namespaces and attributes. Hashes of nodes are built bottom-up for all nodes per default depending on the resource configuration. Only ancestor nodes are updated during a single edit-operation.
 
-During bulk insertions with one of the insertSubtree-methods, the hashes are generated during a postorder-traversal, just like the descendant-count of each structural node. They're created after the nodes have been added to a transaction-intent log. The log is an in-memory buffer of writes, backed by a persistent append-only file, which is written to the data file preferably on a flash drive during a commit().
+During bulk insertions with one of the insertSubtree-methods, the hashes are generated during a postorder-traversal, just like the descendant-count of each structural node. They're created after the nodes have been added to a transaction-intent log. The log is an in-memory buffer of writes, backed by a persistent append-only file. It is written to the data file preferably on a flash drive during a commit.
 
-In JSON we obviously have no namespace- or attribute-nodes, but with this exception, the axis can be used in the same way:
+### Preorder Navigation in a JSON resource
+
+In JSON we obviously have no namespace or attribute nodes, but with this exception, the axis can be used in the same way:
 
 ```java
 // Open the database.
@@ -251,20 +252,26 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
 }
 ```
 
-### Axis to navigate in space and in time
-We provide several axes to navigate through the tree structure. Namely all of the axis known from XPath for both XM as well as JSON databases.
+## Axes to navigate in space and in time
+SirixDB provides several axes to navigate through the tree structures of both the binary XML as well as the JSON encoding. Namely all of the axes known from XPath plus a few more.
 
-As it's a common case to iterate over structural and non-structural nodes in our internal XML representation (iterating over namespace- and attribute-nodes of elements) SirixDB provides a simple wrapper axis:
+### Non Structural Wrapper Axis
+
+As it’s a common task to iterate over structural and non-structural nodes, that is namespaces and especially attributes, SirixDB provides a simple wrapper axis:
 
 ```java
 new NonStructuralWrapperAxis(new DescendantAxis(rtx))
 ```
 
-This axis simply iterates over structural and non-structural nodes and it's only available for XML resources.
+This axis as its sole argument needs another axis to iterate through structural nodes (all nodes with the exception of attributes and namespaces). Every time the cursor is located on an element-node the axis checks for namespace- as well as attribute-nodes and iterates over them before using the delegate axis to move to the next structural node. Note that SirixDB also offers a
+`NamespaceAxis` and an `AttributeAxis`.
 
-For sure SirixDB also has a `NamespaceAxis` and an `AttributeAxis`.
+### Visitor Descendant Axis
 
-As it's very common to define behavior based on the different node-types SirixDB implemented the visitor pattern. As such we can simply plugin a visitor in another `descendant-axis` called `VisitorDescendantAxis`, which is a special axis taking care of the return types from the visit-methods. A visitor must implement methods as follows for each node:
+As it's very common to define behavior based on the different node-types we're able to use the visitor pattern. We can specify a
+visitor as a builder argument for a special preorder-axis called `VisitorDescendantAxis`. It uses the return types from the visit-methods a visitor has to implement to guide the traversal. For each type of node, there's an equivalent visit-method. For instance, for element nodes it is the `VisitResult visit(ImmutableElement node)`.
+
+Another visitor-interface exists for JSON nodes (only difference are the node-type parameters). Thus we're able to use the same axis to traverse both XML as well as JSON resources.
 
 ```java
 /**
@@ -299,9 +306,11 @@ public enum VisitResultType implements VisitResult {
 }
 ```
 
-The `VisitorDescendantAxis` takes care and skips a whole subtree if the return type is `VisitResultType.SKIPSUBTREE`, or skips the traversal of all further right-siblings of the current node (`VisitResultType.SKIPSIBLINGS`). You can also terminate the whole traversal with `VisitResultType.TERMINATE`.
+The `VisitorDescendantAxis` iterates through the tree structure in preorder. It uses the `VisitResultType`s to guide the
+traversal. `SKIPSIBLINGS` means, that the traversal should continue without visiting the right siblings of the current node the
+cursor points to. `SKIPSUBTREE` means to continue without visiting the descendants of this node. We use `CONTINUE` if traversal should continue in preorder. We use `TERMINATE` to terminate the traversal immediately.
 
-The default implementation of each method in the `Visitor`-interface returns `VisitResultType.CONTINUE` for each node-type, such that you only have to implement the methods (for the nodes), which you're interested in. If you've implemented a class called `MyVisitor` you can use the `VisitorDescendantAxis` in the following way:
+The default implementation of each method in the `Visitor`-interface returns `VisitResultType.CONTINUE` for each node-type. Thus, we only have to implement the methods (for the nodes), which we’re interested in. If we’ve implemented a class called `MyVisitor` we can use the `VisitorDescendantAxis` in the following way:
 
 ```java
 // Executes a modification visitor for each descendant node.
@@ -310,7 +319,14 @@ final var axis = VisitorDescendantAxis.newBuilder(rtx).includeSelf().visitor(new
 while (axis.hasNext()) axis.next();
 ```
 
-We provide all possible `XPath` axis. Note, that the `PrecedingAxis` and the `PrecedingSiblingAxis` do not deliver nodes in document order, but in the natural encountered order. Furthermore, a `PostOrderAxis` is available, which traverses the tree in a postorder traversal. Similarly, a `LevelOrderAxis` traverses the tree in a breadth-first manner.
+The methods in `MyVisitor` are called for each node in the traversal. The traversal begins with the node the cursor currently
+points to.
+
+### Other axes
+
+SirixDB provides all possible XPath-axis. Note, that the `PrecedingAxis` and the `PrecedingSiblingAxis` don't deliver nodes in document order (preorder), but in the natural encountered order. Furthermore, a `PostOrderAxis` is available, which traverses the tree in a postorder traversal. Similarly, a `LevelOrderAxis` traverses the tree in a breadth-first manner. SirixDB also provides a `ConcurrentAxis`, a `ConcurrentUnionAxis`, a `ConcurrentIntersectAxis` and a `ConcurrentExceptAxis` to prefetch nodes concurrently and in parallel.
+
+### Filtering for Specific Node-Types or Nodes
 
 SirixDB provides several filters, which can be plugged in through a `FilterAxis`. The following code, for instance, traverses all children of a node and filters them for nodes with the local name "a" in an XML resource.
 
@@ -322,7 +338,7 @@ Regarding JSON resources it's as simple as changing the generics argument from `
 
 The `FilterAxis` optionally takes more than one filter. The filter either is a `NameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
 
-In JSON object records have names and all value-nodes can be filtered by a value filter. Node kind filters are `ObjectFilter`,`ObjectRecordFilter`, `ArrayFilter`, `StringValueFilter`, `NumberValueFilter`, `BooleanValueFilter` and `NullValueFilter`.
+In JSON object records have names and all value nodes can be filtered by a value filter. Node kind filters are `ObjectFilter`,`ObjectRecordFilter`, `ArrayFilter`, `StringValueFilter`, `NumberValueFilter`, `BooleanValueFilter` and `NullValueFilter`.
 
 It can be used as follows for XML resources:
 
@@ -341,7 +357,7 @@ Alternatively you could simply stream over your axis (without using the `FilterA
 final var axis = new PostOrderAxis(rtx);
 final var axisStream = StreamSupport.stream(axis.spliterator(), false);
 
-axisStream.filter(unusedNodeKey -> new NameFilter(rtx, new QNm("a"))).forEach((unused) -> /* Do something with the transactional cursor */);
+axisStream.filter((unusedNodeKey) -> new NameFilter(rtx, new QNm("a"))).forEach((unusedNodeKey) -> /* Do something with the transactional cursor */);
 ```
 
 To achieve much more query power you can chain several axes with the `NestedAxis`. The following example shows how we can create axes to process a simple XPath query. However, we think it's much more convenient to simply use the XPath query with our Brackit binding.
@@ -398,7 +414,7 @@ for (final long nodeKey : new PostOrderAxis(rtx)) {
 }
 ```
 
-#### Concurrent Axis
+### Concurrent Axis
 We also provide a ConcurrentAxis to fetch nodes concurrently. To execute an XPath-query as `//regions/africa//location`:
 
 ```java
@@ -415,7 +431,7 @@ final var axis = new NestedAxis(
 
 Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision). SirixDB also provides a `ConcurrentUnionAxis`, a `ConcurrentExceptAxis` and a `ConcurrentIntersectAxis`. The transactional cursors can be of both types, `XdmNodeReadOnlyTrx` and `JsonNodeReadOnlyTrx`.
 
-#### Predicate Axis
+### Predicate Axis
 In order to test for a predicate for instance to select all element nodes in an XML resource which have a child element with name "foo" we can use:
 
 ```java
@@ -425,7 +441,7 @@ final var predicateAxisFilter = new PredicateFilterAxis(rtx, childAxisFilter);
 final var nestedAxis = new NestedAxis(descendantAxis, predicateAxisFilter);
 ```
 
-#### Time Travel axis
+### Time Travel axis
 However, SirixDB not only supports navigational axis within one revision, it also allows navigation on the time axis.
 
 We're able to use one of the following axes to navigate in time:
@@ -435,42 +451,15 @@ Each of the constructors of these time-travel axes takes a transactional cursor 
 
 To use time travel axes, however first a few more revisions have to be created through committing a bunch of changes.
 
-### Open and modify a resource in a database
-First, we have to open the resource again. For XML databases it is:
-```java
-// Open the database.
-try (final var database = Databases.openXmlDatabase(databaseFile);
-     final var manager = database.openResourceManager("resource");
-     // Now open a read/write transaction again.
-     final var wtx = manager.beginNodeTrx()) {
-  ...
-}
-```
+### Navigational Methods
 
-For JSON databases it is:
-
-```java
-// Open the database.
-try (final var database = Databases.openJsonDatabase(databaseFile);
-     final var manager = database.openResourceManager("resource");
-     // Now open a read/write transaction again.
-     final var wtx = manager.beginNodeTrx()) {
-  ...
-}
-```
-Thus, the only visible change in the API regarding JSON and XML resources is the method call `Databases.openJsonDatabase(Path)`
-instead of `Databases.openXmlDatabase(Path)`. Note, that also the types of the database/resource and transaction have changed, but for brevity we use Java's type inference rules and the `var` keyword. Note, that we now have to use a transaction, which is able to modify the resource (of type `NodeTrx`) instead of a read-only transaction (`beginNodeTrx()` instead of `beginNodeReadOnlyTrx()`). Thus we have to start the single read-write transaction on a resource and make sure, that we commit and properly close the transaction.
-
-Note, that it's best to open the transaction in the enclosing `try-with-resources` statement. We can reuse the transaction handle
-after issuing a `commit()`.
-
-We can then navigate to a specific node, either via axis and filters. Or, if we know the node key simply through the method `moveTo(long)` whereas the long parameter is the node key of the node we want to select.
+We can then navigate to a specific node, either via axis and filters or, if we know the node key simply through the method `moveTo(long)`. The long parameter is the node key of the node we want to select.
 
 SirixDB provides several navigational methods. After the resource is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to its first child which is the XML root element via `moveToFirstChild()`. Similar, we can move to a right sibling with `moveToRightSibling()`, or move to the left sibling (`moveToLeftSibling()`). Furthermore, many more methods to navigate through the tree are available. For instance `moveToLastChild()` or `moveToAttribute(int)`/`moveToAttributeByName(new QNm("foobar"))`/`moveToNamespace(int)` if we reside an element node. For JSON resources the moveTo-methods for attributes and namespaces are not available. Furthermore, SirixDB allows to move to the next node in preorder (`moveToNext()`) or to the previous node in preorder (`moveToPrevious()`). Or for instance to the next node on the XPath `following::`-axis. A simple example is this:
 
 ```java
 // A fluent call would be if you know a node has a right sibling and there's a first child of the right sibling.
-rtx.moveToRightSibling().getCursor().moveToFirstChild().getCursor();
+rtx.moveToRightSibling().trx().moveToFirstChild().trx();
 
 // Can be tested before.
 if (rtx.hasRightSibling()) {
@@ -495,11 +484,52 @@ rtx.moveToNext();
 The API is fluent:
 
 ```java
-// getCursor() returns the transaction cursor currently used. However in this case the caller must be sure that a right sibling of the node denoted by node-key 15 and his right sibling and the right sibling's first child exists.
-wtx.moveTo(15).getCursor().moveToRightSibling().getCursor().moveToFirstChild().getCursor().insertCommentAsFirstChild("foo");
+// trx() returns the transaction cursor currently used. However in this case the caller must be sure that a right sibling of the node denoted by node-key 15 and his right sibling and the right sibling's first child exists.
+wtx.moveTo(15).trx()
+   .moveToRightSibling().trx()
+   .moveToFirstChild().trx()
+   .insertCommentAsFirstChild("foo");
 ```
 
-Once we navigated to the node, we can either update, for instance, the name or the value depending on the node type.
+## Open and Modify a Resource in a Database
+
+First, we have to open the resource again.
+
+### Open a read-write transaction in an XML database
+
+To open a resource in an XML database we use:
+```java
+// Open the database.
+try (final var database = Databases.openXmlDatabase(databaseFile);
+     final var manager = database.openResourceManager("resource");
+     // Now open a read/write transaction again.
+     final var wtx = manager.beginNodeTrx()) {
+  ...
+}
+```
+
+### Open a read-write transaction in a JSON database
+
+To open a resource in a JSON database we use:
+
+```java
+// Open the database.
+try (final var database = Databases.openJsonDatabase(databaseFile);
+     final var manager = database.openResourceManager("resource");
+     // Now open a read/write transaction again.
+     final var wtx = manager.beginNodeTrx()) {
+  ...
+}
+```
+Thus, the only visible change in the API regarding JSON and XML resources is the method call `Databases.openJsonDatabase(Path)`
+instead of `Databases.openXmlDatabase(Path)`. Note, that also the types of the database/resource and transaction have changed, but for brevity we use Java's type inference rules and the `var` keyword. Note, that we now have to use a transaction, which is able to modify the resource (of type `NodeTrx`) instead of a read-only transaction (`beginNodeTrx()` instead of `beginNodeReadOnlyTrx()`). Thus we have to start the single read-write transaction on a resource and make sure, that we commit and properly close the transaction.
+
+Note, that it's best to open the transaction in the enclosing `try-with-resources` statement. We can reuse the transaction handle
+after issuing a `commit()`.
+
+### Simple Update Methods
+
+Once we navigated to the node we want to change, we can either update, for instance, the name or the value depending on the node type.
 
 ```java
 // Cursor resides on an element node.
@@ -523,6 +553,15 @@ Or we can insert new elements via `insertElementAsFirstChild(new QNm("foo"))`/`i
 
 Attributes for instance can only be inserted (`insertAttribute(new QNm("name", "value"))`), if the cursor is located on an element node.
 
+Updating methods can also be chained:
+
+```java
+// Assertion: wtx is located at element node.
+wtx.insertAttribute(new QNm("foo"), "bar", Move.PARENT).insertElementAsRightSibling(new QNm("baz"));
+```
+
+### Bulk Update Operations
+
 More sophisticated bulk insertion methods exist, too (as you have already seen when we imported an XML-document). We provide a method to insert an XML-fragment as a first child (`XdmNodeTrx insertSubtreeAsFirstChild(XMLEventReader)`), as a left sibling (`XdmNodeTrx insertSubtreeAsLeftSibling(XMLEventReader)`) and as a right sibling (`XdmNodeTrx insertSubtreeAsRightSibling(XMLEventReader)`).
 
 To insert a new subtree based on a String you can simply use
@@ -531,19 +570,16 @@ To insert a new subtree based on a String you can simply use
 wtx.insertSubtreeAsFirstChild(XmlShredder.createStringReader("<foo>bar<baz/></foo>"))
 ```
 
-Updating methods can be chained:
-
 ```java
-// Assertion: wtx is located at element node.
-wtx.insertAttribute(new QNm("foo"), "bar", Move.PARENT).insertElementAsRightSibling(new QNm("baz"));
-
 // Copy subtree of the node the read-transaction is located at as a new right sibling.
 wtx.copySubtreeAsRightSibling(rtx);
 ```
 
 SirixDB always applies changes in-memory and then flushes them sequentially to a disk or the flash drive during a transaction commit. The only exception is if the in-memory cache has to evict some entries into a file due to memory constraints. We can either commit() or rollback() the transaction. Note that we can reuse the transaction after a commit() or rollback() method call.
 
-We can also start an auto-commit transactional cursor:
+### Starting a read-write transaction
+
+SirixDB provides several possibilities to start a read-write transaction in the first place. We can for instance start an auto-commit transactional cursor:
 
 ```java
 // Auto-commit every 30 seconds.
@@ -560,6 +596,9 @@ Furthermore, we're able to start a read-write transaction and then revert to a f
 // Open a read/write transaction on the most recent revision, then revert to revision two and commit as a new revision.
 resourceManager.beginNodeTrx().revertTo(2).commit()
 ```
+
+## Open Specific Revisions
+
 Once we have committed more than one revision we can open it either by specifying the exact revision number or by a timestamp.
 
 ```java
