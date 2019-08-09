@@ -1169,6 +1169,14 @@ section.markdown {
   text-align: center;
 }
 
+	section.markdown > h1, section.markdown > h2, section.markdown > h3, section.markdown > h4, section.markdown > h5, section.markdown > h6 {
+		color: inherit;
+		font-weight: 200;
+		line-height: 1.75em;
+		margin-bottom: 1em;
+		text-transform: none;
+	}
+
 section.markdown > p {
   margin: 1.3em 0;
   padding: 0;
@@ -1201,16 +1209,6 @@ pre.highlight {
   table-layout: fixed;
   width: 100%; /* anything but auto, otherwise fixed layout not guaranteed */
   white-space: pre-wrap;
-}
-
-pre.highlight code span::before {
-  content: counter(listing) ". ";
-  display: inline-block;
-  float: left;
-  height: 3em;
-  padding-left: auto;
-  margin-left: auto;
-  text-align: right;
 }
 
 div.content {
@@ -1265,7 +1263,7 @@ code {
   font-style: normal;
   background-color: #eee;
   color: #000;
-  padding: 0px;
+  padding: 1px;
   text-align: left;
 }
 
