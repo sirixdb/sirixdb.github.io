@@ -261,7 +261,7 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
 }
 ```
 
-## Axes to navigate in space and in time
+## Axes to Navigate in Space and Time
 SirixDB provides several axes to navigate through the tree structures of both the binary XML as well as the JSON encoding. Namely all of the axes known from XPath plus a few more.
 
 ### Non Structural Wrapper Axis
@@ -334,11 +334,11 @@ while (axis.hasNext()) axis.next();
 The methods in `MyVisitor` are called for each node in the traversal. The traversal begins with the node the cursor currently
 points to.
 
-### Other axes
+### Additional Axes
 
 SirixDB provides all possible XPath-axis. Note, that the `PrecedingAxis` and the `PrecedingSiblingAxis` don't deliver nodes in document order (preorder), but in the natural encountered order. Furthermore, a `PostOrderAxis` is available, which traverses the tree in a postorder traversal. Similarly, a `LevelOrderAxis` traverses the tree in a breadth-first manner. SirixDB also provides a `ConcurrentAxis`, a `ConcurrentUnionAxis`, a `ConcurrentIntersectAxis` and a `ConcurrentExceptAxis` to prefetch nodes concurrently and in parallel.
 
-### Filtering for Specific Node-Types or Nodes
+### Filtering for Specific Nodes
 
 SirixDB provides several filters, which can be plugged in through a `FilterAxis`. The following code, for instance, traverses all children of a node and filters them for nodes with the local name "a" in an XML resource.
 
@@ -377,6 +377,7 @@ final var axisStream = StreamSupport.stream(axis.spliterator(), false);
 axisStream.filter((unusedNodeKey) -> new NameFilter(rtx, new QNm("a")))
           .forEach((unusedNodeKey) -> /* Do something with the transactional cursor */);
 ```
+### Nested Axis
 
 To achieve much more query power you can chain several axes with the `NestedAxis`. The following example shows how we can create axes to process a simple XPath query. However, we think it's much more convenient to simply use the XPath query with our Brackit binding.
 
@@ -467,7 +468,7 @@ final var predicateAxisFilter = new PredicateFilterAxis(rtx, childAxisFilter);
 final var nestedAxis = new NestedAxis(descendantAxis, predicateAxisFilter);
 ```
 
-### Time Travel axis
+### Time Travel Axes
 However, SirixDB not only supports navigational axis within one revision, it also allows navigation on the time axis.
 
 We're able to use one of the following axes to navigate in time:
@@ -524,7 +525,7 @@ wtx.moveTo(15).trx()
 
 First, we have to open the resource again.
 
-### Open a read-write transaction in an XML database
+### Open a Read-Write Transaction in an XML Database
 
 To open a resource in an XML database we use:
 ```java
@@ -537,7 +538,7 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
 }
 ```
 
-### Open a read-write transaction in a JSON database
+### Open a Read-Write Transaction in a JSON Database
 
 To open a resource in a JSON database we use:
 
@@ -606,7 +607,7 @@ wtx.copySubtreeAsRightSibling(rtx);
 
 SirixDB always applies changes in-memory and then flushes them sequentially to a disk or the flash drive during a transaction commit. The only exception is if the in-memory cache has to evict some entries into a file due to memory constraints. We can either commit() or rollback() the transaction. Note that we can reuse the transaction after a commit() or rollback() method call.
 
-### Starting a read-write transaction
+### Starting a Read-Write Transaction
 
 SirixDB provides several possibilities to start a read-write transaction in the first place. We can for instance start an auto-commit transactional cursor:
 
@@ -639,6 +640,7 @@ final var dateTime = LocalDateTime.of(2019, Month.JUNE, 15, 13, 39);
 final var instant = dateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant();
 final var rtx = resourceManager.beginNodeReadOnlyTrx(instant)
 ```
+
 ## Serialize a Resource in a Database
 
 ### Serialize as XML
@@ -712,9 +714,9 @@ serializer.call();
 
 ## Diffing
 
-### Import differences between an initially stored revision and the second version of an XML document
+### Import Differences
 
-To update a resource with algorithmically found differences between two tree-structures, use something like the following:
+To update a resource with algorithmically found differences between an initially stored revision in a SirixDB resource and another revision stored as an XML document, we're able to use:
 
 ```java
 // Old Sirix resource to update.
