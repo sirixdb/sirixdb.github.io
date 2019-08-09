@@ -1171,7 +1171,7 @@ section.markdown {
 
 	section.markdown > h1, section.markdown > h2, section.markdown > h3, section.markdown > h4, section.markdown > h5, section.markdown > h6 {
 		color: inherit;
-		font-weight: 200;
+		font-weight: normal;
 		line-height: 1.75em;
 		margin-bottom: 1em;
 		text-transform: none;
