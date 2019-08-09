@@ -599,9 +599,9 @@ To insert a new subtree based on a String you can simply use
 ```java
 wtx.insertSubtreeAsFirstChild(XmlShredder.createStringReader("<foo>bar<baz/></foo>"))
 ```
+To copy a subtree of the node the read-transaction (`rtx`) is located at as a new right sibling.
 
 ```java
-// Copy subtree of the node the read-transaction is located at as a new right sibling.
 wtx.copySubtreeAsRightSibling(rtx);
 ```
 
