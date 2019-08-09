@@ -92,7 +92,8 @@ Databases.createXmlDatabase(new DatabaseConfiguration(databaseFile));
 
 // Open the database.
 try (final var database = Databases.openXmlDatabase(databaseFile)) {
-  // Create a first resource without text-value compression but with DeweyIDs which are hierarchical node labels.
+  // Create a first resource without text-value compression but with DeweyIDs which are
+  // hierarchical node labels.
   database.createResource(ResourceConfiguration.builder("resource")
                                                .useTextCompression(false)
                                                .useDeweyIDs(true)
@@ -103,8 +104,8 @@ try (final var database = Databases.openXmlDatabase(databaseFile)) {
 
   try (// Open a resource manager.
        final var manager = database.openResourceManager("resource");
-       // Open only write transaction on the resource (transaction provides a cursor for navigation
-       // through moveToX-methods).
+       // Open only write transaction on the resource (transaction provides
+       // a cursor for navigation through moveToX-methods).
        final var wtx = manager.beginNodeTrx();
        final var fis = new FileInputStream(pathToXmlFile.toFile())) {
        
@@ -145,8 +146,8 @@ try (final var database = Databases.openJsonDatabase(databaseFile)) {
 
   try (// Open a resource manager.
        final var manager = database.openResourceManager("resource");
-       // Open only write transaction on the resource (transaction provides a cursor for navigation
-       // through moveToX-methods).
+       // Open only write transaction on the resource (transaction provides
+       // a cursor for navigation through moveToX-methods).
        final var wtx = manager.beginNodeTrx();
        final var fis = new FileInputStream(pathToJsonFile.toFile())) {
        
@@ -171,19 +172,23 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
      // Now open a read-only transaction again.
      final var rtx = manager.beginNodeReadOnlyTrx()) {
     
-  // Use the descendant axis to iterate over all structural descendant nodes (each node with the exception of namespace- and attribute-nodes) in pre-order (depth-first).
+  // Use the descendant axis to iterate over all structural descendant nodes
+  // (each node with the exception of namespace- and attribute-nodes) in pre-order (depth-first).
   new DescendantAxis(rtx, IncludeSelf.YES).forEach((unused) -> {
-    // The transaction-cursor is moved to each structural node (all nodes, except for namespace- and attributes in preorder).
+    // The transaction-cursor is moved to each structural node
+    // (all nodes, except for namespace- and attributes in preorder).
     switch (rtx.getKind()) {
       case ELEMENT:
-        // In order to process namespace-nodes we could do the following and log the full qualified name of each node.
+        // In order to process namespace-nodes we could do the following and
+        // log the full qualified name of each node.
         for (int i = 0, nspCount = rtx.getNamespaceCount(); i < nspCount; i++) {
           rtx.moveToNamespace(i);
           LOGGER.info(rtx.getName());
           rtx.moveToParent();
         }
 
-        // In order to process attribute-nodes we could do the following and log the full qualified name of each node. 
+        // In order to process attribute-nodes we could do the following and
+        // log the full qualified name of each node. 
         for (int i = 0, attrCount = rtx.getAttributeCount(); i < attrCount; i++) {
           rtx.moveToAttribute(i);
           LOGGER.info("Attribute name:" + rtx.getName());
@@ -234,7 +239,8 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
     
   // Use the descendant axis to iterate over all descendant nodes in pre-order (depth-first).
   new DescendantAxis(rtx, IncludeSelf.YES).forEach((unused) -> {
-    // The transaction-cursor is moved to each structural node (all nodes, except for namespace- and attributes in preorder).
+    // The transaction-cursor is moved to each structural node
+    // (all nodes, except for namespace- and attributes in preorder).
     switch (rtx.getKind()) {
       case OBJECT_KEY:
         LOGGER.info(rtx.getName());
@@ -343,7 +349,8 @@ In JSON object records have names and all value nodes can be filtered by a value
 It can be used as follows for XML resources:
 
 ```java
-// Filter by name (first argument is the axis, next arguments are filters (which implement org.sirix.axis.filter.Filter).
+// Filter by name (first argument is the axis, next arguments are filters
+// (which implement org.sirix.axis.filter.Filter).
 for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(new VisitorDescendantAxis.Builder(rtx).includeSelf().visitor(myVisitor).build(), new NameFilter(rtx, "foobar")); axis.hasNext();) {
   axis.next();
 }
@@ -357,7 +364,8 @@ Alternatively you could simply stream over your axis (without using the `FilterA
 final var axis = new PostOrderAxis(rtx);
 final var axisStream = StreamSupport.stream(axis.spliterator(), false);
 
-axisStream.filter((unusedNodeKey) -> new NameFilter(rtx, new QNm("a"))).forEach((unusedNodeKey) -> /* Do something with the transactional cursor */);
+axisStream.filter((unusedNodeKey) -> new NameFilter(rtx, new QNm("a")))
+          .forEach((unusedNodeKey) -> /* Do something with the transactional cursor */);
 ```
 
 To achieve much more query power you can chain several axes with the `NestedAxis`. The following example shows how we can create axes to process a simple XPath query. However, we think it's much more convenient to simply use the XPath query with our Brackit binding.
@@ -374,9 +382,9 @@ final var text = new FilterAxis<>(new ChildAxis(rtx), new TextFilter(rtx));
 final var axis = new NestedAxis(new NestedAxis(childA, childB), text);
 ```
 
-Simple examples with the `PostOrderAxis`:
+### PostOrder Axis
 
-whole bunch of axis are usable (all XPath axis and a few more):
+We can use the `PostOrderAxis` in the following way:
 
 ```java
 // A postorder-axis which iterates in postorder through a (sub)tree.
@@ -406,6 +414,7 @@ while (axis.hasNext()) {
 ```
 
 or with the foreach-loop:
+
 ```java
 // Iterate and use a visitor implementation to describe the behavior for the individual node types.
 final var visitor = new MyVisitor(rtx);
@@ -458,7 +467,8 @@ We can then navigate to a specific node, either via axis and filters or, if we k
 SirixDB provides several navigational methods. After the resource is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to its first child which is the XML root element via `moveToFirstChild()`. Similar, we can move to a right sibling with `moveToRightSibling()`, or move to the left sibling (`moveToLeftSibling()`). Furthermore, many more methods to navigate through the tree are available. For instance `moveToLastChild()` or `moveToAttribute(int)`/`moveToAttributeByName(new QNm("foobar"))`/`moveToNamespace(int)` if we reside an element node. For JSON resources the moveTo-methods for attributes and namespaces are not available. Furthermore, SirixDB allows to move to the next node in preorder (`moveToNext()`) or to the previous node in preorder (`moveToPrevious()`). Or for instance to the next node on the XPath `following::`-axis. A simple example is this:
 
 ```java
-// A fluent call would be if you know a node has a right sibling and there's a first child of the right sibling.
+// A fluent call would be if you know a node has a right sibling and
+// there's a first child of the right sibling.
 rtx.moveToRightSibling().trx().moveToFirstChild().trx();
 
 // Can be tested before.
