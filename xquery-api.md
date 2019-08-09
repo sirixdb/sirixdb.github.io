@@ -3,7 +3,7 @@ layout: documentation
 doctitle: XQuery-API
 ---
 
-### Maven artifacts
+## Maven Artifacts
 
 First, you have to get the dependeny on our Sirix XQuery project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
 
@@ -54,8 +54,8 @@ dependencies {
 }
 ```
 
-### Import and query
-First, you might want to import an XML-document into Sirix and create a first database with the shredded/imported XML-document as a single resource file with the XQuery function `sdb:load(xs:string, xs:string, xs:string) as node()`. The first argument is the database to create, the second the resource which represents the imported XML-document and the third parameter is the resource to import. Then loading the resource again and execute your first query (`sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
+## Import and Query
+First, we might want to import an XML document into Sirix. We'll create a database with the imported XML document as a single resource file with the XQuery function `sdb:load(xs:string, xs:string, xs:string) as node()`. The first argument is the database to create, the second the resource which represents the imported XML-document and the third parameter is the resource to import. Then we'll be able to load the resource again and execute our first query (`sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
 
 ```java
 final var doc = Paths.get("src", "main", "resources", "orga.xml");
@@ -82,7 +82,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 }
 ```
 
-In the above example you are loading an XML-document from a file into Sirix. You can do the same with XML-documents stored as simple Strings with the store-function:
+In the above example we are importing (loading) an XML document from a file into SirixDB. We can import XML documents stored as simple Strings with the store-function:
 
 ```java
 final var ctx = SirixQueryContext.createWithNodeStore(store);
@@ -90,7 +90,7 @@ final var query = "sdb:store('mydoc.col', 'mydoc.xml', '<xml>foo<bar/></xml>')";
 new XQuery(query).evaluate(ctx);
 ```
 
-Loading a collection of XML files in Sirix is as simple as using the following query for instance (dir is a directory path and you're importing all files with an `.xml` suffix):
+Loading a collection of XML files in SirixDB is as simple as using the following query. `dir` is a directory path and we're importing all files with an `.xml` suffix:
 
 ```java
 final var ctx = SirixQueryContext.createWithNodeStore(store);
@@ -106,7 +106,7 @@ final var query = "for $doc in collection('mydocs.col') return $doc";
 new XQuery(query).prettyPrint().serialize(ctx, System.out);
 ```
 
-In order to store JSON-documents into Sirix the store-function within another namespace (`js`) is used:
+In order to store JSON data in SirixDB we can use the store-function within another namespace (`js`):
 
 ```java
 // Initialize query context and store.
@@ -121,7 +121,7 @@ try (final var store = BasicJsonDBStore.newBuilder().build();
 }
 ```
 
-For sure you can also store a bunch of JSON-strings within several resources in the database (`mycol.jn`):
+We can also store a bunch of JSON-strings within several resources in the database (`mycol.jn`):
 
 ```java
 try (final var store = BasicJsonDBStore.newBuilder().build();
@@ -135,7 +135,7 @@ try (final var store = BasicJsonDBStore.newBuilder().build();
 }
 ```
 
-In that case the second parameter, which otherwise denotes the resource-name is not used. Furthermore in both cases the database is implicitly created. However a fourth boolean parameter (`true()` if a new database should be created or `false()` if the resource should simply be added to an existing database) can be used to simply add resources like this:
+In that case the second parameter, which otherwise denotes the resource name is not used. Furthermore in both cases the database is implicitly created. However, a fourth boolean parameter can be used to add resources. It is `true()` if a new database should be created or `false()` if the resource should be added to an existing database:
 
 ```java
 try (final var store = BasicJsonDBStore.newBuilder().build();
@@ -149,9 +149,9 @@ try (final var store = BasicJsonDBStore.newBuilder().build();
 }
 ```
 
-In this case the resource is simply added to the `mycol.jn` database as `mydoc.jn`.
+In this case the resource is added to the `mycol.jn` database as `mydoc.jn`.
 
-You can open the stored resources again, either via a jn:collection(...) function to retrieve all resources in a database:
+We can open the stored resources again, either via a jn:collection(...) function to retrieve all resources in a database:
 
 ```java
 final var ctx = SirixQueryContext.createWithNodeStore(store);
@@ -159,19 +159,19 @@ final var query = "for $doc in jn:collection('mydocs.col') return $doc";
 new XQuery(query).prettyPrint().serialize(ctx, System.out);
 ```
 
-or via `jn:doc(xs:string, xs:string, xs:int) as json-item()`, which is almost identical as the version to open XML-resources. The first parameter is the database to open, the second parameter the resource and the last one is the optional revision to open (without the last parameter it opens the most recent revision).
+or via `jn:doc(xs:string, xs:string, xs:int) as json-item()`, which is almost identical as the version to open XML resources. The first parameter is the database to open, the second parameter the resource and the last parameter is the optional revision to open. Without the last parameter SirixDB opens the most recent revision.
 
-For instance if we have stored the following very simple JSON-string as a resource in Sirix `{"sirix":{"revisionNumber":1}}`, then you can retrieve the revisionNumber simply via:
+For instance if we have stored the following very JSON-string as a resource in SirixDB `{"sirix":{"revisionNumber":1}}`, then we'll be able to retrieve the revisionNumber simply via:
 
 `jn:doc('mycol.jn','mydoc.jn')=>sirix=>revisionNumber`
 
-This shows the `deref`-operator `=>` which is used to select object/record values by their key name.
+This example query shows the `deref`-operator `=>` which is used to select object values by their key name.
 
-We'll save other JSON-stuff for later on. But first we want to show how to update XML- and JSON-resources.
+We'll save other JSON examples for later. First, we want to show how to update XML and JSON resources.
 
-### Update the resource
+### Update a Resource
 
-In order to update a resource you're able to use XQuery Update statements. First we load an XML-document again into a `database/resource` whereas the database is named `mycol.xml` and the resource `mydoc.xml`. Then we open the database/resource again in their most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. The result is serialized to `STDOUT` again.
+In order to update a resource we're able to use XQuery Update statements. First we load an XML document again into a resource in a (to be created) database. The database is named `mycol.xml` and the resource `mydoc.xml`. Then we open the database and the resource again. We open the resource in its most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. We serialize the result to `STDOUT` again.
 
 ```java
 // Prepare sample document.
@@ -200,24 +200,24 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println();
 }
 ```
-Note, that a transaction is auto-commited in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case we open the most recent revision, which is revision two (bootstrapped revision is 0 with only a document-root node and revision 1 was the initially imported XML-document) and serialize it to `System.out`.
+Note, that a transaction is auto-commited in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case we open the most recent revision, which is revision two. After creating and bootstrapping a resource the revision number is 0 with only a document-root node. Once we commit our imported XML-document we have stored a first revision. We're serializing the stored revision in another query to `STDOUT` again.
 
-Regarding JSON we're currently working on update expressions for our XQuery extension (mainly JSONiq). For now you have to use our transactional cursor based API to update JSON-resources. You could for instance simply open the database with XQuery and get the transactional cursor via the `getTrx()`-method on the result sequence:
+SirixDB currently doesn't support update expressions for the JSON-XQuery extension. For now we have to use the transactional cursor based API to update JSON resources. We can simply open the database with XQuery and get the transactional cursor via the `getTrx()`-method on the result sequence:
 
 ```java
 final var seq = new XQuery(compileChain, query).execute(ctx);
 final var rtx = seq.getTrx();
 ```
 
-In Java or Kotlin we can simply use the transaction to insert whole Object-structures, Arrays, String, Number, Boolean and Null-values.
+In Java or Kotlin we can use the transaction to insert Object-structures, Arrays, String, Number, Boolean and Null-values.
 
-For instance you can simply insert whole JSON-structures as first childs of arrays or as right siblings of array items for instance like this:
+For instance we can insert JSON data as first childs of arrays or as right siblings of array items:
 
 `JsonNodeTrx insertSubtreeAsFirstChild(JsonReader reader)`
 
 `JsonNodeTrx insertSubtreeAsRightSibling(JsonReader reader)`
 
-If the cursor is located on an object node we can insert records (key/value pairs) like this:
+If the cursor is located on an object node we can insert records (key/value pairs):
 
 `JsonNodeTrx insertObjectRecordAsFirstChild(String key, ObjectRecordValue<?> value)`
 
@@ -225,16 +225,16 @@ Object record values can be all JSON node types (`ArrayValue`, `ObjectValue`, `B
 
 `JsonNodeTrx insertObjectRecordAsRightSibling(String key, ObjectRecordValue<?> value)`
 
-All possible methods can be found in the interface `org.sirix.api.json.JsonNodeTrx`.
+We can find alls possible methods in the interface `org.sirix.api.json.JsonNodeTrx`.
 
 ### Temporal axis
-We not only provide all standard XPath axis for the XML-documents stored in Sirix, but also temporal XPath axis, which can be used to analyse how a resource or a subtree therein has changed between several revisions.
+SirixDB not only provides all standard XPath axes for the stored XML documents, but also temporal XPath axes. We can use these axes to analyse how a resource or a subtree therein has changed between several revisions.
 
 Temporal axis are compatible with node tests:
 
 `<temporalaxis>::<nodetest>` is defined as `<temporalaxis>::*/self::<nodetest>`
 
-For instance to simply serialize all revisions, we can use the axis `all-time::`
+For instance to simply serialize all revisions, we can use the axis `all-times::`
 
 ```java
 try (final var store = BasicXmlDBStore.newBuilder().build();
@@ -242,20 +242,20 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
      final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   System.out.println();
   System.out.println("Query loaded document:");
-  final var queryString = "sdb:doc('mycol.xml', 'mydoc.xml')/log/all-time::*";
+  final var queryString = "sdb:doc('mycol.xml', 'mydoc.xml')/log/all-times::*";
   System.out.println(queryString);
   final var query = new XQuery(compileChain, queryString);
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
 
-We support a whole bunch of temporal axis: `first::` to get a node in the first revision, `last::` to get a node in the last revision, `previous::` to get the node in the previous revision, `next::` to get the node in the next revision, `future::` and `future-or-self::` to get a node in all future revisions or the current and future revisions, `past::` and `past-or-self::` to get a node in past revisions or the current and past revisions. We have already seen the `all-time::`-axis which iterates over a node in all revisions.
+SirixDB supports a lot of temporal axis: `first::` to get a node in the first revision, `last::` to get a node in the last revision, `previous::` to get the node in the previous revision, `next::` to get the node in the next revision, `future::` and `future-or-self::` to get a node in all future revisions or the current and future revisions, `past::` and `past-or-self::` to get a node in past revisions or the current and past revisions. We have already seen the `all-times::`-axis which iterates over a node in all revisions.
 
-JSON instead has no notion of navigational axis, instead we provide custom functions:
+JSON instead has no notion of navigational axis, instead SirixDB provides custom functions:
 
-- `jn:future($item as json-item(), $includeSelf as xs:boolean) as json-item()*`: Function for selecting a json-item in the future or the future-or-self. The first parameter is the context item. Second parameter is if the current item should be included in the result or not.
+- `jn:future($item as json-item(), $includeSelf as xs:boolean) as json-item()*`: Function for selecting a json-item in the future or the future-or-self. The first parameter is the context item. Second parameter denotes if the current item should be included in the result or not.
 
-- `jn:past($item as json-item(), $includeSelf as xs:boolean) as json-item()*`: Function for selecting a json-item in the past or the past-or-self. The first parameter is the context item. Second parameter is if the current item should be included in the result or not.
+- `jn:past($item as json-item(), $includeSelf as xs:boolean) as json-item()*`: Function for selecting a json-item in the past or the past-or-self. The first parameter is the context item. Second parameter denotes if the current item should be included in the result or not.
 
 - `jn:all-times($item as json-item()) as json-item()+`: Function for selecting a json-item in all revisions.
 
@@ -267,14 +267,14 @@ JSON instead has no notion of navigational axis, instead we provide custom funct
 
 - `jn:next($item as json-item()) as json-item()?`: Function for selecting a json-item in the next revision.
 
-### Open a specific revision
-Once you've stored a few revisions of a resource in Sirix you might want to open a specific revision again. This can simply be done by using a third parameter to the doc-function in the sirix-namespace For instance using 
+### Open a Specific Revision
+Once we've stored a few revisions of a resource in SirixDB we might want to open a specific revision again. We can use the `doc` function again, but this time with a third parameter:
 
 `sdb:doc('mycol.xml', 'mydoc.xml', 1)`
 
-This opens the database `mycol.xml` and the resource `mydoc.xml` in revision one. Without the additional revision-number parameter the most recent revision is going to be opened.
+SirixDB opens the database `mycol.xml` and the resource `mydoc.xml` in revision one. Without the additional revision-number parameter SirixDB would have opened the most recent revision.
 
-However, you might also be interested in loading a revision by a given timestamp/point in time. You might simply use the function `sdb:open($database as xs:string, $resource as xs:string, $pointInTime as xs:dateTime) as $doc`.
+However, we might also want to load a revision by a given point in time. We're able to use the function `sdb:open($database as xs:string, $resource as xs:string, $pointInTime as xs:dateTime) as $doc`:
 
 ```java
 try (final var store = BasicXmlDBStore.newBuilder().build();
@@ -288,12 +288,13 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
+We open the resource in the database as it looked like on 2019-04-01 05:00:00. 
 
-with the following function you're able to load the database/resource how it looked like between two revisions. Sirix searches for the closest revisions to the given timestamps. The function returns the document node in all revisions, which have been committed in-between.
+With the function `open-revisions` we're able to load all revisions of a resource between two points in time:
 
 `sdb:open-revisions($database as xs:string, $resource as xs:string, $startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as node()*`
 
-A simple example is
+For instance we can use the following Java code:
 
 ```java
 try (final var store = BasicDBStore.newBuilder().build()
@@ -308,8 +309,8 @@ try (final var store = BasicDBStore.newBuilder().build()
 }
 ```
 
-### Transactional cursor based functions
-We also provide a few functions, which are based on the fact that currently when importing data with XQuery we generate hashes for each node as well as the number of descendants. Furthermore we always store the number of children of each node. You can use the function
+### Transactional-Cursor Based Functions
+SirixDB also provides a few functions, which are based on the fact that currently when importing data with XQuery we generate hashes for each node as well as the number of descendants. Furthermore we always store the number of children of each node. You can use the function
 
 `sdb:descendant-count($node as structured-item()) as xs:long`
 
