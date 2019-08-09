@@ -173,8 +173,8 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
      final var rtx = manager.beginNodeReadOnlyTrx()) {
     
   // Use the descendant axis to iterate over all structural descendant nodes
-  // (each node with the exception of namespace- and attribute-nodes) in pre-order
-  // (depth-first).
+  // (each node with the exception of namespace- and attribute-nodes) in
+  // pre-order (depth-first).
   new DescendantAxis(rtx, IncludeSelf.YES).forEach((unused) -> {
     // The transaction-cursor is moved to each structural node
     // (all nodes, except for namespace- and attributes in preorder).
@@ -201,10 +201,11 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
         LOGGER.info(rtx.getDescendantCount());
         LOGGER.info(rtx.getChildCount());
         /* 
-         * Hash of a node, build bottom up for all nodes (depends on descendant hashes,
-         * however only ancestor nodes are updated during a normal edit-operation.
-         * During bulk inserts with insertSubtree(...) the hashes are generated during
-         * a postorder-traversal, just like the descendant-count of each structural node.
+         * Hash of a node, build bottom up for all nodes (depends on descendant
+         * hashes, however only ancestor nodes are updated during a normal
+         * edit-operation. During bulk inserts with insertSubtree(...) the hashes
+         * are generated during a postorder-traversal, just like the
+         * descendant-count of each structural node.
          */
         LOGGER.info(rtx.getHash());
         break;
@@ -322,7 +323,10 @@ The default implementation of each method in the `Visitor`-interface returns `Vi
 
 ```java
 // Executes a modification visitor for each descendant node.
-final var axis = VisitorDescendantAxis.newBuilder(rtx).includeSelf().visitor(new MyVisitor()).build();
+final var axis = VisitorDescendantAxis.newBuilder(rtx)
+                                      .includeSelf()
+                                      .visitor(new MyVisitor())
+                                      .build();
      
 while (axis.hasNext()) axis.next();
 ```
