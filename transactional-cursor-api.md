@@ -458,8 +458,11 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
   ...
 }
 ```
+Thus, the only visible change in the API regarding JSON and XML resources is the method call `Databases.openJsonDatabase(Path)`
+instead of `Databases.openXmlDatabase(Path)`. Note, that also the types of the database/resource and transaction have changed, but for brevity we use Java's type inference rules and the `var` keyword. Note, that we now have to use a transaction, which is able to modify the resource (of type `NodeTrx`) instead of a read-only transaction (`beginNodeTrx()` instead of `beginNodeReadOnlyTrx()`). Thus we have to start the single read-write transaction on a resource and make sure, that we commit and properly close the transaction.
 
-Note, that we now have to use a transaction, which can modify the resource (`NodeTrx`) instead of a read-only transaction.
+Note, that it's best to open the transaction in the enclosing `try-with-resources` statement. We can reuse the transaction handle
+after issuing a `commit()`.
 
 We can then navigate to a specific node, either via axis and filters. Or, if we know the node key simply through the method `moveTo(long)` whereas the long parameter is the node key of the node we want to select.
 
