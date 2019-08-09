@@ -1193,7 +1193,7 @@ pre.highlight {
   background-color: #efefef;
   color: #000000;
   border-radius: 1px;
-  overflow-x: auto;
+  /** overflow-x: auto; **/
   font-family: monospace;
   border-left: 3px solid #d01040;
   text-align: left;
