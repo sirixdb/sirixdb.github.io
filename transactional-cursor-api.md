@@ -173,7 +173,8 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
      final var rtx = manager.beginNodeReadOnlyTrx()) {
     
   // Use the descendant axis to iterate over all structural descendant nodes
-  // (each node with the exception of namespace- and attribute-nodes) in pre-order (depth-first).
+  // (each node with the exception of namespace- and attribute-nodes) in pre-order
+  // (depth-first).
   new DescendantAxis(rtx, IncludeSelf.YES).forEach((unused) -> {
     // The transaction-cursor is moved to each structural node
     // (all nodes, except for namespace- and attributes in preorder).
@@ -200,10 +201,10 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
         LOGGER.info(rtx.getDescendantCount());
         LOGGER.info(rtx.getChildCount());
         /* 
-         * Hash of a node, build bottom up for all nodes (depends on descendant hashes, however only
-         * ancestor nodes are updated during a normal edit-operation. During bulk inserts with 
-         * insertSubtree(...) the hashes are generated during a postorder-traversal, just like the 
-         * descendant-count of each structural node.
+         * Hash of a node, build bottom up for all nodes (depends on descendant hashes,
+         * however only ancestor nodes are updated during a normal edit-operation.
+         * During bulk inserts with insertSubtree(...) the hashes are generated during
+         * a postorder-traversal, just like the descendant-count of each structural node.
          */
         LOGGER.info(rtx.getHash());
         break;
@@ -234,10 +235,11 @@ In JSON we obviously have no namespace or attribute nodes, but with this excepti
 // Open the database.
 try (final var database = Databases.openJsonDatabase(databaseFile);
      final var manager = database.openResourceManager("resource");
-     // Now open a read-only transaction again.
+     // Now open a read-only transaction again on the most recent revision.
      final var rtx = manager.beginNodeReadOnlyTrx()) {
     
-  // Use the descendant axis to iterate over all descendant nodes in pre-order (depth-first).
+  // Use the descendant axis to iterate over all descendant nodes in pre-order
+  // (depth-first).
   new DescendantAxis(rtx, IncludeSelf.YES).forEach((unused) -> {
     // The transaction-cursor is moved to each structural node
     // (all nodes, except for namespace- and attributes in preorder).
@@ -351,7 +353,11 @@ It can be used as follows for XML resources:
 ```java
 // Filter by name (first argument is the axis, next arguments are filters
 // (which implement org.sirix.axis.filter.Filter).
-for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(new VisitorDescendantAxis.Builder(rtx).includeSelf().visitor(myVisitor).build(), new NameFilter(rtx, "foobar")); axis.hasNext();) {
+for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(
+    new VisitorDescendantAxis.Builder(rtx).includeSelf()
+                                        .visitor(myVisitor)
+                                        .build(),
+    new NameFilter(rtx, "foobar")); axis.hasNext();) {
   axis.next();
 }
 ```
@@ -404,7 +410,8 @@ while (axis.hasNext()) {
 or more elegantly:
 
 ```java
-// Iterate and use a visitor implementation to describe the behavior for the individual node types.
+// Iterate and use a visitor implementation to describe the behavior for the individual
+// node types.
 final var visitor = new MyVisitor(rtx);
 final var axis = new PostOrderAxis<XdmNodeReadOnlyTrx>(rtx); 
 while (axis.hasNext()) {
@@ -416,7 +423,8 @@ while (axis.hasNext()) {
 or with the foreach-loop:
 
 ```java
-// Iterate and use a visitor implementation to describe the behavior for the individual node types.
+// Iterate and use a visitor implementation to describe the behavior for
+// the individual node types.
 final var visitor = new MyVisitor(rtx);
 for (final long nodeKey : new PostOrderAxis(rtx)) {
   rtx.acceptVisitor(visitor);
@@ -494,7 +502,9 @@ rtx.moveToNext();
 The API is fluent:
 
 ```java
-// trx() returns the transaction cursor currently used. However in this case the caller must be sure that a right sibling of the node denoted by node-key 15 and his right sibling and the right sibling's first child exists.
+// trx() returns the transaction cursor currently used. However in this case the caller
+// must be sure that a right sibling of the node denoted by node-key 15 and his right
+// sibling and the right sibling's first child exists.
 wtx.moveTo(15).trx()
    .moveToRightSibling().trx()
    .moveToFirstChild().trx()
@@ -635,7 +645,9 @@ Or write it to string:
 ```java
 final var baos = new ByteArrayOutputStream();
 final var writer = new PrintStream(baos);
-final var serializer = XmlSerializer.newBuilder(manager, writer).prettyPrint().build();
+final var serializer = XmlSerializer.newBuilder(manager, writer)
+                                    .prettyPrint()
+                                    .build();
 serializer.call();
 final var content = baos.toString(StandardCharsets.UTF_8);
 ```
@@ -643,14 +655,22 @@ final var content = baos.toString(StandardCharsets.UTF_8);
 In order to serialize revision 1, 2 and 3 of a resource with an XML declaration and the internal node keys for element nodes (pretty printed):
 
 ```java
-final var serializer = XmlSerializer.newBuilder(manager, out, 1, 2, 3).emitXMLDeclaration().emitIds().prettyPrint().build();
+final var serializer = XmlSerializer.newBuilder(manager, out, 1, 2, 3)
+                                    .emitXMLDeclaration()
+                                    .emitIds()
+                                    .prettyPrint()
+                                    .build();
 serialize.call()
 ```
 
 In order to serialize all stored revisions with the internal node keys and pretty printed:
 
 ```java
-final var serializer = XmlSerializer.newBuilder(manager, out, -1).emitXMLDeclaration().emitIds().prettyPrint().build();
+final var serializer = XmlSerializer.newBuilder(manager, out, -1)
+                                    .emitXMLDeclaration()
+                                    .emitIds()
+                                    .prettyPrint()
+                                    .build();
 serialize.call()
 ```
 
