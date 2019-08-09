@@ -76,9 +76,9 @@ Thus we'll introduce a unique API, which we're going to use for both traversing 
 **Note that the binary JSON-format in SirixDB allows duplicate object record keys, which are ordered. Upper layers, however, may simply store object records in a hash map, thus not keeping track of the order nor supporting duplicate record keys.**
 
 ## Create a Database With a Single Resource
-First, we want to show how to create a database with a single resource.
 
 ### Create an XML Database and Resource
+First, we want to show how to create a database with a single resource:
 
 ```java
 // XML-file to import.
