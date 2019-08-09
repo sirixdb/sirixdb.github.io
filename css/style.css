@@ -1170,9 +1170,9 @@ section.markdown {
 }
 
 section.markdown > p {
-  margin: 1.3em 0;
+  margin: 0 0 10px;
   padding: 0;
-  line-height: 1.5em;
+  line-height: 1.3em;
 }
 
 dt {
@@ -1186,8 +1186,8 @@ dd {
 }
 
 pre.highlight {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+  margin-top: 1em;
+  margin-bottom: 1em;
   padding: 1.2em;
   /** border: 1px solid #dbdbdb; **/
   background-color: #efefef;
