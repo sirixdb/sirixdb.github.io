@@ -1197,35 +1197,34 @@ pre.highlight {
   font-family: monospace;
   border-left: 3px solid #d01040;
   text-align: left;
-  margin-left: 8em;
   display: table;
   table-layout: fixed;
   width: 100%; /* anything but auto, otherwise fixed layout not guaranteed */
   white-space: pre-wrap;
 }
 
-pre.code::before {
+pre.highlight::before {
     counter-reset: linenum;
 }
-pre.code code span.tr {
+pre.highlight code span.tr {
     display: table-row;
     counter-increment: linenum;
 }
-pre.code code span.th { /* used for line numbers */
+pre.highlight code span.th { /* used for line numbers */
     display: table-cell;
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
 }
-pre.code code span.th::before {
+pre.highlight code span.th::before {
     content: counter(linenum);
     text-align: right;
     display: block;
 }
-pre.code code span.th {
+pre.highlight code span.th {
     width: 4em; /* or whatever the desired width of the numbers column is */
 }
-pre.code code {
+pre.highlight code {
     display: table-cell;
 }
 
