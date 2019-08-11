@@ -1197,9 +1197,6 @@ pre.highlight {
   font-family: monospace;
   border-left: 3px solid #d01040;
   text-align: left;
-  display: table;
-  table-layout: fixed;
-  width: 100%; /* anything but auto, otherwise fixed layout not guaranteed */
 }
 
 div.content {
