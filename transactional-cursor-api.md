@@ -362,12 +362,12 @@ for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(
     new VisitorDescendantAxis.Builder(rtx).includeSelf()
                                         .visitor(myVisitor)
                                         .build(),
-    new NameFilter(rtx, "foobar")); axis.hasNext();) {
+    new XmlNameFilter(rtx, "foobar")); axis.hasNext();) {
   axis.next();
 }
 ```
 
-and for JSON-resources it's again simply changing the generics argument from `XdmNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx`.
+and for JSON-resources it's again simply changing the generics argument from `XdmNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx` as well as `XmlNameFilter` to `JsonNameFilter`.
 
 Alternatively you could simply stream over your axis (without using the `FilterAxis` at all) and then filter by predicate. `rtx` is a `NodeReadOnlyTrx` in the following example:
 
@@ -483,7 +483,7 @@ To use time travel axes, however first a few more revisions have to be created t
 
 We can then navigate to a specific node, either via axis and filters or, if we know the node key simply through the method `moveTo(long)`. The long parameter is the node key of the node we want to select.
 
-SirixDB provides several navigational methods. After the resource is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to its first child which is the XML root element via `moveToFirstChild()`. Similar, we can move to a right sibling with `moveToRightSibling()`, or move to the left sibling (`moveToLeftSibling()`). Furthermore, many more methods to navigate through the tree are available. For instance `moveToLastChild()` or `moveToAttribute(int)`/`moveToAttributeByName(new QNm("foobar"))`/`moveToNamespace(int)` if we reside an element node. For JSON resources the moveTo-methods for attributes and namespaces are not available. Furthermore, SirixDB allows to move to the next node in preorder (`moveToNext()`) or to the previous node in preorder (`moveToPrevious()`). Or for instance to the next node on the XPath `following::`-axis. A simple example is this:
+SirixDB provides several navigational methods. After the resource is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to its first child which is the XML root element via `moveToFirstChild`. Similar, we can move to a right sibling with `moveToRightSibling`, or move to the left sibling (`moveToLeftSibling`). Furthermore, many more methods to navigate through the tree are available. For instance `moveToLastChild` or `moveToAttribute`/`moveToAttributeByName`/`moveToNamespace` if the cursor points to an element node. For JSON resources the moveTo-methods for attributes and namespaces are not available. Furthermore, SirixDB allows to move to the next node in preorder (`moveToNext`) or to the previous node in preorder (`moveToPrevious`). Or for instance to the next node on the XPath `following::`-axis. A simple example is this:
 
 ```java
 // A fluent call would be if you know a node has a right sibling and
