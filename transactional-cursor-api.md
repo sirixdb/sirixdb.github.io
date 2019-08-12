@@ -344,16 +344,16 @@ SirixDB provides all possible XPath-axis. Note, that the `PrecedingAxis` and the
 SirixDB provides several filters, which can be plugged in through a `FilterAxis`. The following code, for instance, traverses all children of a node and filters them for nodes with the local name "a" in an XML resource.
 
 ```java
-new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new NameFilter(rtx, new QNm("a")))
+new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new XmlNameFilter(rtx, "a"))
 ```
 
 Regarding JSON resources it's as simple as changing the generics argument from `XdmNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx` (to change the transaction argument type).
 
-The `FilterAxis` optionally takes more than one filter. The filter either is a `NameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
+The `FilterAxis` optionally takes more than one filter. The filter either is an `XmlNameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
 
-In JSON object records have names and all value nodes can be filtered by a value filter. Node kind filters are `ObjectFilter`,`ObjectRecordFilter`, `ArrayFilter`, `StringValueFilter`, `NumberValueFilter`, `BooleanValueFilter` and `NullValueFilter`.
+In JSON object records have names and can be filtered with a `JsonNameFiler`. Available node kind filters are `ObjectFilter`,`ObjectRecordFilter`, `ArrayFilter`, `StringValueFilter`, `NumberValueFilter`, `BooleanValueFilter` and `NullValueFilter`.
 
-It can be used as follows for XML resources:
+The `FilterAxis` can also be used as follows for XML resources:
 
 ```java
 // Filter by name (first argument is the axis, next arguments are filters
