@@ -375,7 +375,7 @@ Alternatively you could simply stream over your axis (without using the `FilterA
 final var axis = new PostOrderAxis(rtx);
 final var axisStream = StreamSupport.stream(axis.spliterator(), false);
 
-axisStream.filter((unusedNodeKey) -> new NameFilter(rtx, new QNm("a")))
+axisStream.filter((unusedNodeKey) -> new XmlNameFilter(rtx, "a"))
           .forEach((unusedNodeKey) -> /* Do something with the transactional cursor */);
 ```
 ### Nested Axis
