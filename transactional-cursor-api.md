@@ -574,26 +574,27 @@ or for JSON resources:
 
 ```java
 // Cursor resides on an object key.
-if (wtx.isObjectKey()) wtx.setName(new QNm("foo"))
+if (wtx.isObjectKey()) wtx.setObjectKeyName("foo")
 
 // Or a string value node node
-if (wtx.isStringValue()) wtx.setValue("foo")
+if (wtx.isStringValue()) wtx.setStringValue("foo")
 ```
 
-Or we can insert new elements via `insertElementAsFirstChild(new QNm("foo"))`/`insertElementAsLeftSibling(new QNm("foo"))`/`insertElementAsRightSibling(new QNm("foo"))`. Similar methods exist for all other node types. We for sure always check for consistency and if calling the method on a specific node type should be allowed or not.
+Or we can insert new elements via `insertElementAsFirstChild`, `insertElementAsLeftSibling` and `insertElementAsRightSibling`. Similar methods exist for all other node types. We for sure always check for consistency and if calling the method on a specific node type should be allowed or not.
 
-Attributes for instance can only be inserted (`insertAttribute(new QNm("name", "value"))`), if the cursor is located on an element node.
+Attributes for instance can only be inserted via `insertAttribute`, if the cursor is located on an element node.
 
 Updating methods can also be chained:
 
 ```java
 // Assertion: wtx is located at element node.
-wtx.insertAttribute(new QNm("foo"), "bar", Move.PARENT).insertElementAsRightSibling(new QNm("baz"));
+wtx.insertAttribute(new QNm("foo"), "bar", Move.PARENT)
+   .insertElementAsRightSibling(new QNm("baz"));
 ```
 
 ### Bulk Update Operations
 
-More sophisticated bulk insertion methods exist, too (as you have already seen when we imported an XML-document). We provide a method to insert an XML-fragment as a first child (`XdmNodeTrx insertSubtreeAsFirstChild(XMLEventReader)`), as a left sibling (`XdmNodeTrx insertSubtreeAsLeftSibling(XMLEventReader)`) and as a right sibling (`XdmNodeTrx insertSubtreeAsRightSibling(XMLEventReader)`).
+More sophisticated bulk insertion methods exist, too as you have already seen when we imported an XML document or JSON data. We provide a method to insert an XML fragment as a first child `insertSubtreeAsFirstChild`, as a left sibling `insertSubtreeAsLeftSibling` and as a right sibling `insertSubtreeAsRightSibling`.
 
 To insert a new subtree based on a String you can simply use
 
