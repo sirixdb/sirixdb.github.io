@@ -40,6 +40,9 @@ We provide several APIs to interact with SirixDB.
 3. We provide a powerful, asynchronous, non-blocking [RESTful-API](/rest-api.html) to interact with a SirixDB HTTP-server. Authorization is done via Keycloak.
 
 ### Publications
+Articles published on Baeldung:
+- [A Guide to SirixDB](https://www.baeldung.com/sirix)
+
 Articles published on Medium: 
 - [Asynchronous, Temporal  REST With Vert.x, Keycloak and Kotlin](https://medium.com/hackernoon/asynchronous-temporal-rest-with-vert-x-keycloak-and-kotlin-coroutines-217b25756314)
 - [Pushing Database Versioning to Its Limits by Means of a Novel Sliding Snapshot Algorithm and Efficient Time Travel Queries](https://medium.com/sirixdb-sirix-io-how-we-built-a-novel-temporal/why-and-how-we-built-a-temporal-database-system-called-sirixdb-open-source-from-scratch-a7446f56f201)
