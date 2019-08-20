@@ -1165,7 +1165,7 @@ section.markdown {
   font-size: 1em;
 }
 
-	section p, section ul, section ol, section dl, section table {
+	section.markdown p, section.markdown ul, section.markdown ol, section.markdown dl, section.markdown table {
 		margin: 1em 0 1em 0;
 	}
 
