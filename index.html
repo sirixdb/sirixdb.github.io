@@ -6,18 +6,18 @@ layout: landing-page
 
 				<header class="special container">
 					<span class="icon fa-bar-chart-o"></span>
-					<h2>SirixDB is an evolutionary, <strong>temporal</strong> NoSQL storage sytem at its heart, which efficiently stores the history of your data.
+					<h2>SirixDB is an evolutionary, <strong>temporal</strong> NoSQL storage system at its heart, which efficiently stores the history of your data.
 					<br />
-					It stores per revision and per page changes.</h2>
-					<p>SirixDB is especially well suited for flash drives as for instance SSDs due to its log structured <strong>copy-on-write</strong> (CoW) nature.
+					It uses <strong>copy-on-write</strong> (CoW) snapshots as well as data page versioning to store per revision and page changes.</h2>
+					<p>SirixDB is especially well suited for flash drives as for instance SSDs due to its log-structure.
 					<br />
-					It allows <strong>time-travel</strong> queries in its binary <strong>XML</strong> as well as <strong>JSON</strong> based encondings.
+					It allows <strong>time-travel</strong> queries in its binary <strong>XML</strong> as well as <strong>JSON</strong> based encodings.
                                         <br />
 					It is released for free under <a href="https://opensource.org/licenses/BSD-3-Clause">The 3-Clause BSD License</a> license. Have fun!</p>
 					
-					<p>The following XQuery for JSON query basically opens a database and therein a resource in a specific revision based 
+					<p>The following XQuery for JSON query opens a database and therein a resource in a specific revision based 
 					<br />
-				        on a timestamp and searchs for a status, which didn't exist in the previous revision.</p>
+				        on a timestamp and searches for a status, which didn't exist in the previous revision.</p>
 					<p>&nbsp;</p>
 					
 				<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let $statuses := jn:open('mycol.jn','mydoc.jn', xs:dateTime('2019-04-13T16:24:27Z'))=>statuses
