@@ -89,7 +89,7 @@
 	}
 
 	p, ul, ol, dl, table {
-		margin: 1em 0 1em 0;
+		margin: 0 0 2em 0;
 	}
 
 	h1, h2, h3, h4, h5, h6 {
@@ -1164,6 +1164,10 @@ section.markdown {
   font-family: et-bembo, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
   font-size: 1em;
 }
+
+	section p, section ul, section ol, section dl, section table {
+		margin: 1em 0 1em 0;
+	}
 
 .img_container {
   text-align: center;
