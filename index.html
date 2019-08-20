@@ -154,7 +154,7 @@ return {"revision": sdb:revision($foundStatus), $foundStatus{text}}
 									<header>
 										<h3>Diffing-API</h3>
 									</header>
-									<p>SirixDB provides a way to currently import several revisions of an XML document with the help of a diffing-algorithm called Fast Matching Simple EditScript. With the help of this diffing-algorithm SirixDB is able to store the encountered differences in the tree structures instead of storing the whole revision.</p>
+									<p>SirixDB provides a way to currently import several revisions of an XML document with the help of a diffing-algorithm called Fast Matching Simple EditScript. With the help of this diffing-algorithm SirixDB can store the encountered differences in the tree structures instead of storing the whole revision.</p>
 <p>Once you've stored several revisions in SirixDB, either through the import based on the diffing-algorithm or simply through working with SirixDB in the first place you're able to quickly compute diffs between any two revisions. SirixDB makes use of its stable node identifiers and optionally stored hashes. Each time the hashes of two nodes are equal, the whole subtrees in both revisions can be skipped while traversing both tree structures.</p>
 								</section>
 
