@@ -375,7 +375,7 @@ for (final var filterAxis = new FilterAxis<XdmNodeReadOnlyTrx>(axis, filter); fi
 
 and for JSON-resources it's again simply changing the generics argument from `XdmNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx` as well as `XmlNameFilter` to `JsonNameFilter`.
 
-Alternatively you could simply stream over your axis (without using the `FilterAxis` at all) and then filter by predicate. `rtx` is a `NodeReadOnlyTrx` in the following example:
+Alternatively you can simply stream over your axis without using the `FilterAxis` at all and filter by a predicate. `rtx` is a `NodeReadOnlyTrx` in the following example:
 
 ```java
 final var axis = new PostOrderAxis(rtx);
@@ -386,7 +386,7 @@ axisStream.filter((unusedNodeKey) -> new XmlNameFilter(rtx, "a"))
 ```
 ### Nested Axis
 
-To achieve much more query power you can chain several axes with the `NestedAxis`. The following example shows how we can create axes to process a simple XPath query. However, we think it's much more convenient to simply use the XPath query with our Brackit binding.
+To achieve much more query power you can chain several axes with the `NestedAxis`. The following example shows how you can create axes to process a simple XPath query. However, we think it's much more convenient to simply use the XPath query with our Brackit binding.
 
 ```java
 // XPath expression /p:a/b/text()
@@ -402,7 +402,7 @@ final var axis = new NestedAxis(new NestedAxis(childA, childB), text);
 
 ### PostOrder Axis
 
-We can use the `PostOrderAxis` in the following way:
+You can use the `PostOrderAxis` in the following way:
 
 ```java
 // A postorder-axis which iterates in postorder through a (sub)tree.
@@ -444,7 +444,7 @@ for (final long nodeKey : new PostOrderAxis(rtx)) {
 ```
 
 ### Concurrent Axis
-We also provide a ConcurrentAxis to fetch nodes concurrently. To execute an XPath-query as `//regions/africa//location`:
+SirixDB also provides a `ConcurrentAxis` to fetch nodes concurrently. To execute an XPath-query as `//regions/africa//location`:
 
 ```java
 final var axis = new NestedAxis(
@@ -481,15 +481,23 @@ However, SirixDB not only supports navigational axis within one revision, it als
 We're able to use one of the following axes to navigate in time:
 `FirstAxis`, `LastAxis`, `PreviousAxis`, `NextAxis`, `AllTimeAxis`, `FutureAxis`, `PastAxis`.
 
-Each of the constructors of these time-travel axes takes a transactional cursor as the only parameter and opens the node, the cursor currently points to in each of the revisions (if it exists).
+Each of the constructors of these time-travel axes takes a transactional cursor as the only parameter and opens the node, the cursor currently points to in each of the revisions (if it exists):
+
+```java
+final var axis = new PastAxis(resourceManager, rtx);
+if (axis.hasNext()) {
+    final var trx = axis.next();
+    // Do something with the transactional cursor.
+}
+```
 
 To use time travel axes, however first a few more revisions have to be created through committing a bunch of changes.
 
 ### Navigational Methods
 
-We can then navigate to a specific node, either via axis and filters or, if we know the node key simply through the method `moveTo(long)`. The long parameter is the node key of the node we want to select.
+You can then navigate the cursor to a specific node, either via axis and filters or, if you know the node key simply through the method `moveTo(long)`. The long parameter is the node key of the node you want to select.
 
-SirixDB provides several navigational methods. After the resource is opened the cursor sits at a document root node, which is a node, which is present after bootstrapping a resource. We are then able to navigate to its first child which is the XML root element via `moveToFirstChild`. Similar, we can move to a right sibling with `moveToRightSibling`, or move to the left sibling (`moveToLeftSibling`). Furthermore, many more methods to navigate through the tree are available. For instance `moveToLastChild` or `moveToAttribute`/`moveToAttributeByName`/`moveToNamespace` if the cursor points to an element node. For JSON resources the moveTo-methods for attributes and namespaces are not available. Furthermore, SirixDB allows to move to the next node in preorder (`moveToNext`) or to the previous node in preorder (`moveToPrevious`). Or for instance to the next node on the XPath `following::`-axis. A simple example is this:
+SirixDB provides several navigational methods. After the resource is opened the cursor sits at a document root node, the only node which is present after bootstrapping a resource. You are then able to navigate to its first child which is the XML root element via `moveToFirstChild`. Similar, you can use the method `moveToRightSibling` to move the transactional cursor to the right sibling or to the left sibling via `moveToLeftSibling`. Furthermore, many more methods to navigate through the tree are available. For instance `moveToLastChild` or `moveToAttribute`/`moveToAttributeByName`/`moveToNamespace` if the cursor points to an element node. For JSON resources the moveTo-methods for attributes and namespaces are not available. Furthermore, SirixDB allows to move to the next node in preorder (`moveToNext`) or to the previous node in preorder (`moveToPrevious`). Or for instance to the next node on the XPath `following::`-axis. A simple example is this:
 
 ```java
 // A fluent call would be if you know a node has a right sibling and
@@ -530,11 +538,11 @@ wtx.moveTo(15).trx()
 
 ## Open and Modify a Resource in a Database
 
-First, we have to open the resource again.
+First, you have to open the resource again.
 
 ### Open a Read-Write Transaction in an XML Database
 
-To open a resource in an XML database we use:
+To open a resource in an XML database you can use:
 ```java
 // Open the database.
 try (final var database = Databases.openXmlDatabase(databaseFile);
@@ -547,7 +555,7 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
 
 ### Open a Read-Write Transaction in a JSON Database
 
-To open a resource in a JSON database we use:
+To open a resource in a JSON database you can use:
 
 ```java
 // Open the database.
@@ -558,15 +566,14 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
   ...
 }
 ```
-Thus, the only visible change in the API regarding JSON and XML resources is the method call `Databases.openJsonDatabase(Path)`
-instead of `Databases.openXmlDatabase(Path)`. Note, that also the types of the database/resource and transaction have changed, but for brevity we use Java's type inference rules and the `var` keyword. Note, that we now have to use a transaction, which is able to modify the resource (of type `NodeTrx`) instead of a read-only transaction (`beginNodeTrx()` instead of `beginNodeReadOnlyTrx()`). Thus we have to start the single read-write transaction on a resource and make sure, that we commit and properly close the transaction.
+Thus, the only visible change in the API regarding JSON and XML resources is the method call `Databases.openJsonDatabase`
+instead of `Databases.openXmlDatabase`. Note, that also the types of the database/resource and transaction have changed, but for brevity we use Java's type inference rules and the `var` keyword. Note, that you have to use a read-write transaction, which is able to modify the resource (of type `NodeTrx`) instead of a read-only transaction (`beginNodeTrx` instead of `beginNodeReadOnlyTrx`). Thus, you have to start the single read-write transaction on a resource and make sure, that you commit and properly close the transaction.
 
-Note, that it's best to open the transaction in the enclosing `try-with-resources` statement. We can reuse the transaction handle
-after issuing a `commit()`.
+Note, that it's best to open the transaction in the enclosing `try-with-resources` statement. You can reuse the transaction handle after issuing a `commit`.
 
 ### Simple Update Methods
 
-Once we navigated to the node we want to change, we can either update, for instance, the name or the value depending on the node type.
+Once you've navigated to the node you want to change, you can either update, for instance, the name or the value depending on the node type.
 
 ```java
 // Cursor resides on an element node.
@@ -586,7 +593,7 @@ if (wtx.isObjectKey()) wtx.setObjectKeyName("foo")
 if (wtx.isStringValue()) wtx.setStringValue("foo")
 ```
 
-Or we can insert new elements via `insertElementAsFirstChild`, `insertElementAsLeftSibling` and `insertElementAsRightSibling`. Similar methods exist for all other node types. We for sure always check for consistency and if calling the method on a specific node type should be allowed or not.
+Or you can insert new elements via `insertElementAsFirstChild`, `insertElementAsLeftSibling` and `insertElementAsRightSibling`. Similar methods exist for all other node types. We for sure always check for consistency and if calling the method on a specific node type should be allowed or not.
 
 Attributes for instance can only be inserted via `insertAttribute`, if the cursor is located on an element node.
 
@@ -598,6 +605,24 @@ wtx.insertAttribute(new QNm("foo"), "bar", Move.PARENT)
    .insertElementAsRightSibling(new QNm("baz"));
 ```
 
+You can insert new object records via `insertObjectRecordAsFirstChild` and `insertObjectRecordAsRightSibling` in JSON resources. Similar methods exist for all node types. Object records are composed of two nodes: An object key node and an object value node.
+
+SirixDB checks for consistency and as such it throws an unchecked `SirixUsageException` if a method call is not permitted on a specific node type.
+
+Object records, that is key/value pairs, for instance, can only be inserted as a first child if the cursor is located on an object node. In the following we'll insert both an object key node as well as one of the other node types as the value with the insertObjectRecordAsX methods.
+
+You can also chain the update methods – for this example, wtx is located on an object node:
+
+```java
+wtx.insertObjectRecordAsFirstChild("foo", new StringValue("bar"))
+   .moveToParent().trx()
+   .insertObjectRecordAsRightSibling("baz", new NullValue());
+```
+
+First, the transaction inserts an object key node with the name "foo" as the first child of an object node. Then, a `StringValueNode` is created as the first child of the newly created object key node.
+
+The cursor is moved to the value node after the method call. Thus, you first have to move the cursor to the object key node, the parent again. Then, you're able to insert the next object key node and its child, a `NullValueNode` as a right sibling.
+
 ### Bulk Update Operations
 
 More sophisticated bulk insertion methods exist, too as you have already seen when we imported an XML document or JSON data. We provide a method to insert an XML fragment as a first child `insertSubtreeAsFirstChild`, as a left sibling `insertSubtreeAsLeftSibling` and as a right sibling `insertSubtreeAsRightSibling`.
@@ -607,17 +632,25 @@ To insert a new subtree based on a String you can simply use
 ```java
 wtx.insertSubtreeAsFirstChild(XmlShredder.createStringReader("<foo>bar<baz/></foo>"))
 ```
+
+To insert a new subtree into a JSON resource:
+
+```
+var json = "{\"foo\": \"bar\",\"baz\": [0, \"bla\", true, null]}";
+wtx.insertSubtreeAsFirstChild(JsonShredder.createStringReader(json));
+```
+
 To copy a subtree of the node the read-transaction (`rtx`) is located at as a new right sibling.
 
 ```java
 wtx.copySubtreeAsRightSibling(rtx);
 ```
 
-SirixDB always applies changes in-memory and then flushes them sequentially to a disk or the flash drive during a transaction commit. The only exception is if the in-memory cache has to evict some entries into a file due to memory constraints. We can either commit() or rollback() the transaction. Note that we can reuse the transaction after a commit() or rollback() method call.
+SirixDB always applies changes in-memory and then flushes them sequentially to a disk or the flash drive during a transaction commit. The only exception is if the in-memory cache has to evict some entries into a file due to memory constraints. We can either commit() or rollback() the transaction. Note, that you can reuse the transaction after a commit() or rollback() method call.
 
 ### Starting a Read-Write Transaction
 
-SirixDB provides several possibilities to start a read-write transaction in the first place. We can for instance start an auto-commit transactional cursor:
+SirixDB provides several possibilities to start a read-write transaction in the first place. You can for instance start an auto-commit transactional cursor:
 
 ```java
 // Auto-commit every 30 seconds.
@@ -628,7 +661,7 @@ resourceManager.beginNodeTrx(1000);
 resourceManager.beginNodeTrx(1000, TimeUnit.SECONDS, 30);
 ```
 
-Furthermore, we're able to start a read-write transaction and then revert to a former revision:
+Furthermore, you're able to start a read-write transaction and then revert to a former revision:
 
 ```java
 // Open a read/write transaction on the most recent revision, then revert to revision two and commit as a new revision.
@@ -637,7 +670,7 @@ resourceManager.beginNodeTrx().revertTo(2).commit()
 
 ## Open Specific Revisions
 
-Once we have committed more than one revision we can open it either by specifying the exact revision number or by a timestamp.
+Once you've committed more than one revision you can open it either by specifying the exact revision number or by a timestamp.
 
 ```java
 // To open a transactional read-only cursor on revision two.
@@ -702,7 +735,7 @@ var writer = new StringWriter();
 var serializer = new JsonSerializer.Builder(resourceManager, writer).build();
 serializer.call();
 ```
-Here we serialized the most recent revision.
+Here you're serializing the most recent revision.
 
 To serialize revision 1 and 2:
 
@@ -724,7 +757,7 @@ serializer.call();
 
 ### Import Differences
 
-To update a resource with algorithmically found differences between an initially stored revision in a SirixDB resource and another revision stored as an XML document, we're able to use:
+To update a resource with algorithmically found differences between an initially stored revision in a SirixDB resource and another revision stored as an XML document, you can use:
 
 ```java
 // Old Sirix resource to update.
