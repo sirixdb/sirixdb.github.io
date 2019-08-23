@@ -1,6 +1,7 @@
 ---
 layout: documentation
 doctitle: Transactional cursor-based API
+title: SirixDB - Transactional cursor-based API
 ---
 
 ## Maven artifacts
@@ -53,7 +54,7 @@ dependencies {
 ```
 
 ## Tree-Encoding in SirixDB
-The encoding of the underlying tree structure of both XML- and JSON-documents in SirixDB uses a pointer-based approach.
+The encoding of the underlying tree structure of both XML and JSON documents in SirixDB uses a pointer-based approach.
 
 SirixDB doesn't use range-encodings (not update-friendly) or hierarchical labels (B+-tree index-structure traversal might be too expensive). However, we can specify that SirixDB stores hierarchical labels (DeweyIDs) for XML-resources to provide fast document order determination.
 
