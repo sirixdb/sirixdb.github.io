@@ -266,9 +266,9 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
 ## Axes to Navigate in Space and Time
 SirixDB provides several axes to navigate through the tree structures of both the binary XML as well as the JSON encoding. Namely all of the axes known from XPath plus a few more.
 
-### Non Structural Wrapper Axis
+### Non Structural Wrapper Axis for XML resources
 
-As it’s a common task to iterate over structural and non-structural nodes, that is namespaces and especially attributes, SirixDB provides a simple wrapper axis:
+As it's a common task to iterate over structural and non-structural nodes, that is namespaces and especially attributes, SirixDB provides a simple wrapper axis:
 
 ```java
 new NonStructuralWrapperAxis(new DescendantAxis(rtx))
@@ -319,9 +319,9 @@ public enum VisitResultType implements VisitResult {
 
 The `VisitorDescendantAxis` iterates through the tree structure in preorder. It uses the `VisitResultType`s to guide the
 traversal. `SKIPSIBLINGS` means, that the traversal should continue without visiting the right siblings of the current node the
-cursor points to. `SKIPSUBTREE` means to continue without visiting the descendants of this node. We use `CONTINUE` if traversal should continue in preorder. We use `TERMINATE` to terminate the traversal immediately.
+cursor points to. `SKIPSUBTREE` means to continue without visiting the descendants of this node. You can use `CONTINUE` if traversal should continue in preorder. You can use `TERMINATE` to terminate the traversal immediately.
 
-The default implementation of each method in the `Visitor`-interface returns `VisitResultType.CONTINUE` for each node-type. Thus, we only have to implement the methods (for the nodes), which we’re interested in. If we’ve implemented a class called `MyVisitor` we can use the `VisitorDescendantAxis` in the following way:
+The default implementation of each method in the `Visitor`-interface returns `VisitResultType.CONTINUE` for each node-type. Thus, you only have to implement the methods (for the nodes), which you're interested in. If you've implemented a class called `MyVisitor` you can use the `VisitorDescendantAxis` in the following way:
 
 ```java
 // Executes a modification visitor for each descendant node.
@@ -338,33 +338,38 @@ points to.
 
 ### Additional Axes
 
-SirixDB provides all possible XPath-axis. Note, that the `PrecedingAxis` and the `PrecedingSiblingAxis` don't deliver nodes in document order (preorder), but in the natural encountered order. Furthermore, a `PostOrderAxis` is available, which traverses the tree in a postorder traversal. Similarly, a `LevelOrderAxis` traverses the tree in a breadth-first manner. SirixDB also provides a `ConcurrentAxis`, a `ConcurrentUnionAxis`, a `ConcurrentIntersectAxis` and a `ConcurrentExceptAxis` to prefetch nodes concurrently and in parallel.
+SirixDB provides all possible XPath axes for both traversing XML as well as JSON resources. Note, that the `PrecedingAxis` and the `PrecedingSiblingAxis` don't deliver nodes in document order (preorder), but in the natural encountered order. Furthermore, a `PostOrderAxis` is available, which traverses the tree in a postorder traversal. Similarly, a `LevelOrderAxis` traverses the tree in a breadth-first manner. SirixDB also provides a `ConcurrentAxis`, a `ConcurrentUnionAxis`, a `ConcurrentIntersectAxis` and a `ConcurrentExceptAxis` to prefetch nodes concurrently and in parallel.
 
 ### Filtering for Specific Nodes
 
-SirixDB provides several filters, which can be plugged in through a `FilterAxis`. The following code, for instance, traverses all children of a node and filters them for nodes with the local name "a" in an XML resource.
+SirixDB provides several filters, which you can plug in through a `FilterAxis`. The following code, for instance, traverses all children of an element node (provided that the transaction currently points to an element node) and filters for nodes with the local name "a" in an XML resource.
 
 ```java
 new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new XmlNameFilter(rtx, "a"))
 ```
 
-Regarding JSON resources it's as simple as changing the generics argument from `XdmNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx` (to change the transaction argument type).
+Regarding JSON resources it's as simple as changing the generics argument from `XdmNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx` to change the transaction argument type as well as changing the `XmlNameFilter` to `JsonNameFilter`.
+
+The following code traverses all children of an object node and filters for object key nodes with the key "a" as in `{"a":1, "b": "foo"}`.
+
+```java
+new FilterAxis<JsonNodeReadOnlyTrx>(new ChildAxis(rtx), new JsonNameFilter(rtx, "a"))
+```
 
 The `FilterAxis` optionally takes more than one filter. The filter either is an `XmlNameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
 
 In JSON object records have names and can be filtered with a `JsonNameFiler`. Available node kind filters are `ObjectFilter`,`ObjectRecordFilter`, `ArrayFilter`, `StringValueFilter`, `NumberValueFilter`, `BooleanValueFilter` and `NullValueFilter`.
 
-The `FilterAxis` can also be used as follows for XML resources:
+Another example for using the  `FilterAxis` can also be used as follows for XML resources:
 
 ```java
 // Filter by name (first argument is the axis, next arguments are filters
 // (which implement org.sirix.axis.filter.Filter).
-for (final var axis = new FilterAxis<XdmNodeReadOnlyTrx>(
-    new VisitorDescendantAxis.Builder(rtx).includeSelf()
-                                        .visitor(myVisitor)
-                                        .build(),
-    new XmlNameFilter(rtx, "foobar")); axis.hasNext();) {
-  axis.next();
+final var axis = new VisitorDescendantAxis.Builder(rtx).includeSelf().visitor(myVisitor).build();
+final var filter = new XmlNameFilter(rtx, "foobar");
+
+for (final var filterAxis = new FilterAxis<XdmNodeReadOnlyTrx>(axis, filter); filterAxis.hasNext();) {
+  filterAxis.next();
 }
 ```
 
