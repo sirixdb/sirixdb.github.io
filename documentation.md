@@ -1,6 +1,7 @@
 ---
 layout: documentation
 doctitle: Documentation
+title: SirixDB - Documentation
 ---
 
 [Go directly to the API documentation](#api-documentation) or [to the publications](#publications).
