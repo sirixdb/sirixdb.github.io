@@ -19,13 +19,13 @@ Data audits are about how specific records have changed. Time Travel queries can
 For all of the use-cases we mentioned earlier: We can revert to a specific point in time where everything was in a known good state and commit the revision again. Or we might select a particular record, correct the error and commit a new revision.
 
 ## SirixDB
-SirixDB is a storage system, which brings versioning to a sub-file granular level while taking full advantage of flash-based drives as SSDs. As such, per revision as well as per page deltas are stored. Time-complexity for retrieval of records and the storage are logarithmic (`O(log n)`). Space complexity is linear (`O(n)`). Currently, we provide several APIs which are layered. A very low-level page-API, which handles the storage and retrieval of records on a per page-fragment level.  A transactional cursor-based API to store and navigate through records (currently XML as well as JSON nodes) on top. A DOM-alike node layer for simple in-memory processing of these nodes, which is used by Brackit, a sophisticated XQuery processor. And last but not least a RESTful asynchronous HTTP-API. We provide
+SirixDB is a storage system, which brings versioning to a sub-file granular level while taking full advantage of flash-based drives as SSDs. As such, per revision as well as per page deltas are stored. Time-complexity for retrieval of records and the storage are logarithmic (`O(log n)`). Space complexity is linear (`O(n)`). Currently, we provide several APIs which are layered. A very low-level page-API, which handles the storage and retrieval of records on a per page-fragment level.  A transactional cursor-based API to store and navigate through records (currently XML as well as JSON nodes) on top. A DOM-alike node layer for simple in-memory processing of these nodes, which is used by Brackit, a sophisticated XQuery processor. And last but not least a RESTful asynchronous HTTP-API. SirixDB provides
 
-1. The current revision of the resource or any subset thereof;
-2. The full revision history of the resource or any subset thereof;
-3. The full modification history of the resource or any subset thereof.
+1. The current revision of the resource or any subset thereof
+2. The full revision history of the resource or any subset thereof
+3. The full modification history of the resource or any subset thereof
 
-We not only support all XPath axes to query a resource in one revision but also temporal axes which facilitate navigation in time. A transactional cursor on a resource can be started either by specifying a specific revision number or by a given point in time. The latter starts a transaction on the revision number which was committed closest to the given timestamp.
+SirixDB not only supports all XPath axes to query a resource in one revision but also temporal axes which facilitate navigation in time. A transactional cursor on a resource can be started either by specifying a specific revision number or by a given point in time. The latter starts a transaction on the revision number which was committed closest to the given timestamp.
 
 <div class="img_container">
 ![sunburstview](images/sunburstview-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"} ![moves](images/moves-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"}
