@@ -68,13 +68,13 @@ The numbers in the figure are auto-generated unique, stable node-IDs or node-key
 
 Every structural node might have a first child, a left sibling, a right sibling, and a parent node.
 
-Namespace- and attributes- are the only non-structural nodes in XML-resources. They have a parent pointer and are referenceable through special moveToAttribute and moveToNamespace methods if the transactional cursor is located on an element node.
+Namespaces and attributes are the only non-structural nodes in XML resources. They have a parent pointer. If the transactional cursor points to an element node, you can reference these nodes through special moveToAttribute and moveToNamespace.
 
 In the JSON-to-tree mapping, however, every node is a structural node. To support fine granular versioning of nodes and to be able to reuse the axis-implementations, SirixDB uses the same encoding for JSON resources as we've seen.
 
 Thus we'll introduce a unique API, which we're going to use for both traversing and updating XML and JSON resource with only subtle differences.
 
-**Note that the binary JSON-format in SirixDB allows duplicate object record keys, which are ordered. Upper layers, however, may simply store object records in a hash map, thus not keeping track of the order nor supporting duplicate record keys.**
+**Note that the binary JSON-format in SirixDB allows ordered, duplicate object record keys. Upper layers, however, may store object records in a hash map, thus not keeping track of the order nor supporting duplicate record keys.**
 
 ## Create a Database With a Single Resource
 
@@ -119,17 +119,17 @@ try (final var database = Databases.openXmlDatabase(databaseFile)) {
   }
 }
 ```
-The resource is built with text node-compression disabled and so-called DeweyIDs enabled. DeweyIDs are a form of hierarchical node labels for instance used by an XQuery processor to determine quick document-order (preorder).
+The resource is built with text node-compression disabled and so-called DeweyIDs enabled. DeweyIDs are a form of hierarchical node labels for instance used by an XQuery processor to quickly determine document-order (which node comes first during a preorder traversal).
 
-We specify the differential versioning approach, that SirixDB is going to use to version data-pages. Default is the sliding snapshot algorithm, which is the best option in most cases. However, we want to demonstrate the most commonly used builder options.
+In the above example, we show how you can specify a versioning approach that SirixDB is going to use to version data-pages. Default is the sliding snapshot algorithm, which is the best option in most cases. However, we want to demonstrate the most commonly used builder options.
 
-The revisionsToRestore(int)-method is used in conjunction with the versioning approach. When specifying the differential- or incremental-versioning approach it denotes after how many revisions a new full-page snapshot should be serialized. In case we specify the sliding snapshot it is the windows-size. It has no effect when we use full-versioning.
+The `revisionsToRestore`-method is used in conjunction with the versioning approach. When you specify the differential or incremental versioning approach it denotes after how many revisions SirixDB serializes a new full-page snapshot. In case you specify the sliding snapshot, it is the windows-size. It has no effect when you use full-versioning.
 
-The method buildPathSummary(boolean) specifies if SirixDB should build and automatically keep a summary of all paths up-to-date. We omit other builder options here for brevity as specifying a byte handler pipeline, which is used to serialize/deserialize page-fragments.
+The method `buildPathSummary` specifies if SirixDB should build and automatically keep a summary of all paths up-to-date. We omit other builder options here for brevity as defining a byte handler pipeline, which is used to serialize/deserialize page-fragments.
 
 ### Create a JSON Database and Resource
 
-In order to import a single JSON file we almost use the same API:
+In order to import a single JSON file you can almost use the same API:
 
 ```java
 // JSON-file to import.
@@ -165,7 +165,7 @@ try (final var database = Databases.openJsonDatabase(databaseFile)) {
 
 ### Preorder Navigation in an XML resource
 
-Now, that we have imported the first resource into SirixDB, we can reuse the read-write transaction after issuing the commit. Alternatively, we can open the resource manager again and start a new read-only transaction.
+Now, that you've have imported the first resource into SirixDB, you can reuse the read-write transaction after issuing the commit. Alternatively, you can open the resource manager again and start a new read-only transaction.
 
 ```java
 // Open the database.
@@ -226,13 +226,13 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
 }
 ```
 
-We use the descendant axis to iterate over all structural descendant nodes in preorder (depth-first). Recall that structural nodes are all nodes except for namespaces and attributes. Hashes of nodes are built bottom-up for all nodes per default depending on the resource configuration. Only ancestor nodes are updated during a single edit-operation.
+You can use the descendant axis to iterate over all structural descendant nodes in preorder (depth-first). Recall that structural nodes are all nodes except for namespaces and attributes. Hashes of nodes are built bottom-up for all nodes per default depending on the resource configuration. Only ancestor nodes are updated during a single edit-operation.
 
 During bulk insertions with one of the insertSubtree-methods, the hashes are generated during a postorder-traversal, just like the descendant-count of each structural node. They're created after the nodes have been added to a transaction-intent log. The log is an in-memory buffer of writes, backed by a persistent append-only file. It is written to the data file preferably on a flash drive during a commit.
 
 ### Preorder Navigation in a JSON resource
 
-In JSON we obviously have no namespace or attribute nodes, but with this exception, the axis can be used in the same way:
+JSON obviously has no namespaces or attributes, but with this exception, you can use the axis in the same way:
 
 ```java
 // Open the database.
