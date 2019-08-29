@@ -1,6 +1,7 @@
 ---
 layout: documentation
 doctitle: XQuery-API
+title: SirixDB - XQuery-API
 ---
 
 ## Maven Artifacts
