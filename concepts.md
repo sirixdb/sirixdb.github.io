@@ -1,7 +1,7 @@
 ---
 layout: documentation
-doctitle: Concepts
-title: SirixDB - Concepts and Architecture
+doctitle: Architecture and Concepts
+title: SirixDB - Architecture and Concepts
 ---
 
 ## Introduction
@@ -56,11 +56,11 @@ IndirectPage
 : IndirectPages are used to increase the fanout of the tree.  SirixDB uses these pages to be able to store and retrieve a large number of records while only ever having to read a predefined number of pages.  We currently store 512 references in the `IndirectPage` to either another layer of indirect pages or the data pages, either a `RevisionRootPage` or a `RecordPage`. SirixDB adds a new level of indirect pages whenever it runs out of the number of records it can address in the leaf pages. It stores the height of the current subtree that is the number of levels of indirect pages in the respective subtree-root page. We borrowed the ideas from the filesystem ZFS and hash-array based tries as we also store checksums in parent database-pages/page-fragments, which in turn form a self-validating merkle-tree. As IndirectPages potentially may have many `null`-pointers, SirixDB uses a bitset to keep track of which array indices contain references. Thus, it can store a compact array or list in-memory.
 
 RevisionRootPage
-: The `RevisionRootPage` is the main entry point to a revision. It stores the author-ID, an optional commit-message and a timestamp in the form of the unix epoch (milliseconds since 1970). Furthermore it stores a reference to a `PathPage`, a `CASPage` (if it exists), a `NamePage` and an `IndirectPage`. The indirect page is the entry point to the data stored in the leaf `RecordPage`s. The right subtree of the `RevisionRootPage` started by the `IndirectPage` actually is the main entry point to our data stored in the leaf nodes, the `RecordPage's once again.
+: The `RevisionRootPage` is the main entry point to a revision. It stores the author-ID, an optional commit-message and a timestamp in the form of the unix epoch (milliseconds since 1970). Furthermore it stores a reference to a `PathPage`, a `CASPage` (if it exists), a `NamePage` and an `IndirectPage`. The indirect page is the entry point to the data stored in the leaf `RecordPage`s. The right subtree of the `RevisionRootPage` started by the `IndirectPage` actually is the main entry point to our data stored in the leaf nodes, the `RecordPage`s once again.
 To support fast access to a `RevisionRootPage`, SirixDB stores a second file with just the offsets to specific revisions in a revisions-file,  which is read into main-memory on startup.
 
 PathPage
-: The `PathPage` has references to `IndirectPage's, whereas each of the indirect pages is the root entry point to a user-defined path index. A unique index ID is also the reference offset in the path page to retrieve the respective path index/`IndirectPage` subtree root. SirixDB adds references to indirect pages, once a user creates path indexes. SirixDB stores an AVL-tree for each index in the leaf pages (the `RecordPage`s), which are referenced by the indirect pages. The index contains path nodes as keys as well as an array of record-identifiers in the values. Furthermore, a path page contains a reference to a `PathSummary` page.
+: The `PathPage` has references to `IndirectPage`s, whereas each of the indirect pages is the root entry point to a user-defined path index. A unique index ID is also the reference offset in the path page to retrieve the respective path index/`IndirectPage` subtree root. SirixDB adds references to indirect pages, once a user creates path indexes. SirixDB stores an AVL-tree for each index in the leaf pages (the `RecordPage`s), which are referenced by the indirect pages. The index contains path nodes as keys as well as an array of record-identifiers in the values. Furthermore, a path page contains a reference to a `PathSummary` page.
 
 PathSummaryPage
 : A path summary page has a reference to an indirect page, which is the main entry point to retrieve and restore a lightweight path summary in the leaves of the tree, the `RecordPage`s. In this case, the record pages store the path nodes.
@@ -72,7 +72,7 @@ CASPage
 : A `CASPage` is the main entry point to store and retrieve CAS- (content-and-structure) indexes. They are a hybrid consisting of path class definitions and typed content. `/book/published[xs:dateTime]` for instance indexes the path `/book/published` and the content as `xs:dateTime`. The indexes are as always stored in AVL-trees.
 
 RecordPage
-: `RecordPage's store the actual data. Currently, SirixDB stores 512 records in a record page. Each record page has a pointer to the previous record page, which stores the offset of the previous version of this record page. This pointer is crucial for our versioning algorithms, which have to retrieve several record pages (or record page fragments) to reconstruct a record page in-memory. Furthermore, records, which exceed a predefined size, are stored in so-called `OverflowPage`s and referenced in a record page.
+: `RecordPage`s store the actual data. Currently, SirixDB stores 512 records in a record page. Each record page has a pointer to the previous record page, which stores the offset of the previous version of this record page. This pointer is crucial for our versioning algorithms, which have to retrieve several record pages (or record page fragments) to reconstruct a record page in-memory. Furthermore, records, which exceed a predefined size, are stored in so-called `OverflowPage`s and referenced in a record page.
 
 OverflowPage
 : `OverflowPage`s are used to store records, which exceeds a predefined size in bytes. When a transaction reads a record, SirixDB reconstructs the record page in-memory.
