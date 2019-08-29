@@ -12,22 +12,6 @@ title: SirixDB - An Evolutionary NoSQL Document Store
 				        It allows <strong>time-travel</strong> queries on its binary <strong>XML</strong> and <strong>JSON</strong> encoding.
                                         <br />
 					It is released for free under <a href="https://opensource.org/licenses/BSD-3-Clause">The 3-Clause BSD License</a> license. Have fun!</p>
-					
-					<p>The following XQuery for JSON query opens a database and therein a resource in a specific revision based 
-					<br />
-				        on a timestamp and searches for a status, which didn't exist in the previous revision.</p>
-					<p>&nbsp;</p>
-					
-				<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let $statuses := jn:open('mycol.jn','mydoc.jn', xs:dateTime('2019-04-13T16:24:27Z'))=>statuses
-let $foundStatus := for $status in bit:array-values($statuses)
-  let $dateTimeCreated := xs:dateTime($status=>created_at)
-  where $dateTimeCreated > xs:dateTime("2018-02-01T00:00:00") and not(exists(jn:previous($status)))
-  order by $dateTimeCreated
-  return $status
-return {"revision": sdb:revision($foundStatus), $foundStatus{text}}
-</code></pre></div></div>
-					
-					<p>&nbsp;</p>
 				</header>
 					
 				<!-- One -->
