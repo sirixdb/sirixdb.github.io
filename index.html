@@ -47,7 +47,8 @@ title: SirixDB - An Evolutionary NoSQL Document Store
 						</div>
 					</section>
 
-<section class="container special">
+<section class="wrapper style1 container special">
+	<img src="images/evolution-of-state.png"/>
 	<p>The following time-travel query gives an initial impression of what's possible:</p>
 <div class="highlight highlight-source-xq"><pre><span class="pl-k">let</span> $doc := <span class="pl-c1">jn:open</span>(<span class="pl-s">'mycol.jn'</span>,<span class="pl-s">'mydoc.jn'</span>, <span class="pl-c1">xs:dateTime</span>(<span class="pl-s">'2019-04-13T16:24:27Z'</span>))
 <span class="pl-k">let</span> $statuses := $doc=&gt;statuses
