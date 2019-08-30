@@ -144,8 +144,13 @@
 /* Section/Article */
 
 	section.special, article.special {
+		text-align: left;
+	}
+
+	section.special h1, article.special h1, section.special h2, article.special h2, section.special h3, article.special h3 {
 		text-align: center;
 	}
+
 
 	header.major {
 		padding-bottom: 2em;
