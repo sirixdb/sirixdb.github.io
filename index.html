@@ -46,6 +46,18 @@ title: SirixDB - An Evolutionary NoSQL Document Store
 							</div>				
 						</div>
 					</section>
+
+<section class="wrapper style2 container special-alt">
+<div class="language-xquery highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span><span class="w"> </span><span class="nv">$statuses</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">jn:open</span><span class="p">(</span><span class="s">'mycol.jn'</span><span class="o">,</span><span class="s">'mydoc.jn'</span><span class="o">,</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">'2019-04-13T16:24:27Z'</span><span class="p">))</span><span class="o">=&gt;</span><span class="nt">statuses</span><span class="w">
+</span><span class="k">let</span><span class="w"> </span><span class="nv">$foundStatus</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">$status</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nf">bit:array-values</span><span class="p">(</span><span class="nv">$statuses</span><span class="p">)</span><span class="w">
+  </span><span class="k">let</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="nv">$status</span><span class="o">=&gt;</span><span class="nt">created_at</span><span class="p">)</span><span class="w">
+  </span><span class="k">where</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">"2018-02-01T00:00:00"</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">not</span><span class="p">(</span><span class="nf">exists</span><span class="p">(</span><span class="nf">jn:previous</span><span class="p">(</span><span class="nv">$status</span><span class="p">)))</span><span class="w">
+  </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w">
+  </span><span class="k">return</span><span class="w"> </span><span class="nv">$status</span><span class="w">
+</span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="s">"revision"</span><span class="o">:</span><span class="w"> </span><span class="nf">sdb:revision</span><span class="p">(</span><span class="nv">$foundStatus</span><span class="p">)</span><span class="o">,</span><span class="w"> </span><span class="nv">$foundStatus</span><span class="p">{</span><span class="k">text</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+</section>
+
 					
 				<!-- Two -->
 					<section class="wrapper style1 container special" id="more">
