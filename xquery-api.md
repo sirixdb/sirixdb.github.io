@@ -85,15 +85,13 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 
 In the above example we are importing (loading) an XML document from a file into SirixDB. We can import XML documents stored as simple Strings with the store-function:
 
-```java
-final var ctx = SirixQueryContext.createWithNodeStore(store);
-final var query = "sdb:store('mydoc.col', 'mydoc.xml', '<xml>foo<bar/></xml>')";
-new XQuery(query).evaluate(ctx);
+```xquery
+sdb:store('mydoc.col', 'mydoc.xml', '<xml>foo<bar/></xml>')
 ```
 
 Loading a collection of XML files in SirixDB is as simple as using the following query. `dir` is a directory path and we're importing all files with an `.xml` suffix:
 
-```java
+```xquery
 final var ctx = SirixQueryContext.createWithNodeStore(store);
 final var query = String.format("bit:load('mydocs.col', io:ls('%s', '\\.xml$'))", dir);
 new XQuery(query).evaluate(ctx);
@@ -101,10 +99,8 @@ new XQuery(query).evaluate(ctx);
 
 And querying the collection is as simple as using the function collection:
 
-```java
-final var ctx = SirixQueryContext.createWithNodeStore(store);
-final var query = "for $doc in collection('mydocs.col') return $doc";
-new XQuery(query).prettyPrint().serialize(ctx, System.out);
+```xquery
+for $doc in collection('mydocs.col') return $doc
 ```
 
 In order to store JSON data in SirixDB we can use the store-function within another namespace (`js`):
@@ -124,50 +120,22 @@ try (final var store = BasicJsonDBStore.newBuilder().build();
 
 We can also store a bunch of JSON-strings within several resources in the database (`mycol.jn`):
 
-```java
-try (final var store = BasicJsonDBStore.newBuilder().build();
-    final var ctx = SirixQueryContext.createWithJsonStore(store);
-    final var chain = SirixCompileChain.createWithJsonStore(store)) {
-  // Use XQuery to store multiple JSON strings into the store.
-  System.out.println("Storing strings:");
-  final var query = "jn:store('mycol.jn',(),('[\"bla\", \"blubb\"]','{\"foo\": true}'))";
-  System.out.println(query);
-  new XQuery(chain, query).evaluate(ctx);
-}
+```xquery
+jn:store('mycol.jn',(),('["bla", "blubb"]','{"foo": true}'))
 ```
 
 In that case the second parameter, which otherwise denotes the resource name is not used. Furthermore in both cases the database is implicitly created. However, a fourth boolean parameter can be used to add resources. It is `true()` if a new database should be created or `false()` if the resource should be added to an existing database:
 
-```java
-try (final var store = BasicJsonDBStore.newBuilder().build();
-    final var ctx = SirixQueryContext.createWithJsonStore(store);
-    final var chain = SirixCompileChain.createWithJsonStore(store)) {
-  // Use XQuery to add a JSON string to the collection.
-  System.out.println("Storing strings:");
-  final var queryAdd = "jn:store('mycol.jn','mydoc.jn','[\"foo\", \"bar\"]',false())";
-  System.out.println(queryAdd);
-  new XQuery(chain, queryAdd).evaluate(ctx);
-}
+```xquery
+jn:store('mycol.jn','mydoc.jn','["foo", "bar"]',false())
 ```
 
 In this case the resource is added to the `mycol.jn` database as `mydoc.jn`.
 
-```xquery
-let $statuses := jn:open('mycol.jn','mydoc.jn', xs:dateTime('2019-04-13T16:24:27Z'))=>statuses
-let $foundStatus := for $status in bit:array-values($statuses)
-  let $dateTimeCreated := xs:dateTime($status=>created_at)
-  where $dateTimeCreated > xs:dateTime("2018-02-01T00:00:00") and not(exists(jn:previous($status)))
-  order by $dateTimeCreated
-  return $status
-return {"revision": sdb:revision($foundStatus), $foundStatus{text}}
-```
-
 We can open the stored resources again, either via a jn:collection(...) function to retrieve all resources in a database:
 
-```java
-final var ctx = SirixQueryContext.createWithNodeStore(store);
-final var query = "for $doc in jn:collection('mydocs.col') return $doc";
-new XQuery(query).prettyPrint().serialize(ctx, System.out);
+```xquery
+for $doc in jn:collection('mydocs.col') return $doc
 ```
 
 or via `jn:doc(xs:string, xs:string, xs:int) as json-item()`, which is almost identical as the version to open XML resources. The first parameter is the database to open, the second parameter the resource and the last parameter is the optional revision to open. Without the last parameter SirixDB opens the most recent revision.
@@ -323,43 +291,61 @@ try (final var store = BasicDBStore.newBuilder().build()
 ### Transactional-Cursor Based Functions
 SirixDB also provides a few functions, which are based on the fact that currently when importing data with XQuery we generate hashes for each node as well as the number of descendants. Furthermore we always store the number of children of each node. You can use the function
 
-`sdb:descendant-count($node as structured-item()) as xs:long`
+```xquery
+sdb:descendant-count($node as structured-item()) as xs:long
+```
 
 to retrieve the number of descendants of a node,
 
-`sdb:child-count($node as structured-item()) as xs:int`
+```xquery
+sdb:child-count($node as structured-item()) as xs:int
+```
 
 to retrieve the number of children of a node and
 
-`sdb:hash($node as structured-item()) as xs:string`
+```xquery
+sdb:hash($node as structured-item()) as xs:string
+```
 
 to retrieve the stored hash of a node.
 
 With the function
 
-`sdb:attribute-count($node as structured-item()) as xs:int`
+```xquery
+sdb:attribute-count($node as structured-item()) as xs:int
+```
 
 you'll get the number of attributes of a node (an element node).
 
 You can get the most recent revision number with the function
 
-`sdb:most-recent-revision($node as structured-item()) as xs:int`
+```xquery
+sdb:most-recent-revision($node as structured-item()) as xs:int
+```
 
-The unique, stable key/ID of a node with
+You can get the unique, stable key/ID of a node with
 
-`sdb:nodekey($node as structured-item()) as xs:long`
+```xquery
+sdb:nodekey($node as structured-item()) as xs:long
+```
 
 To commit a transaction if no auto-commit is enabled
 
-`sdb:commit($node as structured-item()) as xs:node`
+```xquery
+sdb:commit($node as structured-item()) as xs:node
+```
 
 To rollback a transaction (result item is the aborted revision number)
 
-`sdb:rollback($node as structured-item()) as xs:int`
+```xquery
+sdb:rollback($node as structured-item()) as xs:int
+```
 
 To get the revision timestamp of a node (the timestamp when the transaction has been committed)
 
-`sdb:timestamp($node as structured-item()) as xs:dateTime`
+```xquery
+sdb:timestamp($node as structured-item()) as xs:dateTime
+```
 
 ## JSON Extension (Beta)
 
@@ -377,7 +363,7 @@ Everything is designed to simplify joint processing of XDM and JSON and to maxim
 
 Arrays can be created using an extended version of the standard JSON array syntax:
 
-```xml
+```xquery
 (: statically create an array with 3 elements of different types: 1, 2.0, "3" :)
 [ 1, 2.0, "3" ]
 
@@ -414,7 +400,7 @@ bit:len([ 1, 2, ]) (: yields 2 :)
 
 Records provide an alternative to XML to represent structured data. Like with arrays we support an extended version of the standard JSON object syntax:
 
-```xml
+```xquery
 (: statically create a record with three fields named 'a', 'b' and 'c' :)
 { "a": 1, "b": 2, "c": 3 }
 
