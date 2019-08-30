@@ -47,16 +47,18 @@ title: SirixDB - An Evolutionary NoSQL Document Store
 						</div>
 					</section>
 
-<section class="wrapper style3 container special">
+<section class="wrapper style1 container special">
+	<img src="images/evolution-of-state.png"/>
 	<p>The following time-travel query gives an initial impression of what's possible:</p>
-<div class="language-xquery highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span><span class="w"> </span><span class="nv">$statuses</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">jn:open</span><span class="p">(</span><span class="s">'mycol.jn'</span><span class="o">,</span><span class="s">'mydoc.jn'</span><span class="o">,</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">'2019-04-13T16:24:27Z'</span><span class="p">))</span><span class="o">=&gt;</span><span class="nt">statuses</span><span class="w">
-</span><span class="k">let</span><span class="w"> </span><span class="nv">$foundStatus</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">$status</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nf">bit:array-values</span><span class="p">(</span><span class="nv">$statuses</span><span class="p">)</span><span class="w">
-  </span><span class="k">let</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="nv">$status</span><span class="o">=&gt;</span><span class="nt">created_at</span><span class="p">)</span><span class="w">
-  </span><span class="k">where</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">"2018-02-01T00:00:00"</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nf">not</span><span class="p">(</span><span class="nf">exists</span><span class="p">(</span><span class="nf">jn:previous</span><span class="p">(</span><span class="nv">$status</span><span class="p">)))</span><span class="w">
-  </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w">
-  </span><span class="k">return</span><span class="w"> </span><span class="nv">$status</span><span class="w">
-</span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="s">"revision"</span><span class="o">:</span><span class="w"> </span><span class="nf">sdb:revision</span><span class="p">(</span><span class="nv">$foundStatus</span><span class="p">)</span><span class="o">,</span><span class="w"> </span><span class="nv">$foundStatus</span><span class="p">{</span><span class="k">text</span><span class="p">}}</span><span class="w">
-</span></code></pre></div></div>
+<div class="highlight highlight-source-xq"><pre><span class="pl-k">let</span> $doc := <span class="pl-c1">jn:open</span>(<span class="pl-s">'mycol.jn'</span>,<span class="pl-s">'mydoc.jn'</span>, <span class="pl-c1">xs:dateTime</span>(<span class="pl-s">'2019-04-13T16:24:27Z'</span>))
+<span class="pl-k">let</span> $statuses := $doc=&gt;statuses
+<span class="pl-k">let</span> $foundStatus := <span class="pl-k">for</span> $status <span class="pl-k">in</span> <span class="pl-c1">bit:array-values</span>($statuses)
+  <span class="pl-k">let</span> $dateTimeCreated := <span class="pl-c1">xs:dateTime</span>($status=&gt;created_at)
+  <span class="pl-k">where</span> $dateTimeCreated &gt; <span class="pl-c1">xs:dateTime</span>(<span class="pl-s">"2018-02-01T00:00:00"</span>)
+        <span class="pl-k">and</span> <span class="pl-k">not</span>(<span class="pl-c1">exists</span>(<span class="pl-c1">jn:previous</span>($status)))
+  <span class="pl-k">order</span> <span class="pl-k">by</span> $dateTimeCreated
+  <span class="pl-k">return</span> $status
+<span class="pl-k">return</span> {<span class="pl-s">"revision"</span>: <span class="pl-c1">sdb:revision</span>($foundStatus), $foundStatus{<span class="pl-k">text</span>}}</pre></div>
 	<p>The query basically opens a database and therein a resource in a specific revision based on a timestamp (<code>2019–04–13T16:24:27Z</code>) and searchs for all statuses, which have a <code>created_at</code> timestamp, that has to be greater than the 1st of February in 2018 and did not exist in the previous revision. <code>=&gt;</code> is a dereferencing operator used to dereference keys in JSON objects, array values can be accessed as shown with the function bit:array-values or through specifying an index, starting with zero: array[[0]] for instance specifies the first value of the array.</p>
 </section>
 
