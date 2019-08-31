@@ -1277,9 +1277,10 @@ code {
 }
 
 code.highlighter-rouge {
-  background-color: #F9F9F9;
+  background-color: #F4F4F4;
   color: #555;
   padding: 3px;
+  border-radius: 6px;
 }
 
 .highlight .hll { background-color: #ffffcc }
