@@ -1144,25 +1144,25 @@
 		}
 
 .container {
- margin-left:auto;
- margin-right:auto;
- width:1200px;
+  margin-left:auto;
+  margin-right:auto;
+  width:1200px;
 }
 
 blockquote {
-    margin-block-end: 21px;
-    margin-block-start: 21px;
-    margin-inline-end: 40px;
-    margin-inline-start: 40px;
-    margin: 21px 40px;
+  margin-block-end: 21px;
+  margin-block-start: 21px;
+  margin-inline-end: 40px;
+  margin-inline-start: 40px;
+  margin: 21px 40px;
 }
 
 blockquote p {
-    margin: 0;
-    padding: .5em;
-    font-size: 1.3rem;
-    line-height: 1.5rem;
-    width: 90%;
+  margin: 0;
+  padding: .5em;
+  font-size: 1.3rem;
+  line-height: 1.5rem;
+  width: 90%;
 }
 
 section.markdown {
@@ -1170,9 +1170,9 @@ section.markdown {
   font-size: 1em;
 }
 
-	section.markdown p, section.markdown ul, section.markdown ol, section.markdown dl, section.markdown table {
-		margin: 1em 0 1em 0;
-	}
+section.markdown p, section.markdown ul, section.markdown ol, section.markdown dl, section.markdown table {
+  margin: 1em 0 1em 0;
+}
 
 .img_container {
   text-align: center;
