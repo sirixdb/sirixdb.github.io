@@ -1143,10 +1143,6 @@
 			width: 5em;
 		}
 
-table.rouge-table {
-  all: initial;
-}
-
 .container {
  margin-left:auto;
  margin-right:auto;
@@ -1210,17 +1206,6 @@ pre.highlight {
   font-family: monospace;
   border-left: 3px solid #d01040;
   text-align: left;
-  counter-reset: linenumber;
-}
-
-pre.highlight > &:before {
-  content: counter(linenumber, decimal-leading-zero) ". ";
-  counter-increment: linenumber;
-}
-
-pre.highlight > code:not(:only-child)::before {
-  content: counter(linenumber, decimal-leading-zero) ". ";
-  counter-increment: linenumber;
 }
 
 div.content {
