@@ -1209,7 +1209,7 @@ pre.highlight {
   counter-reset: linenumber;
 }
 
-pre.highlight > code::before {
+pre.highlight > &:before {
   content: counter(linenumber, decimal-leading-zero) ". ";
   counter-increment: linenumber;
 }
