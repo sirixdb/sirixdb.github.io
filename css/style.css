@@ -1206,12 +1206,17 @@ pre.highlight {
   font-family: monospace;
   border-left: 3px solid #d01040;
   text-align: left;
-  counter-reset: linenumber
+  counter-reset: linenumber;
+}
+
+pre.highlight > code.highlighter-rouge {
+  content: counter(linenumber, decimal-leading-zero) ". ";
+  counter-increment: linenumber;
 }
 
 pre.highlight > code:not(:only-child)::before {
   content: counter(linenumber, decimal-leading-zero) ". ";
-  counter-increment: linenumber
+  counter-increment: linenumber;
 }
 
 div.content {
