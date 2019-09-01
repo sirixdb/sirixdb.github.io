@@ -13,8 +13,5 @@ markdown: kramdown
 
 kramdown:
   parse_block_html: true
-  syntax_highlighter_opts:
-    block:
-      line_numbers: true
 
 highlighter: rouge
