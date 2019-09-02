@@ -81,7 +81,7 @@ Thus we'll introduce a unique API, which we're going to use for both traversing 
 ### Create an XML Database and Resource
 First, we want to show how to create a database with a single resource:
 
-```java
+{% highlight java linedivs %}
 // XML-file to import.
 final var pathToXmlFile = Paths.get("xmlFile");
 
@@ -118,7 +118,8 @@ try (final var database = Databases.openXmlDatabase(databaseFile)) {
        wtx.commit();
   }
 }
-```
+{% endhighlight %}
+
 The resource is built with text node-compression disabled and so-called DeweyIDs enabled. DeweyIDs are a form of hierarchical node labels for instance used by an XQuery processor to quickly determine document-order (which node comes first during a preorder traversal).
 
 In the above example, we show how you can specify a versioning approach that SirixDB is going to use to version data-pages. Default is the sliding snapshot algorithm, which is the best option in most cases. However, we want to demonstrate the most commonly used builder options.
