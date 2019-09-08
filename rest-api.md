@@ -82,9 +82,14 @@ Via a `GET HTTP-Request` to `https://localhost:9443/database/resource1` we are a
 However, this is not really interesting so far. We can update the resource via a `POST-Request`. Assuming we retrieved the access token as before, we can simply do a POST-Request and use the information we gathered before about the node-IDs:
 
 ```kotlin
-var httpResponse = client.getAbs("$server/database/resource1?nodeId=3").putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken").putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml").putHeader(HttpHeaders.ACCEPT.toString(), "application/xml").sendArait()
+// First get the hashCode of the node with ID 3.
+var httpResponse = client.getAbs("$server/database/resource1?nodeId=3")
+                         .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
+                         .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
+                         .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
+                         .sendAWait()
 
-var hashCode = httpResponse.getHeader(HttpHeaders.ETAG.toString())
+val hashCode = httpResponse.getHeader(HttpHeaders.ETAG.toString())
 
 val xml = """
     <test>
@@ -95,8 +100,12 @@ val xml = """
 
 val url = "$server/database/resource1?nodeId=3&insert=asFirstChild"
 
-val httpResponse = client.postAbs(url).putHeader(HttpHeaders.AUTHORIZATION
-                         .toString(), "Bearer $accessToken").putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml").putHeader(HttpHeaders.ACCEPT.toString(), "application/xml").putHeader(HttpHeaders.ETAG.toString(), hashCode) .sendBufferAwait(Buffer.buffer(xml))
+httpResponse = client.postAbs(url)
+                     .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
+                     .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
+                     .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
+                     .putHeader(HttpHeaders.ETAG.toString(), hashCode)
+                     .sendBufferAwait(Buffer.buffer(xml))
 ```
 
 The interesting part is the URL, we are using as the endpoint. We simply say, select the node with the ID 3, then insert the given XML-fragment as the first child. This yields the following serialized XML-document:
