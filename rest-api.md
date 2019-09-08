@@ -164,10 +164,21 @@ or via timestamps:
 We for sure are also able to delete the resource or any subtree thereof by an updating XQuery expression (which is not very RESTful) or with a simple `DELETE` HTTP-request:
 
 ```kotlin
+// First get the hashCode of the node with ID 3.
+var httpResponse = client.getAbs("$server/database/resource1?nodeId=3")
+                         .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
+                         .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
+                         .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
+                         .sendAWait()
+
+val hashCode = httpResponse.getHeader(HttpHeaders.ETAG.toString())
+
 val url = "$server/database/resource1?nodeId=3"
 
-val httpResponse = client.deleteAbs(url).putHeader(HttpHeaders.AUTHORIZATION
-                         .toString(), "Bearer $accessToken").putHeader(HttpHeaders.ACCEPT.toString(), "application/xml").sendAwait()
+val httpResponse = client.deleteAbs(url)
+                         .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
+                         .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
+                         .putHeader(HttpHeaders.ETAG.toString(), hashCode).sendAwait()
 
 if (200 == httpResponse.statusCode()) {
   ...
