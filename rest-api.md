@@ -83,7 +83,7 @@ However, this is not really interesting so far. We can update the resource via a
 
 ```kotlin
 // First get the hashCode of the node with ID 3.
-var httpResponse = client.getAbs("$server/database/resource1?nodeId=3")
+var httpResponse = client.headAbs("$server/database/resource1?nodeId=3")
                          .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
                          .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
                          .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
@@ -165,7 +165,7 @@ We for sure are also able to delete the resource or any subtree thereof by an up
 
 ```kotlin
 // First get the hashCode of the node with ID 3.
-var httpResponse = client.getAbs("$server/database/resource1?nodeId=3")
+var httpResponse = client.headAbs("$server/database/resource1?nodeId=3")
                          .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
                          .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
                          .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
