@@ -60,7 +60,7 @@ if (200 == response.statusCode()) {
   println("Something went wrong ${response.message}")
 }
 ```
-First, an empty database with the name `database` with some metadata is created, second the XML-fragment is stored with the name `resource1`. The PUT HTTP-Request is idempotent. Another PUT-Request with the same URL endpoint would just delete the former database and resource and create the database/resource again. Note that every request now has to contain an `HTTP-Header` which content type it sends and which resource-type it expects (`Content-Type: application/xml` and `Accept: application/xml`) for instance. This is needed as we now support the storage and retrieval of both XML- and JSON-data. The following sections show the API for usage with out binary and in-memory XML representation, but the JSON version is almost analogous.
+First, an empty database with the name `database` with some metadata is created, second the XML-fragment is stored with the name `resource1`. The PUT HTTP-Request is idempotent. Another PUT-Request with the same URL endpoint will delete the former database and resource and create the database and resource again. Note that every request has to contain an `HTTP-Header` which content type it sends and which resource-type it expects (`Content-Type: application/xml` and `Accept: application/xml`) for instance. This is needed as SirixDB supports the storage and retrieval of both XML- and JSON-data. Furthermore in case of updates as described in [Integrity Assurance for RESTful XML](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-123507) you have to make sure to include the hashCode of the node you want to modify in the "ETag" HTTP-Header. For instance if you want to insert a subtree as the first child of a node, the hashCode of the "parent" node must be in the HTTP-Header. The following sections show the API for usage with our binary and in-memory XML representation, but the JSON version is almost analogous.
 
 The HTTP-Response should be 200 and the HTTP-body yields:
 
@@ -82,6 +82,15 @@ Via a `GET HTTP-Request` to `https://localhost:9443/database/resource1` we are a
 However, this is not really interesting so far. We can update the resource via a `POST-Request`. Assuming we retrieved the access token as before, we can simply do a POST-Request and use the information we gathered before about the node-IDs:
 
 ```kotlin
+// First get the hashCode of the node with ID 3.
+var httpResponse = client.headAbs("$server/database/resource1?nodeId=3")
+                         .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
+                         .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
+                         .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
+                         .sendAWait()
+
+val hashCode = httpResponse.getHeader(HttpHeaders.ETAG.toString())
+
 val xml = """
     <test>
       yikes
@@ -91,8 +100,12 @@ val xml = """
 
 val url = "$server/database/resource1?nodeId=3&insert=asFirstChild"
 
-val httpResponse = client.postAbs(url).putHeader(HttpHeaders.AUTHORIZATION
-                         .toString(), "Bearer $accessToken").putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml").putHeader(HttpHeaders.ACCEPT.toString(), "application/xml").sendBufferAwait(Buffer.buffer(xml))
+httpResponse = client.postAbs(url)
+                     .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
+                     .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
+                     .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
+                     .putHeader(HttpHeaders.ETAG.toString(), hashCode)
+                     .sendBufferAwait(Buffer.buffer(xml))
 ```
 
 The interesting part is the URL, we are using as the endpoint. We simply say, select the node with the ID 3, then insert the given XML-fragment as the first child. This yields the following serialized XML-document:
@@ -151,10 +164,21 @@ or via timestamps:
 We for sure are also able to delete the resource or any subtree thereof by an updating XQuery expression (which is not very RESTful) or with a simple `DELETE` HTTP-request:
 
 ```kotlin
+// First get the hashCode of the node with ID 3.
+var httpResponse = client.headAbs("$server/database/resource1?nodeId=3")
+                         .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
+                         .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
+                         .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
+                         .sendAWait()
+
+val hashCode = httpResponse.getHeader(HttpHeaders.ETAG.toString())
+
 val url = "$server/database/resource1?nodeId=3"
 
-val httpResponse = client.deleteAbs(url).putHeader(HttpHeaders.AUTHORIZATION
-                         .toString(), "Bearer $accessToken").putHeader(HttpHeaders.ACCEPT.toString(), "application/xml").sendAwait()
+val httpResponse = client.deleteAbs(url)
+                         .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
+                         .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
+                         .putHeader(HttpHeaders.ETAG.toString(), hashCode).sendAwait()
 
 if (200 == httpResponse.statusCode()) {
   ...
