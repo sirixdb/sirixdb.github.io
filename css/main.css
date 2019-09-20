@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @import url("fontawesome-all.min.css");
 /* @import url("https://fonts.googleapis.com/css?family=Lato:300,400,900"); */
 @font-face {
@@ -2425,7 +2424,7 @@ input, select, textarea {
 						-webkit-transition: all 0.2s ease-in-out;
 						-ms-transition: all 0.2s ease-in-out;
 						transition: all 0.2s ease-in-out;
-						background: rgba(188, 202, 206, 0.15);
+						background-color: rgba(188, 202, 206, 0.15);
 					}
 
 					#header nav ul li.current > a {
