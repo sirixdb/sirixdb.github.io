@@ -1,0 +1,76 @@
+I"U%<p><a href="#api-documentation">Go directly to the API documentation</a> or <a href="#publications">to the publications</a>.</p>
+
+<h2 id="introduction">Introduction</h2>
+<p>Usually, database systems either overwrite data in-place or do a copy-on-write operation followed by the removal of the outdated data. The latter may be some time later from a background process. Data, however, naturally evolves. It is often of great value to keep the history of our data. We, for instance, might record the payroll of an employee on the first of March in 2019. Let’s say it’s 5000€ / month. Then as of the fifteenth of April, we notice, that the recorded payroll was wrong and correct it to 5300€. Now, what’s the answer to what the salary was on March, first in 2019? Database Systems, which only preserve the most recent version, don’t even know that the payroll wasn’t right. Our answer to this question depends on what source we consider most authoritative: the record or reality? The fact that they disagree effectively splits this payroll event into two tracks of time, rendering neither source entirely accurate. Temporal database systems such as SirixDB help answer questions such as these easily. We provide at all times the transaction time, which SirixDB sets, once a transaction commits (when is a fact valid in the database / the record). Application or valid time has to be set by the application itself (when is a fact valid in the real world/reality?).</p>
+
+<h3 id="data-audits">Data Audits</h3>
+<p>Thus, one usage scenario for SirixDB is data auditing. Unlike other database systems, it is designed from the ground up to retain old data. It keeps track of past revisions in a specialized index structure for (bi)temporal data. SirixDB uses a novel sliding snapshot versioning algorithm by default to version data pages. It balances read- and write-performance while avoiding any peaks.
+SirixDB is very space-efficient. Depending on the versioning algorithm, it only copies changed records plus possibly a few more during writes. Thus, SirixDB, for instance, usually does not copy a whole database page if only a single record has changed. Instead, SirixDB syncs page-fragments to persistent storage during a commit. We can drop the requirement to cluster related nodes physically. Sequentially accessing physically dispersed nodes on flash-based storage will be in the same order of magnitude as accessing physically clustered nodes on a disk. SirixDB never allows to override or delete old revisions. A single read-write transaction appends data at all times. For sure, you can revert a resource to a specific revision and commit changes based on this version. All revisions in-between will be accessible for data audits. Thus, SirixDB can support answering questions such as who changed what and when.</p>
+
+<h3 id="time-travel-queries">Time Travel queries</h3>
+<p>Data audits are about how specific records have changed. Time Travel queries can answer questions like these. However, they also allow reconstructing records as they looked at a particular time or during a specific period. They also help us to analyze how the whole document changed over time. We might want to analyze the past to predict the future. Through additional temporal XPath axes and XQuery functions, SirixDB encourages you to look into how your data has evolved.</p>
+
+<h3 id="fixing-application-or-human-errors">Fixing application or human errors</h3>
+<p>For all of the use-cases we mentioned earlier: We can revert to a specific point in time where everything was in a known good state and commit the revision again. Or we might select a particular record, correct the error and commit a new revision.</p>
+
+<h2 id="sirixdb">SirixDB</h2>
+<p>SirixDB is a storage system, which brings versioning to a sub-file granular level while taking full advantage of flash-based drives as SSDs. As such, per revision as well as per page deltas are stored. Time-complexity for retrieval of records and the storage are logarithmic (<code class="highlighter-rouge">O(log n)</code>). Space complexity is linear (<code class="highlighter-rouge">O(n)</code>). Currently, we provide several APIs which are layered. A very low-level page-API, which handles the storage and retrieval of records on a per page-fragment level.  A transactional cursor-based API to store and navigate through records (currently XML as well as JSON nodes) on top. A DOM-alike node layer for simple in-memory processing of these nodes, which is used by Brackit, a sophisticated XQuery processor. And last but not least a RESTful asynchronous HTTP-API. SirixDB provides</p>
+
+<ol>
+  <li>The current revision of the resource or any subset thereof</li>
+  <li>The full revision history of the resource or any subset thereof</li>
+  <li>The full modification history of the resource or any subset thereof</li>
+</ol>
+
+<p>SirixDB not only supports all XPath axes to query a resource in one revision but also temporal axes which facilitate navigation in time. A transactional cursor on a resource can be started either by specifying a specific revision number or by a given point in time. The latter starts a transaction on the revision number which was committed closest to the given timestamp.</p>
+
+<div class="img_container">
+  <p><img src="images/sunburstview-cut.png" alt="sunburstview" style="max-width: 450px; height: auto; margin: 1.5em" /> <img src="images/moves-cut.png" alt="moves" style="max-width: 450px; height: auto; margin: 1.5em" /></p>
+</div>
+
+<p>You may find a quick overview about the <a href="/features.html">main features</a> useful.</p>
+
+<h3 id="api-documentation">API documentation</h3>
+<p>We provide several APIs to interact with SirixDB.</p>
+
+<ol>
+  <li>The <a href="/transactional-cursor-api.html">transactional cursor API</a> is a powerful low-level API.</li>
+  <li>On top of this API we built a <a href="http://brackit.org">Brackit.org</a> binding to provide the ability to use SirixDB with a more <a href="/dom-alike-api.html">DOM-alike API</a> with in-memory nodes and an <a href="/xquery-api.html">XQuery API</a>.</li>
+  <li>We provide a powerful, asynchronous, non-blocking <a href="/rest-api.html">RESTful-API</a> to interact with a SirixDB HTTP-server. Authorization is done via Keycloak.</li>
+</ol>
+
+<h3 id="publications">Publications</h3>
+<p>Articles published on Baeldung:</p>
+<ul>
+  <li><a href="https://www.baeldung.com/sirix">A Guide to SirixDB</a></li>
+</ul>
+
+<p>Articles published on Medium:</p>
+<ul>
+  <li><a href="https://medium.com/hackernoon/asynchronous-temporal-rest-with-vert-x-keycloak-and-kotlin-coroutines-217b25756314">Asynchronous, Temporal  REST With Vert.x, Keycloak and Kotlin</a></li>
+  <li><a href="https://medium.com/sirixdb-sirix-io-how-we-built-a-novel-temporal/why-and-how-we-built-a-temporal-database-system-called-sirixdb-open-source-from-scratch-a7446f56f201">Pushing Database Versioning to Its Limits by Means of a Novel Sliding Snapshot Algorithm and Efficient Time Travel Queries</a></li>
+  <li><a href="https://medium.com/sirixdb-sirix-io-how-we-built-a-novel-temporal/how-we-built-an-asynchronous-temporal-restful-api-based-on-vert-x-4570f681a3">How we built an asynchronous, temporal RESTful API based on Vert.x, Keycloak and Kotlin/Coroutines for Sirix.io (Open Source)</a></li>
+  <li><a href="https://hackernoon.com/sirix-io-why-copy-on-write-semantics-and-node-level-versioning-are-key-to-efficient-snapshots-754ba834d3bb">Why Copy-on-Write Semantics and Node-Level-Versioning are Key to Efficient Snapshots</a></li>
+</ul>
+
+<p>SirixDB was forked from Treetank (which is not maintained anymore), but as a university project, it was subject to some publications.</p>
+
+<p>A lot of the ideas still are based on the Ph.D. thesis of Marc Kramis: <a href="http://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/Kramis2014.pdf">Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications</a></p>
+
+<p>As well as from Sebastian Graft’s work and thesis: <a href="https://kops.uni-konstanz.de/handle/123456789/27250">Flexible Secure Cloud Storage</a></p>
+
+<p>Other publications include:</p>
+
+<ul>
+  <li><a href="http://nbn-resolving.de/urn:nbn:de:bsz:352-200971">Versatile Key Management for Secure Cloud Storage</a> (DISCCO12)</li>
+  <li><a href="http://nbn-resolving.de/urn:nbn:de:bsz:352-192389">A legal and technical perspective on secure cloud Storage</a> (DFN Forum12)</li>
+  <li><a href="http://nbn-resolving.de/urn:nbn:de:bsz:352-154112">A Secure Cloud Gateway based upon XML and Web Services</a> (ECOWS11, PhD Symposium)</li>
+  <li><a href="http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-126912">Treetank, Designing a Versioned XML Storage</a> (XMLPrague11)</li>
+  <li><a href="http://nbn-resolving.de/urn:nbn:de:bsz:352-126237">Hecate, Managing Authorization with RESTful XML</a> (WS-REST11)</li>
+  <li><a href="http://nbn-resolving.de/urn:nbn:de:bsz:352-126226">Rolling Boles, Optimal XML Structure Integrity for Updating Operations</a> (WWW11, Poster)</li>
+  <li><a href="http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-120511">JAX-RX - Unified REST Access to XML Resources</a> (TechReport10)</li>
+  <li><a href="http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-123507">Integrity Assurance for RESTful XML</a>  (WISM100)</li>
+  <li><a href="http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84476">Temporal REST, How to really exploit XML</a> (IADIS WWW/Internet08)</li>
+  <li><a href="http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84487">Distributing XML with focus on parallel evaluation</a> (DBISP2P08)</li>
+</ul>
+:ET

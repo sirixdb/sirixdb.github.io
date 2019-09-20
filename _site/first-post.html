@@ -8,21 +8,24 @@
 -->
 
 <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-139533596-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-139533596-1');
+</script>
+	
     <title>Lorem Ipsum</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="Sirix facilitates effective and efficient storing and querying of your temporal data through snapshotting and a novel versioning approach called sliding snapshot. Currently we support the storage and querying of XML-documents in our binary format through a RESTful-API, an XQuery-API and a low-level, transactional, cursor based API (also for JSON).">
-    <meta name="keywords" content="" />
+    <meta name="keywords" content="Database, Temporal, Evolutionary, XML, JSON, Versioning, Diffing, Comparing, Revisions, Revision" />
+    <link rel="stylesheet" href="/css/style.css" />
+
     <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/jquery.dropotron.min.js"></script>
-    <script src="/js/jquery.scrolly.min.js"></script>
-    <script src="/js/jquery.scrollgress.min.js"></script>
-    <script src="/js/skel.min.js"></script>
-    <script src="/js/skel-layers.min.js"></script>
-    <script src="/js/init.js"></script>
     <noscript>
-        <link rel="stylesheet" href="/css/skel.css" />
-        <link rel="stylesheet" href="/css/style.css" />
         <link rel="stylesheet" href="/css/style-wide.css" />
         <link rel="stylesheet" href="/css/style-noscript.css" />
     </noscript>
@@ -37,14 +40,30 @@
   <body class="no-sidebar">
 
     <header id="header">
-				<h1 id="logo"><a href="/">SirixDB - your temporal NoSQL storage system</a></h1>
+				<h1 id="logo"><a href="/">SirixDB</a></h1>
 				<nav id="nav">
 					<ul>
 						<li><a href="/">Welcome</a></li>
-                                                <li><a href="/documentation.html">Documentation</a></li>
-                                                <li><a href="/blog.html">Blog</a></li>
+						<li class="submenu">
+							<a href="documentation.html">Documentation</a>
+							<ul>
+								<li><a href="documentation.html">Introduction</a></li>
+								<li><a href="features.html">Features in a nutshell</a></li>
+								<li><a href="concepts.html">Concepts</a></li>
+								<li class="submenu">
+									<a href="">APIs</a>
+									<ul>
+										<li><a href="transactional-cursor-api.html">Transactional</a></li>
+										<li><a href="xquery-api.html">XQuery</a></li>
+										<li><a href="dom-alike-api.html">DOM alike</a></li>
+										<li><a href="rest-api.html">RESTful</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li><a href="https://sirix.discourse.group">Community Forum</a></li>
                                                 <li><a href="/contact.html">Contact</a></li>
-						<li><a href="https://github.com/sirixdb/sirix" class="button special">Fork us on Github</a></li>
+						<li><a href="https://github.com/sirixdb/sirix" class="button special">Fork me on Github</a></li>
 					</ul>
 				</nav>
 			</header>
@@ -63,6 +82,11 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse at metus au
 <p>Duis in purus sit amet elit ullamcorper venenatis vel a diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec dictum quam id ultricies dapibus. Donec rutrum pellentesque nisl, in bibendum erat imperdiet et. Maecenas eros lorem, dignissim in eros ut, consequat eleifend ante. Duis leo tortor, porttitor non ex ut, varius consectetur purus. Mauris vel erat risus. Nam convallis, lorem et tempus efficitur, nulla tortor efficitur sapien, ut pretium nisl turpis at purus. Nulla dui risus, suscipit nec tellus ac, aliquam finibus mi. Suspendisse accumsan, nisl a aliquet hendrerit, massa metus volutpat libero, et mollis lectus mauris et justo. Ut vitae est ut ligula sollicitudin blandit. Quisque egestas eleifend tortor, in finibus ex. Donec non orci quis odio porttitor mattis.</p>
 
 <p>Duis ut blandit lorem. Suspendisse potenti. Donec maximus blandit neque dapibus hendrerit. Praesent dignissim turpis eu nisl varius tempor. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur in volutpat felis. Sed eget neque vel risus fermentum maximus a vel arcu. Vivamus non lorem mattis, vehicula metus eu, pellentesque mauris. Nunc fermentum efficitur justo, et rutrum mi finibus non. Sed vehicula eros id elit elementum rhoncus. Nullam quis tellus vitae metus eleifend pharetra eget interdum nulla. Integer sit amet imperdiet urna.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Create database configuration.</span>
+<span class="kd">final</span> <span class="nc">Path</span> <span class="n">file</span> <span class="o">=</span> <span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"db"</span><span class="o">);</span>
+<span class="kd">final</span> <span class="nc">DatabaseConfiguration</span> <span class="n">dbConfig</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DatabaseConfiguration</span><span class="o">(</span><span class="n">file</span><span class="o">);</span>
+</code></pre></div></div>
 
 
   </section>
@@ -87,6 +111,16 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse at metus au
   </ul>
 </footer>
 
+
+    <!-- Scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.dropotron.min.js"></script>
+    <script src="js/jquery.scrolly.min.js"></script>
+    <script src="js/jquery.scrollex.min.js"></script>
+    <script src="js/browser.min.js"></script>
+    <script src="js/breakpoints.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/main.js"></script>
 
   </body>
 

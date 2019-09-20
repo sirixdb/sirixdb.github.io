@@ -8,21 +8,24 @@
 -->
 
 <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-139533596-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-139533596-1');
+</script>
+	
     <title>Morbi a Semper</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="Sirix facilitates effective and efficient storing and querying of your temporal data through snapshotting and a novel versioning approach called sliding snapshot. Currently we support the storage and querying of XML-documents in our binary format through a RESTful-API, an XQuery-API and a low-level, transactional, cursor based API (also for JSON).">
-    <meta name="keywords" content="" />
+    <meta name="keywords" content="Database, Temporal, Evolutionary, XML, JSON, Versioning, Diffing, Comparing, Revisions, Revision" />
+    <link rel="stylesheet" href="/css/style.css" />
+
     <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/jquery.dropotron.min.js"></script>
-    <script src="/js/jquery.scrolly.min.js"></script>
-    <script src="/js/jquery.scrollgress.min.js"></script>
-    <script src="/js/skel.min.js"></script>
-    <script src="/js/skel-layers.min.js"></script>
-    <script src="/js/init.js"></script>
     <noscript>
-        <link rel="stylesheet" href="/css/skel.css" />
-        <link rel="stylesheet" href="/css/style.css" />
         <link rel="stylesheet" href="/css/style-wide.css" />
         <link rel="stylesheet" href="/css/style-noscript.css" />
     </noscript>
@@ -37,14 +40,30 @@
   <body class="no-sidebar">
 
     <header id="header">
-				<h1 id="logo"><a href="/">SirixDB - your temporal NoSQL storage system</a></h1>
+				<h1 id="logo"><a href="/">SirixDB</a></h1>
 				<nav id="nav">
 					<ul>
 						<li><a href="/">Welcome</a></li>
-                                                <li><a href="/documentation.html">Documentation</a></li>
-                                                <li><a href="/blog.html">Blog</a></li>
+						<li class="submenu">
+							<a href="documentation.html">Documentation</a>
+							<ul>
+								<li><a href="documentation.html">Introduction</a></li>
+								<li><a href="features.html">Features in a nutshell</a></li>
+								<li><a href="concepts.html">Concepts</a></li>
+								<li class="submenu">
+									<a href="">APIs</a>
+									<ul>
+										<li><a href="transactional-cursor-api.html">Transactional</a></li>
+										<li><a href="xquery-api.html">XQuery</a></li>
+										<li><a href="dom-alike-api.html">DOM alike</a></li>
+										<li><a href="rest-api.html">RESTful</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li><a href="https://sirix.discourse.group">Community Forum</a></li>
                                                 <li><a href="/contact.html">Contact</a></li>
-						<li><a href="https://github.com/sirixdb/sirix" class="button special">Fork us on Github</a></li>
+						<li><a href="https://github.com/sirixdb/sirix" class="button special">Fork me on Github</a></li>
 					</ul>
 				</nav>
 			</header>
@@ -85,6 +104,16 @@ Morbi a semper justo, non eleifend elit. Sed nulla nulla, porttitor nec volutpat
   </ul>
 </footer>
 
+
+    <!-- Scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.dropotron.min.js"></script>
+    <script src="js/jquery.scrolly.min.js"></script>
+    <script src="js/jquery.scrollex.min.js"></script>
+    <script src="js/browser.min.js"></script>
+    <script src="js/breakpoints.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/main.js"></script>
 
   </body>
 

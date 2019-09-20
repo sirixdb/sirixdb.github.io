@@ -8,21 +8,24 @@
 -->
 
 <head>
-    <title>Sirix</title>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-139533596-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-139533596-1');
+</script>
+	
+    <title>SirixDB - An Evolutionary NoSQL Document Store</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="Sirix facilitates effective and efficient storing and querying of your temporal data through snapshotting and a novel versioning approach called sliding snapshot. Currently we support the storage and querying of XML-documents in our binary format through a RESTful-API, an XQuery-API and a low-level, transactional, cursor based API (also for JSON).">
-    <meta name="keywords" content="" />
+    <meta name="keywords" content="Database, Temporal, Evolutionary, XML, JSON, Versioning, Diffing, Comparing, Revisions, Revision" />
+    <link rel="stylesheet" href="/css/style.css" />
+
     <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/jquery.dropotron.min.js"></script>
-    <script src="/js/jquery.scrolly.min.js"></script>
-    <script src="/js/jquery.scrollgress.min.js"></script>
-    <script src="/js/skel.min.js"></script>
-    <script src="/js/skel-layers.min.js"></script>
-    <script src="/js/init.js"></script>
     <noscript>
-        <link rel="stylesheet" href="/css/skel.css" />
-        <link rel="stylesheet" href="/css/style.css" />
         <link rel="stylesheet" href="/css/style-wide.css" />
         <link rel="stylesheet" href="/css/style-noscript.css" />
     </noscript>
@@ -37,14 +40,30 @@
   <body class="index">
 
     <header id="header">
-				<h1 id="logo"><a href="/">SirixDB - your temporal NoSQL storage system</a></h1>
+				<h1 id="logo"><a href="/">SirixDB</a></h1>
 				<nav id="nav">
 					<ul>
 						<li><a href="/">Welcome</a></li>
-                                                <li><a href="/documentation.html">Documentation</a></li>
-                                                <li><a href="/blog.html">Blog</a></li>
+						<li class="submenu">
+							<a href="documentation.html">Documentation</a>
+							<ul>
+								<li><a href="documentation.html">Introduction</a></li>
+								<li><a href="features.html">Features in a nutshell</a></li>
+								<li><a href="concepts.html">Concepts</a></li>
+								<li class="submenu">
+									<a href="">APIs</a>
+									<ul>
+										<li><a href="transactional-cursor-api.html">Transactional</a></li>
+										<li><a href="xquery-api.html">XQuery</a></li>
+										<li><a href="dom-alike-api.html">DOM alike</a></li>
+										<li><a href="rest-api.html">RESTful</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li><a href="https://sirix.discourse.group">Community Forum</a></li>
                                                 <li><a href="/contact.html">Contact</a></li>
-						<li><a href="https://github.com/sirixdb/sirix" class="button special">Fork us on Github</a></li>
+						<li><a href="https://github.com/sirixdb/sirix" class="button special">Fork me on Github</a></li>
 					</ul>
 				</nav>
 			</header>
@@ -63,11 +82,15 @@
         <header>
             <h2>SirixDB</h2>
         </header>
-        <p>Sirix is a temporal <strong>NoSQL</strong> storage system
+        <p>SirixDB is a log-structured <strong>temporal NoSQL document</strong> store
         <br />
-        empowered by a novel sliding snapshot algorithm
+        which stores the histories of all resources in a space-efficient manner.
         <br />
-        See our Open Source <a href="https://github.com/sirixdb/sirix">repository</a></p>
+        It supports the efficient reconstruction of any revision as well as comparisons.
+        <br />
+        A query processor supports sophisticated time travel queries.
+        <br />
+        See the Open Source <a href="https://github.com/sirixdb/sirix">repository</a>.
         <footer>
             <ul class="buttons vertical">
                 <li><a href="#main" class="button fit scrolly">Tell Me More</a></li>
@@ -85,13 +108,10 @@
 
 				<header class="special container">
 					<span class="icon fa-bar-chart-o"></span>
-					<h2>Sirix is a <strong>temporal</strong> NoSQL storage sytem at its heart.
-					<br />
-					We store per revision and per page changes.</h2>
-					<p>Sirix is especially well suited to flash drives as for instance SSDs due to its log structured <strong>copy-on-write</strong> nature.
-					<br />
-					We allow <strong>time-travel</strong> queries for your <strong>XML</strong> as well as <strong>JSON</strong> data and store both in our binary on-disk structure or a lightweight in-memory structure. 
-					<br />
+					<h2>SirixDB keeps storage space to a minimum, while retaining the full history of your data.</h2>
+				       <br /> 
+				        It allows <strong>time-travel</strong> queries on its binary <strong>XML</strong> and <strong>JSON</strong> encoding.
+                                        <br />
 					It is released for free under <a href="https://opensource.org/licenses/BSD-3-Clause">The 3-Clause BSD License</a> license. Have fun!</p>
 				</header>
 					
@@ -101,14 +121,16 @@
 							<div class="8u">
 							
 								<header>
-									<h2>Version your data and thus keep your history</h2>
+									<h2>Keep the full history of your data for time travel analysis, audits, to correct human or application errors...</h2>
 								</header>
-								<p>We are taking care of keeping storage space to minimum, while also supporting the reconstruction of any revision in linear time.</p>
-								<p>Furthermore we allow time travel queries such that you're able to analyse the history of your data efficiently.</p>
-                                                                <p>Not enough? What about diffing any revision of your documents efficiently?</p>
-                                                                <footer>
+								<p>SirixDB takes care of keeping storage space to a minimum while supporting the reconstruction of any revision in linear time.</p>
+								<p>Furthermore, it allows time travel queries such that you're able to analyze the history of your data efficiently to predict the future or for audits.</p>
+                                                                <p>Not enough? What about correcting any human or application errors or to compare any revision of your XML or JSON documents efficiently?</p>
+                                                     
+								
+								<footer>
 									<ul class="buttons">
-										<li><a href="#" class="button">Find Out More</a></li>
+										<li><a href="#more" class="button fit scrolly">Find Out More</a></li>
 									</ul>
 								</footer>
 							
@@ -116,29 +138,82 @@
 							<div class="4u skel-cell-important">
 							
 								<ul class="featured-icons">
-									<li><span class="icon fa-clock-o"><span class="label">Feature 1</span></span></li>
-									<li><span class="icon fa-volume-up"><span class="label">Feature 2</span></span></li>
-									<li><span class="icon fa-laptop"><span class="label">Feature 3</span></span></li>
-									<li><span class="icon fa-inbox"><span class="label">Feature 4</span></span></li>
-									<li><span class="icon fa-lock"><span class="label">Feature 5</span></span></li>
-									<li><span class="icon fa-cog"><span class="label">Feature 6</span></span></li>
+									<li><span class="icon fa-clock-o"><span class="label">Time Travel</span></span></li>
+									<li><span class="icon fa-rocket"><span class="label">Fast</span></span></li>
+									<li><span class="icon fa-laptop"><span class="label">JVM-based (available on any platform)</span></span></li>
+									<li><span class="icon fa-database"><span class="label">Versioned, temporal database system</span></span></li>
+									<li><span class="icon fa-github"><span class="label">Open Source and free on Github</span></span></li>
+									<li><span class="icon fa-cloud"><span class="label">Replication/Partitioning soon to be added</span></span></li>
 								</ul>
 							
 							</div>				
 						</div>
 					</section>
+
+<section class="wrapper style3 container special">
+	<header><h2>Compact snapshots / efficient time-travel queries</h2></header>
+	<div class="img_container">
+		<p><img src="images/evolution-of-state.webp" style="margin: 3em 3em; width: 70%"/></p>
+	</div>
+	<p>The following time-travel query gives an initial impression of what's possible:</p>
+
+<div class="language-xquery highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span><span class="w"> </span><span class="nv">$doc</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">jn:open</span><span class="p">(</span><span class="s">'database'</span><span class="o">,</span><span class="s">'resource'</span><span class="o">,</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">'2019-04-13T16:24:27Z'</span><span class="p">))</span><span class="w">
+</span><span class="k">let</span><span class="w"> </span><span class="nv">$statuses</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nv">$doc</span><span class="o">=&gt;</span><span class="nt">statuses</span><span class="w">
+</span><span class="k">let</span><span class="w"> </span><span class="nv">$foundStatus</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">$status</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nf">bit:array-values</span><span class="p">(</span><span class="nv">$statuses</span><span class="p">)</span><span class="w">
+  </span><span class="k">let</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="nv">$status</span><span class="o">=&gt;</span><span class="nt">created_at</span><span class="p">)</span><span class="w">
+  </span><span class="k">where</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">"2018-02-01T00:00:00"</span><span class="p">)</span><span class="w">
+        </span><span class="ow">and</span><span class="w"> </span><span class="nf">not</span><span class="p">(</span><span class="nf">exists</span><span class="p">(</span><span class="nf">jn:previous</span><span class="p">(</span><span class="nv">$status</span><span class="p">)))</span><span class="w">
+  </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w">
+  </span><span class="k">return</span><span class="w"> </span><span class="nv">$status</span><span class="w">
+</span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="s">"revision"</span><span class="o">:</span><span class="w"> </span><span class="nf">sdb:revision</span><span class="p">(</span><span class="nv">$foundStatus</span><span class="p">)</span><span class="o">,</span><span class="w"> </span><span class="nv">$foundStatus</span><span class="p">{</span><span class="k">text</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+	<p>The query basically opens a database and therein a resource in a specific revision based on a timestamp (<code class="highlighter-rouge">2019–04–13T16:24:27Z</code>) and searchs for all statuses, which have a <code class="highlighter-rouge">created_at</code> timestamp, that has to be greater than the 1st of February in 2018 and did not exist in the previous revision. <code class="highlighter-rouge">=&gt;</code> is a dereferencing operator used to dereference keys in JSON objects, array values can be accessed as shown with the function bit:array-values or through specifying an index, starting with zero: <code class="highlighter-rouge">array[[0]]</code> for instance specifies the first value of the array.</p>
+</section>
+
+<section class="wrapper style3 container special">
+	<!-- Begin Mailchimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+	/* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
+	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup">
+<form action="https://gmail.us4.list-manage.com/subscribe/post?u=67c1b53483a6cfcb2d3570b21&amp;id=3ac8b5aecf" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+    <div id="mc_embed_signup_scroll">
+	<h2>Keep up-to-date with SirixDB releases and best practices</h2>
+<div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+<div class="mc-field-group">
+	<label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
+</label>
+	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+</div>
+	<div id="mce-responses" class="clear">
+		<div class="response" id="mce-error-response" style="display:none"></div>
+		<div class="response" id="mce-success-response" style="display:none"></div>
+	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_67c1b53483a6cfcb2d3570b21_3ac8b5aecf" tabindex="-1" value=""></div>
+    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+    </div>
+</form>
+</div>
+<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+<!--End mc_embed_signup-->
+</section>
+
 					
 				<!-- Two -->
-					<section class="wrapper style1 container special">
+					<section class="wrapper style1 container special" id="more">
 						<div class="row">
 							<div class="4u">
 							
 								<section>
 									<span class="icon featured fa-check"></span>
 									<header>
-										<h3>Versioning done right</h3>
+										<h3>Versioning</h3>
 									</header>
-									<p>We are versioning data as well as index-structures on a per revision and per record/node level. As such versioning takes place at a fine-granular level. Furthermore through a novel versioning algorithm called <em>sliding snapshot</em> we are able to avoid write- or read-peaks.</p>
+									<p>SirixDB versions data as well as index-structures on a per revision and record level. As such versioning takes place at a fine-granular level. Furthermore, through a novel versioning algorithm called <em>sliding snapshot</em>, it can avoid write and read peaks.</p>
 								</section>
 							
 							</div>
@@ -149,7 +224,7 @@
 									<header>
 										<h3>Time travel queries</h3>
 									</header>
-									<p>We allow sophisticated time travel queries, such that you are able to analyse the history of your data or to retrieve the differences efficiently</p>
+									<p>SirixDB allows sophisticated time travel queries, such that you can analyze the history of your data or to retrieve the differences efficiently.</p>
 								</section>
 							
 							</div>
@@ -160,7 +235,7 @@
 									<header>
 										<h3>XML / JSON</h3>
 									</header>
-									<p>You decide what your data looks like. We currently support both the import of XML as well as JSON data.</p>
+									<p>You decide how your data looks like and which format fits best. SirixDB currently supports both the import of XML as well as JSON data.</p>
 								</section>
 							
 							</div>
@@ -178,47 +253,47 @@
 							<div class="6u">
 							
 								<section>
-									<a href="#" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
+									<a href="/rest-api.html" class="image featured"><img src="images/shutterstock_552791071-scaled.webp" alt="" /></a>
 									<header>
 										<h3>REST</h3>
 									</header>
-									<p>We built an asynchronous, RESTful API, which is non-blocking with <a href="https://vertx.io">Vert.x</a>, <a href="https://kotlinlang.org">Kotlin</a> (especially coroutines are very powerful) and <a href="https://www.keycloak.org">Keycloak</a> for authorization.</p>
+									<p>SirixDB provides an asynchronous, RESTful API, which is non-blocking. It is built with <a href="https://vertx.io">Vert.x</a>, <a href="https://kotlinlang.org">Kotlin</a> (coroutines) and <a href="https://www.keycloak.org">Keycloak</a>.</p>
 								</section>
 
 							</div>
 							<div class="6u">
 							
 								<section>
-									<a href="#" class="image featured"><img src="images/pic02.jpg" alt="" /></a>
+									<a href="/xquery-api.html" class="image featured"><img src="images/shutterstock_667831573-scaled.webp" alt="" /></a>
 									<header>
 										<h3>XQuery / JSONiq</h3>
 									</header>
-									<p>We built several extensions to an XQuery-processor called <a href="http://brackit.org">Brackit</a>, for instance to allow  navigation via novel temporal XPath axis not only in space but also in time. Furthermore, several additional precompiled functions are available to simplify the analysis of your temporal data. The API also provides a very convenient way to interact with Sirix. Think of it as an in-memory representation of a DOM.</p>
+									<p>Several extensions to an XQuery-processor called <a href="http://brackit.org">Brackit</a> are available. SirixDB, for instance, supports navigation via additional temporal XPath axes or XQuery functions for JSON data to navigate not only in space but also in time. Furthermore, SirixDB offers several additional precompiled functions to simplify the analysis of your temporal data. The API also provides a very convenient way to interact with SirixDB. Think of it as an in-memory representation of a DOM.</p>
 								</section>
-
+								
 							</div>
 						</div>
 						<div class="row">
 							<div class="6u">
 							
 								<section>
-									<a href="#" class="image featured"><img src="images/pic03.jpg" alt="" /></a>
+									<a href="/transactional-cursor-api.html" class="image featured"><img src="images/shutterstock_534465157-scaled.webp" alt="" /></a>
 									<header>
-										<h3>Low-level transaction cursor based API</h3>
+										<h3>Transactional cursor API</h3>
 									</header>
-									<p>Our low-level, transactional, cursor based API is very powerful. We not only provide standard XPath axis and additionally temporal enhancements to navigate in time, but also several other axis as for instance a LevelOrder axis, a PostorderAxis, a DescendantAxis which can skip whole subtrees. Furthermore, we provide several filters and much more.</p>
+									<p>SirixDB provides a transactional low level, cursor-based API which is very powerful. SirixDB not only provides standard XPath axes. It also provides additionally temporal enhancements to navigate in time. Furthermore several other axes, for instance, a LevelOrder axis, a PostorderAxis and a DescendantAxis which can skip whole subtrees exists. Additionally, SirixDB provides several filters, a NestedAxis, a PredicateAxis and much more.</p>
 								</section>
 
 							</div>
 							<div class="6u">
 							
 								<section>
-									<a href="#" class="image featured"><img src="images/pic04.jpg" alt="" /></a>
+									<a href="#" class="image featured"><img src="images/shutterstock_709259401-scaled.webp" alt="" /></a>
 									<header>
 										<h3>Diffing-API</h3>
 									</header>
-									<p>We provide a way to currently import several revisions of an XML-document with the help of a diffing-algorithm called Fast Matching Simple EditScript. With the help of this diff-algorithm we are able to import not the whole changed second, third and so on version of the document but only the encountered differences between any two versions.</p>
-<p>Once we have stored several revisions in Sirix, either through the import diff-algorithm or simply through working with Sirix in the first place we are able to quickly compute diffs between any two revisions because of our stable node identifiers and optionally stored hashes (each time two hashes are equal, the whole subtree can be skipped).</p>
+									<p>SirixDB provides a way to currently import several revisions of an XML document with the help of a diffing-algorithm called Fast Matching Simple EditScript. With the help of this diffing-algorithm SirixDB can store the encountered differences in the tree structures instead of storing the whole revision.</p>
+<p>Once you've stored several revisions in SirixDB, either through the import based on the diffing-algorithm or simply through working with SirixDB in the first place you're able to quickly compute diffs between any two revisions. SirixDB makes use of its stable node identifiers and optionally stored hashes. Each time the hashes of two nodes are equal, the whole subtrees in both revisions can be skipped while traversing both tree structures.</p>
 								</section>
 
 							</div>
@@ -226,7 +301,7 @@
 
 						<footer class="major">
 							<ul class="buttons">
-								<li><a href="#" class="button">See More</a></li>
+								<li><a href="/documentation.html" class="button">See More</a></li>
 							</ul>
 						</footer>
 					
@@ -238,13 +313,13 @@
 			<section id="cta">
 			
 				<header>
-					<h2>Ready for using <strong>Sirix</strong>?</h2>
+					<h2>Ready for using <strong>SirixDB</strong>?</h2>
 					<p>Give it a try and let us know what you think.</p>
 				</header>
 				<footer>
 					<ul class="buttons">
 						<li><a href="/documentation.html" class="button special">First steps</a></li>
-						<li><a href="https://github.com/sirixdb/sirix" class="button">Fork us on Github</a></li>
+						<li><a href="https://github.com/sirixdb/sirix" class="button">Fork me on Github</a></li>
 					</ul>
 				</footer>
 			
@@ -263,6 +338,16 @@
   </ul>
 </footer>
 
+
+    <!-- Scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.dropotron.min.js"></script>
+    <script src="js/jquery.scrolly.min.js"></script>
+    <script src="js/jquery.scrollex.min.js"></script>
+    <script src="js/browser.min.js"></script>
+    <script src="js/breakpoints.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/main.js"></script>
 
   </body>
 
