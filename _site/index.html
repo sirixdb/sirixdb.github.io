@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>Sirix</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Sirix facilitates effective and efficient storing and querying of your temporal data through snapshotting and a novel versioning approach called sliding snapshot. Currently we support the storage and querying of XML-documents in our binary format through a RESTful-API, an XQuery-API and a low-level, transactional, cursor based API (also for JSON).">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.dropotron.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollgress.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/skel-layers.min.js"></script>
+    <script src="/js/init.js"></script>
+    <noscript>
+        <link rel="stylesheet" href="/css/skel.css" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <link rel="stylesheet" href="/css/style-wide.css" />
+        <link rel="stylesheet" href="/css/style-noscript.css" />
+    </noscript>
+    <!--[if lte IE 8]><link rel="stylesheet" href="/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://localhost:4000/">
+</head>
+
+
+  <body class="index">
+
+    <header id="header">
+				<h1 id="logo"><a href="/">SirixDB - your temporal NoSQL storage system</a></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="/">Welcome</a></li>
+                                                <li><a href="/documentation.html">Documentation</a></li>
+                                                <li><a href="/blog.html">Blog</a></li>
+                                                <li><a href="/contact.html">Contact</a></li>
+						<li><a href="https://github.com/sirixdb/sirix" class="button special">Fork us on Github</a></li>
+					</ul>
+				</nav>
+			</header>
+
+    <!-- Banner -->		
+<section id="banner">
+
+    <!--
+        ".inner" is set up as an inline-block so it automatically expands
+        in both directions to fit whatever's inside it. This means it won't
+        automatically wrap lines, so be sure to use line breaks where
+        appropriate (<br />).
+    -->
+    <div class="inner">
+
+        <header>
+            <h2>SirixDB</h2>
+        </header>
+        <p>Sirix is a temporal <strong>NoSQL</strong> storage system
+        <br />
+        empowered by a novel sliding snapshot algorithm
+        <br />
+        See our Open Source <a href="https://github.com/sirixdb/sirix">repository</a></p>
+        <footer>
+            <ul class="buttons vertical">
+                <li><a href="#main" class="button fit scrolly">Tell Me More</a></li>
+            </ul>
+        </footer>
+
+    </div>
+
+</section>
+
+
+    <div class="page-content">
+        		<!-- Main -->
+			<article id="main">
+
+				<header class="special container">
+					<span class="icon fa-bar-chart-o"></span>
+					<h2>Sirix is a <strong>temporal</strong> NoSQL storage sytem at its heart.
+					<br />
+					We store per revision and per page changes.</h2>
+					<p>Sirix is especially well suited to flash drives as for instance SSDs due to its log structured <strong>copy-on-write</strong> nature.
+					<br />
+					We allow <strong>time-travel</strong> queries for your <strong>XML</strong> as well as <strong>JSON</strong> data and store both in our binary on-disk structure or a lightweight in-memory structure. 
+					<br />
+					It is released for free under <a href="https://opensource.org/licenses/BSD-3-Clause">The 3-Clause BSD License</a> license. Have fun!</p>
+				</header>
+					
+				<!-- One -->
+					<section class="wrapper style2 container special-alt">
+						<div class="row half">
+							<div class="8u">
+							
+								<header>
+									<h2>Version your data and thus keep your history</h2>
+								</header>
+								<p>We are taking care of keeping storage space to minimum, while also supporting the reconstruction of any revision in linear time.</p>
+								<p>Furthermore we allow time travel queries such that you're able to analyse the history of your data efficiently.</p>
+                                                                <p>Not enough? What about diffing any revision of your documents efficiently?</p>
+                                                                <footer>
+									<ul class="buttons">
+										<li><a href="#" class="button">Find Out More</a></li>
+									</ul>
+								</footer>
+							
+							</div>
+							<div class="4u skel-cell-important">
+							
+								<ul class="featured-icons">
+									<li><span class="icon fa-clock-o"><span class="label">Feature 1</span></span></li>
+									<li><span class="icon fa-volume-up"><span class="label">Feature 2</span></span></li>
+									<li><span class="icon fa-laptop"><span class="label">Feature 3</span></span></li>
+									<li><span class="icon fa-inbox"><span class="label">Feature 4</span></span></li>
+									<li><span class="icon fa-lock"><span class="label">Feature 5</span></span></li>
+									<li><span class="icon fa-cog"><span class="label">Feature 6</span></span></li>
+								</ul>
+							
+							</div>				
+						</div>
+					</section>
+					
+				<!-- Two -->
+					<section class="wrapper style1 container special">
+						<div class="row">
+							<div class="4u">
+							
+								<section>
+									<span class="icon featured fa-check"></span>
+									<header>
+										<h3>Versioning done right</h3>
+									</header>
+									<p>We are versioning data as well as index-structures on a per revision and per record/node level. As such versioning takes place at a fine-granular level. Furthermore through a novel versioning algorithm called <em>sliding snapshot</em> we are able to avoid write- or read-peaks.</p>
+								</section>
+							
+							</div>
+							<div class="4u">
+							
+								<section>
+									<span class="icon featured fa-check"></span>
+									<header>
+										<h3>Time travel queries</h3>
+									</header>
+									<p>We allow sophisticated time travel queries, such that you are able to analyse the history of your data or to retrieve the differences efficiently</p>
+								</section>
+							
+							</div>
+							<div class="4u">
+							
+								<section>
+									<span class="icon featured fa-check"></span>
+									<header>
+										<h3>XML / JSON</h3>
+									</header>
+									<p>You decide what your data looks like. We currently support both the import of XML as well as JSON data.</p>
+								</section>
+							
+							</div>
+						</div>
+					</section>
+					
+				<!-- Three -->
+					<section class="wrapper style3 container special">
+					
+						<header class="major">
+							<h2>Powerful APIs</h2>
+						</header>
+						
+						<div class="row">
+							<div class="6u">
+							
+								<section>
+									<a href="#" class="image featured"><img src="images/pic01.jpg" alt="" /></a>
+									<header>
+										<h3>REST</h3>
+									</header>
+									<p>We built an asynchronous, RESTful API, which is non-blocking with <a href="https://vertx.io">Vert.x</a>, <a href="https://kotlinlang.org">Kotlin</a> (especially coroutines are very powerful) and <a href="https://www.keycloak.org">Keycloak</a> for authorization.</p>
+								</section>
+
+							</div>
+							<div class="6u">
+							
+								<section>
+									<a href="#" class="image featured"><img src="images/pic02.jpg" alt="" /></a>
+									<header>
+										<h3>XQuery / JSONiq</h3>
+									</header>
+									<p>We built several extensions to an XQuery-processor called <a href="http://brackit.org">Brackit</a>, for instance to allow  navigation via novel temporal XPath axis not only in space but also in time. Furthermore, several additional precompiled functions are available to simplify the analysis of your temporal data. The API also provides a very convenient way to interact with Sirix. Think of it as an in-memory representation of a DOM.</p>
+								</section>
+
+							</div>
+						</div>
+						<div class="row">
+							<div class="6u">
+							
+								<section>
+									<a href="#" class="image featured"><img src="images/pic03.jpg" alt="" /></a>
+									<header>
+										<h3>Low-level transaction cursor based API</h3>
+									</header>
+									<p>Our low-level, transactional, cursor based API is very powerful. We not only provide standard XPath axis and additionally temporal enhancements to navigate in time, but also several other axis as for instance a LevelOrder axis, a PostorderAxis, a DescendantAxis which can skip whole subtrees. Furthermore, we provide several filters and much more.</p>
+								</section>
+
+							</div>
+							<div class="6u">
+							
+								<section>
+									<a href="#" class="image featured"><img src="images/pic04.jpg" alt="" /></a>
+									<header>
+										<h3>Diffing-API</h3>
+									</header>
+									<p>We provide a way to currently import several revisions of an XML-document with the help of a diffing-algorithm called Fast Matching Simple EditScript. With the help of this diff-algorithm we are able to import not the whole changed second, third and so on version of the document but only the encountered differences between any two versions.</p>
+<p>Once we have stored several revisions in Sirix, either through the import diff-algorithm or simply through working with Sirix in the first place we are able to quickly compute diffs between any two revisions because of our stable node identifiers and optionally stored hashes (each time two hashes are equal, the whole subtree can be skipped).</p>
+								</section>
+
+							</div>
+						</div>
+
+						<footer class="major">
+							<ul class="buttons">
+								<li><a href="#" class="button">See More</a></li>
+							</ul>
+						</footer>
+					
+					</section>
+					
+			</article>
+
+		<!-- CTA -->
+			<section id="cta">
+			
+				<header>
+					<h2>Ready for using <strong>Sirix</strong>?</h2>
+					<p>Give it a try and let us know what you think.</p>
+				</header>
+				<footer>
+					<ul class="buttons">
+						<li><a href="/documentation.html" class="button special">First steps</a></li>
+						<li><a href="https://github.com/sirixdb/sirix" class="button">Fork us on Github</a></li>
+					</ul>
+				</footer>
+			
+			</section>
+
+    </div>
+
+    <!-- Footer -->
+<footer id="footer">
+  <ul class="icons">
+    <li><a href="https://github.com/sirixdb/sirix" class="icon circle fa-github"><span class="label">Github</span></a></li>
+    <li><a href="https://twitter.com/sirixdb" class="icon circle fa-twitter"><span class="label">Twitter</span></a></li>
+  </ul>
+  <ul class="copyright">
+    <li>&copy; 2019 - Johannes Lichtenberger</li>
+  </ul>
+</footer>
+
+
+  </body>
+
+</html>
