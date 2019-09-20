@@ -18,3 +18,13 @@ highlighter: rouge
 
 plugins:
   - jekyll-gzip
+
+netlify:
+  headers:
+    - paths:
+        - /images/*
+        - /*.css
+        - /*.js
+      headers:
+        - "Cache-Control: public, s-max-age=604800"
+
