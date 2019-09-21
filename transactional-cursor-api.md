@@ -19,8 +19,7 @@ First, you have to get the dependency on our SirixDB core project. At this stage
   <snapshots>
     <enabled>true</enabled>
   </snapshots>
-</repository>
-```
+</repository>```
 
 Or for Gradle:
 ```gradle
