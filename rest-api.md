@@ -1,6 +1,7 @@
 ---
 layout: documentation
-doctitle: RESTful-API
+doctitle: REST-API
+title: SirixDB - REST-API
 ---
 
 ## Introduction
