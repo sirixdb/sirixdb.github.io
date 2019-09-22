@@ -1,6 +1,7 @@
 ---
 layout: documentation
 doctitle: DOM-alike API
+title: SirixDB - DOM-alike API
 ---
 
 ### Maven artifacts
