@@ -52,7 +52,7 @@ dependencies {
 }
 ```
 
-** You can find an article about this API regarding only JSON stuff on [Baeldung](https://www.baeldung.com/sirix).**
+**You can find an article about this API regarding only JSON stuff on [Baeldung](https://www.baeldung.com/sirix).**
 
 ## Tree-Encoding in SirixDB
 The encoding of the underlying tree structure of both XML and JSON documents in SirixDB uses a pointer-based approach.
