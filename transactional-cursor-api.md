@@ -52,7 +52,7 @@ dependencies {
 }
 ```
 
-## Shorter article describing the JSON transactional cursor API
+## Article Describing the JSON Transactional Cursor API
 You can find an article about this API regarding only JSON stuff on [Baeldung](https://www.baeldung.com/sirix).
 
 ## Tree-Encoding in SirixDB
