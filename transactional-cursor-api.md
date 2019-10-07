@@ -4,6 +4,8 @@ doctitle: Transactional cursor-based API
 title: SirixDB - Transactional cursor-based API
 ---
 
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/blob/master/transaction-cursor-api.md)
+
 ## Maven artifacts
 
 First, you have to get the dependency on our SirixDB core project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
