@@ -3,6 +3,8 @@ layout: documentation
 doctitle: Features
 ---
 
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/blob/master/features.md)
+
 ### Features in a nutshell
 - Currently native XML and JSON storage (other data types might follow).
 - No write-ahead log needed, always consistent on the flash drive as the UberPage is the main entry point to the storage and written last to a new location.
