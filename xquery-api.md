@@ -4,6 +4,8 @@ doctitle: XQuery-API
 title: SirixDB - XQuery-API
 ---
 
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/blob/master/xquery-api.md)
+
 ## Maven Artifacts
 
 First, you have to get the dependeny on our Sirix XQuery project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
