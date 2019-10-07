@@ -4,6 +4,8 @@ doctitle: REST-API
 title: SirixDB - REST-API
 ---
 
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/blob/master/rest-api.md)
+
 ## Shorter Article Describing the JSON REST-API
 
 You can find an article about this API regarding only JSON stuff on Medium: [Asynchronous, Temporal REST With Vert.x, Keycloak and Kotlin Coroutines](https://medium.com/hackernoon/asynchronous-temporal-rest-with-vert-x-keycloak-and-kotlin-coroutines-217b25756314)
