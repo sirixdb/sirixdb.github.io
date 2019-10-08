@@ -4,7 +4,7 @@ doctitle: XQuery-API
 title: SirixDB - XQuery-API
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/blob/master/xquery-api.md)
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/xquery-api.md)
 
 ## Maven Artifacts
 
