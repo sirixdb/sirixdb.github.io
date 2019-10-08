@@ -4,7 +4,7 @@ doctitle: Documentation
 title: SirixDB - Documentation
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/blob/master/documentation.md)
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/documentation.md)
 
 [Go directly to the API documentation](#api-documentation) or [to the publications](#publications).
 
