@@ -4,7 +4,7 @@ doctitle: REST-API
 title: SirixDB - REST-API
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/blob/master/rest-api.md)
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/rest-api.md)
 
 ## Shorter Article Describing the JSON REST-API
 
