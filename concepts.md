@@ -4,7 +4,7 @@ doctitle: Architecture and Concepts
 title: SirixDB - Architecture and Concepts
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/blob/master/concepts.md)
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/concepts.md)
 
 ## Introduction
 SirixDB is a temporal database system and never overwrites data. Every time you're committing a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page- as well as node-level. Let's first define what a temporal database system is all about.
