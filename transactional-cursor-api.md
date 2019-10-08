@@ -4,7 +4,7 @@ doctitle: Transactional cursor-based API
 title: SirixDB - Transactional cursor-based API
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/blob/master/transaction-cursor-api.md)
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/transactional-cursor-api.md)
 
 ## Maven artifacts
 
