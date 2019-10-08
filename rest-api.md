@@ -13,7 +13,14 @@ You can find an article about this API regarding only JSON stuff on Medium: [Asy
 ## Introduction
 
 This API is asynchronous at its very core. We use Vert.x which is a toolkit, built on top of Netty. It is heavily inspired by Node.js but for the JVM. As such it uses event loop(s), that is thread(s), which never should by blocked by long running CPU tasks or disk bound I/O. We are using Kotlin with coroutines to keep the code simple.
-Authorization is done via OAuth2 (Password Credentials/Resource Owner Flow) using a Keycloak authorization server instance. 
+Authorization is done via OAuth2 (Password Credentials/Resource Owner Flow) using a Keycloak authorization server instance.
+
+### Setup using docker-compose
+For setting up the SirixDB HTTP-Server and a basic Keycloak-instance with a test realm:
+
+1. `git clone https://github.com/sirixdb/sirix.git`
+2. `sudo docker-compose up -d keycloak`
+3. `sudo docker-compose up -d web`
 
 ### Keycloak setup
 
