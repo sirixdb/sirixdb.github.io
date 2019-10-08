@@ -3,7 +3,7 @@ layout: documentation
 doctitle: Features
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/blob/master/features.md)
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/features.md)
 
 ### Features in a nutshell
 - Currently native XML and JSON storage (other data types might follow).
