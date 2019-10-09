@@ -15,25 +15,31 @@ You can find an article about this API regarding only JSON stuff on Medium: [Asy
 This API is asynchronous at its very core. We use Vert.x which is a toolkit, built on top of Netty. It is heavily inspired by Node.js but for the JVM. As such it uses event loop(s), that is thread(s), which never should by blocked by long running CPU tasks or disk bound I/O. We are using Kotlin with coroutines to keep the code simple.
 Authorization is done via OAuth2 (Password Credentials/Resource Owner Flow) using a Keycloak authorization server instance.
 
-### Setup using docker-compose
+### Start Docker Keycloak-Container using docker-compose
 For setting up the SirixDB HTTP-Server and a basic Keycloak-instance with a test realm:
 
 1. `git clone https://github.com/sirixdb/sirix.git`
-2. `sudo docker-compose up -d keycloak`
-3. `sudo docker-compose up -d web`
+2. `sudo docker-compose run --rm waitforkeycloak`
 
 ### Keycloak setup
 
 Keycloak can be set up as described in this excellent [tutorial](
 https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/).
- 1. Go to `Clients` => `account`
- 2. Change client-id to "sirix"
- 3. Make sure `access-type` is set to `confidential`
- 4. Go to `Credentials` tab
- 5. put the `client secret` into our [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json). Change the value of "client.secret" to whatever Keycloak set up .
- 6. Regarding Keycloak the `direct access` grant on the settings tab must be `enabled`.
- 7. Our user-roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof.
- 8. Furthermore, a `key.pem` and a `cert.pem` file are needed. These two files have to be in your user home directory in a directory called "sirix-data", where Sirix stores the databases. For demo purposes they can be copied from our [resources directory](https://github.com/sirixdb/sirix/tree/master/bundles/sirix-rest-api/src/main/resources).
+
+1. Go to `Clients` => `account`
+2. Change client-id to "sirix"
+3. Make sure `access-type` is set to `confidential`
+4. Go to `Credentials` tab
+5. put the `client secret` into our [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json). Change the value of "client.secret" to whatever Keycloak set up.
+6. Regarding Keycloak the `direct access` grant on the settings tab must be `enabled`.
+7. Our user-roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof.
+ 
+### Start SirixDB HTTP-Server Keycloak-Container using docker-compose
+This first creates a local SirixDB HTTP-Server image and then starts the Docker container. Thus it'll need some time to download the dependencies.
+
+1. `sudo docker-compose up -d server`
+
+### SirixDB HTTP-Server setup without Docker/docker-compose
 
 To created a fat-JAR. Download our ZIP-file for instance, then
 
@@ -41,6 +47,8 @@ To created a fat-JAR. Download our ZIP-file for instance, then
 2. `mvn clean package -DskipTests`
 
 And a fat-JAR with all required dependencies should have been created in your target folder.
+
+Furthermore, a `key.pem` and a `cert.pem` file are needed. These two files have to be in your user home directory in a directory called "sirix-data", where Sirix stores the databases. For demo purposes they can be copied from our [resources directory](https://github.com/sirixdb/sirix/tree/master/bundles/sirix-rest-api/src/main/resources).
 
 Once also Keycloak is set up we can start the server via:
 
