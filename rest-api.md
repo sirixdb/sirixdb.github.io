@@ -41,7 +41,7 @@ This first creates a local SirixDB HTTP-Server image and then starts the Docker 
 
 1. `sudo docker-compose up -d server`
 
-### SirixDB HTTP-Server setup without Docker/docker-compose
+### SirixDB HTTP-Server Setup Without Docker/docker-compose
 
 To created a fat-JAR. Download our ZIP-file for instance, then
 
@@ -60,10 +60,10 @@ If you like to change your user home directory to `/opt/sirix` for instance.
 
 The fat-JAR in the future will be downloadable from the [maven repository](https://oss.sonatype.org/content/repositories/snapshots/io/sirix/sirix-rest-api/0.9.0-SNAPSHOT/).
 
-### Run the integration tests
+### Run the Integration Tests
 In order to run the integration tests under `bundles/sirix-rest-api/src/test/kotlin` make sure that you assign your admin user all the user-roles you have created in the Keycloak setup (last step). Then copy your generated `client secret` from step 7 in `SirixVerticleJsonTest` and `SirixVerticleXmlTest` and overwrite the one in the setup methods. Then make sure that Keycloak is running first and execute the Tests in your favorite IDE for instance.
 
-## API-design by example
+## API-design by Example
 After Keycloak and our server are up and running, we can write a simple HTTP-Client. We first have to obtain a token from the `/login` endpoint with a given "username/password" JSON-Object. Using an asynchronous HTTP-Client (from Vert.x) in Kotlin, it looks like this:
 
 ```kotlin
