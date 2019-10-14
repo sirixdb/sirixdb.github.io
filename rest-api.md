@@ -32,9 +32,10 @@ https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x
 4. Change client-id to "sirix"
 5. Make sure `access-type` is set to `confidential`
 6. Go to `Credentials` tab
-7. put the `client secret` into our [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json). Change the value of "client.secret" to whatever Keycloak set up.
-8. Regarding Keycloak the `direct access` grant on the settings tab must be `enabled`.
-9. Our user-roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof.
+7. Put the `client secret` into the SirixDB HTTP-Server [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json). Change the value of "client.secret" to whatever Keycloak set up.
+8. Change `localhost` to `keycloak` in the SirixDB HTTP-Server [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json)
+9. Regarding Keycloak the `direct access` grant on the settings tab must be `enabled`.
+10. Our user-roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof.
  
 ### Start SirixDB HTTP-Server Keycloak-Container using docker-compose
 This first creates a local SirixDB HTTP-Server image and then starts the Docker container. Thus it'll need some time to download the dependencies.
