@@ -3427,7 +3427,7 @@ pre.highlight {
 	border-radius: 1px;
 	overflow-x: auto;
 	font-family: monospace;
-	border-left: 3px solid #d01040;
+	border-left: 3px solid #a7700b;
 	text-align: left;
 }
 div.content {
@@ -3522,7 +3522,7 @@ code.highlighter-rouge {
 .highlight .kr { color: #000000; font-weight: bold } /* Keyword.Reserved */
 .highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
 .highlight .m { color: #009999 } /* Literal.Number */
-.highlight .s { color: #d01040 } /* Literal.String */
+.highlight .s { color: #a7700b } /* Literal.String */
 .highlight .na { color: #008080 } /* Name.Attribute */
 .highlight .nb { color: #0086B3 } /* Name.Builtin */
 .highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
