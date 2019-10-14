@@ -1,5 +1,6 @@
 @import url("fontawesome-all.min.css");
 /* @import url("https://fonts.googleapis.com/css?family=Lato:300,400,900"); */
+@import url("https://fonts.googleapis.com/css?family=Merriweather:400,700|Montserrat:400,700&display=swap");
 @font-face {
 	font-family: "et-bembo";
 	src: local('ET Bembo RomanLF'), local('ETBembo-RomanLF'), url("/fonts/et-bembo-roman-line-figures/et-bembo-roman-line-figures.woff") format("woff"), url("/fonts/et-bembo-roman-line-figures/et-bembo-roman-line-figures.ttf") format("truetype");
@@ -120,11 +121,15 @@ input, select, textarea {
 
 	body, input, select, textarea {
 		color: #7c8081;
-		font-family: et-bembo, Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+		font-family: 'Merriweather', serif;
 		font-size: 15pt;
 		font-weight: 300;
 		letter-spacing: 0.025em;
 		line-height: 1.75em;
+	}
+
+	h2,h3 {
+		font-family: 'Montserrat', sans-serif;
 	}
 
 	a {
@@ -151,7 +156,7 @@ input, select, textarea {
 
 	h1, h2, h3, h4, h5, h6 {
 		color: inherit;
-		font-weight: 300;
+		font-weight: 700;
 		line-height: 1.75em;
 		margin-bottom: 1em;
 		text-transform: uppercase;
@@ -1965,12 +1970,12 @@ input, select, textarea {
 			}
 
 			.icon.circle.fa-twitter {
-				background: #70aecd;
+				background: #2d849e;
 				color: #fff;
 			}
 
 				.icon.circle.fa-twitter:hover {
-					background: #7fb7d2;
+					background: #2d849e;
 				}
 
 			.icon.circle.fa-facebook-f {
@@ -1992,12 +1997,12 @@ input, select, textarea {
 				}
 
 			.icon.circle.fa-github {
-				background: #dcad8b;
+				background: #c0820e;
 				color: #fff;
 			}
 
 				.icon.circle.fa-github:hover {
-					background: #e1b89b;
+					background: #c0820e;
 				}
 
 			.icon.circle.fa-dribbble {
@@ -2013,8 +2018,8 @@ input, select, textarea {
 			cursor: default;
 			display: block;
 			margin: 0 0 1.5em 0;
-			opacity: 0.35;
 			text-align: center;
+			color: rgba(46, 97, 113, 1);
 		}
 
 			.icon.featured:before {
@@ -2189,7 +2194,7 @@ input, select, textarea {
 		input[type="reset"]:hover,
 		button:hover,
 		.button:hover {
-			background: rgba(188, 202, 206, 0.15);
+			background: rgba(188, 202, 206, 0.5);
 			border-color: inherit;
 			border-width: 1px;
 		}
@@ -2199,9 +2204,9 @@ input, select, textarea {
 		input[type="reset"].primary,
 		button.primary,
 		.button.primary {
-			background: #88b9b3;
+			background: #c0820e;
 			border-width: 1px;
-			border-color: #83d3c9;
+			border-color: #fff;
 			color: #fff !important;
 		}
 
@@ -2210,8 +2215,8 @@ input, select, textarea {
 			input[type="reset"].primary:hover,
 			button.primary:hover,
 			.button.primary:hover {
-				background: #96dad1 !important;
-				border-color: #96dad1 !important;
+				background: #a7700b !important;
+				border-color: #a7700b !important;
 			}
 
 		input[type="button"].fit,
@@ -2244,7 +2249,7 @@ input, select, textarea {
 		}
 
 		.wrapper.style2 {
-			background-color: #88b9b3;
+			background-color: rgba(46, 97, 113, 1);
 			background-image: url("images/light-bl.svg"), url("images/light-br.svg");
 			background-position: bottom left, bottom right;
 			background-repeat: no-repeat, no-repeat;
@@ -2257,7 +2262,12 @@ input, select, textarea {
 			.wrapper.style2 input[type="reset"]:hover,
 			.wrapper.style2 button:hover,
 			.wrapper.style2 .button:hover {
-				background: rgba(255, 255, 255, 0.15) !important;
+				background: rgba(255, 255, 255, 0.3) !important;
+			}
+
+			.wrapper.style3 .button:hover {
+				background-color: rgba(46, 97, 113, 0.5);
+				color: #fff;
 			}
 
 			.wrapper.style2 input[type="button"].primary,
@@ -2333,7 +2343,7 @@ input, select, textarea {
 	}
 
 	#header {
-		background: #fff;
+		background: #1b1b1e;
 		box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.075);
 		color: inherit;
 		cursor: default;
@@ -2359,7 +2369,7 @@ input, select, textarea {
 			letter-spacing: 0.075em;
 			position: absolute;
 			right: 1.5em;
-			text-transform: uppercase;
+			/* text-transform: uppercase; */
 			top: 0.75em;
 		}
 
@@ -2380,7 +2390,7 @@ input, select, textarea {
 
 					#header nav ul li a {
 						border: solid 1px transparent;
-						color: inherit;
+						color: #fff;
 						display: inline-block;
 						line-height: 1em;
 						padding: 0.6em 0.75em;
@@ -2424,11 +2434,17 @@ input, select, textarea {
 						-webkit-transition: all 0.2s ease-in-out;
 						-ms-transition: all 0.2s ease-in-out;
 						transition: all 0.2s ease-in-out;
-						background-color: rgba(188, 202, 206, 0.15);
+						background-color: #33658A;
+					}
+
+					#header nav ul li a:hover {
+						background-color: #33658A;
+						color: #fff;
 					}
 
 					#header nav ul li.current > a {
 						font-weight: 900;
+						color: #fff;
 					}
 
 		#header.reveal {
@@ -2459,17 +2475,21 @@ input, select, textarea {
 					border: solid 1px;
 				}
 
+				#logo a {
+					color: #fff;
+				}
+
 /* Dropotron */
 
 	.dropotron {
 		list-style: none;
 		padding-left: 0;
-		background: #fff;
+		background: #1b1b1e;
 		box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.075);
 		line-height: 2.25em;
 		min-width: 13em;
 		padding: 1em 0;
-		text-transform: uppercase;
+		/* text-transform: uppercase; */
 		margin-top: calc(-1em + 1px);
 	}
 
@@ -2499,15 +2519,14 @@ input, select, textarea {
 				-webkit-transition: none;
 				-ms-transition: none;
 				transition: none;
-				color: inherit;
+				color: #fff;
 				text-decoration: none;
 				padding: 0 1em;
 				border: 0;
 			}
 
 			.dropotron > li:hover > a {
-				background: #83d3c9;
-				color: #fff;
+				background: #33658A;
 			}
 
 			.dropotron > li:first-child {
@@ -2557,12 +2576,11 @@ input, select, textarea {
 	}
 
 	#banner {
-		background-attachment: scroll, scroll, scroll, fixed;
-		background-color: #645862;
-		background-image: url("images/light-bl.svg"), url("images/light-br.svg"), url("images/overlay.png"), url("../../images/banner.jpg");
-		background-position: bottom left, bottom right, top left, top center;
-		background-repeat: no-repeat, no-repeat, repeat, no-repeat;
-		background-size: 25em, 25em, auto, cover;
+		background-attachment: scroll,scroll,scroll,fixed;
+		background-image: url("images/light-bl.svg"),url("images/light-br.svg"),url("images/overlay.png"),url("../../images/banner.jpg");
+		background-position: bottom left,bottom right,top left,top center;
+		background-repeat: no-repeat,no-repeat,repeat,no-repeat;
+		background-size: 25em,25em,auto,cover;
 		color: #fff;
 		cursor: default;
 		padding: 6em 0;
@@ -2578,7 +2596,7 @@ input, select, textarea {
 			-webkit-animation-fill-mode: forwards;
 			-ms-animation-fill-mode: forwards;
 			animation-fill-mode: forwards;
-			background: rgba(52, 27, 43, 0.5);
+			background: rgba(46, 97, 113, 0.7);
 			color: #fff;
 			display: inline-block;
 			opacity: 0;
@@ -2609,7 +2627,7 @@ input, select, textarea {
 			#banner .inner p {
 				letter-spacing: 0.1em;
 				margin: 0;
-				text-transform: uppercase;
+				/* text-transform: uppercase; */
 			}
 
 				#banner .inner p a {
@@ -2673,8 +2691,8 @@ input, select, textarea {
 /* Footer */
 
 	#footer {
-		background: #E8EEF4;
-		color: #7c8081;
+		background: #1b1b1e;
+		color: #fff;
 		padding: 5em 5em 10em 5em;
 		text-align: center;
 	}
