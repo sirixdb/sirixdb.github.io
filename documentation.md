@@ -18,7 +18,7 @@ SirixDB is very space-efficient. Depending on the versioning algorithm, it only 
 ### Time Travel queries
 Data audits are about how specific records have changed. Time Travel queries can answer questions like these. However, they also allow reconstructing records as they looked at a particular time or during a specific period. They also help us to analyze how the whole document changed over time. We might want to analyze the past to predict the future. Through additional temporal XPath axes and XQuery functions, SirixDB encourages you to look into how your data has evolved.
 
-### Fixing application or human errors
+### Fixing Application or Human Errors
 For all of the use-cases we mentioned earlier: We can revert to a specific point in time where everything was in a known good state and commit the revision again. Or we might select a particular record, correct the error and commit a new revision.
 
 ## SirixDB
@@ -36,7 +36,7 @@ SirixDB not only supports all XPath axes to query a resource in one revision but
 
 You may find a quick overview about the [main features](/features.html) useful.
 
-### API documentation
+### API Documentation
 We provide several APIs to interact with SirixDB.
 
 1. The [transactional cursor API](/transactional-cursor-api.html) is a powerful low-level API.
