@@ -75,7 +75,7 @@ val credentials = json {
       "password" to "testPass")
 }
 
-val response = client.postAbs("$server/login").sendJsonAwait(credentials)
+val response = client.postAbs("$server/token").sendJsonAwait(credentials)
 
 if (200 == response.statusCode()) {
   val user = response.bodyAsJsonObject()
