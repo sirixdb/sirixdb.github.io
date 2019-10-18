@@ -24,7 +24,7 @@ For setting up the SirixDB HTTP-Server and a basic Keycloak-instance with a test
 ### Keycloak setup
 
 Keycloak can be set up as described in this excellent [tutorial](
-https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/).
+https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/). Our `docker-compose` file imports a sirix realm, so basically you can skip the steps 2 - 6 and simply recreate a `client-secret` and add a user which has all the roles assigned (or an admin group with all roles and assign the user to the admin-group for running the integration tests for instance).
 
 1. Open your browser. URL: http://localhost:8080
 2. Login with username "admin", password "admin"
@@ -35,7 +35,7 @@ https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x
 7. Put the `client secret` into the SirixDB HTTP-Server [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json). Change the value of "client.secret" to whatever Keycloak set up.
 8. Change `localhost` to `keycloak` in the SirixDB HTTP-Server [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json)
 9. Regarding Keycloak the `direct access` grant on the settings tab must be `enabled`.
-10. Our user-roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof.
+10. Our (user-/group-)roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof.
  
 ### Start SirixDB HTTP-Server Keycloak-Container using docker-compose
 This first creates a local SirixDB HTTP-Server image and then starts the Docker container. Thus it'll need some time to download the dependencies.
