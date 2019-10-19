@@ -5,8 +5,8 @@
     <description>Sirix facilitates effective and efficient storing and querying of your temporal data through snapshotting and a novel versioning approach called sliding snapshot. Currently we support the storage and querying of XML-documents in our binary format through a RESTful-API, an XQuery-API and a low-level, transactional, cursor based API (also for JSON).</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 14 Oct 2019 08:56:09 +0200</pubDate>
-    <lastBuildDate>Mon, 14 Oct 2019 08:56:09 +0200</lastBuildDate>
+    <pubDate>Sat, 19 Oct 2019 11:42:35 -0300</pubDate>
+    <lastBuildDate>Sat, 19 Oct 2019 11:42:35 -0300</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
     
       <item>
@@ -20,7 +20,7 @@ Duis in purus sit amet elit ullamcorper venenatis vel a diam. Pellentesque habit
 
 &lt;p&gt;Duis eget magna at arcu tincidunt ultricies. Curabitur in facilisis sem, nec bibendum eros. Nunc fringilla imperdiet diam sed viverra. Vivamus lobortis dignissim mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi laoreet eu diam eu pellentesque. Duis tempus metus urna, vel faucibus ligula pharetra euismod. Donec rhoncus blandit posuere. Mauris mattis dolor est, dictum venenatis augue facilisis sit amet. Ut ante odio, congue eget arcu nec, semper eleifend urna. Donec rutrum pretium odio non pellentesque. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam pellentesque nulla at tincidunt ultrices. Donec finibus malesuada magna. Phasellus eget tortor in lectus vehicula viverra sit amet sit amet purus.&lt;/p&gt;
 </description>
-        <pubDate>Sun, 07 Sep 2014 16:36:23 +0200</pubDate>
+        <pubDate>Sun, 07 Sep 2014 11:36:23 -0300</pubDate>
         <link>http://localhost:4000/duis/2014/09/07/duis-in-purus.html</link>
         <guid isPermaLink="true">http://localhost:4000/duis/2014/09/07/duis-in-purus.html</guid>
         
@@ -36,7 +36,7 @@ Morbi a semper justo, non eleifend elit. Sed nulla nulla, porttitor nec volutpat
 
 &lt;p&gt;Duis eget magna at arcu tincidunt ultricies. Curabitur in facilisis sem, nec bibendum eros. Nunc fringilla imperdiet diam sed viverra. Vivamus lobortis dignissim mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi laoreet eu diam eu pellentesque. Duis tempus metus urna, vel faucibus ligula pharetra euismod. Donec rhoncus blandit posuere. Mauris mattis dolor est, dictum venenatis augue facilisis sit amet. Ut ante odio, congue eget arcu nec, semper eleifend urna. Donec rutrum pretium odio non pellentesque. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam pellentesque nulla at tincidunt ultrices. Donec finibus malesuada magna. Phasellus eget tortor in lectus vehicula viverra sit amet sit amet purus.&lt;/p&gt;
 </description>
-        <pubDate>Sun, 31 Aug 2014 16:36:23 +0200</pubDate>
+        <pubDate>Sun, 31 Aug 2014 10:36:23 -0400</pubDate>
         <link>http://localhost:4000/2014/08/31/morbi-a-semper.html</link>
         <guid isPermaLink="true">http://localhost:4000/2014/08/31/morbi-a-semper.html</guid>
         
@@ -58,7 +58,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse at metus au
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 </description>
-        <pubDate>Sun, 31 Aug 2014 16:36:23 +0200</pubDate>
+        <pubDate>Sun, 31 Aug 2014 10:36:23 -0400</pubDate>
         <link>http://localhost:4000/first-post.html</link>
         <guid isPermaLink="true">http://localhost:4000/first-post.html</guid>
         
