@@ -257,23 +257,23 @@ The following sections give a complete specification of the routes.
 
 ## API
 
-`PUT https://localhost:9443/database/resource` creates a database and a resource (content being the body of the request -- as of now XML, but we'll implement JSON resources in the very near future).
+- `PUT https://localhost:9443/$database/$resource` creates a database and a resource (content being the body of the request -- as of now XML, but we'll implement JSON resources in the very near future).
 
-`GET https://localhost:9443/database/resource` simply serializes the internal binary tree representation back to XML. Optional URL-parameters are
+- `GET https://localhost:9443/$database/$resource` simply serializes the internal binary tree representation back to XML. Optional URL-parameters are
 
-- `revision`  or `revision-timestamp` (the former being a simple long number, the latter being an ISO formatted datetime string as the parameter, for instance `2019-01-01T05:05:01`), to open a specific revision. In case of the `revision-timestamp`parameter either the exact revision is going to be selected via binary search, or the closest revision to the given point in time.
-- `start-revision` and `end-revision` or `start-revision-timestamp` and `end-revision-timestamp` for a specific timespan.
-- Furthermore a `nodeId`-parameter can be specified to retrieve a specific node in a revision.
-- The `query`-parameter can be used to specify a full blown XQuery-string. Here for instance also temporal axis can be used to analyze how a specific node or subtree changed over time or to display which nodes are new in a specific revision. There's also a `diff`-function which outputs an XQuery Update script to update the first revision to the second. Other formats as output to another diff-function are for sure have to be evaluated.
+  - `revision`  or `revision-timestamp` (the former being a simple long number, the latter being an ISO formatted datetime string as the parameter, for instance `2019-01-01T05:05:01`), to open a specific revision. In case of the `revision-timestamp`parameter either the exact revision is going to be selected via binary search, or the closest revision to the given point in time.
+  - `start-revision` and `end-revision` or `start-revision-timestamp` and `end-revision-timestamp` for a specific timespan.
+  - Furthermore a `nodeId`-parameter can be specified to retrieve a specific node in a revision.
+  - The `query`-parameter can be used to specify a full blown XQuery-string. Here for instance also temporal axis can be used to analyze how a specific node or subtree changed over time or to display which nodes are new in a specific revision. There's also a `diff`-function which outputs an XQuery Update script to update the first revision to the second. Other formats as output to another diff-function are for sure have to be evaluated.
 
-Omitting the resource in the URL (`GET https://localhost:9443/database`) lists all resources of the database. `GET https://localhost:9443/` lists all databases.
+Omitting the resource in the URL (`GET https://localhost:9443/$database`) lists all resources of the database. `GET https://localhost:9443/` lists all databases.
 
-`POST https://localhost:9443/database/resource` for adding content from the request-body. Supported URL-parameters are
-- `nodeId`, to select the context-Node.
-- `insert` with the possible values, `asFirstChild`, `asLeftSibling`, `asRightSibling`, `replace`, to determine where to insert the XML-fragment.
+- `POST https://localhost:9443/$database/$resource` for adding content from the request-body. Supported URL-parameters are
+  - `nodeId`, to select the context-Node.
+  - `insert` with the possible values, `asFirstChild`, `asLeftSibling`, `asRightSibling`, `replace`, to determine where to insert the XML-fragment.
 
 If both parameters are omitted the root-node (and its subtree) is going to be replaced by the new XML fragment. As such an error is thrown if the HTTP request body doesn't start with a start-tag.
 
 Using a POST HTTP-request to `https://localhost:9443` can be used to send a longer XQuery-expression in the body.
 
-`DELETE https://localhost:9443/database/resource` removes the resource from the database. Omitting the resource in the URL, the whole database is going to be deleted. The optional parameter once again is `nodeId` to remove a node or in case the nodeId references an element node to remove the whole subtree and the element node itself.
+- `DELETE https://localhost:9443/$database/r$esource` removes the resource from the database. Omitting the resource in the URL, the whole database is going to be deleted. The optional parameter once again is `nodeId` to remove a node or in case the nodeId references an element node to remove the whole subtree and the element node itself.
