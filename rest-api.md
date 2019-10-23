@@ -255,7 +255,7 @@ This means the `resource1` from `database` is opened in the first revision. Then
 
 The following sections give a complete specification of the routes.
 
-## API
+## API Description
 
 The API for storing and querying XML and JSON databases are almost identical.
 
