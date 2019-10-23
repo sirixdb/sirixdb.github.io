@@ -253,7 +253,9 @@ The output for the diff in our example is this XQuery-Update statement wrapped i
 
 This means the `resource1` from `database` is opened in the first revision. Then the subtree `<xml>foo<bar/></xml>` is appended to the node with the stable node-ID 3 as a first child.
 
-The following sections give a complete specification of the routes:
+The following sections give a complete specification of the routes.
+
+## API
 
 `PUT https://localhost:9443/database/resource` creates a database and a resource (content being the body of the request -- as of now XML, but we'll implement JSON resources in the very near future).
 
