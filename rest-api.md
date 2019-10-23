@@ -257,9 +257,12 @@ The following sections give a complete specification of the routes.
 
 ## API
 
-- `PUT https://localhost:9443/$database/$resource` creates a database and a resource (content being the body of the request -- as of now XML, but we'll implement JSON resources in the very near future).
+The API for storing and querying XML and JSON databases are almost identical.
 
-- `GET https://localhost:9443/$database/$resource` simply serializes the internal binary tree representation back to XML. Optional URL-parameters are
+- `PUT https://localhost:9443/$database`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
+- `PUT https://localhost:9443/$database/$resource` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON.
+
+- `GET https://localhost:9443/$database/$resource` simply serializes the internal binary tree representation back to XML or JSON. Optional URL-parameters are
 
   - `revision`  or `revision-timestamp` (the former being a simple long number, the latter being an ISO formatted datetime string as the parameter, for instance `2019-01-01T05:05:01`), to open a specific revision. In case of the `revision-timestamp`parameter either the exact revision is going to be selected via binary search, or the closest revision to the given point in time.
   - `start-revision` and `end-revision` or `start-revision-timestamp` and `end-revision-timestamp` for a specific timespan.
@@ -270,10 +273,12 @@ Omitting the resource in the URL (`GET https://localhost:9443/$database`) lists 
 
 - `POST https://localhost:9443/$database/$resource` for adding content from the request-body. Supported URL-parameters are
   - `nodeId`, to select the context-Node.
-  - `insert` with the possible values, `asFirstChild`, `asLeftSibling`, `asRightSibling`, `replace`, to determine where to insert the XML-fragment.
+  - `insert` with the possible values, `asFirstChild`, `asLeftSibling`, `asRightSibling`, `replace`, to determine where to insert the XML-fragment or the JSON data (**note that for JSON asLeftSibling is not supported as of now**).
 
-If both parameters are omitted the root-node (and its subtree) is going to be replaced by the new XML fragment. As such an error is thrown if the HTTP request body doesn't start with a start-tag.
+If both parameters are omitted the root-node (and its subtree) is going to be replaced by the new XML fragment or JSON data. In the case of XML an error is thrown if the HTTP request body doesn't start with a start-tag.
 
 Using a POST HTTP-request to `https://localhost:9443` can be used to send a longer XQuery-expression in the body.
 
-- `DELETE https://localhost:9443/$database/r$esource` removes the resource from the database. Omitting the resource in the URL, the whole database is going to be deleted. The optional parameter once again is `nodeId` to remove a node or in case the nodeId references an element node to remove the whole subtree and the element node itself.
+- `DELETE https://localhost:9443` removes all databases stored. No `Content-Type` declaration is needed.
+- `DELETE https://localhost:9443/$database` removes the database with all resources. You have to speficy the `Content-Type` depending if the $database is of type JSON or XML (`application/xml` or `application/json`).
+- `DELETE https://localhost:9443/$database/$resource` removes the resource from the database. Omitting the resource in the URL, the whole database is going to be deleted. The optional parameter once again is `nodeId` to remove a node or in case the nodeId references an element node to remove the whole subtree and the element node itself.
