@@ -259,9 +259,42 @@ The following sections give a complete specification of the routes.
 
 The API for storing and querying XML and JSON databases are almost identical.
 
+As described above, you first have to authenticate with a `username` and `password` and retrieve a token, which has to be sent in the Authentication header as a Bearer token:
+
+```kotlin
+val credentials = json {
+  obj(
+    "username" to "admin",
+    "password" to "admin"
+  )
+}
+
+val response = client.postAbs("$server/token").sendJsonAwait(credentials)
+
+if (200 == response.statusCode()) {
+  val user = response.bodyAsJsonObject()
+  accessToken = user.getString("access_token")
+}   
+```
+
+so in each request add the token: "Authorization: Bearer ${accessToken}".
+
+In order to create a database either with multiple or a single resource:
+
 - `PUT https://localhost:9443/$database`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
 - `PUT https://localhost:9443/$database/$resource` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON.
 
+In order to get a list of all databases:
+- `GET https://localhost:9443/` serializes all database names and types. For instance:
+
+  ```json
+  {"databases":[{"database1":"json"},{"database2":"xml"}]}
+  ```
+
+In order to view database contents:
+- `GET https://localhost:9443/$database` serializes the database name and all resource names in the database
+
+In order to query a resource in a database:
 - `GET https://localhost:9443/$database/$resource` simply serializes the internal binary tree representation back to XML or JSON. Optional URL-parameters are
 
   - `revision`  or `revision-timestamp` (the former being a simple long number, the latter being an ISO formatted datetime string as the parameter, for instance `2019-01-01T05:05:01`), to open a specific revision. In case of the `revision-timestamp`parameter either the exact revision is going to be selected via binary search, or the closest revision to the given point in time.
@@ -269,7 +302,7 @@ The API for storing and querying XML and JSON databases are almost identical.
   - Furthermore a `nodeId`-parameter can be specified to retrieve a specific node in a revision.
   - The `query`-parameter can be used to specify a full blown XQuery-string. Here for instance also temporal axis can be used to analyze how a specific node or subtree changed over time or to display which nodes are new in a specific revision. There's also a `diff`-function which outputs an XQuery Update script to update the first revision to the second. Other formats as output to another diff-function are for sure have to be evaluated.
 
-Omitting the resource in the URL (`GET https://localhost:9443/$database`) lists all resources of the database. `GET https://localhost:9443/` lists all databases.
+In order to update or delete a resource stored in a database you have to make sure to specify the `Content-Type` (`application/xml` or `application/json`). Furthermore you have to get the hashcode for the context-node first, for instance with either a GET-request as shown above or a HEAD-request against the resource with an optional `revision`-parameter and a `nodeId`-parameter. The hashcode will be sent in the `ETag` HTTP-response header. You have to set it in your `Etag` HTTP-request header, too. As it is a rolling hash to cover whole subtrees in resources, SirixDB is then able to detect concurrent modifications between the time a client has made a reading request and an updating request and thus will throw an excption and the client has to re-read the context-node of the update operation.
 
 - `POST https://localhost:9443/$database/$resource` for adding content from the request-body. Supported URL-parameters are
   - `nodeId`, to select the context-Node.
