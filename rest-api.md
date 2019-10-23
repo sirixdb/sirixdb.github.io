@@ -279,10 +279,14 @@ if (200 == response.statusCode()) {
 
 so in each request add the token: "Authorization: Bearer ${accessToken}".
 
+### Create
+
 In order to create a database either with multiple or a single resource:
 
 - `PUT https://localhost:9443/$database`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
 - `PUT https://localhost:9443/$database/$resource` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON.
+
+### Read
 
 In order to get a list of all databases:
 - `GET https://localhost:9443/` serializes all database names and types. For instance:
@@ -302,6 +306,8 @@ In order to query a resource in a database:
   - Furthermore a `nodeId`-parameter can be specified to retrieve a specific node in a revision.
   - The `query`-parameter can be used to specify a full blown XQuery-string. Here for instance also temporal axis can be used to analyze how a specific node or subtree changed over time or to display which nodes are new in a specific revision. There's also a `diff`-function which outputs an XQuery Update script to update the first revision to the second. Other formats as output to another diff-function are for sure have to be evaluated.
 
+### Update
+
 In order to update or delete a resource stored in a database you have to make sure to specify the `Content-Type` (`application/xml` or `application/json`). Furthermore you have to get the hashcode for the context-node first, for instance with either a GET-request as shown above or a HEAD-request against the resource with an optional `revision`-parameter and a `nodeId`-parameter. The hashcode will be sent in the `ETag` HTTP-response header. You have to set it in your `Etag` HTTP-request header, too. As it is a rolling hash to cover whole subtrees in resources, SirixDB is then able to detect concurrent modifications between the time a client has made a reading request and an updating request and thus will throw an excption and the client has to re-read the context-node of the update operation.
 
 - `POST https://localhost:9443/$database/$resource` for adding content from the request-body. Supported URL-parameters are
@@ -310,7 +316,9 @@ In order to update or delete a resource stored in a database you have to make su
 
 If both parameters are omitted the root-node (and its subtree) is going to be replaced by the new XML fragment or JSON data. In the case of XML an error is thrown if the HTTP request body doesn't start with a start-tag.
 
-Using a POST HTTP-request to `https://localhost:9443` can be used to send a longer XQuery-expression in the body.
+- `POST https://localhost:9443`: send longer XQuery-expression in the body. 
+
+### Delete
 
 - `DELETE https://localhost:9443` removes all databases stored. No `Content-Type` declaration is needed.
 - `DELETE https://localhost:9443/$database` removes the database with all resources. You have to speficy the `Content-Type` depending if the $database is of type JSON or XML (`application/xml` or `application/json`).
