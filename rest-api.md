@@ -283,8 +283,8 @@ so in each request add the token: "Authorization: Bearer ${accessToken}".
 
 In order to create a database either with multiple or a single resource:
 
-- `PUT https://localhost:9443/$database`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
-- `PUT https://localhost:9443/$database/$resource` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON.
+- `PUT https://localhost:9443/<database>`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
+- `PUT https://localhost:9443/<database>/<resource>` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON.
 
 ### Read
 
@@ -296,10 +296,10 @@ In order to get a list of all databases:
   ```
 
 In order to view database contents:
-- `GET https://localhost:9443/$database` serializes the database name and all resource names in the database
+- `GET https://localhost:9443/<database>` serializes the database name and all resource names in the database
 
 In order to query a resource in a database:
-- `GET https://localhost:9443/$database/$resource` simply serializes the internal binary tree representation back to XML or JSON. Optional URL-parameters are
+- `GET https://localhost:9443/<database>/<resource>` simply serializes the internal binary tree representation back to XML or JSON. Optional URL-parameters are
 
   - `revision`  or `revision-timestamp` (the former being a simple long number, the latter being an ISO formatted datetime string as the parameter, for instance `2019-01-01T05:05:01`), to open a specific revision. In case of the `revision-timestamp`parameter either the exact revision is going to be selected via binary search, or the closest revision to the given point in time.
   - `start-revision` and `end-revision` or `start-revision-timestamp` and `end-revision-timestamp` for a specific timespan.
@@ -310,7 +310,7 @@ In order to query a resource in a database:
 
 In order to update or delete a resource stored in a database you have to make sure to specify the `Content-Type` (`application/xml` or `application/json`). Furthermore you have to get the hashcode for the context-node first, for instance with either a GET-request as shown above or a HEAD-request against the resource with an optional `revision`-parameter and a `nodeId`-parameter. The hashcode will be sent in the `ETag` HTTP-response header. You have to set it in your `Etag` HTTP-request header, too. As it is a rolling hash to cover whole subtrees in resources, SirixDB is then able to detect concurrent modifications between the time a client has made a reading request and an updating request and thus will throw an excption and the client has to re-read the context-node of the update operation.
 
-- `POST https://localhost:9443/$database/$resource` for adding content from the request-body. Supported URL-parameters are
+- `POST https://localhost:9443/<database>/<resource>` for adding content from the request-body. Supported URL-parameters are
   - `nodeId`, to select the context-Node.
   - `insert` with the possible values, `asFirstChild`, `asLeftSibling`, `asRightSibling`, `replace`, to determine where to insert the XML-fragment or the JSON data (**note that for JSON asLeftSibling is not supported as of now**).
 
@@ -321,5 +321,5 @@ If both parameters are omitted the root-node (and its subtree) is going to be re
 ### Delete
 
 - `DELETE https://localhost:9443` removes all databases stored. No `Content-Type` declaration is needed.
-- `DELETE https://localhost:9443/$database` removes the database with all resources. You have to speficy the `Content-Type` depending if the $database is of type JSON or XML (`application/xml` or `application/json`).
-- `DELETE https://localhost:9443/$database/$resource` removes the resource from the database. Omitting the resource in the URL, the whole database is going to be deleted. The optional parameter once again is `nodeId` to remove a node or in case the nodeId references an element node to remove the whole subtree and the element node itself.
+- `DELETE https://localhost:9443/<database>` removes the database with all resources. You have to speficy the `Content-Type` depending if the $database is of type JSON or XML (`application/xml` or `application/json`).
+- `DELETE https://localhost:9443/<database>/<resource>` removes the resource from the database. Omitting the resource in the URL, the whole database is going to be deleted. The optional parameter once again is `nodeId` to remove a node or in case the nodeId references an element node to remove the whole subtree and the element node itself.
