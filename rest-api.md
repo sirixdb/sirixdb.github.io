@@ -28,7 +28,7 @@ https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x
 
 1. Open your browser. URL: http://localhost:8080
 2. Login with username "admin", password "admin"
-3. Create a new realm with the name "sirixdb"
+3. Create a new **realm** with the name **"sirixdb"**
 4. Go to `Clients` => `account`
 5. Change client-id to "sirix"
 6. Make sure `access-type` is set to `confidential`
