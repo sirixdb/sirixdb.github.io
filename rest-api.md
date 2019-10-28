@@ -19,7 +19,7 @@ Authorization is done via OAuth2 (Password Credentials/Resource Owner Flow) usin
 For setting up the SirixDB HTTP-Server and a basic Keycloak-instance with a test realm:
 
 1. `git clone https://github.com/sirixdb/sirix.git`
-2. `sudo docker-compose run --rm waitforkeycloak`
+2. `sudo docker-compose up waitforkeycloak`
 
 ### Keycloak setup
 
