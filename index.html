@@ -54,7 +54,7 @@ title: SirixDB - An Evolutionary, Versioned NoSQL Document Store
 	<div class="img_container">
 		<p><img src="images/evolution-of-state.webp" style="margin: 3em 3em; width: 70%"/></p>
 	</div>
-	<p>The following time-travel query gives an initial impression of what's possible:</p>
+	<p>The following time-travel query to be executed on our binary JSON representation of <a href="https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-core/src/test/resources/json/twitter.json">Twitter sample data</a> gives an initial impression of what's possible:</p>
 
 <div class="language-xquery highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span><span class="w"> </span><span class="nv">$doc</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">jn:open</span><span class="p">(</span><span class="s">'database'</span><span class="o">,</span><span class="s">'resource'</span><span class="o">,</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">'2019-04-13T16:24:27Z'</span><span class="p">))</span><span class="w">
 </span><span class="k">let</span><span class="w"> </span><span class="nv">$statuses</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nv">$doc</span><span class="o">=&gt;</span><span class="nt">statuses</span><span class="w">
