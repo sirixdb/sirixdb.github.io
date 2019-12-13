@@ -34,12 +34,11 @@ https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x
 6. Make sure `access-type` is set to `confidential`
 7. Go to `Credentials` tab
 8. Put the `client secret` into the SirixDB HTTP-Server [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json). Change the value of "client.secret" to whatever Keycloak set up.
-9. Change `localhost` to `keycloak` in the SirixDB HTTP-Server [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json)
-10. Regarding Keycloak the `direct access` grant on the settings tab must be `enabled`.
-11. Our (user-/group-)roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof. You can also assign `${databaseName}-` prefixed roles.
+9. Regarding Keycloak the `direct access` grant on the settings tab must be `enabled`.
+10. Our (user-/group-)roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof. You can also assign `${databaseName}-` prefixed roles.
  
 ### Start SirixDB HTTP-Server Keycloak-Container using docker-compose
-This first creates a local SirixDB HTTP-Server image and then starts the Docker container. Thus it'll need some time to download the dependencies.
+The following command will start the docker container
 
 1. `sudo docker-compose up -d server`
 
@@ -284,8 +283,8 @@ so in each request add the token: "Authorization: Bearer ${accessToken}".
 
 In order to create a database either with multiple or a single resource:
 
-- `PUT https://localhost:9443/<database>`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
-- `PUT https://localhost:9443/<database>/<resource>` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON.
+- `POST https://localhost:9443/<database>`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
+- `PUT https://localhost:9443/<database>/<resource>` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON. As it's returning the serialized form with in the case of XML additional metadata of SirixDB you should also specify the `Accept` header.
 
 ### Read
 
@@ -293,7 +292,7 @@ In order to get a list of all databases:
 - `GET https://localhost:9443/` serializes all database names and types. For instance:
 
   ```json
-  {"databases":[{"database1":"json"},{"database2":"xml"}]}
+  {"databases":[{"name":"json-database","type":"json"},{"name":"xml-database","type":"xml"}]}
   ```
 
 In order to view database contents:
