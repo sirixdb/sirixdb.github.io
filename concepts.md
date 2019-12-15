@@ -105,15 +105,15 @@ One of the most distinctive features of SirixDB is that it versions the *RecordP
 
 ### Versioning algorithms for storing and retrieving page snapshots
 
-As most database system SirixDB stores at most a fixed number of records. That is the actual data per database-page (currently 512 records at most). The records themselves are of variable size. Overlong records, which exceed a predefined length in bytes, are stored in additional overflow pages. SirixDB stores references to these pages in the record pages.
+SirixDB stores at most a fixed number of records. That is the actual data per database-page (currently limited to 512 records). The records themselves are of variable size. Overlong records, which exceed a predefined length in bytes, are stored in additional overflow pages. SirixDB stores references to these pages in the record pages.
 
-We implemented several versioning strategies best known from backup systems for copy-on-write operations of record-pages. Namely we either copy
+SirixDB implements several versioning strategies best known from backup systems for copy-on-write operations of record-pages. Namely it either copies
 
-- the full record-pages that is any record in the page (full)
+- the full record-page that is any record in the page (full)
 - only the changed records in a record-page regarding the former version (incremental)
 - only the changed records in a record-page since a full-page dump (differential)
 
-Incremental-versioning is the other extreme. Write performance is best, as it stores the optimum (only changed records). On the other hand, reconstructing a page needs intermittent full snapshots of pages. Otherwise, performance deteriorates with each new revision of the page as the number of increments increases with each new version.
+Incremental-versioning is one extreme. Write performance is best, as it stores the optimum (only changed records). On the other hand, reconstructing a page needs intermittent full snapshots of pages. Otherwise, performance deteriorates with each new revision of the page as the number of increments increases with each new version.
 
 Differential-versioning tries to balance reads and writes a bit better, but is still not optimal. A system, implementing a differential versioning strategy has to write all changed records since a past full dump of the page. Thus, only ever two revisions of the page-fragment have to be read to reconstruct a record-page. However, write-performance also deteriorates with each new revision of the page.
 
