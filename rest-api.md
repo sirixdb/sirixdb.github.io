@@ -322,7 +322,7 @@ If both parameters are omitted the root-node (and its subtree) is going to be re
 { 
   "query": "//foo/bar",
   "startResultSeqIndex": 3,
-  "endResultSeqIndex: 5
+  "endResultSeqIndex": 5
 }
 ```
 
