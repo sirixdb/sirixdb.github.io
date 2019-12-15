@@ -319,9 +319,11 @@ If both parameters are omitted the root-node (and its subtree) is going to be re
 
 - `POST https://localhost:9443`: send longer XQuery-expression in the body. For instance
 ```json
-{"query": //foo/bar,
- "startResultSeqIndex": 3,
- "endResultSeqIndex: 5
+{ 
+  "query": //foo/bar,
+  "startResultSeqIndex": 3,
+  "endResultSeqIndex: 5
+}
 ```
 
 ### Delete
