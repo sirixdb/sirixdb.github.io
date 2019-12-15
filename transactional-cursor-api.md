@@ -54,6 +54,8 @@ dependencies {
 }
 ```
 
+** You have to use Java 13 and Maven >= 3.6.2 **
+
 ## Article Describing the JSON Transactional Cursor API
 You can find an article about this API regarding only JSON stuff on [Baeldung](https://www.baeldung.com/sirix).
 
