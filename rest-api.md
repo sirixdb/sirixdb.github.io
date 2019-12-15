@@ -315,9 +315,9 @@ In order to update or delete a resource stored in a database you have to make su
   - `nodeId`, to select the context-Node.
   - `insert` with the possible values, `asFirstChild`, `asLeftSibling`, `asRightSibling`, `replace`, to determine where to insert the XML-fragment or the JSON data (**note that for JSON asLeftSibling is not supported as of now**).
 
-If both parameters are omitted the root-node (and its subtree) is going to be replaced by the new XML fragment or JSON data. In the case of XML an error is thrown if the HTTP request body doesn't start with a start-tag.
+  If both parameters are omitted the root-node (and its subtree) is going to be replaced by the new XML fragment or JSON data. In the case of XML an error is thrown if the HTTP request body doesn't start with a start-tag.
 
-- `POST https://localhost:9443`: send longer XQuery-expression in the body. For instance
+- `POST https://localhost:9443`: to send a longer XQuery-expression in the body. For instance
 ```json
 { 
   "query": "//foo/bar",
@@ -325,6 +325,8 @@ If both parameters are omitted the root-node (and its subtree) is going to be re
   "endResultSeqIndex": 5
 }
 ```
+
+  The `startResultSeqIndex` and `endResultSeqIndex` object fields are optional. You can use `startResultSeqIndex` to specify the start index of when to deliver results from the result sequence starting from 0 and an optional end index (inclusive) with `endResultSeqIndex`.
 
 ### Delete
 
