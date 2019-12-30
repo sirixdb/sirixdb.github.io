@@ -208,7 +208,7 @@ Object record values can be all JSON node types (`ArrayValue`, `ObjectValue`, `B
 
 `JsonNodeTrx insertObjectRecordAsRightSibling(String key, ObjectRecordValue<?> value)`
 
-We can find alls possible methods in the interface `org.sirix.api.json.JsonNodeTrx`.
+We can find all possible methods in the interface `org.sirix.api.json.JsonNodeTrx`.
 
 ### Temporal axis
 SirixDB not only provides all standard XPath axes for the stored XML documents, but also temporal XPath axes. We can use these axes to analyse how a resource or a subtree therein has changed between several revisions.
