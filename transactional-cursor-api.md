@@ -36,7 +36,7 @@ repositories {
 }
 ```
 
-However, if you prefer, we just released version 0.9.3 of SirixDB in Maven Central. Currently, the following SNAPSHOT-artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
+However, if you prefer, we just released version 0.9.5 of SirixDB in Maven Central. Currently, the following SNAPSHOT-artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
 
 Core project:
 
@@ -44,14 +44,14 @@ Core project:
 <dependency>
   <groupId>io.sirix</groupId>
   <artifactId>sirix-core</artifactId>
-  <version>0.9.4-SNAPSHOT</version>
+  <version>0.9.6-SNAPSHOT</version>
 </dependency>
 ```
 
 To add the dependency in Gradle:
 ```gradle
 dependencies {
-  compile 'io.sirix:sirix-core:0.9.4-SNAPSHOT'
+  compile 'io.sirix:sirix-core:0.9.6-SNAPSHOT'
 }
 ```
 
