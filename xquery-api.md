@@ -36,7 +36,7 @@ repositories {
 }
 ```
 
-However, if you prefer, we just released version 0.9.3 of Sirix in Maven Central.
+However, if you prefer, we just released version 0.9.5 of Sirix in Maven Central.
 
 Maven artifacts are deployed to the central maven repository (however please use the SNAPSHOT-variants as of now). Currently the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
 
@@ -46,14 +46,14 @@ Core project:
 <dependency>
   <groupId>io.sirix</groupId>
   <artifactId>sirix-xquery</artifactId>
-  <version>0.9.4-SNAPSHOT</version>
+  <version>0.9.6-SNAPSHOT</version>
 </dependency>
 ```
 
 To add the dependency in Gradle:
 ```gradle
 dependencies {
-  compile 'io.sirix:sirix-xquery:0.9.4-SNAPSHOT'
+  compile 'io.sirix:sirix-xquery:0.9.6-SNAPSHOT'
 }
 ```
 
