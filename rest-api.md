@@ -306,6 +306,7 @@ In order to query a resource in a database:
   - Furthermore a `nodeId`-parameter can be specified to retrieve a specific node in a revision.
   - The `query`-parameter can be used to specify a full blown XQuery-string. Here for instance also temporal axis can be used to analyze how a specific node or subtree changed over time or to display which nodes are new in a specific revision. There's also a `diff`-function which outputs an XQuery Update script to update the first revision to the second. Other formats as output to another diff-function are for sure have to be evaluated.
   - When you're specifying a `query`-parameter you can also add two other parameters: `startResultSeqIndex` and `endResultSeqIndex` to specify the start index of when to deliver results from the result sequence starting from 0 and an optional end index (inclusive).
+  - You can specify `maxLevel` after which subtrees are skipped from serialization by SirixDB.
 
 ### Update
 
