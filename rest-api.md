@@ -24,7 +24,7 @@ For setting up the SirixDB HTTP-Server and a basic Keycloak-instance with a test
 ### Keycloak setup
 
 Keycloak can be set up as described in this excellent [tutorial](
-https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/). Our `docker-compose` file imports a sirix realm, so basically you can skip the steps 3 - 7 and simply recreate a `client-secret` and add a user which has all the roles assigned (or an admin group with all roles and assign the user to the admin-group for running the integration tests for instance).
+https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/). Our `docker-compose` file imports a sirix realm with a default admin user with all available roles assigned. Basically you can skip the steps 3 - 7 and and 9 and 10 and simply recreate a `client-secret`. If you want to run or modify the integration tests the client secret mjust not be changed.
 
 1. Open your browser. URL: http://localhost:8080
 2. Login with username "admin", password "admin"
@@ -37,10 +37,10 @@ https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x
 9. Regarding Keycloak the `direct access` grant on the settings tab must be `enabled`.
 10. Our (user-/group-)roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof. You can also assign `${databaseName}-` prefixed roles.
  
-### Start SirixDB HTTP-Server Keycloak-Container using docker-compose
+### Start the SirixDB HTTP-Server and the Keycloak-Container using docker-compose
 The following command will start the docker container
 
-1. `sudo docker-compose up -d server`
+1. `sudo docker-compose up`
 
 ### SirixDB HTTP-Server Setup Without Docker/docker-compose
 
@@ -62,7 +62,7 @@ If you like to change your user home directory to `/opt/sirix` for instance.
 The fat-JAR in the future will be downloadable from the [maven repository](https://oss.sonatype.org/content/repositories/snapshots/io/sirix/sirix-rest-api/0.9.0-SNAPSHOT/).
 
 ### Run the Integration Tests
-In order to run the integration tests under `bundles/sirix-rest-api/src/test/kotlin` make sure that you assign your admin user all the user-roles you have created in the Keycloak setup (last step). Then copy your generated `client secret` from step 7 in `SirixVerticleJsonTest` and `SirixVerticleXmlTest` and overwrite the one in the setup methods. Then make sure that Keycloak is running first and execute the Tests in your favorite IDE for instance.
+In order to run the integration tests under `bundles/sirix-rest-api/src/test/kotlin` make sure that you assign your admin user all the user-roles you have created in the Keycloak setup (last step). Make sure that Keycloak is running first and execute the tests in your favorite IDE for instance.
 
 ## API-design by Example
 After Keycloak and our server are up and running, we can write a simple HTTP-Client. We first have to obtain a token from the `/login` endpoint with a given "username/password" JSON-Object. Using an asynchronous HTTP-Client (from Vert.x) in Kotlin, it looks like this:
