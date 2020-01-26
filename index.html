@@ -110,6 +110,40 @@ title: SirixDB - An Evolutionary, Versioned NoSQL Document Store
 								<section>
 									<span class="icon solid featured fa-check"></span>
 									<header>
+										<h3>Lightweight Buffer Manager</h3>
+									</header>
+									<p>Page-fragments are referenced using in-memory references and a lightweight buffer manager, which can reclaim the used heap space, once a page has to be evicted.</section>
+								</section>
+							</div>
+							<div class="col-4 col-12-narrower">
+							
+								<section>
+									<span class="icon solid featured fa-check"></span>
+									<header>
+										<h3>No Write-Ahead-Log (WAL) needed</h3>
+									</header>
+									<p>An UberPage is the main entry point into a resource. It is swapped atomically as the last action of a commit.</p>
+								</section>
+							
+							</div>
+							<div class="col-4 col-12-narrower">
+							
+								<section>
+									<span class="icon solid featured fa-check"></span>
+									<header>
+										<h3>Huge Persistent and Durable Tree-Structure with Variable Sized Pages</h3>
+									</header>
+									<p>SirixDB uses variable sized page-fragments, stored in a huge persisten tree-structure for indexing revisions as well as data and the nodes of secondary indexes.</p>
+								</section>
+							
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-4 col-12-narrower">
+							
+								<section>
+									<span class="icon solid featured fa-check"></span>
+									<header>
 										<h3>Versioning</h3>
 									</header>
 									<p>SirixDB versions data as well as index-structures on a per revision and record level. As such versioning takes place at a fine-granular level. Furthermore, through a novel versioning algorithm called <em>sliding snapshot</em>, it can avoid write and read peaks.</p>
