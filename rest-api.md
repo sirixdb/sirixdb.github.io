@@ -284,7 +284,7 @@ so in each request add the token: "Authorization: Bearer ${accessToken}".
 
 In order to create a database either with multiple or a single resource:
 
-- `POST https://localhost:9443/<database>`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
+- `PUT https://localhost:9443/<database>`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
 - `PUT https://localhost:9443/<database>/<resource>` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON. As it's returning the serialized form with in the case of XML additional metadata of SirixDB you should also specify the `Accept` header.
 
 ### Read
