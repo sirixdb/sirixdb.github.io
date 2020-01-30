@@ -302,6 +302,7 @@ In order to view database contents:
 In order to query a resource in a database:
 - `GET https://localhost:9443/<database>/<resource>` simply serializes the internal binary tree representation back to XML or JSON. Optional URL-parameters are
 
+  - `withMetadata` (a boolean) specifies that `nodeKey` (used for the `nodeId` parameter), `hash`, and `descendantCount` are included for every node.
   - `revision`  or `revision-timestamp` (the former being a simple long number, the latter being an ISO formatted datetime string as the parameter, for instance `2019-01-01T05:05:01`), to open a specific revision. In case of the `revision-timestamp`parameter either the exact revision is going to be selected via binary search, or the closest revision to the given point in time.
   - `start-revision` and `end-revision` or `start-revision-timestamp` and `end-revision-timestamp` for a specific timespan.
   - Furthermore a `nodeId`-parameter can be specified to retrieve a specific node in a revision.
