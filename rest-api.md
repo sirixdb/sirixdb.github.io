@@ -295,6 +295,14 @@ In order to get a list of all databases:
   ```json
   {"databases":[{"name":"json-database","type":"json"},{"name":"xml-database","type":"xml"}]}
   ```
+  There is also one optional URL-parameter:
+
+  - `withResources` (a boolean) if specified as true, will include the list of resources for each database. Like so:
+
+  ```json
+  {"databases":[{"name":"json-database","type":"json", "resources": ["json-resource1", "json-resource"]}]}
+  ```
+  
 
 In order to view database contents:
 - `GET https://localhost:9443/<database>` serializes the database name and all resource names in the database
