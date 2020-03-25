@@ -68,7 +68,7 @@ In async mode, any method that will do a network request must be awaited, while 
 >>> db = sirix.database("test-json-database", DBType.JSON)
 ```
 
-We now have a database object, but it doesn't exist on the server yet.
+We now have a database object, of database-type JSON, but it doesn't exist on the server yet.
 For that we need to call the create method:
 
 ```python
@@ -80,20 +80,52 @@ Generally, however, it is unnecessary to explicitly create a database, as it wil
 ```python
 >>> resource = db.resource("test-json-resource")
 >>> await resource.create([])
+'[]'
 ```
 
-The create method needs some data with which to instantiate the resource, so we have passed in an array. Alternatively, you could pass in a dictionary.
+The create method needs some data with which to instantiate the resource, so we have passed in an array. Alternatively, you could pass in a dictionary, or stringified JSON.
+
+Alternatively, if you were creating an XML resource, you would pass in an instance of `xml.etree.ElementTree.Element`, or strigified XML.
 
 The array we passed in is empty, but this is arbitrary. We could, for example, do the following:
 
 ```python
 >>> await resource.create(["blah", {"a key": 5}])
+'["blah",{"a key":5}]'
 ```
 
 Something to keep in mind is that calling `resource.create()` on an existing resource *will overwrite* any previous data in the resource. So, before calling `resource.create()`, it is good practice to call:
 
 ```python
->>> exists = await resource.exists()
+>>> await resource.exists()
+True
 ```
 
 Where the `exists` variable is a `bool`, indicating whether or not the resource already exists.
+
+There are other ways of getting information on existing databases and resources. For example, to retrieve the names of all resources associated with the current database, we can call:
+
+```python
+>>> await db.get_database_info()
+{'resources': ['test-json-resource']}
+```
+
+Or, if we want the names of all databases, we can call:
+
+```python
+>>> await sirix.get_info()
+[{'name': 'test-json-database', 'type': 'json', 'resources': ['test-json-resource']}]
+```
+
+As we can see, this returns a list of dictionaries, where each dictionary has the keys `"name"`, `"type"`, and `"resources"`.
+
+If we aren't interested in the resources, and want only the database names and types, we can call:
+
+```python
+>>> await sirix.get_info(False)
+[{'name': 'test-json-database', 'type': 'json'}]
+```
+
+## Manipulating resource data
+
+
