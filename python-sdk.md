@@ -128,4 +128,54 @@ If we aren't interested in the resources, and want only the database names and t
 
 ## Manipulating resource data
 
+Let us now read the resource from the SirixDB server:
 
+```python
+>>> await resource.read(None)
+['blah', {'a key': 5}]
+```
+
+Normally, we pass in the nodeId of the (root of the) nodes we want to read. But since we want to read the entire file, we passed in `None` instead. Passing in `0` or `1` would have the same effect.
+
+Let's read some particular nodes:
+
+```python
+>>> await resource.read(2)
+'blah'
+>>> await resource.read(3)
+{'a key': 5}
+```
+
+There are more parameters that can be passed to `resource.read()`, and we will come back to them later.
+
+Let us update some data:
+
+```python
+>>> await resource.update(1, {})
+'[{},"blah",{"a key":5}]'
+```
+
+Now, there are actually more parameters needed for an update, but the rest of them are filled in under the hood if you don't provide them. So, what is going on under the hood is equivalent of:
+
+```python
+>>> from pysirix import Insert
+>>> etag = await resource.get_etag(1)
+>>> await resource.update(1, {}, etag=etag, insert=Insert.CHILD)
+'[{},{},"blah",{"a key":5}]'
+```
+
+The Insert class is an `Enum` with the following options:
+
+```python
+class Insert(enum.Enum):
+    """
+    This Enum class defines the possible options for a resource update
+    """
+
+    CHILD = "asFirstChild"
+    LEFT = "asLeftSibling"
+    RIGHT = "asRightSibling"
+    REPLACE = "replace"
+```
+
+The utility of the etag parameter, is that if the node was modified between the retrieval of the etag and the update, the server (and in turn, pysirix) will raise an error. This is especially useful if you already have the etag (as will be discussed later); you can provide the etag to the `update` method, and if you get an error, you know that you need to refresh your data, and decide if you still want to perform the update (in which case you will need the new etag).
