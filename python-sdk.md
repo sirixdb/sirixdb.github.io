@@ -8,7 +8,7 @@ title: SirixDB - Python SDK API
 
 The python SDK for provides a simple, intuitive API for accessing the SirixDB REST-API. It can be used both with synchronous code, or with asynchronous code.
 
-This document is a tutorial for using the python SDK (henceforth: pysirix), including running SirixDB locally using docker.
+This document is a tutorial for using the python SDK (henceforth: pysirix), including setting up SirixDB locally using docker.
 
 ## Setting up SirixDB locally
 
