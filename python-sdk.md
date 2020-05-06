@@ -40,7 +40,7 @@ The Sirix database is now ready for use.
 
 First, let's install `pysirix`:
 
-```shell script
+```bash
 pip install pysirix
 ```
 
