@@ -10,6 +10,8 @@ The python SDK for provides a simple, intuitive API for accessing the SirixDB RE
 
 This document is a tutorial for using the python SDK (henceforth: pysirix), including setting up SirixDB locally using docker.
 
+This document concentrates on JSON data, but much of it valid with XML data as well.
+
 ## Setting up SirixDB locally
 
 Unfortunately, this is currently a bit messy, but still rather straightforward.
@@ -126,7 +128,9 @@ If we aren't interested in the resources, and want only the database names and t
 [{'name': 'test-json-database', 'type': 'json'}]
 ```
 
-## Manipulating resource data
+## Manipulating resources
+
+### Read resource data
 
 Let us now read the resource from the SirixDB server:
 
@@ -147,6 +151,8 @@ Let's read some particular nodes:
 ```
 
 There are more parameters that can be passed to `resource.read()`, and we will come back to them later.
+
+### Updating resource data
 
 Let us update some data:
 
@@ -178,4 +184,115 @@ class Insert(enum.Enum):
     REPLACE = "replace"
 ```
 
-The utility of the etag parameter, is that if the node was modified between the retrieval of the etag and the update, the server (and in turn, pysirix) will raise an error. This is especially useful if you already have the etag (as will be discussed later); you can provide the etag to the `update` method, and if you get an error, you know that you need to refresh your data, and decide if you still want to perform the update (in which case you will need the new etag).
+The utility of the `etag` parameter, is that if the node was modified between the retrieval of the etag and the update, the server (and in turn, pysirix) will raise an error. This is especially useful if you already have the etag; you can provide the etag to the `update` method, and if you get an error, you know that you need to refresh your data, and decide if you still want to perform the update (in which case you will need the new etag).
+
+Let's insert a more complex object:
+
+```python
+>>> await resource.update(1, {"hey": "test"}, insert=Insert.CHILD)
+'[{"hey":"test"},{},{},"blah",{"a key":5}]'
+```
+
+### Reading metadata
+
+To read metadata, we can call the ``read_with_metadata()`` method, which takes the same parameters as read(). Let's call it for the initial state of the resource:
+
+```python
+>>> resource.read_with_metadata(None, revision=1)
+{'metadata': {'nodeKey': 1, 'hash': 208557195544488990616803682550450165186, 'type': 'ARRAY', 'descendantCount': 4, 'childCount': 2}, 'value': [{'metadata': {'nodeKey': 2, 'hash': 288368958454372192948750575366137138081, 'type': 'STRING_VALUE'}, 'value': 'blah'}, {'metadata': {'nodeKey': 3, 'hash': 180526408181230893715743363206931647349, 'type': 'OBJECT', 'descendantCount': 2, 'childCount': 1}, 'value': [{'key': 'a key', 'metadata': {'nodeKey': 4, 'hash': 126324580879345353515887406488057081359, 'type': 'OBJECT_KEY', 'descendantCount': 1}, 'value': {'metadata': {'nodeKey': 5, 'hash': 1390911141598899303029604730715488514, 'type': 'OBJECT_NUMBER_VALUE'}, 'value': 5}}]}]}
+```
+
+The structure of the metadata returned is of type ``MetaNode``, and is a bit complex. See the API docs for details. If you are using python 3.8+, then you can use ``MetaNode`` as a type hint in your code.
+
+
+### The history of the resource
+
+We can get a list of the commits/revisions of this resource with the ``history()`` method:
+
+```python
+>>> await resource.history()
+[{'revision': 4, 'revisionTimestamp': '2020-05-06T15:50:16.944Z', 'author': 'admin', 'commitMessage': ''}, {'revision': 3, 'revisionTimestamp': '2020-05-06T15:40:16.675Z', 'author': 'admin', 'commitMessage': ''}, {'revision': 2, 'revisionTimestamp': '2020-05-06T15:40:01.932Z', 'author': 'admin', 'commitMessage': ''}, {'revision': 1, 'revisionTimestamp': '2020-05-06T15:37:57.880Z', 'author': 'admin', 'commitMessage': ''}]
+```
+
+Commits are ordered from most recent to least recent.
+
+### Differentials
+
+We can obtain the differences between revisions as follows:
+
+```python
+>>> await resource.diff(3,4)
+[{'insert': {'nodeKey': 8, 'insertPositionNodeKey': 1, 'insertPosition': 'asFirstChild', 'deweyID': '1.3.2.2.2.3', 'depth': 2, 'type': 'jsonFragment', 'data': '{"hey":"test"}'}}]
+```
+
+### Deleting a node
+
+Finally, we can delete a node:
+
+```python
+>>> await resource.delete(8, None)
+>>> await resource.read(None)
+[{}, {}, 'blah', {'a key': 5}]
+```
+
+The first argument to ``delete()`` is the nodeKey, and the second is the etag. If the etag is ``None``, ``pysirix`` will retrieve it and provide it under the hood.
+
+We can also delete the entire resource by specifying ``None`` as both arguments:
+
+```python
+>>> await resource.delete(None, None)
+>>> await resource.exists()
+False
+```
+
+## Using the JsonStore abstraction
+
+`pysirix` provides a convenient interface for storing records in SirixDB.
+
+```python
+>>> json_store = db.json_store("json-store")
+>>> await json_store.create()
+'[]'
+>>> await json_store.exists()
+True
+```
+
+The `JsonStore` create an array to store records in, which is why it returns `[]`.
+
+```python
+>>> await json_store.insert_one({"key1": "foo", "key2": "bar"})
+'[{"key1":"foo","key2":"bar"}]'
+>>> await json_store.insert_one({"key1": "bar", "key2": "foo"})
+'[{"key1":"bar","key2":"foo"},{"key1":"foo","key2":"bar"}]'
+>>> await json_store.insert_one({"key1": "bar", "key2": "foo"})
+'[{"key1":"bar","key2":"foo"},{"key1":"bar","key2":"foo"},{"key1":"foo","key2":"bar"}]'
+```
+
+We can query for matching records using `find_all()`:
+
+```python
+>>> await json_store.find_all({"key1": "foo"})
+{'rest': [{'key1': 'foo', 'key2': 'bar', 'nodeKey': 2}]}
+>>> await json_store.find_all({"key1": "bar"})
+{'rest': [{'key1': 'bar', 'key2': 'foo', 'nodeKey': 12}, {'key1': 'bar', 'key2': 'foo', 'nodeKey': 7}]}
+```
+
+By default, `pysirix` also includes the nodeKey of the record root, you can control this behavior by passing `node_key=False` to `find_all()`.
+
+It is also possible to project record results, so only certain fields are returned from matching records:
+
+```python
+>>> await json_store.find_all({"key1": "bar"}, ["key2"])
+{'rest': [{'key2': 'foo', 'nodeKey': 12}, {'key2': 'foo', 'nodeKey': 7}]}
+```
+
+We can also choose which revision we query, using the `revision` parameter:
+
+```python
+>>> await json_store.find_all({"key1": "bar"}, revision=3)
+{'rest': [{'key1': 'bar', 'key2': 'foo', 'nodeKey': 7}]}
+```
+
+There is only one result, as only one matching record existed in revision 3.
+
+The `JsonStore` is still not finished, so only these methods have been implemented so far.
