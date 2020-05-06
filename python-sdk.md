@@ -36,7 +36,13 @@ The Sirix database is now ready for use.
 
 ## Getting started with `pysirix`
 
-`pysirix` is essentially a thin wrapper around the [`httpx`](https://www.python-httpx.org/) library, and pysirix requires you to initialize the httpx client directly:
+First, let's install `pysirix`:
+
+```shell script
+pip install pysirix
+```
+
+`pysirix` uses the [`httpx`](https://www.python-httpx.org/) library, and the low level `resource` interface is actually a this wrapper around `httpx` and pysirix requires you to initialize the httpx client directly:
 
 ```python
 >>> import pysirix
