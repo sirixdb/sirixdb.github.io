@@ -12,6 +12,8 @@ This document is a tutorial for using the python SDK (henceforth: pysirix), incl
 
 This document concentrates on JSON data, but much of it valid with XML data as well.
 
+The API docs can be found (here)[https://pysirix.readthedocs.io/].
+
 ## Setting up SirixDB locally
 
 Unfortunately, this is currently a bit messy, but still rather straightforward.
