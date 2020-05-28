@@ -72,13 +72,13 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   // Use XQuery to load sample document into store.
   System.out.println("Loading document:");
   final var docUri = doc.toUri();
-  final var queryLoadIntoSirix = String.format("sdb:load('mydoc.col', 'mydoc.xml', '%s')", docUri.toString());
+  final var queryLoadIntoSirix = String.format("xml:load('mydoc.col', 'mydoc.xml', '%s')", docUri.toString());
   System.out.println(queryLoadIntoSirix);
   new XQuery(queryLoadIntoSirix).evaluate(ctx);
 
   System.out.println("");
   System.out.println("Query loaded document:");
-  final var query = "sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']";
+  final var query = "xml:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']";
   System.out.println(query);
   final var query = new XQuery(compileChain, query);
   query.prettyPrint().serialize(ctx, System.out);
@@ -90,7 +90,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 In the above example we are importing (loading) an XML document from a file into SirixDB. We can import XML documents stored as simple Strings with the store-function:
 
 ```xquery
-sdb:store('mydoc.col', 'mydoc.xml', '<xml>foo<bar/></xml>')
+xml:store('mydoc.col', 'mydoc.xml', '<xml>foo<bar/></xml>')
 ```
 
 Loading a collection of XML files in SirixDB is as simple as using the following query. `dir` is a directory path and we're importing all files with an `.xml` suffix:
@@ -166,19 +166,19 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   // Use XQuery to load sample document into store.
   System.out.println("Loading document:");
   final var docUri = doc.toUri();
-  final var xq1 = String.format("sdb:load('mycol.xml', 'mydoc.xml', '%s')", docUri.toString());
+  final var xq1 = String.format("xml:load('mycol.xml', 'mydoc.xml', '%s')", docUri.toString());
   System.out.println(xq1);
   new XQuery(xq1).evaluate(ctx);
 
   // Reuse store and query loaded document.
   System.out.println();
   System.out.println("Query loaded document:");
-  final var xq2 = "let $doc := sdb:doc('mycol.xml', 'mydoc.xml')\n" + "let $log = $doc/log return \n"
+  final var xq2 = "let $doc := xml:doc('mycol.xml', 'mydoc.xml')\n" + "let $log = $doc/log return \n"
     + "( insert nodes <a><b/></a> into $log )\n";
   System.out.println(xq2);
   new XQuery(xq2).execute(ctx);
 
-  final var query = new XQuery("sdb:doc('mycol.xml', 'mydoc.xml')");
+  final var query = new XQuery("xml:doc('mycol.xml', 'mydoc.xml')");
   query.prettyPrint().serialize(ctx, System.out);
   System.out.println();
 }
@@ -225,7 +225,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
      final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   System.out.println();
   System.out.println("Query loaded document:");
-  final var queryString = "sdb:doc('mycol.xml', 'mydoc.xml')/log/all-times::*";
+  final var queryString = "xml:doc('mycol.xml', 'mydoc.xml')/log/all-times::*";
   System.out.println(queryString);
   final var query = new XQuery(compileChain, queryString);
   query.prettyPrint().serialize(ctx, System.out);
@@ -253,7 +253,7 @@ JSON instead has no notion of navigational axis, instead SirixDB provides custom
 ### Open a Specific Revision
 Once we've stored a few revisions of a resource in SirixDB we might want to open a specific revision again. We can use the `doc` function again, but this time with a third parameter:
 
-`sdb:doc('mycol.xml', 'mydoc.xml', 1)`
+`xml:doc('mycol.xml', 'mydoc.xml', 1)`
 
 SirixDB opens the database `mycol.xml` and the resource `mydoc.xml` in revision one. Without the additional revision-number parameter SirixDB would have opened the most recent revision.
 
@@ -265,7 +265,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
      final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   System.out.println();
   System.out.println("Query loaded document:");
-  final var queryString = "sdb:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2019-04-01T05:00:00-00:00\"))/log";
+  final var queryString = "xml:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2019-04-01T05:00:00-00:00\"))/log";
   System.out.println(xq3);
   final var query = new XQuery(compileChain, queryString);
   query.prettyPrint().serialize(ctx, System.out);
@@ -275,7 +275,7 @@ We open the resource in the database as it looked like on 2019-04-01 05:00:00.
 
 With the function `open-revisions` we're able to load all revisions of a resource between two points in time:
 
-`sdb:open-revisions($database as xs:string, $resource as xs:string, $startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as node()*`
+`xml:open-revisions($database as xs:string, $resource as xs:string, $startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as node()*`
 
 For instance we can use the following Java code:
 
@@ -285,7 +285,7 @@ try (final var store = BasicDBStore.newBuilder().build()
     final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   System.out.println("");
   System.out.println("Query loaded document:");
-  final var queryString = "sdb:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2018-04-01T05:00:00-00:00\"), xs:dateTime(\"2019-04-01T05:00:00-00:00\"))";
+  final var queryString = "xml:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2018-04-01T05:00:00-00:00\"), xs:dateTime(\"2019-04-01T05:00:00-00:00\"))";
   System.out.println(queryString);
   final var query = new XQuery(compileChain, queryString);
   query.prettyPrint().serialize(ctx, System.out);
@@ -316,7 +316,7 @@ to retrieve the stored hash of a node.
 With the function
 
 ```xquery
-sdb:attribute-count($node as structured-item()) as xs:int
+xml:attribute-count($node as structured-item()) as xs:int
 ```
 
 you'll get the number of attributes of a node (an element node).
@@ -374,7 +374,7 @@ Arrays can be created using an extended version of the standard JSON array synta
 (: for compliance with the JSON syntax the tokens 'true', 'false', and 'null'
    are translated into the XML values xs:bool('true'), xs:bool('false') and empty-sequence()
 :)
-[ true, false, null ]
+[ true(), false(), jn:null() ]
 
 (: is different to :)
 [ (true), (false), (null) ]
@@ -411,35 +411,35 @@ Records provide an alternative to XML to represent structured data. Like with ar
 (: for compliance with the JSON syntax the tokens 'true', 'false', and 'null'
    are translated into the XML values xs:bool('true'), xs:bool('false') and empty-sequence()
 :)
-{ "a": true, "b": false, "c": null}
+{ "a": true(), "b": false(), "c": jn:null()}
 
-(: field names are modelled as xs:QName and may be set in double quotes,
-   single quotes or completely without quotes.
+(: field names are modelled as xs:QName and may be set in double quotes or 
+   single quotes.
 :)
-{ a: 1, 'b' : 2, "c": 3 }
+{ 'b': 2, "c": 3 }
 
 (: field values may be arbitrary expressions:)
-{ a : concat('f', 'oo') , 'b' : 1+1, c : [1,2,3] } (: yields {a : "foo", b : 2, c : [1,2,3]} :)
+{ "a": concat('f', 'oo'), 'b': 1+1, "c": [1,2,3] } (: yields {"a": "foo", "b": 2, "c": [1,2,3]} :)
 
 (: field values are defined by key-value pairs or by an expression
    that evaluates to a record
 :)
-let $r := { x:1, y:2 } return { $r, z:3} (: yields {x: 1, y: 2, z: 3} :)
+let $r := { "x":1, "y":2 } return { $r, "z":3} (: yields {"x": 1, "y": 2, "z": 3} :)
 
 (: fields may be selectively projected into a new record :)
-{x: 1, y: 2, z: 3}{z,y} (: yields {z: 3, y: 2} :)
+{"x": 1, "y": 2, "z": 3}{z,y} (: yields {"z": 3, "y": 2} :)
 
 (: values of record field can be accessed using the deref operator '=>' :)
-{ a: "hello" , b: "world" }=>b (: yields the string "world" :)
+{ "a": "hello", "b": "world" }=>b (: yields the string "world" :)
 
 (: the deref operator can be used to navigate into deeply nested record structures :)
-let $n := yval let $r := {e : {m:'mvalue', n:$n}} return $r=>e=>n/y (: yields the XML fragment yval :)
+let $n := yval let $r := {"e": {"m":'mvalue', "n":$n}} return $r=>e=>n/y (: yields the XML fragment yval :)
 
 (: the function bit:fields() returns the field names of a record :)
-let $r := {x: 1, y: 2, z: 3} return bit:fields($r) (: yields the xs:QName array [ x, y, z ] :)
+let $r := {"x": 1, "y": 2, "z": 3} return bit:fields($r) (: yields the xs:QName array [ x, y, z ] :)
 
 (: the function bit:values() returns the field values of a record :)
-let $r := {x: 1, y: 2, z: (3, 4) } return bit:values($r) (: yields the array [ 1, 2, (2,4) ] :)
+let $r := {"x": 1, "y": 2, "z": (3, 4) } return bit:values($r) (: yields the array [ 1, 2, (2,4) ] :)
 ```
 
 ### Parsing JSON
@@ -464,9 +464,9 @@ try (final var store = BasicXmlDBStore.newBuilder().build()
   System.out.println("");
   System.out.println("Create name index for all elements with name 'src':");
   final var query = new XQuery(compileChain,
-        "let $doc := sdb:doc('mydocs.col', 'resource1') "
-            + "let $stats := sdb:create-name-index($doc, fn:QName((), 'src')) "
-            + "return <rev>{sdb:commit($doc)}</rev>");
+        "let $doc := xml:doc('mydocs.col', 'resource1') "
+            + "let $stats := xml:create-name-index($doc, fn:QName((), 'src')) "
+            + "return <rev>{xml:commit($doc)}</rev>");
   query.serialize(ctx, System.out);
   System.out.println("");
   System.out.println("Name index creation done.");
@@ -483,8 +483,8 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println("");
   System.out.println("Query name index (src-element).");
  
-  final var queryString = "let $doc := sdb:doc('mydocs.col', 'resource1')"
-      + " let $sequence := sdb:scan-name-index($doc, sdb:find-name-index($doc, fn:QName((), 'src')), fn:QName((), 'src'))"
+  final var queryString = "let $doc := xml:doc('mydocs.col', 'resource1')"
+      + " let $sequence := xml:scan-name-index($doc, xml:find-name-index($doc, fn:QName((), 'src')), fn:QName((), 'src'))"
       + " return sdb:sort($sequence)";
   final var query = new XQuery(compileChain, queryString);
   query.prettyPrint();
@@ -502,8 +502,8 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println("");
   System.out.println("Create path index for all elements (all paths):");
   final var query =
-      new XQuery(compileChain, "let $doc := sdb:doc('mydocs.col', 'resource1') "
-          + "let $stats := sdb:create-path-index($doc, '//*') " + "return <rev>{sdb:commit($doc)}</rev>");
+      new XQuery(compileChain, "let $doc := xml:doc('mydocs.col', 'resource1') "
+          + "let $stats := xml:create-path-index($doc, '//*') " + "return <rev>{sdb:commit($doc)}</rev>");
   query.serialize(ctx, System.out);
   System.out.println("");
   System.out.println("Path index creation done.");
@@ -523,8 +523,8 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   final var node = (DBNode) new XQuery(new SirixCompileChain(store), "doc('mydocs.col')").execute(ctx);
 
   // We can simply use sdb:find-path-index('xs:node', 'xs:string') to find the appropriate index number and then scan the index.
-  final var query = "let $doc := sdb:doc('mydocs.col', 'resource1') " + "return sdb:sort(sdb:scan-path-index($doc, "
-      + "sdb:find-path-index($doc, '//log/*'), '//log/*'))";
+  final var query = "let $doc := xml:doc('mydocs.col', 'resource1') " + "return sdb:sort(xml:scan-path-index($doc, "
+      + "xml:find-path-index($doc, '//log/*'), '//log/*'))";
   final var sortedSeq = new XQuery(compileChain, query).execute(ctx);
   final var sortedIter = sortedSeq.iterate();
 
@@ -548,10 +548,10 @@ try (final var store = BasicXmlDBStore.newBuilder().build()
   System.out.println(
       "Create a CAS index for all attributes and another one for text-nodes. A third one is created for all integers:");
   final var query = new XQuery(compileChain,
-      "let $doc := sdb:doc('mydocs.col', 'resource1') "
-          + "let $casStats1 := sdb:create-cas-index($doc, 'xs:string', '//@*') "
-          + "let $casStats2 := sdb:create-cas-index($doc, 'xs:string', '//*') "
-          + "let $casStats3 := sdb:create-cas-index($doc, 'xs:integer', '//*') "
+      "let $doc := xml:doc('mydocs.col', 'resource1') "
+          + "let $casStats1 := xml:create-cas-index($doc, 'xs:string', '//@*') "
+          + "let $casStats2 := xml:create-cas-index($doc, 'xs:string', '//*') "
+          + "let $casStats3 := xml:create-cas-index($doc, 'xs:integer', '//*') "
           + "return <rev>{sdb:commit($doc)}</rev>");
   query.serialize(ctx, System.out);
   System.out.println("");
@@ -570,7 +570,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println("Find CAS index for all attribute values.");
   
   final var sortedSeq =
-      "let $doc := sdb:doc('mydocs.col', 'resource1') return sdb:sort(sdb:scan-cas-index($doc, sdb:find-cas-index($doc, 'xs:string', '//@*'), 'bar', true(), true(), 0, ()))";
+      "let $doc := xml:doc('mydocs.col', 'resource1') return sdb:sort(sdb:scan-cas-index($doc, sdb:find-cas-index($doc, 'xs:string', '//@*'), 'bar', true(), true(), 0, ()))";
   final var sortedSeq = new XQuery(compileChain, query).execute(ctx);
   final var sortedIter = sortedSeq.iterate();
 
