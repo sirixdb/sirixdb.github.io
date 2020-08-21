@@ -351,6 +351,12 @@ To get the revision timestamp of a node (the timestamp when the transaction has 
 sdb:timestamp($node as structured-item()) as xs:dateTime
 ```
 
+To select a specific node
+
+```xquery
+sdb:select-node($node as xs:structured-item, $nodeKey as xs:integer) as xs:structured-item
+```
+
 ## JSON Extension (Beta)
 
 We copied the description if the JSON extension in Brackit, the XQuery compiler we are using:
