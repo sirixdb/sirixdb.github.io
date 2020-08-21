@@ -24,7 +24,7 @@ For setting up the SirixDB HTTP-Server and a basic Keycloak-instance with a test
 ### Keycloak setup
 
 Keycloak can be set up as described in this excellent [tutorial](
-https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/). Our `docker-compose` file imports a sirix realm with a default admin user with all available roles assigned. Basically you can skip the steps 3 - 7 and and 10 and 11 and simply recreate a `client-secret` and change `oAuthFlowType` to "PASSWORD". If you want to run or modify the integration tests the client secret must not be changed. Make sure to delete the line "build: ." in the `docker-compse.yml` file for the server image if you simply want to use the Docker Hub image.
+https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/). Our [docker-compose](https://raw.githubusercontent.com/sirixdb/sirix/master/docker-compose.yml) file imports a sirix realm with a default admin user with all available roles assigned. Basically you can skip the steps 3 - 7 and and 10 and 11 and simply recreate a `client-secret` and change `oAuthFlowType` to "PASSWORD". If you want to run or modify the integration tests the client secret must not be changed. Make sure to delete the line "build: ." in the `docker-compse.yml` file for the server image if you simply want to use the Docker Hub image.
 
 1. Open your browser. URL: http://localhost:8080
 2. Login with username "admin", password "admin"
@@ -34,7 +34,7 @@ https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x
 6. Make sure `access-type` is set to `confidential`
 7. Go to `Credentials` tab
 8. Put the `client secret` into the SirixDB HTTP-Server [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json). Change the value of "client.secret" to whatever Keycloak set up.
-9. Change "oAuthFlowType" to "PASSWORD" in the same configuration file.
+9. If "oAuthFlowType" is specified in the ame configuration file change the value to "PASSWORD" (if not default is "PASSWORD").
 10. Regarding Keycloak the `direct access` grant on the settings tab must be `enabled`.
 11. Our (user-/group-)roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof. You can also assign `${databaseName}-` prefixed roles.
  
