@@ -296,19 +296,19 @@ try (final var store = BasicDBStore.newBuilder().build()
 SirixDB also provides a few functions, which are based on the fact that currently when importing data with XQuery we generate hashes for each node as well as the number of descendants. Furthermore we always store the number of children of each node. You can use the function
 
 ```xquery
-sdb:descendant-count($node as structured-item()) as xs:long
+sdb:descendant-count($item as structured-item()) as xs:long
 ```
 
-to retrieve the number of descendants of a node,
+to retrieve the number of descendants of an item,
 
 ```xquery
-sdb:child-count($node as structured-item()) as xs:int
+sdb:child-count($item as structured-item()) as xs:int
 ```
 
-to retrieve the number of children of a node and
+to retrieve the number of children of an item and
 
 ```xquery
-sdb:hash($node as structured-item()) as xs:string
+sdb:hash($item as structured-item()) as xs:string
 ```
 
 to retrieve the stored hash of a node.
@@ -324,37 +324,43 @@ you'll get the number of attributes of a node (an element node).
 You can get the most recent revision number with the function
 
 ```xquery
-sdb:most-recent-revision($node as structured-item()) as xs:int
+sdb:most-recent-revision($item as structured-item()) as xs:int
 ```
 
-You can get the unique, stable key/ID of a node with
+You can get the unique, stable key/ID of an item with
 
 ```xquery
-sdb:nodekey($node as structured-item()) as xs:long
+sdb:nodekey($item as structured-item()) as xs:long
 ```
 
 To commit a transaction if no auto-commit is enabled
 
 ```xquery
-sdb:commit($node as structured-item()) as xs:node
+sdb:commit($item as structured-item()) as xs:node
 ```
 
 To rollback a transaction (result item is the aborted revision number)
 
 ```xquery
-sdb:rollback($node as structured-item()) as xs:int
+sdb:rollback($item as structured-item()) as xs:int
 ```
 
 To get the revision timestamp of a node (the timestamp when the transaction has been committed)
 
 ```xquery
-sdb:timestamp($node as structured-item()) as xs:dateTime
+sdb:timestamp($item as structured-item()) as xs:dateTime
 ```
 
 To select a specific node
 
 ```xquery
 sdb:select-node($node as xs:structured-item, $nodeKey as xs:integer) as xs:structured-item
+```
+
+To get the item history:
+
+```xquery
+sdb:node-history($item as xs:structured-item) as xs:structured-item+
 ```
 
 ## JSON Extension (Beta)
