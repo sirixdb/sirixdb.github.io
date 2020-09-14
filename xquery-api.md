@@ -351,16 +351,16 @@ To get the revision timestamp of a node (the timestamp when the transaction has 
 sdb:timestamp($item as structured-item()) as xs:dateTime
 ```
 
-To select a specific node
+To select a specific item
 
 ```xquery
-sdb:select-node($node as xs:structured-item, $nodeKey as xs:integer) as xs:structured-item
+sdb:select-item($node as xs:structured-item, $nodeKey as xs:integer) as xs:structured-item
 ```
 
 To get the item history:
 
 ```xquery
-sdb:node-history($item as xs:structured-item) as xs:structured-item+
+sdb:item-history($item as xs:structured-item) as xs:structured-item+
 ```
 
 ## JSON Extension (Beta)
