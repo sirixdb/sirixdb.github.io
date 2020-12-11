@@ -464,7 +464,7 @@ let $s := io:read('/data/sample.json') return json:parse($s)
 ```
 
 ### Index structures
-Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on alement- or attribute-nodes in XML/XDM resources or name indexes on JSON object record keys, path indexes and so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
+Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on elements (either attribute-nodes in XML/XDM resources, or name indexes on JSON object record keys) path indexes, or so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
 
 First, we create an element index on elements with the local name `src`:
 
@@ -547,7 +547,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 }
 ```
 
-Not that in this example we showed how to get access to the low-level transactional cursor API of Sirix and use this API.
+Note that in this example we showed how to get access to the low-level transactional cursor API of Sirix and use this API.
 
 In order to create a CAS index for all attributes, another one for text-nodes and a third one for all integers text-nodes:
 
