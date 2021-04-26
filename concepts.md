@@ -30,7 +30,7 @@ The main insight is that flash drives as SSDs, which are common nowadays have ze
 
 Furthermore, Marc points out that those small modifications usually involve writing not only the modified data but also all other records on the modified page. This is an undesired effect. Traditional spinning disks require clustering due to slow random reads of traditionally mechanical disk head seek times.
 
-Instead, from a storage point of view, it is desirable only to store the changes. As we’ll see, it boils down to a trade-off between reading and writes performance. On the one hand, a page needs to be reconstructed in memory from scattered incremental changes. On the other hand, a storage system probably has to store more records than necessarily have changed to fast-track the reconstruction of memory pages.
+Instead, from a storage point of view, it is desirable only to store the changes. As we’ll see, it boils down to a trade-off between read and write performance. On the one hand, a page needs to be reconstructed in memory from scattered incremental changes. On the other hand, a storage system probably has to store more records than necessarily have changed to fast-track the reconstruction of memory pages.
 
 ## How we built an Open Source storage system based on these observations from scratch
 SirixDB stores per revision and page deltas. Due to the zero seek time of flash drives, SirixDB does not have to cluster data. It only ever clusters data during transaction commits. Data is written sequentially to log-structured storage. It is never modified in place.
