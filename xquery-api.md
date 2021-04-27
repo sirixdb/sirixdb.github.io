@@ -38,7 +38,7 @@ repositories {
 
 However, if you prefer, we just released version 0.9.5 of Sirix in Maven Central.
 
-Maven artifacts are deployed to the central maven repository (however please use the SNAPSHOT-variants as of now). Currently the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
+Maven artifacts are deployed to the central maven repository (however please use the SNAPSHOT-variants as of now). Currently, the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
 
 Core project:
 
@@ -60,7 +60,7 @@ dependencies {
 ** You have to use Java 13 and Maven >= 3.6.2 **
 
 ## Import and Query
-First, we might want to import an XML document into Sirix. We'll create a database with the imported XML document as a single resource file with the XQuery function `sdb:load(xs:string, xs:string, xs:string) as node()`. The first argument is the database to create, the second the resource which represents the imported XML-document and the third parameter is the resource to import. Then we'll be able to load the resource again and execute our first query (`sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
+First, we might want to import an XML document into Sirix. We’ll create a database with the imported XML document as a single resource file with the XQuery function `sdb:load(xs:string, xs:string, xs:string) as node()`. The first argument is the database to create, the second the resource which represents the imported XML document, and the third parameter is the resource to import. Then we’ll be able to load the resource again and execute our first query (`sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
 
 ```java
 final var doc = Paths.get("src", "main", "resources", "orga.xml");
@@ -93,7 +93,7 @@ In the above example we are importing (loading) an XML document from a file into
 xml:store('mydoc.col', 'mydoc.xml', '<xml>foo<bar/></xml>')
 ```
 
-Loading a collection of XML files in SirixDB is as simple as using the following query. `dir` is a directory path and we're importing all files with an `.xml` suffix:
+Loading a collection of XML files in SirixDB is as simple as using the following query. `dir` is a directory path and we’re importing all files with an `.xml` suffix:
 
 ```xquery
 final var ctx = SirixQueryContext.createWithNodeStore(store);
@@ -128,33 +128,33 @@ We can also store a bunch of JSON-strings within several resources in the databa
 jn:store('mycol.jn',(),('["bla", "blubb"]','{"foo": true}'))
 ```
 
-In that case the second parameter, which otherwise denotes the resource name is not used. Furthermore in both cases the database is implicitly created. However, a fourth boolean parameter can be used to add resources. It is `true()` if a new database should be created or `false()` if the resource should be added to an existing database:
+In that case, the second parameter, which otherwise denotes the resource name is not used. Furthermore, in both cases, the database is implicitly created. However, a fourth boolean parameter can be used to add resources. It is `true()` if a new database should be created or `false()` if the resource should be added to an existing database:
 
 ```xquery
 jn:store('mycol.jn','mydoc.jn','["foo", "bar"]',false())
 ```
 
-In this case the resource is added to the `mycol.jn` database as `mydoc.jn`.
+In this case, the resource is added to the `mycol.jn` database as `mydoc.jn`.
 
-We can open the stored resources again, either via a jn:collection(...) function to retrieve all resources in a database:
+We can open the stored resources again, either via a jn:collection(…) function to retrieve all resources in a database:
 
 ```xquery
 for $doc in jn:collection('mydocs.col') return $doc
 ```
 
-or via `jn:doc(xs:string, xs:string, xs:int) as json-item()`, which is almost identical as the version to open XML resources. The first parameter is the database to open, the second parameter the resource and the last parameter is the optional revision to open. Without the last parameter SirixDB opens the most recent revision.
+or via `jn:doc(xs:string, xs:string, xs:int) as json-item()`, which is almost identical as the version to open XML resources. The first parameter is the database to open, the second parameter the resource, and the last parameter is the optional revision to open. Without the last parameter, SirixDB opens the most recent revision.
 
-For instance if we have stored the following very JSON-string as a resource in SirixDB `{"sirix":{"revisionNumber":1}}`, then we'll be able to retrieve the revisionNumber simply via:
+For instance if we have stored the following very JSON-string as a resource in SirixDB `{"sirix":{"revisionNumber":1}}`, then we’ll be able to retrieve the revisionNumber simply via:
 
 `jn:doc('mycol.jn','mydoc.jn')=>sirix=>revisionNumber`
 
 This example query shows the `deref`-operator `=>` which is used to select object values by their key name.
 
-We'll save other JSON examples for later. First, we want to show how to update XML and JSON resources.
+We’ll save other JSON examples for later. First, we want to show how to update XML and JSON resources.
 
 ### Update a Resource
 
-In order to update a resource we're able to use XQuery Update statements. First we load an XML document again into a resource in a (to be created) database. The database is named `mycol.xml` and the resource `mydoc.xml`. Then we open the database and the resource again. We open the resource in its most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. We serialize the result to `STDOUT` again.
+To update a resource we’re able to use XQuery Update statements. First, we load an XML document again into a resource in a (to be created) database. The database is named `mycol.xml` and the resource `mydoc.xml`. Then we open the database and the resource again. We open the resource in its most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. We serialize the result to `STDOUT` again.
 
 ```java
 // Prepare sample document.
@@ -183,18 +183,19 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println();
 }
 ```
-Note, that a transaction is auto-commited in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case we open the most recent revision, which is revision two. After creating and bootstrapping a resource the revision number is 0 with only a document-root node. Once we commit our imported XML-document we have stored a first revision. We're serializing the stored revision in another query to `STDOUT` again.
 
-SirixDB currently doesn't support update expressions for the JSON-XQuery extension. For now we have to use the transactional cursor based API to update JSON resources. We can simply open the database with XQuery and get the transactional cursor via the `getTrx()`-method on the result sequence:
+Note, that a transaction is auto-committed in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case, we open the most recent revision, which is revision two. After creating and bootstrapping a resource the revision number is 0 with only a document-root node. Once we commit our imported XML document we have stored the first revision. We’re serializing the stored revision in another query to `STDOUT` again.
+
+SirixDB currently doesn’t support update expressions for the JSON-XQuery extension. For now we have to use the transactional cursor based API to update JSON resources. We can simply open the database with XQuery and get the transactional cursor via the `getTrx()`-method on the result sequence:
 
 ```java
 final var seq = new XQuery(compileChain, query).execute(ctx);
 final var rtx = seq.getTrx();
 ```
 
-In Java or Kotlin we can use the transaction to insert Object-structures, Arrays, String, Number, Boolean and Null-values.
+In Java or Kotlin, we can use the transaction to insert Object-structures, Arrays, String, Number, Boolean, and Null-values.
 
-For instance we can insert JSON data as first childs of arrays or as right siblings of array items:
+For instance, we can insert JSON data as first childs of arrays or as right siblings of array items:
 
 `JsonNodeTrx insertSubtreeAsFirstChild(JsonReader reader)`
 
@@ -211,7 +212,7 @@ Object record values can be all JSON node types (`ArrayValue`, `ObjectValue`, `B
 We can find all possible methods in the interface `org.sirix.api.json.JsonNodeTrx`.
 
 ### Temporal axis
-SirixDB not only provides all standard XPath axes for the stored XML documents, but also temporal XPath axes. We can use these axes to analyse how a resource or a subtree therein has changed between several revisions.
+SirixDB not only provides all standard XPath axes for the stored XML documents but also temporal XPath axes. We can use these axes to analyze how a resource or a subtree therein has changed between several revisions.
 
 Temporal axis are compatible with node tests:
 
@@ -232,7 +233,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 }
 ```
 
-SirixDB supports a lot of temporal axis: `first::` to get a node in the first revision, `last::` to get a node in the last revision, `previous::` to get the node in the previous revision, `next::` to get the node in the next revision, `future::` and `future-or-self::` to get a node in all future revisions or the current and future revisions, `past::` and `past-or-self::` to get a node in past revisions or the current and past revisions. We have already seen the `all-times::`-axis which iterates over a node in all revisions.
+SirixDB supports a lot of temporal axis: `first::` to get a node in the first revision, `last::` to get a node in the last revision, previous:: to get the node in the previous revision, `next::` to get the node in the next revision, `future::` and `future-or-self::` to get a node in all future revisions or the current and future revisions, `past::` and `past-or-self::` to get a node in past revisions or the current and past revisions. We have already seen the `all-times::`-axis which iterates over a node in all revisions.
 
 JSON instead has no notion of navigational axis, instead SirixDB provides custom functions:
 
@@ -251,13 +252,13 @@ JSON instead has no notion of navigational axis, instead SirixDB provides custom
 - `jn:next($item as json-item()) as json-item()?`: Function for selecting a json-item in the next revision.
 
 ### Open a Specific Revision
-Once we've stored a few revisions of a resource in SirixDB we might want to open a specific revision again. We can use the `doc` function again, but this time with a third parameter:
+Once we’ve stored a few revisions of a resource in SirixDB we might want to open a specific revision again. We can use the `doc` function again, but this time with a third parameter:
 
 `xml:doc('mycol.xml', 'mydoc.xml', 1)`
 
-SirixDB opens the database `mycol.xml` and the resource `mydoc.xml` in revision one. Without the additional revision-number parameter SirixDB would have opened the most recent revision.
+SirixDB opens the database `mycol.xml` and the resource `mydoc.xml` in revision one. Without the additional revision-number parameter, SirixDB would have opened the most recent revision.
 
-However, we might also want to load a revision by a given point in time. We're able to use the function `sdb:open($database as xs:string, $resource as xs:string, $pointInTime as xs:dateTime) as $doc`:
+However, we might also want to load a revision by a given point in time. We’re able to use the function `sdb:open($database as xs:string, $resource as xs:string, $pointInTime as xs:dateTime) as $doc`:
 
 ```java
 try (final var store = BasicXmlDBStore.newBuilder().build();
@@ -273,7 +274,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 ```
 We open the resource in the database as it looked like on 2019-04-01 05:00:00. 
 
-With the function `open-revisions` we're able to load all revisions of a resource between two points in time:
+With the function `open-revisions` we’re able to load all revisions of a resource between two points in time:
 
 `xml:open-revisions($database as xs:string, $resource as xs:string, $startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as node()*`
 
@@ -293,7 +294,7 @@ try (final var store = BasicDBStore.newBuilder().build()
 ```
 
 ### Transactional-Cursor Based Functions
-SirixDB also provides a few functions, which are based on the fact that currently when importing data with XQuery we generate hashes for each node as well as the number of descendants. Furthermore we always store the number of children of each node. You can use the function
+SirixDB also provides a few functions, which are based on the fact that currently when importing data with XQuery we generate hashes for each node as well as the number of descendants. Furthermore, we always store the number of children of each node. You can use the function
 
 ```xquery
 sdb:descendant-count($item as structured-item()) as xs:long
@@ -319,7 +320,7 @@ With the function
 xml:attribute-count($node as structured-item()) as xs:int
 ```
 
-you'll get the number of attributes of a node (an element node).
+you’ll get the number of attributes of a node (an element node).
 
 You can get the most recent revision number with the function
 
@@ -365,15 +366,15 @@ sdb:item-history($item as xs:structured-item) as xs:structured-item+
 
 ## JSON Extension (Beta)
 
-We copied the description if the JSON extension in Brackit, the XQuery compiler we are using:
+We copied the description of the JSON extension in Brackit, the XQuery compiler we are using:
 
-Brackit features a seamless integration of JSON-like objects and arrays directly at the language level.
+Brackit features seamless integration of JSON-like objects and arrays directly at the language level.
 
 You can easily mix arbitrary XML and JSON data in a single query or simply use brackit to convert data from one format into the other. This allows you to get the most out of your data.
 
 The language extension allows you to construct and operate JSON data directly; additional utility functions help you to perform typical tasks.
 
-Everything is designed to simplify joint processing of XDM and JSON and to maximize the freedom of developers. Thus, our extension effectively supports some sort of superset of XDM and JSON. That means, it is possible to create arrays and objects which do not strictly conform to the JSON RFC. It's up to you to decide how you want to have your data look like!
+Everything is designed to simplify the joint processing of XDM and JSON and to maximize the freedom of developers. Thus, our extension effectively supports some sort of superset of XDM and JSON. That means, it is possible to create arrays and objects which do not strictly conform to the JSON RFC. It’s up to you to decide how you want to have your data look like!
 
 ### Arrays
 
@@ -425,7 +426,7 @@ Records provide an alternative to XML to represent structured data. Like with ar
 :)
 { "a": true(), "b": false(), "c": jn:null()}
 
-(: field names are modelled as xs:QName and may be set in double quotes or 
+(: field names are modeled as xs:QName and may be set in double-quotes or 
    single quotes.
 :)
 { 'b': 2, "c": 3 }
@@ -464,7 +465,7 @@ let $s := io:read('/data/sample.json') return json:parse($s)
 ```
 
 ### Index structures
-Index structures in Sirix are always user defined, typed indexes. We provide three types of indexes, name indexes on elements (either attribute-nodes in XML/XDM resources, or name indexes on JSON object record keys) path indexes, or so called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
+Index structures in Sirix are always user-defined, typed indexes. We provide three types of indexes, name indexes on elements (either attribute-nodes in XML/XDM resources, or name indexes on JSON object record keys) path indexes, or so-called content-and-structure (CAS)-indexes which are a kind of value on specific paths.
 
 First, we create an element index on elements with the local name `src`:
 
@@ -593,4 +594,4 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 }
 ```
 
-In general for each index-type we have a function to create the index, to find the index-number for a given query again (the index definition must match) and to query the index.
+In general, for each index type, we have a function to create the index, to find the index-number for a given query again (the index definition must match), and to query the index.
