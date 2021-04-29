@@ -7,16 +7,16 @@ title: SirixDB - Architecture and Concepts
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/concepts.md)
 
 ## Introduction
-SirixDB is a temporal database system and never overwrites data. Every time you’re committing a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page- as well as node-level. Let’s first define what a temporal database system is all about.
+SirixDB is a temporal database system and never overwrites data. Every time you're committing a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page- as well as node-level. Let's first define what a temporal database system is all about.
 
-A temporal database is capable of retrieving past states. Typically it stores the transaction time; that is the time a transaction commits data. If the valid time is also stored, that is when a fact is true in the real world, we have a bitemporal relation, which is two-time axes.
+A temporal database is capable of retrieving past states. Typically it stores the transaction time; that is the time a transaction commits data. If the valid time is also stored, that is when a fact is true in the real world, we have a bitemporal relation, which means two time axis.
 
-SirixDB can help answer questions such as the following: Give me last month’s history of the Dollar-Pound Euro exchange rate. What was the customer’s address on July 12th in 2015 as it was recorded back in the day? Did they move or did someone correct an error? Did we have errors in the database, which were corrected later on?
+SirixDB can help answer questions such as the following: Give me last month's history of the Dollar-Pound Euro exchange rate. What was the customer's address on July 12th in 2015 as it was recorded back in the day? Did they move or did someone correct an error? Did we have errors in the database, which were corrected later on?
 
-Let’s turn our focus towards the question of why historical data has not been retained in the past. We postulate that new storage advances in recent years present possibilities, to build sophisticated solutions to help answer those questions without the hurdle, state-of-the-art systems bring.
+Let's turn our focus towards the question of why historical data has not been retained in the past. We postulate that new storage advances in recent years present possibilities, to build sophisticated solutions to help answer those questions without the hurdle, state-of-the-art systems bring.
 
 ## Advantages and disadvantages of flash drives, for instance, SSDs
-As Marc Kramis points out in his paper “Growing Persistent Trees into the 21st Century”:
+As Marc Kramis points out in his paper "Growing Persistent Trees into the 21st Century":
 
 > The switch to flash drives keenly motivates to shift from the “current state” paradigm towards remembering the evolutionary steps leading to this state.
 
@@ -99,26 +99,26 @@ Note that SirixDB has to update the ancestor path of each changed RecordPage. H
 
 ### Versioning at the page-level
 
-One of the most distinctive features of SirixDB is that it versions the RecordPages. It doesn’t merely copy all records of the page, even if a transaction only modifies a single record. The new record page fragment always contains a reference to the previous version. Thus, the versioning algorithms can dereference a fixed predefined number of page-fragments at maximum to reconstruct a RecordPage in-memory.
+One of the most distinctive features of SirixDB is that it versions the *RecordPages*. It doesn't merely copy all records of the page, even if a transaction only modifies a single record. The new record page fragment always contains a reference to the previous version. Thus, the versioning algorithms can dereference a fixed predefined number of page-fragments at maximum to reconstruct a RecordPage in-memory.
 
 **A sliding snapshot algorithm used to version record pages can avoid read and write peaks. The algorithm avoids intermittent full-page snapshots, which are otherwise needed during incremental or differential page-versioning to fast-track its reconstruction.**
 
 ### Versioning algorithms for storing and retrieving page snapshots
 
-SirixDB stores at most a fixed number of records. That is the actual data per database page (currently limited to 512 records). The records themselves are of variable size. Overlong records, which exceed a predefined length in bytes, are stored in additional overflow pages. SirixDB stores references to these pages in the record pages.
+SirixDB stores at most a fixed number of records. That is the actual data per database-page (currently limited to 512 records). The records themselves are of variable size. Overlong records, which exceed a predefined length in bytes, are stored in additional overflow pages. SirixDB stores references to these pages in the record pages.
 
 SirixDB implements several versioning strategies best known from backup systems for copy-on-write operations of record-pages. Namely, it either copies
 
 - the full record-page that is any record in the page (full)
-- only the changed records in a record page regarding the former version (incremental)
+- only the changed records in a record-page regarding the former version (incremental)
 - only the changed records in a record-page since a full-page dump (differential)
 
 Incremental-versioning is one extreme. Write performance is best, as it stores the optimum (only changed records). On the other hand, reconstructing a page needs intermittent full snapshots of pages. Otherwise, performance deteriorates with each new revision of the page as the number of increments increases with each new version.
 
-Differential-versioning tries to balance reads and writes a bit better, but is still not optimal. A system, implementing a differential versioning strategy has to write all changed records since a past full dump of the page. Thus, only ever two revisions of the page fragment have to be read to reconstruct a record page. However, write performance also deteriorates with each new revision of the page.
+Differential-versioning tries to balance reads and writes a bit better, but is still not optimal. A system, implementing a differential versioning strategy has to write all changed records since a past full dump of the page. Thus, only ever two revisions of the page fragment have to be read to reconstruct a record-page. However, write performance also deteriorates with each new revision of the page.
 
 Write peaks occur both during incremental versioning, due to the requirement of intermittent full dumps of the page. Differential versioning also suffers from a similar problem. Without an intermittent full dump, a system using differential versioning has to duplicate vast amounts of data during each new write.
 
 Marc Kramis came up with the idea of a novel sliding snapshot algorithm, which balances read/write performance to circumvent any write-peaks.
 
-The algorithm makes use of a sliding window. First, any changed record must be written during a commit. Second, any record, which is older than a predefined length N of the window and which has not been changed during these N-revisions must be written, too. Only these N-revisions at max have to be read. Fetching of the page fragments can be done in parallel or linear. In the latter case, the page fragments are read starting with the most recent revision. The algorithm stops once the full page has been reconstructed. You can find the best high-level overview of the algorithm in Marc’s Thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695)
+The algorithm makes use of a sliding window. First, any changed record must be written during a commit. Second, any record, which is older than a predefined length N of the window and which has not been changed during these N-revisions must be written, too. Only these N-revisions at max have to be read. Fetching of the page fragments can be done in parallel or linear. In the latter case, the page fragments are read starting with the most recent revision. The algorithm stops once the full page has been reconstructed. You can find the best high-level overview of the algorithm in Marc's Thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695)
