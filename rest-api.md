@@ -24,7 +24,7 @@ For setting up the SirixDB HTTP-Server and a basic Keycloak-instance with a test
 ### Keycloak setup
 
 Keycloak can be set up as described in this excellent [tutorial](
-https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/). Our [docker-compose](https://raw.githubusercontent.com/sirixdb/sirix/master/docker-compose.yml) file imports a sirix realm with a default admin user with all available roles assigned. Basically you can skip the steps 3 - 7 and and 10 and 11 and simply recreate a `client-secret` and change `oAuthFlowType` to "PASSWORD". If you want to run or modify the integration tests the client secret must not be changed. Make sure to delete the line "build: ." in the `docker-compse.yml` file for the server image if you simply want to use the Docker Hub image.
+https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/). Our [docker-compose](https://raw.githubusercontent.com/sirixdb/sirix/master/docker-compose.yml) file imports a sirix realm with a default admin user with all available roles assigned. Basically you can skip the steps 3 - 7 and 10 and 11 and simply recreate a `client-secret` and change `oAuthFlowType` to "PASSWORD". If you want to run or modify the integration tests the client secret must not be changed. Make sure to delete the line "build: ." in the `docker-compse.yml` file for the server image if you simply want to use the Docker Hub image.
 
 1. Open your browser. URL: http://localhost:8080
 2. Login with username "admin", password "admin"
