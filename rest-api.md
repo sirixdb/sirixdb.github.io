@@ -285,7 +285,7 @@ so in each request add the token: "Authorization: Bearer ${accessToken}".
 In order to create a database either with multiple or a single resource:
 
 - `PUT https://localhost:9443/<database>`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
-- `PUT https://localhost:9443/<database>/<resource>` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON. As it's returning the serialized form with in the case of XML additional metadata of SirixDB you should also specify the `Accept` header. Additionally query Paramus `commitMessage` to add a commit message to the initial commit as well as a custom `commitTimestamp` might be specified. Both parameters are optional.
+- `PUT https://localhost:9443/<database>/<resource>` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON. As it's returning the serialized form with in the case of XML additional metadata of SirixDB you should also specify the `Accept` header. Additionally query params `commitMessage` to add a commit message to the initial commit as well as a custom `commitTimestamp` might be specified. Both parameters are optional.
 
 ### Read
 
@@ -328,17 +328,19 @@ In order to update or delete a resource stored in a database you have to make su
   - `insert` with the possible values, `asFirstChild`, `asLeftSibling`, `asRightSibling`, `replace`, to determine where to insert the XML-fragment or the JSON data.
 
   If both parameters are omitted the root-node (and its subtree) is going to be replaced by the new XML fragment or JSON data. In the case of XML an error is thrown if the HTTP request body doesn't start with a start-tag.
+  - optional `commitMessage` to add a commit message to the initial commit
+  - optional custom `commitTimestamp` -- usually set during a commit by SirixDB. Should only be used to import existing versioned data. The format either is `yyyy-MM-ddTHH:mm:ss` or `yyyy-MM-dd HH:mm:ss.SSS`in UTC.
 
-- `POST https://localhost:9443`: to send a longer XQuery-expression in the body. For instance
+- `POST https://localhost:9443`: to send a longer JSONiq/XQuery-expression in the body. For instance
 ```json
 { 
-  "query": "//foo/bar",
+  "query": "jn:doc('database','resource',5)=>foo=>bar",
   "startResultSeqIndex": 3,
   "endResultSeqIndex": 5
 }
 ```
 
-  The `startResultSeqIndex` and `endResultSeqIndex` object fields are optional. You can use `startResultSeqIndex` to specify the start index of when to deliver results from the result sequence starting from 0 and an optional end index (inclusive) with `endResultSeqIndex`.
+  The `startResultSeqIndex` and `endResultSeqIndex` object fields are optional. You can use `startResultSeqIndex` to specify the start index of when to deliver results from the result sequence starting from 0 and an optional end index (inclusive) with `endResultSeqIndex`. 
 
 ### Delete
 
