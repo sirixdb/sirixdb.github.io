@@ -285,7 +285,7 @@ so in each request add the token: "Authorization: Bearer ${accessToken}".
 In order to create a database either with multiple or a single resource:
 
 - `PUT https://localhost:9443/<database>`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
-- `PUT https://localhost:9443/<database>/<resource>` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON. As it's returning the serialized form with in the case of XML additional metadata of SirixDB you should also specify the `Accept` header.
+- `PUT https://localhost:9443/<database>/<resource>` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON. As it's returning the serialized form with in the case of XML additional metadata of SirixDB you should also specify the `Accept` header. Additionally query Paramus `commitMessage` to add a commit message to the initial commit as well as a custom `commitTimestamp` might be specified. Both parameters are optional.
 
 ### Read
 
@@ -325,7 +325,7 @@ In order to update or delete a resource stored in a database you have to make su
 
 - `POST https://localhost:9443/<database>/<resource>` for adding content from the request-body. Supported URL-parameters are
   - `nodeId`, to select the context-Node.
-  - `insert` with the possible values, `asFirstChild`, `asLeftSibling`, `asRightSibling`, `replace`, to determine where to insert the XML-fragment or the JSON data (**note that for JSON asLeftSibling is not supported as of now**).
+  - `insert` with the possible values, `asFirstChild`, `asLeftSibling`, `asRightSibling`, `replace`, to determine where to insert the XML-fragment or the JSON data.
 
   If both parameters are omitted the root-node (and its subtree) is going to be replaced by the new XML fragment or JSON data. In the case of XML an error is thrown if the HTTP request body doesn't start with a start-tag.
 
