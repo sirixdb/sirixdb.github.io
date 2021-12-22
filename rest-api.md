@@ -258,7 +258,7 @@ The following sections give a complete specification of the routes.
 
 ## API Description
 
-The API for storing and querying XML and JSON databases are almost identical.
+The API for storing and querying XML and JSON databases is almost identical.
 
 As described above, you first have to authenticate with a `username` and `password` and retrieve a token, which has to be sent in the Authentication header as a Bearer token:
 
