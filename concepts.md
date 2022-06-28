@@ -40,16 +40,12 @@ Database pages are copied to memory, updated and synced to a file in batches. Wh
 The page-structure is heavily inspired by the operating system ZFS. We used some of the ideas to store and version data on a sub-file level. We'll see that Marc Kramis came up with a novel sliding snapshot algorithm to version record pages, based on observed shortcomings of versioning approaches from backup systems.
 
 ### Page structure
-SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding. 
+SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding.
 
 The page-structure for one revision of a resource is depicted in the following figure:
 
 <div class="img_container">
 ![pageStructure](images/architecture-overview.png){: style="max-width: 100%; height: auto; margin: 0em"}
-</div>
-
-<div class="img_container">
-![pageStructure](images/pageStructureOneRev.png){: style="max-width: 100%; height: auto; margin: 0em"}
 </div>
 
 **Each node and revision in SirixDB is referenced by a unique, stable identifier.** First, SirixDB has to find the revision by its revision number traversing a tree of indirect-pages. Addressing nodes is done in the same manner.
@@ -78,8 +74,8 @@ NamePage
 CASPage
 : A `CASPage` is the main entry point to store and retrieve CAS- (content-and-structure) indexes. They are a hybrid consisting of path class definitions and typed content. `/book/published[xs:dateTime]` for instance indexes the path `/book/published` and the content as `xs:dateTime`. The indexes are as always stored in RedBlack-trees.
 
-RecordPage
-: `RecordPage`s store the actual data. Currently, SirixDB stores 512 records in a record page. Each record page has a pointer to the previous record page, which stores the offset of the previous version of this record page. This pointer is crucial for our versioning algorithms, which have to retrieve several record pages (or record page fragments) to reconstruct a record page in-memory. Furthermore, records, which exceed a predefined size, are stored in so-called `OverflowPage`s and referenced in a record page.
+RecordPage/UnorderedKeyValuePage
+: `UnorderedKeyValuePage`s store the actual data. Currently, SirixDB stores 512 records in a record page. The `IndirectPage`, which has a page reference to this record page, might also have up to `N` page references to previous revisions of this page called page fragments. This pointer is crucial for our versioning algorithms, which have to retrieve several record pages (or record page fragments) to reconstruct a record page in-memory. Furthermore, records, which exceed a predefined size, are stored in so-called `OverflowPage`s and referenced in a record page.
 
 OverflowPage
 : `OverflowPage`s are used to store records, which exceeds a predefined size in bytes. When a transaction reads a record, SirixDB reconstructs the record page in-memory.
