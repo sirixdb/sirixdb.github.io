@@ -25,7 +25,7 @@ The main insight is that flash drives as SSDs, which are common nowadays have ze
 ### Evolution of state through fine-grained modifications
 
 <div class="img_container">
-![stateEvolution](https://miro.medium.com/max/771/1*bHwVd6phGROGnZi1hJqHHQ.png){: style="max-width: 100%; height: auto; margin: 0em"}
+![stateEvolution](https://miro.medium.com/max/771/1*bHwVd6phGROGnZi1hJqHHQ.png){: style="max-width: 80%; height: auto; margin: 0em"}
 </div>
 
 Furthermore, Marc points out that those small modifications usually involve writing not only the modified data but also all other records on the modified page. This is an undesired effect. Traditional spinning disks require clustering due to slow random reads of traditionally mechanical disk head seek times. 
