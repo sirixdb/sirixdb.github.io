@@ -7,7 +7,7 @@ title: SirixDB - Architecture and Concepts
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/concepts.md)
 
 ## Introduction
-SirixDB is a temporal database system and never overwrites data. Every time you're committing a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page- as well as node-level. Let's first define what a temporal database system is all about.
+SirixDB is a temporal, tamper proof append-only database system and never overwrites data. Every time you're committing a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page- as well as node-level. Let's first define what a temporal database system is all about.
 
 A temporal database is capable of retrieving past states. Typically it stores the transaction time; that is the time a transaction commits data. If the valid time is also stored, that is when a fact is true in the real world, we have a bitemporal relation, which is two time axes.
 
@@ -40,8 +40,13 @@ Database pages are copied to memory, updated and synced to a file in batches. Wh
 The page-structure is heavily inspired by the operating system ZFS. We used some of the ideas to store and version data on a sub-file level. We'll see that Marc Kramis came up with a novel sliding snapshot algorithm to version record pages, based on observed shortcomings of versioning approaches from backup systems.
 
 ### Page structure
+SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding. 
 
-The page-structure for one revision is depicted in the following figure:
+The page-structure for one revision of a resource is depicted in the following figure:
+
+<div class="img_container">
+![pageStructure](images/architecture-overview.png){: style="max-width: 100%; height: auto; margin: 0em"}
+</div>
 
 <div class="img_container">
 ![pageStructure](images/pageStructureOneRev.png){: style="max-width: 100%; height: auto; margin: 0em"}
