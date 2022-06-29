@@ -45,7 +45,7 @@ SirixDB stores `databases`, that is, collections of `resources`. Resources are t
 The page-structure for one revision of a resource is depicted in the following figure:
 
 <div class="img_container">
-[![Resource Page tree](images/architecture-overview.png)](https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/architecture-overview.png){: style="max-width: 30%; width: 30%; height: auto; margin: 0em"}
+[![Resource Page tree](images/architecture-overview.png)](https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/architecture-overview.png){: style="max-width: 30%; width: 700px; height: auto; margin: 0em"}
 </div>
 
 **Each node and revision in SirixDB is referenced by a unique, stable identifier.** First, SirixDB has to find the revision by its revision number traversing a tree of indirect-pages. Addressing nodes is done in the same manner.
