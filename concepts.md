@@ -68,10 +68,10 @@ PathSummaryPage
 : A path summary page has a reference to an indirect page, which is the main entry point to retrieve and restore a lightweight path summary in the leaves of the tree, the `RecordPage`s. In this case, the record pages store the path nodes.
 
 NamePage
-: The `NamePage` contains dictionaries of frequently used names, that is element-/attribute-names and namespaces in XML or object key names in JSON. The nodes store the dictionary keys. Furthermore, once a user creates name-indexes, SirixDB creates `IndirectPage`s. Each indirect page is the root of an index. Just as described for the path page the indexes are stored in the leaf record pages in RedBlack-trees.
+: The `NamePage` contains dictionaries of frequently used names, that is element/attribute names and namespaces in XML or object key names in JSON. The nodes store the dictionary keys. Furthermore, once a user creates name-indexes, SirixDB creates `IndirectPage`s. Each indirect page is the root of an index. Just as described for the path page the indexes are stored in the leaf record pages in RedBlack-trees.
 
 CASPage
-: A `CASPage` is the main entry point to store and retrieve CAS- (content-and-structure) indexes. They are a hybrid consisting of path class definitions and typed content. `/book/published[xs:dateTime]` for instance indexes the path `/book/published` and the content as `xs:dateTime`. The indexes are as always stored in RedBlack-trees.
+: A `CASPage` is the main entry point to store and retrieve CAS (content-and-structure) indexes. They are a hybrid consisting of path class definitions and typed content. `/book/published[xs:dateTime]` for instance indexes the path `/book/published` and the content as `xs:dateTime`. The indexes are as always stored in RedBlack-trees.
 
 RecordPage/UnorderedKeyValuePage
 : `UnorderedKeyValuePage`s store the actual data. Currently, SirixDB stores 512 records in a record page. The `IndirectPage`, which has a page reference to this record page, might also have up to `N` page references to previous revisions of this page called page fragments. This pointer is crucial for our versioning algorithms, which have to retrieve several record pages (or record page fragments) to reconstruct a record page in-memory. Furthermore, records, which exceed a predefined size, are stored in so-called `OverflowPage`s and referenced in a record page.
