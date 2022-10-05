@@ -7,9 +7,9 @@ title: SirixDB - Architecture and Concepts
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/concepts.md)
 
 ## Introduction
-SirixDB is a temporal, tamper proof append-only database system and never overwrites data. Every time you're committing a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page- as well as node-level. Let's first define what a temporal database system is all about.
+SirixDB is a temporal, tamper-proof append-only database system that never overwrites data. Every time you're committing a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page as well as node-level. Let's first define what a temporal database system is all about.
 
-A temporal database is capable of retrieving past states. Typically it stores the transaction time; that is the time a transaction commits data. If the valid time is also stored, that is when a fact is true in the real world, we have a bitemporal relation, which is two time axes.
+A temporal database is capable of retrieving past states. Typically it stores the transaction time; that is the time at which a transaction commits data. If the valid time is also stored, that is when a fact is true in the real world, we have a bitemporal relation, which is two time axes.
 
 SirixDB can help answer questions such as the following: Give me last month's history of the Dollar-Pound Euro exchange rate. What was the customer's address on July 12th in 2015 as it was recorded back in the day? Did they move or did someone correct an error? Did we have errors in the database, which were corrected later on?
 
@@ -30,7 +30,7 @@ The main insight is that flash drives as SSDs, which are common nowadays have ze
 
 Furthermore, Marc points out that those small modifications usually involve writing not only the modified data but also all other records on the modified page. This is an undesired effect. Traditional spinning disks require clustering due to slow random reads of traditionally mechanical disk head seek times. 
 
-Instead, from a storage point of view, it is desirable only to store the changes. As we'll see, it boils down to a trade-off between read and write performance. On the one hand, a page needs to be reconstructed in-memory from scattered incremental changes. On the other hand, a storage system probably has to store more records than necessarily have changed to fast track the reconstruction of pages in memory.
+Instead, from a storage point of view, it is desirable only to store the changes. As we'll see, it boils down to a trade-off between read and write performance. On the one hand, a page needs to be reconstructed in-memory from scattered incremental changes. On the other hand, a storage system probably has to store more records than necessarily have changed to fast-track the reconstruction of pages in memory.
 
 ## How we built an Open Source storage system based on these observations from scratch
 SirixDB stores per revision and page deltas. Due to zero seek time of flash drives, SirixDB does not have to cluster data. It only ever clusters data during transaction commits. Data is written sequentially to log-structured storage. It is never modified in-place.
@@ -68,10 +68,10 @@ PathSummaryPage
 : A path summary page has a reference to an indirect page, which is the main entry point to retrieve and restore a lightweight path summary in the leaves of the tree, the `RecordPage`s. In this case, the record pages store the path nodes.
 
 NamePage
-: The `NamePage` contains dictionaries of frequently used names, that is element-/attribute-names and namespaces in XML or object key names in JSON. The nodes store the dictionary keys. Furthermore, once a user creates name-indexes, SirixDB creates `IndirectPage`s. Each indirect page is the root of an index. Just as described for the path page the indexes are stored in the leaf record pages in RedBlack-trees.
+: The `NamePage` contains dictionaries of frequently used names, that is element/attribute names and namespaces in XML or object key names in JSON. The nodes store the dictionary keys. Furthermore, once a user creates name-indexes, SirixDB creates `IndirectPage`s. Each indirect page is the root of an index. Just as described for the path page the indexes are stored in the leaf record pages in RedBlack-trees.
 
 CASPage
-: A `CASPage` is the main entry point to store and retrieve CAS- (content-and-structure) indexes. They are a hybrid consisting of path class definitions and typed content. `/book/published[xs:dateTime]` for instance indexes the path `/book/published` and the content as `xs:dateTime`. The indexes are as always stored in RedBlack-trees.
+: A `CASPage` is the main entry point to store and retrieve CAS (content-and-structure) indexes. They are a hybrid consisting of path class definitions and typed content. `/book/published[xs:dateTime]` for instance indexes the path `/book/published` and the content as `xs:dateTime`. The indexes are as always stored in RedBlack-trees.
 
 RecordPage/UnorderedKeyValuePage
 : `UnorderedKeyValuePage`s store the actual data. Currently, SirixDB stores 512 records in a record page. The `IndirectPage`, which has a page reference to this record page, might also have up to `N` page references to previous revisions of this page called page fragments. This pointer is crucial for our versioning algorithms, which have to retrieve several record pages (or record page fragments) to reconstruct a record page in-memory. Furthermore, records, which exceed a predefined size, are stored in so-called `OverflowPage`s and referenced in a record page.
