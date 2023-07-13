@@ -4,7 +4,7 @@ doctitle: Architecture and Concepts
 title: SirixDB - Architecture and Concepts
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/concepts.md)
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/concepts.md)
 
 ## Introduction
 SirixDB is a temporal, tamper-proof append-only database system that never overwrites data. Every time you're committing a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page as well as node-level. Let's first define what a temporal database system is all about.
@@ -45,7 +45,7 @@ SirixDB stores `databases`, that is, collections of `resources`. Resources are t
 The page-structure for one revision of a resource is depicted in the following figure (click for full size):
 
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/architecture-overview.png">
-<img src="images/architecture-overview.png" align="center" width="80%" style="text-decoration: none"></a>
+<img src="/images/architecture-overview.png" align="center" width="80%" style="text-decoration: none"></a>
 
 **Each node and revision in SirixDB is referenced by a unique, stable identifier.** First, SirixDB has to find the revision by its revision number traversing a tree of indirect-pages. Addressing nodes is done in the same manner.
 
@@ -86,7 +86,7 @@ However, potentially only a small fraction of records in the page have to be ret
 The next figure depicts what happens during a transaction-commit.
 
 <div class="img_container">
-![pageStructure](images/copy-on-write.png){: style="max-width: 100%; height: auto; margin: 0em"}
+![pageStructure](/images/copy-on-write.png){: style="max-width: 100%; height: auto; margin: 0em"}
 </div>
 
 We assume that a read-write transaction modifies a record in the leftmost *RecordPage*. Depending on the versioning algorithm used by SirixDB, the modified record, as well as probably some other records of the page, are copied to a new page fragment. First, SirixDB stores all changes in an in-memory transaction (intent) log. Second, during a transaction commit, the page-structure of the current *RevisionRootPage* is serialized in a postorder traversal.
