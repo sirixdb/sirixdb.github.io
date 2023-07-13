@@ -39,9 +39,9 @@ You may find a quick overview about the [main features](/features.html) useful.
 ### API Documentation
 We provide several APIs to interact with SirixDB.
 
-1. The [transactional cursor API](/transactional-cursor-api.html) is a powerful low-level API.
-2. On top of this API we built a [Brackit.org](http://brackit.org) binding to provide the ability to use SirixDB with a more [DOM-alike API](/dom-alike-api.html) with in-memory nodes and an [JSONiq API](/jsoniq-api.html).
-3. We provide a powerful, asynchronous, non-blocking [RESTful-API](/rest-api.html) to interact with a SirixDB HTTP-server. Authorization is done via Keycloak.
+1. The [transactional cursor API](/docs/transactional-cursor-api.html) is a powerful low-level API.
+2. On top of this API we built a [Brackit.org](http://brackit.org) binding to provide the ability to use SirixDB with a more [DOM-alike API](/docs/dom-alike-api.html) with in-memory nodes and an [JSONiq API](/docs/jsoniq-api.html).
+3. We provide a powerful, asynchronous, non-blocking [RESTful-API](/docs/rest-api.html) to interact with a SirixDB HTTP-server. Authorization is done via Keycloak.
 
 ### Publications
 Articles published on Baeldung:
