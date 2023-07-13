@@ -36,7 +36,7 @@ repositories {
 }
 ```
 
-Maven artifacts are deployed to the central maven repository once we release a new version (however, please use the SNAPSHOT-variants as of now). Currently, the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
+Maven artifacts are deployed to the central maven repository once we release a new version (however, please use the SNAPSHOT-versions as of now). Currently, the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
 
 Core project:
 
