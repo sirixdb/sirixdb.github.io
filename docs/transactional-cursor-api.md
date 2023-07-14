@@ -111,11 +111,11 @@ try (final var database = Databases.openXmlDatabase(databaseFile)) {
                          .buildPathSummary(true)
                          .build());
 
-  try (// Open a resource manager.
-       final var manager = database.beginResourceSession("resource");
+  try (// Open a resource session.
+       final var session = database.beginResourceSession("resource");
        // Open only write transaction on the resource (transaction provides
        // a cursor for navigation through moveToX-methods).
-       final var wtx = manager.beginNodeTrx();
+       final var wtx = session.beginNodeTrx();
        final var fis = new FileInputStream(pathToXmlFile.toFile())) {
        
        // Import an XML document.
@@ -154,11 +154,11 @@ try (final var database = Databases.openJsonDatabase(databaseFile)) {
   // Create a first resource with all standard builder settings set.
   database.createResource(ResourceConfiguration.builder("resource").build());
 
-  try (// Open a resource manager.
-       final var manager = database.beginResourceSession("resource");
+  try (// Open a resource session.
+       final var session = database.beginResourceSession("resource");
        // Open only write transaction on the resource (transaction provides
        // a cursor for navigation through moveToX-methods).
-       final var wtx = manager.beginNodeTrx();
+       final var wtx = session.beginNodeTrx();
        final var fis = new FileInputStream(pathToJsonFile.toFile())) {
        
        // Import a JSON-document.
@@ -173,14 +173,14 @@ try (final var database = Databases.openJsonDatabase(databaseFile)) {
 
 ### Preorder Navigation in an XML resource
 
-Now, that you've have imported the first resource into SirixDB, you can reuse the read-write transaction after issuing the commit. Alternatively, you can open the resource manager again and start a new read-only transaction.
+Now, that you've have imported the first resource into SirixDB, you can reuse the read-write transaction after issuing the commit. Alternatively, you can open the resource session again and start a new read-only transaction.
 
 ```java
 // Open the database.
 try (final var database = Databases.openXmlDatabase(databaseFile);
-     final var manager = database.beginResourceSession("resource");
+     final var session = database.beginResourceSession("resource");
      // Now open a read-only transaction again.
-     final var rtx = manager.beginNodeReadOnlyTrx()) {
+     final var rtx = session.beginNodeReadOnlyTrx()) {
     
   // Use the descendant axis to iterate over all structural descendant nodes
   // (each node with the exception of namespace- and attribute-nodes) in
@@ -697,7 +697,7 @@ final var rtx = session.beginNodeReadOnlyTrx(instant)
 In order to serialize the (most recent) revision of a resource in an XML database pretty printed to STDOUT:
 
 ```java
-final var serializer = XmlSerializer.newBuilder(manager, System.out).prettyPrint().build();
+final var serializer = XmlSerializer.newBuilder(session, System.out).prettyPrint().build();
 serializer.call();
 ```
 
@@ -706,7 +706,7 @@ Or write it to string:
 ```java
 final var baos = new ByteArrayOutputStream();
 final var writer = new PrintStream(baos);
-final var serializer = XmlSerializer.newBuilder(manager, writer)
+final var serializer = XmlSerializer.newBuilder(session, writer)
                                     .prettyPrint()
                                     .build();
 serializer.call();
@@ -716,7 +716,7 @@ final var content = baos.toString(StandardCharsets.UTF_8);
 In order to serialize revision 1, 2 and 3 of a resource with an XML declaration and the internal node keys for element nodes (pretty printed):
 
 ```java
-final var serializer = XmlSerializer.newBuilder(manager, out, 1, 2, 3)
+final var serializer = XmlSerializer.newBuilder(session, out, 1, 2, 3)
                                     .emitXMLDeclaration()
                                     .emitIds()
                                     .prettyPrint()
@@ -727,7 +727,7 @@ serialize.call()
 In order to serialize all stored revisions with the internal node keys and pretty printed:
 
 ```java
-final var serializer = XmlSerializer.newBuilder(manager, out, -1)
+final var serializer = XmlSerializer.newBuilder(session, out, -1)
                                     .emitXMLDeclaration()
                                     .emitIds()
                                     .prettyPrint()
