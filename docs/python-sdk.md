@@ -4,6 +4,8 @@ doctitle: Python SDK API
 title: SirixDB - Python SDK API
 ---
 
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/python-sdk.md)
+
 ## Introduction
 
 The python SDK for provides a simple, intuitive API for accessing the SirixDB REST-API. It can be used both with synchronous code, or with asynchronous code.
@@ -12,7 +14,7 @@ This document is a tutorial for using the python SDK (henceforth: pysirix), incl
 
 This document concentrates on JSON data, but much of it valid with XML data as well.
 
-The API docs can be found (here)[https://pysirix.readthedocs.io/].
+The API docs can be found [here](https://pysirix.readthedocs.io/).
 
 ## Setting up SirixDB locally
 
