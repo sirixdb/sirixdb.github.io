@@ -4,7 +4,7 @@ doctitle: Transactional cursor-based API
 title: SirixDB - Transactional cursor-based API
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/transactional-cursor-api.md)
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/transactional-cursor-api.md)
 
 ## Maven artifacts
 
@@ -55,7 +55,7 @@ dependencies {
 }
 ```
 
-**You have to use Java 13 and Maven >= 3.6.2**
+**You have to use Java 20 and the provided Gradle wrapper**
 
 ## Article Describing the JSON Transactional Cursor API
 You can find an article about this API regarding only JSON stuff on [Baeldung](https://www.baeldung.com/sirix).
@@ -68,7 +68,7 @@ SirixDB doesn't use range-encodings (not update-friendly) or hierarchical labels
 Instead of the aforementioned encodings, a node in SirixDB references other nodes by a firstChild/leftSibling/rightSibling/parentNodeKey/nodeKey encoding. Think of it as a persistent DOM:
 
 <div class="img_container">
-![encoding](images/encoding.png)
+![encoding](/images/encoding.png)
 </div>
 
 The numbers in the figure are auto-generated unique, stable node-IDs or node-keys generated with a simple sequential number generator.
