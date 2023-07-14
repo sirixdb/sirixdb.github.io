@@ -112,7 +112,7 @@ try (final var database = Databases.openXmlDatabase(databaseFile)) {
                          .build());
 
   try (// Open a resource manager.
-       final var manager = database.openResourceManager("resource");
+       final var manager = database.beginResourceSession("resource");
        // Open only write transaction on the resource (transaction provides
        // a cursor for navigation through moveToX-methods).
        final var wtx = manager.beginNodeTrx();
@@ -155,7 +155,7 @@ try (final var database = Databases.openJsonDatabase(databaseFile)) {
   database.createResource(ResourceConfiguration.builder("resource").build());
 
   try (// Open a resource manager.
-       final var manager = database.openResourceManager("resource");
+       final var manager = database.beginResourceSession("resource");
        // Open only write transaction on the resource (transaction provides
        // a cursor for navigation through moveToX-methods).
        final var wtx = manager.beginNodeTrx();
@@ -178,7 +178,7 @@ Now, that you've have imported the first resource into SirixDB, you can reuse th
 ```java
 // Open the database.
 try (final var database = Databases.openXmlDatabase(databaseFile);
-     final var manager = database.openResourceManager("resource");
+     final var manager = database.beginResourceSession("resource");
      // Now open a read-only transaction again.
      final var rtx = manager.beginNodeReadOnlyTrx()) {
     
@@ -245,9 +245,9 @@ JSON obviously has no namespaces or attributes, but with this exception, you can
 ```java
 // Open the database.
 try (final var database = Databases.openJsonDatabase(databaseFile);
-     final var manager = database.openResourceManager("resource");
+     final var session = database.beginResourceSession("resource");
      // Now open a read-only transaction again on the most recent revision.
-     final var rtx = manager.beginNodeReadOnlyTrx()) {
+     final var rtx = session.beginNodeReadOnlyTrx()) {
     
   // Use the descendant axis to iterate over all descendant nodes in pre-order
   // (depth-first).
@@ -492,7 +492,7 @@ We're able to use one of the following axes to navigate in time:
 Each of the constructors of these time-travel axes takes a transactional cursor as the only parameter and opens the node, the cursor currently points to in each of the revisions (if it exists):
 
 ```java
-final var axis = new PastAxis(resourceManager, rtx);
+final var axis = new PastAxis(session, rtx);
 if (axis.hasNext()) {
     final var trx = axis.next();
     // Do something with the transactional cursor.
@@ -554,9 +554,9 @@ To open a resource in an XML database you can use:
 ```java
 // Open the database.
 try (final var database = Databases.openXmlDatabase(databaseFile);
-     final var manager = database.openResourceManager("resource");
+     final var session = database.beginResourceSession("resource");
      // Now open a read/write transaction again.
-     final var wtx = manager.beginNodeTrx()) {
+     final var wtx = session.beginNodeTrx()) {
   ...
 }
 ```
@@ -568,9 +568,9 @@ To open a resource in a JSON database you can use:
 ```java
 // Open the database.
 try (final var database = Databases.openJsonDatabase(databaseFile);
-     final var manager = database.openResourceManager("resource");
+     final var session = database.beginResourceSession("resource");
      // Now open a read/write transaction again.
-     final var wtx = manager.beginNodeTrx()) {
+     final var wtx = session.beginNodeTrx()) {
   ...
 }
 ```
@@ -662,18 +662,18 @@ SirixDB provides several possibilities to start a read-write transaction in the 
 
 ```java
 // Auto-commit every 30 seconds.
-resourceManager.beginNodeTrx(TimeUnit.SECONDS, 30);
+session.beginNodeTrx(TimeUnit.SECONDS, 30);
 // Auto-commit after every 1000th modification.
-resourceManager.beginNodeTrx(1000);
+session.beginNodeTrx(1000);
 // Auto-commit every 30 seconds and every 1000th modification.
-resourceManager.beginNodeTrx(1000, TimeUnit.SECONDS, 30);
+session.beginNodeTrx(1000, TimeUnit.SECONDS, 30);
 ```
 
 Furthermore, you're able to start a read-write transaction and then revert to a former revision:
 
 ```java
 // Open a read/write transaction on the most recent revision, then revert to revision two and commit as a new revision.
-resourceManager.beginNodeTrx().revertTo(2).commit()
+session.beginNodeTrx().revertTo(2).commit()
 ```
 
 ## Open Specific Revisions
@@ -682,12 +682,12 @@ Once you've committed more than one revision you can open it either by specifyin
 
 ```java
 // To open a transactional read-only cursor on revision two.
-final var rtx = resourceManager.beginNodeReadOnlyTrx(2)
+final var rtx = session.beginNodeReadOnlyTrx(2)
 
 // Or by a timestamp:
 final var dateTime = LocalDateTime.of(2019, Month.JUNE, 15, 13, 39);
 final var instant = dateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant();
-final var rtx = resourceManager.beginNodeReadOnlyTrx(instant)
+final var rtx = session.beginNodeReadOnlyTrx(instant)
 ```
 
 ## Serialize a Resource in a Database
@@ -740,7 +740,7 @@ Serializing a resource from a JSON database is very similar:
 
 ```java
 var writer = new StringWriter();
-var serializer = new JsonSerializer.Builder(resourceManager, writer).build();
+var serializer = new JsonSerializer.Builder(session, writer).build();
 serializer.call();
 ```
 Here you're serializing the most recent revision.
@@ -749,7 +749,7 @@ To serialize revision 1 and 2:
 
 ```java
 var serializer = new
-JsonSerializer.Builder(resourceManager, writer, 1, 2).build();
+JsonSerializer.Builder(session, writer, 1, 2).build();
 serializer.call();
 ```
 
@@ -757,7 +757,7 @@ And all stored revisions:
 
 ```java
 var serializer = new
-JsonSerializer.Builder(resourceManager, writer, -1).build();
+JsonSerializer.Builder(session, writer, -1).build();
 serializer.call();
 ```
 
