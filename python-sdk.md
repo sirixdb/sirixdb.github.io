@@ -66,13 +66,13 @@ Else use this
 >>> sirix = pysirix.sirix_sync("admin", "admin", client)
 ```
 
-You can change the setting in 
+You can change the setting in Sirix core repository ```/sirixdb/sirix```
 
-```/bundles/sirix-rest-api/src/main/resources/sirix-docker-conf.json:/opt/sirix/sirix-conf.json```
+```/bundles/sirix-rest-api/src/main/resources/sirix-docker-conf.json```
 
 And also find the cert.pem file here
 
-```/bundles/sirix-rest-api/src/main/resources/cert.pem:/opt/sirix/sirix-data/cert.pem```
+```/bundles/sirix-rest-api/src/main/resources/cert.pem```
 
 
 We now have a `Sirix` class instance, from which we can start interfacing with the database.
