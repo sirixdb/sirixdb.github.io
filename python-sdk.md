@@ -12,7 +12,7 @@ This document is a tutorial for using the python SDK (henceforth: pysirix), incl
 
 This document concentrates on JSON data, but much of it valid with XML data as well.
 
-The API docs can be found (here)[https://pysirix.readthedocs.io/].
+The API docs can be found [here](https://pysirix.readthedocs.io/).
 
 ## Setting up SirixDB locally
 
@@ -66,14 +66,13 @@ Else use this
 >>> sirix = pysirix.sirix_sync("admin", "admin", client)
 ```
 
-You can change the setting in Sirix core repository ```/sirixdb/sirix```
+You can change the setting in Sirix core repository `/sirixdb/sirix`
 
-```/bundles/sirix-rest-api/src/main/resources/sirix-docker-conf.json```
+`/bundles/sirix-rest-api/src/main/resources/sirix-docker-conf.json`
 
 And also find the cert.pem file here
 
-```/bundles/sirix-rest-api/src/main/resources/cert.pem```
-
+`/bundles/sirix-rest-api/src/main/resources/cert.pem`
 
 We now have a `Sirix` class instance, from which we can start interfacing with the database.
 
