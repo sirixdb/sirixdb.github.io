@@ -48,6 +48,9 @@ pip install pysirix
 
 `pysirix` uses the [`httpx`](https://www.python-httpx.org/) library, and the low level `resource` interface is actually a this wrapper around `httpx` and pysirix requires you to initialize the httpx client directly:
 
+If you use https
+
+
 ```python
 >>> import pysirix
 >>> import httpx
@@ -55,6 +58,23 @@ pip install pysirix
 >>> client = httpx.Client(base_url="https://localhost:9443", verify=<path/to/cert.pem/in/resources/folder>)
 >>> sirix = pysirix.sirix_sync("admin", "admin", client)
 ```
+Else use this
+
+```python
+>>> import pysirix
+>>> import httpx
+
+>>> client = httpx.Client(base_url="http://localhost:9443")
+>>> sirix = pysirix.sirix_sync("admin", "admin", client)
+```
+
+You can change the setting in Sirix core repository `/sirixdb/sirix`
+
+`/bundles/sirix-rest-api/src/main/resources/sirix-docker-conf.json`
+
+And also find the cert.pem file here
+
+`/bundles/sirix-rest-api/src/main/resources/cert.pem`
 
 We now have a `Sirix` class instance, from which we can start interfacing with the database.
 
