@@ -4,7 +4,7 @@ doctitle: Documentation
 title: SirixDB - Documentation
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/documentation.md)
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/documentation.md)
 
 [Go directly to the API documentation](#api-documentation) or [to the publications](#publications).
 
@@ -31,7 +31,7 @@ SirixDB is a storage system, which brings versioning to a sub-file granular leve
 SirixDB not only supports all XPath axes to query a resource in one revision but also temporal axes which facilitate navigation in time. A transactional cursor on a resource can be started either by specifying a specific revision number or by a given point in time. The latter starts a transaction on the revision number which was committed closest to the given timestamp.
 
 <div class="img_container">
-![sunburstview](images/sunburstview-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"} ![moves](images/moves-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"}
+![sunburstview](/images/sunburstview-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"} ![moves](/images/moves-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"}
 </div>
 
 You may find a quick overview about the [main features](/features.html) useful.
@@ -39,9 +39,9 @@ You may find a quick overview about the [main features](/features.html) useful.
 ### API Documentation
 We provide several APIs to interact with SirixDB.
 
-1. The [transactional cursor API](/transactional-cursor-api.html) is a powerful low-level API.
-2. On top of this API we built a [Brackit.org](http://brackit.org) binding to provide the ability to use SirixDB with a more [DOM-alike API](/dom-alike-api.html) with in-memory nodes and an [JSONiq API](/jsoniq-api.html).
-3. We provide a powerful, asynchronous, non-blocking [RESTful-API](/rest-api.html) to interact with a SirixDB HTTP-server. Authorization is done via Keycloak.
+1. The [transactional cursor API](/docs/transactional-cursor-api.html) is a powerful low-level API.
+2. On top of this API we built a [Brackit.org](http://brackit.org) binding to provide the ability to use SirixDB with a more [DOM-alike API](/docs/dom-alike-api.html) with in-memory nodes and an [JSONiq API](/docs/jsoniq-api.html).
+3. We provide a powerful, asynchronous, non-blocking [RESTful-API](/docs/rest-api.html) to interact with a SirixDB HTTP-server. Authorization is done via Keycloak.
 
 ### Publications
 Articles published on Baeldung:
