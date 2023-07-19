@@ -49,8 +49,18 @@ Here a JSON tree is constructed by parsing the input JSON string and creating fi
 
 **Each node and revision in SirixDB is referenced by a unique, stable identifier, which never changes.** A simple sequence generator generates monotonically increasing 64-bit node IDs. Neighbour nodes are referenced through their IDs, as well as the first- and last child and the parent. Thus, the node encoding is based on a local encoding.
 
+### Indexes
+SirixDB stores a small in-memory path summary, which is a set of all paths in the resource (stored in a tree-structure). The paths are not ordered. The individual nodes in the path summary are also referenced through unique, stable 64-bit node IDs, so-called path class records. The path summary is crucial for user-defined path indexes on individual paths and for so-called cas (content-and-structure) indexes, which index both typed values and the path to the root.
+
+The storage engine stores three types of indexes: Name/field indexes, path indexes, and cas indexes.
+
+It keeps the indexes at all times up-to-date. Furthermore, it stores the indexes and the actual data in dedicated tries. As such, they are part of a read-write transaction and versioned as well.
+The following diagram shows a path summary, 
+
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-pathsummary.png">
 <img src="/images/sirix-pathsummary.png" align="center" width="100%" style="text-decoration: none"></a>
+
+In the diagram a path summary is shown
 
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-doc-storage-and-path-summary.png">
 <img src="/images/sirix-doc-storage-and-path-summary.png" align="center" width="100%" style="text-decoration: none"></a>
