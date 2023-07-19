@@ -39,15 +39,16 @@ Database pages are copied to memory, updated and synced to a file in batches. Wh
 
 The page-structure is heavily inspired by the operating system ZFS. We used some of the ideas to store and version data on a sub-file level. We'll see that Marc Kramis came up with a novel sliding snapshot algorithm to version record pages, based on observed shortcomings of versioning approaches from backup systems.
 
-### Page structure
+### Tree-structure
 SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding.
 
-The page-structure for one revision of a resource is depicted in the following figure (click for full size):
+<div class="img_container">
+![stateEvolution](/images/sirix-json-tree-encoding.png){: style="max-width: 80%; height: auto; margin: 0em"}
+</div>
 
-<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/architecture-overview.png">
-<img src="/images/architecture-overview.png" align="center" width="80%" style="text-decoration: none"></a>
+Here a JSON tree is constructed by parsing the input JSON string and creating fine grained nodes. 
 
-**Each node and revision in SirixDB is referenced by a unique, stable identifier.** First, SirixDB has to find the revision by its revision number traversing a tree of indirect-pages. Addressing nodes is done in the same manner.
+**Each node and revision in SirixDB is referenced by a unique, stable identifier, which never changes.** A simple sequence generator generates monotonically increasing 64bit node IDs. Neighbour nodes are referenced through their IDs, as well as the first- and last-child and the parent. Thus, the node encoding is based on a local encoding.
 
 The pages SirixDB stores are:
 
