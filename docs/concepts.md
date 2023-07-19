@@ -7,20 +7,20 @@ title: SirixDB - Architecture and Concepts
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/concepts.md)
 
 ## Introduction
-SirixDB is a temporal, tamper-proof append-only database system that never overwrites data. Every time you're committing a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page as well as node-level. Let's first define what a temporal database system is all about.
+SirixDB is a temporal, tamper-proof append-only database system that never overwrites data. Every time you commit a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page and node-level. Let's first define what a temporal database system is all about.
 
-A temporal database is capable of retrieving past states. Typically it stores the transaction time; that is the time at which a transaction commits data. If the valid time is also stored, that is when a fact is true in the real world, we have a bitemporal relation, which is two time axes.
+A temporal database is capable of retrieving past states. Typically it stores the transaction time; that is when a transaction commits data. If the valid time is also stored, that is, when a fact is true in the real world, we have a bitemporal relation, which is two time-axes.
 
-SirixDB can help answer questions such as the following: Give me last month's history of the Dollar-Pound Euro exchange rate. What was the customer's address on July 12th in 2015 as it was recorded back in the day? Did they move or did someone correct an error? Did we have errors in the database, which were corrected later on?
+SirixDB can help answer questions such as the following: Give me last month's history of the Dollar-Pound Euro exchange rate. What was the customer's address on July 12th 2015 as it was recorded back in the day? Did they move, or did someone correct an error? Did we have errors in the database, which were corrected later on?
 
-Let's turn our focus towards the question of why historical data has not been retained in the past. We postulate that new storage advances in recent years present possibilities, to build sophisticated solutions to help answer those questions without the hurdle, state-of-the-art systems bring.
+Let's turn our focus toward the question of why historical data has not been retained in the past. We postulate that new storage advances in recent years present possibilities to build sophisticated solutions to help answer those questions without the hurdle state-of-the-art systems bring.
 
 ## Advantages and disadvantages of flash drives, for instance, SSDs
 As Marc Kramis points out in his paper "Growing Persistent Trees into the 21st Century":
 
 > The switch to flash drives keenly motivates to shift from the "current state" paradigm towards remembering the evolutionary steps leading to this state.
 
-The main insight is that flash drives as SSDs, which are common nowadays have zero seek time while not being able to do in-place modifications of the data. Flash drives are organized into pages and blocks. Due to their characteristics, they can read data on a fine-granular page-level, but can only erase data at the coarser block-level. Furthermore, blocks first have to be erased before they can be updated. Thus, whenever a flash drive updates data, it is written to another place. A garbage collector marks the data, which has been rewritten to the new place as erased at the previous block location. The flash drive can store new data in the future at the former location. Metadata to find the data at the new location is updated.
+The main insight is that flash drives such as SSDs, which are common nowadays, have zero seek time while not being able to do in-place data modifications. Flash drives are organized into pages and blocks. Due to their characteristics, they can read data on a fine-granular page level, but can only erase data at the coarser block level. Furthermore, blocks first have to be erased before they can be updated. Thus, whenever a flash drive updates data, it is written to another place. A garbage collector marks the data, which has been rewritten to the new place as erased at the previous block location. The flash drive can store new data in the future at the former location. Metadata to find the data at the new location is updated.
 
 ### Evolution of state through fine-grained modifications
 
@@ -28,33 +28,49 @@ The main insight is that flash drives as SSDs, which are common nowadays have ze
 ![stateEvolution](https://miro.medium.com/max/771/1*bHwVd6phGROGnZi1hJqHHQ.png){: style="max-width: 80%; height: auto; margin: 0em"}
 </div>
 
-Furthermore, Marc points out that those small modifications usually involve writing not only the modified data but also all other records on the modified page. This is an undesired effect. Traditional spinning disks require clustering due to slow random reads of traditionally mechanical disk head seek times. 
+Furthermore, Marc points out that those small modifications usually involve writing the modified data and *all* other records on the modified page. This is an undesired effect. Traditional spinning disks require clustering due to slow random reads of traditionally mechanical disk head seek times. 
 
-Instead, from a storage point of view, it is desirable only to store the changes. As we'll see, it boils down to a trade-off between read and write performance. On the one hand, a page needs to be reconstructed in-memory from scattered incremental changes. On the other hand, a storage system probably has to store more records than necessarily have changed to fast-track the reconstruction of pages in memory.
+Instead, from a storage point of view, it is desirable only to store the changes. As we'll see, it boils down to a trade-off between read and write performance. On the one hand, a page must be reconstructed in memory from scattered incremental changes. On the other hand, a storage system has to store more records than necessarily have changed to fast-track the reconstruction of pages in memory.
 
 ## How we built an Open Source storage system based on these observations from scratch
-SirixDB stores per revision and page deltas. Due to zero seek time of flash drives, SirixDB does not have to cluster data. It only ever clusters data during transaction commits. Data is written sequentially to log-structured storage. It is never modified in-place.
+SirixDB stores per revision and page deltas. Due to the zero seek time of flash drives, SirixDB does not have to cluster data. It only ever clusters data during transaction commits. Data is written sequentially to log-structured storage. It is never modified in place.
 
-Database pages are copied to memory, updated and synced to a file in batches. When a transaction commits, SirixDB flushes pages to persistent storage during a postorder traversal of the internal tree-structure.
+Database pages are copied to memory, updated, and synced to a file in batches. When a transaction commits, SirixDB flushes pages to persistent storage during a postorder traversal of the internal tree structure.
 
-The page-structure is heavily inspired by the operating system ZFS. We used some of the ideas to store and version data on a sub-file level. We'll see that Marc Kramis came up with a novel sliding snapshot algorithm to version record pages, based on observed shortcomings of versioning approaches from backup systems.
+The page structure is heavily inspired by the operating system ZFS. We used some of the ideas to store and version data on a sub-file level. We'll see that Marc Kramis developed a novel sliding snapshot algorithm to version record pages based on observed shortcomings of versioning approaches from backup systems.
 
 ### Tree-structure
 SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding.
 
-<div class="img_container">
-<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/architecture-overview.png">
-<img src="/images/sirix-json-tree-encoding.png" align="center" width="80%" style="text-decoration: none"></a>
-</div>
+<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-json-tree-encoding.png">
+<img src="/images/sirix-json-tree-encoding.png" align="center" width="100%" style="text-decoration: none"></a>
 
-Here a JSON tree is constructed by parsing the input JSON string and creating fine grained nodes. 
+Here a JSON tree is constructed by parsing the input JSON string and creating fine-grained nodes. 
 
-**Each node and revision in SirixDB is referenced by a unique, stable identifier, which never changes.** A simple sequence generator generates monotonically increasing 64bit node IDs. Neighbour nodes are referenced through their IDs, as well as the first- and last-child and the parent. Thus, the node encoding is based on a local encoding.
+**Each node and revision in SirixDB is referenced by a unique, stable identifier, which never changes.** A simple sequence generator generates monotonically increasing 64-bit node IDs. Neighbour nodes are referenced through their IDs, as well as the first- and last child and the parent. Thus, the node encoding is based on a local encoding.
+
+<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-pathsummary.png">
+<img src="/images/sirix-pathsummary.png" align="center" width="100%" style="text-decoration: none"></a>
+
+<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-doc-storage-and-path-summary.png">
+<img src="/images/sirix-doc-storage-and-path-summary.png" align="center" width="100%" style="text-decoration: none"></a>
+
+<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-path-indexes.png">
+<img src="/images/sirix-path-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
+
+<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-cas-indexes.png">
+<img src="/images/sirix-cas-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
+
+<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-revisions">
+<img src="/images/sirix-revisions.png" align="center" width="100%" style="text-decoration: none"></a>
+
+<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-on-device-layout.png">
+<img src="/images/sirix-on-device-layout.png" align="center" width="100%" style="text-decoration: none"></a>
 
 The pages SirixDB stores are:
 
 UberPage
-: The `UberPage` is the main entry point. It contains header information about the configuration of the resource as well as a reference to an `IndirectPage`. The reference contains the offset of the IndirectPage in the data-file or the transaction-intent log and an in-memory pointer. SirixDB always writes the `UberPage` as the last page in an atomic operation to persistent storage. Thus, even in case the transaction fails, we always have a valid, consistent state of the storage.
+: The `UberPage` is the main entry point. It contains header information about the configuration of the resource as well as a reference to an `IndirectPage`. The reference contains the offset of the IndirectPage in the data file or the transaction-intent log and an in-memory pointer. SirixDB always writes the `UberPage` as the last page in an atomic operation to persistent storage. Thus, even in case the transaction fails, we always have a valid, consistent state of the storage.
 
 IndirectPage
 : IndirectPages are used to increase the fanout of the tree.  SirixDB uses these pages to be able to store and retrieve a large number of records while only ever having to read a predefined number of pages.  We currently store 512 references in the `IndirectPage` to either another layer of indirect pages or the data pages, either a `RevisionRootPage` or a `RecordPage`. SirixDB adds a new level of indirect pages whenever it runs out of the number of records it can address in the leaf pages. It stores the height of the current subtree that is the number of levels of indirect pages in the respective subtree-root page. We borrowed the ideas from the filesystem ZFS and hash-array based tries as we also store checksums in parent database-pages/page-fragments, which in turn form a self-validating merkle-tree. As IndirectPages potentially may have many `null`-pointers, SirixDB uses a bitset to keep track of which array indices contain references. Thus, it can store a compact array or list in-memory.
