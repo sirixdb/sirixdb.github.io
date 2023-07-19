@@ -43,7 +43,8 @@ The page-structure is heavily inspired by the operating system ZFS. We used some
 SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding.
 
 <div class="img_container">
-![stateEvolution](/images/sirix-json-tree-encoding.png){: style="max-width: 80%; height: auto; margin: 0em"}
+<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/architecture-overview.png">
+<img src="/images/sirix-json-tree-encoding.png" align="center" width="80%" style="text-decoration: none"></a>
 </div>
 
 Here a JSON tree is constructed by parsing the input JSON string and creating fine grained nodes. 
