@@ -49,10 +49,12 @@ Here a JSON tree is constructed by parsing the input JSON string and creating fi
 
 **Each node and revision in SirixDB is referenced by a unique, stable identifier, which never changes.** A simple sequence generator generates monotonically increasing 64-bit node IDs. Neighbour nodes are referenced through their IDs, as well as the first- and last child and the parent. Thus, the node encoding is based on a local encoding.
 
-### Indexes
-SirixDB stores a small in-memory path summary, a set of all paths in the resource (stored in a tree structure). The paths are not ordered. The individual nodes in the path summary are also referenced through unique, stable 64-bit node IDs, so-called path class records. The path summary is crucial for user-defined path indexes on individual paths and for so-called cas (content-and-structure) indexes, which index both typed values and the path to the root.
+### Index types
+SirixDB stores a small in-memory path summary, a set of all paths in the resource (stored in a tree structure). The paths are not ordered. The individual nodes in the path summary are also referenced through unique, stable 64-bit node IDs, so-called path class references. The path summary is crucial for user-defined path indexes on individual paths and for so-called cas (content-and-structure) indexes, which index both typed values and the path to the root.
 
 The storage engine stores three types of indexes: Name/field indexes, path indexes, and cas indexes.
+
+Name/field indexes are trivial. They store sets of node keys for the given names in an index, which resembles indexing columns in relational database systems.
 
 It keeps the indexes at all times up-to-date. Furthermore, it stores the indexes and the actual data in dedicated tries. As such, they are part of a read-write transaction and versioned as well.
 The following diagram shows a path summary built for a given JSON input. It is built along with the actual data, the JSON tree.
@@ -60,19 +62,23 @@ The following diagram shows a path summary built for a given JSON input. It is b
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-pathsummary.png">
 <img src="/images/sirix-pathsummary.png" align="center" width="100%" style="text-decoration: none"></a>
 
-The next diagram depicts the relationship between the actual data, the stored JSON tree, and the path summary. Each inner node references the corresponding path node key/path class record (PCR).
+The next diagram depicts the relationship between the actual data, the stored JSON tree, and the path summary. Each inner node references the corresponding path node key/path class reference (PCR).
 
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-doc-storage-and-path-summary.png">
 <img src="/images/sirix-doc-storage-and-path-summary.png" align="center" width="100%" style="text-decoration: none"></a>
 
 The path summary is crucial for index *selectivity*. That is fine-grained, user-defined indexes on individual paths. It ensures that a set of indexes can be adjusted to document characteristics, query workload, and maintenance overhead. Moreover, selective indexes reduce *update costs*, compared to indexes covering all paths. 
-The next diagram depicts a simple algorithm to build path indexes. As the path summary is small, it's kept in memory, and access to individual nodes is cheap due to a map (path class record <=> path node).
+The next diagram depicts a simple algorithm to build path indexes. As the path summary is small, it's kept in memory, and access to individual nodes is cheap due to a map (path class reference <=> path node). The path class references matching a given path are cached. Individual path class references are recomputed on demand whenever a new path node with a given name is inserted.
 
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-path-indexes.png">
 <img src="/images/sirix-path-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
 
+The most sophisticated type of index in SirixDB is a user-defined, typed, content-and-structure (CAS) index. In addition to individual paths, typed values are stored in the indexes. Thus, matching PCRs are based on the parent paths of the object field value nodes. Furthermore, non-matching types are not indexed.
+
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-cas-indexes.png">
 <img src="/images/sirix-cas-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
+
+### 
 
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-revisions">
 <img src="/images/sirix-revisions.png" align="center" width="100%" style="text-decoration: none"></a>
