@@ -40,14 +40,12 @@ Database pages are copied to memory, updated, and synced to a file in batches. W
 The page structure is heavily inspired by the operating system ZFS. We used some of the ideas to store and version data on a sub-file level. We'll see that Marc Kramis developed a novel sliding snapshot algorithm to version data pages based on observed shortcomings of versioning approaches from backup systems.
 
 ### Tree-structure
-SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding.
+SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding. The following figure depicts constructing a JSON tree by parsing the input JSON string and creating fine-grained nodes. 
 
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-json-tree-encoding.png">
 <img src="/images/sirix-json-tree-encoding.png" align="center" width="100%" style="text-decoration: none"></a>
 
-Here a JSON tree is constructed by parsing the input JSON string and creating fine-grained nodes. 
-
-**Each node and revision in SirixDB is referenced by a unique, stable identifier, which never changes.** A simple sequence generator generates monotonically increasing 64-bit node IDs. Neighbour nodes are referenced through their IDs, as well as the first- and last child and the parent. Thus, the node encoding is based on a local encoding.
+**Each node and revision in SirixDB is referenced by a unique, stable identifier, which never changes.** A simple sequence generator assignes monotonically increasing 64-bit node IDs. Neighbour nodes are referenced through their IDs, as well as the first- and last child and the parent. Thus, the node encoding is based on a local encoding.
 
 ### Index types
 SirixDB stores a small in-memory path summary, a set of all paths in the resource (stored in a tree structure). The paths are not ordered. The individual nodes in the path summary are also referenced through unique, stable 64-bit node IDs, so-called path class references. The path summary is crucial for user-defined path indexes on individual paths and for so-called cas (content-and-structure) indexes, which index both typed values and the path to the root.
