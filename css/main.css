@@ -55,6 +55,11 @@ body {
 	line-height: 1;
 }
 
+img {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
 ol, ul {
 	list-style: none;
 }
