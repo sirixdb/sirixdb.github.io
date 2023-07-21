@@ -75,7 +75,7 @@ The next diagram depicts a simple algorithm to build path indexes. As the path s
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-path-indexes.png">
 <img src="/images/sirix-path-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
 
-The most sophisticated type of index in SirixDB is a user-defined, typed, content-and-structure (CAS) index. In addition to individual paths, typed values are stored in the indexes. Thus, whenever potential index matches are searched for leaf value nodes, matching PCRs are based on the parent paths of the object field value nodes. Furthermore, non-matching types are not indexed.
+The most selective type of index in SirixDB is a user-defined, typed, content-and-structure (CAS) index. In addition to individual paths, typed values are stored in the indexes. Thus, whenever potential index matches are searched for leaf value nodes, matching PCRs are based on the parent paths of the object field value nodes. Furthermore, non-matching types are not indexed.
 
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-cas-indexes.png">
 <img src="/images/sirix-cas-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
