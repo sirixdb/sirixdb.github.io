@@ -54,9 +54,9 @@ SirixDB stores a small in-memory path summary, a set of all paths in the resourc
 
 The storage engine stores three types of indexes: Name/field indexes, path indexes, and cas indexes.
 
-Name/field indexes are trivial. They store sets of node keys for the given names in an index, which resembles indexing columns in relational database systems.
+Name/field indexes are trivial. They store node keys for the given names in an index, which resembles indexing columns in relational database systems.
 
-It keeps the indexes at all times up-to-date. Furthermore, it stores the indexes and the actual data in dedicated tries. As such, they are part of a read-write transaction and versioned as well.
+It keeps the indexes at all times up-to-date. Furthermore, it stores the indexes and the actual data in dedicated tries. As such, they are part of a read-write transaction and versioned.
 The following diagram shows a path summary built for a given JSON input. It is built along with the actual data, the JSON tree.
 
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-pathsummary.png">
@@ -105,7 +105,7 @@ One of the most distinctive features of SirixDB is that it versions the *RecordP
 
 ### Versioning algorithms for storing and retrieving page snapshots
 
-SirixDB stores, at most, a fixed number of nodes. That is the actual data per database page (currently limited to 1024 nodes). The nodes themselves are of variable size. Overlong records, which exceed a predefined length in bytes, are stored in additional overflow pages. SirixDB stores references to these pages in the record pages.
+SirixDB stores, at most, a fixed number of nodes. That is the data per database page (currently limited to 1024 nodes). The nodes themselves are of variable size. Overlong records, which exceed a predefined length in bytes, are stored in additional overflow pages. SirixDB stores references to these pages in the record pages.
 
 SirixDB implements several versioning strategies best known from backup systems for copy-on-write operations of record pages. Namely, it either copies
 
@@ -113,9 +113,9 @@ SirixDB implements several versioning strategies best known from backup systems 
 - only the changed nodes in a record page regarding the former version (incremental)
 - only the changed nodes in a record page since a full-page dump (differential)
 
-Incremental versioning is one extreme. Write performance is best, as it stores the optimum (only changed records). On the other hand, reconstructing a page needs intermittent full snapshots of pages. Otherwise, performance deteriorates with each new page revision as the number of increments increases with each new version.
+Incremental versioning is one extreme. Write performance is best, as it stores the optimum (only changed records). On the other hand, reconstructing a page needs intermittent full snapshots of pages. Otherwise, performance deteriorates with each new page revision as increments increase with each new version.
 
-Differential-versioning tries to balance reads and writes a bit better but is still not optimal. A system implementing a differential versioning strategy has to write all changed records since a past full dump of the page. Thus, only two revisions of the page-fragment must be read to reconstruct a record page. However, write performance also deteriorates with each new revision of the page.
+Differential-versioning tries to balance reads and writes better but is still not optimal. A system implementing a differential versioning strategy has to write all changed records since a past full dump of the page. Thus, only two revisions of the page fragment must be read to reconstruct a record page. However, write performance also deteriorates with each new revision of the page.
 
 Write peaks occur during incremental versioning due to the requirement of intermittent full dumps of the page. Differential versioning also suffers from a similar problem. Without an intermittent full dump, a differential versioning system has to duplicate vast amounts of data during each new write.
 
