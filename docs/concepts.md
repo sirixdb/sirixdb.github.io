@@ -37,7 +37,7 @@ SirixDB stores per revision and page deltas. Due to the zero seek time of flash 
 
 Database pages are copied to memory, updated, and synced to a file in batches. When a transaction commits, SirixDB flushes pages to persistent storage during a postorder traversal of the internal tree structure.
 
-The page structure is heavily inspired by the operating system ZFS. We used some of the ideas to store and version data on a sub-file level. We'll see that Marc Kramis developed a novel sliding snapshot algorithm to version record pages based on observed shortcomings of versioning approaches from backup systems.
+The page structure is heavily inspired by the operating system ZFS. We used some of the ideas to store and version data on a sub-file level. We'll see that Marc Kramis developed a novel sliding snapshot algorithm to version data pages based on observed shortcomings of versioning approaches from backup systems.
 
 ### Tree-structure
 SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding.
@@ -91,31 +91,31 @@ We assume that a read-write transaction modifies a record in the leftmost *DataP
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-on-device-layout.png">
 <img src="/images/sirix-on-device-layout.png" align="center" width="100%" style="text-decoration: none"></a>
 
-All changed *DataPageFragments* are written to persistent storage, starting with the leftmost. If other changed record pages exist underneath an inner node page of the trie (*IndirectPage*), SirixDB serializes these before the *IndirectPage*, which points to the updated record pages. Then the *IndirectPage*, which points to the updated revision root page, is written. The indirect pages are written with updated references to the new persistent locations of the record pages.
+All changed *DataPageFragments* are written to persistent storage, starting with the leftmost. If other changed data pages exist underneath an inner node page of the trie (*IndirectPage*), SirixDB serializes these before the *IndirectPage*, which points to the updated data pages. Then the *IndirectPage*, which points to the updated revision root page, is written. The indirect pages are written with updated references to the new persistent locations of the data pages.
 
 SirixDB also stores checksums in the parent pointers as in ZFS. Thus, the storage engine in the future will be able to detect data corruption and heal itself once we partition and replicate the data. SirixDB serializes the whole page structure in this manner. We also intend to store an encryption key in the references in the future to support encryption at rest.
 
-SirixDB must update the ancestor path of each changed *RecordPage*/*DataPageFragment*. However, storing indirect pages is cheap. Each reference is left unchanged, which doesn't point to a new page or page fragment. Thus, unchanged pages (not on the ancestor path of changed pages) are referenced at their respective position in the previous revision and never copied and not rewritten.
+SirixDB must update the ancestor path of each changed *RecordPage*/*DataPageFragment*. However, storing indirect pages is cheap. Each reference is left unchanged, which doesn't point to a new page or page fragment. Thus, unchanged pages (not on the ancestor path of changed pages) are referenced at their respective position in the previous revision and never copied or rewritten.
 
 ### Versioning at the page-level
 
-One of the most distinctive features of SirixDB is that it versions the *RecordPages*. It doesn't merely copy all records of the page, even if a transaction only modifies a single record. The new record page fragment always contains a reference to the previous version. Thus, the versioning algorithms can dereference a fixed predefined number of page fragments at maximum to reconstruct a RecordPage in memory.
+One of the most distinctive features of SirixDB is that it versions the *RecordPages*. It doesn't merely copy all records of the page, even if a transaction only modifies a single record. The new data page fragment always contains a reference to the previous version. Thus, the versioning algorithms can dereference a fixed predefined number of page fragments at maximum to reconstruct a RecordPage in memory.
 
-**A sliding snapshot algorithm used to version record pages can avoid read and write peaks. The algorithm avoids intermittent full-page snapshots, which are needed during incremental or differential page-versioning to fast-track its reconstruction.**
+**A sliding snapshot algorithm used to version data pages can avoid read and write peaks. The algorithm avoids intermittent full-page snapshots, which are needed during incremental or differential page-versioning to fast-track its reconstruction.**
 
 ### Versioning algorithms for storing and retrieving page snapshots
 
-SirixDB stores, at most, a fixed number of nodes. That is the data per database page (currently limited to 1024 nodes). The nodes themselves are of variable size. Overlong records, which exceed a predefined length in bytes, are stored in additional overflow pages. SirixDB stores references to these pages in the record pages.
+SirixDB stores, at most, a fixed number of nodes. That is the data per database page (currently limited to 1024 nodes). The nodes themselves are of variable size. Overlong records, which exceed a predefined length in bytes, are stored in additional overflow pages. SirixDB stores references to these pages in the data pages.
 
-SirixDB implements several versioning strategies best known from backup systems for copy-on-write operations of record pages. Namely, it either copies
+SirixDB implements several versioning strategies best known from backup systems for copy-on-write operations of data pages. Namely, it either copies
 
-- the full record page, that is, any node in the page (full)
-- only the changed nodes in a record page regarding the former version (incremental)
-- only the changed nodes in a record page since a full-page dump (differential)
+- the full data page, that is, any node in the page (full)
+- only the changed nodes in a data page regarding the former version (incremental)
+- only the changed nodes in a data page since a full-page dump (differential)
 
 Incremental versioning is one extreme. Write performance is best, as it stores the optimum (only changed records). On the other hand, reconstructing a page needs intermittent full snapshots of pages. Otherwise, performance deteriorates with each new page revision as increments increase with each new version.
 
-Differential-versioning tries to balance reads and writes better but is still not optimal. A system implementing a differential versioning strategy has to write all changed records since a past full dump of the page. Thus, only two revisions of the page fragment must be read to reconstruct a record page. However, write performance also deteriorates with each new revision of the page.
+Differential-versioning tries to balance reads and writes better but is still not optimal. A system implementing a differential versioning strategy has to write all changed records since a past full dump of the page. Thus, only two revisions of the page fragment must be read to reconstruct a data page. However, write performance also deteriorates with each new revision of the page.
 
 Write peaks occur during incremental versioning due to the requirement of intermittent full dumps of the page. Differential versioning also suffers from a similar problem. Without an intermittent full dump, a differential versioning system has to duplicate vast amounts of data during each new write.
 
