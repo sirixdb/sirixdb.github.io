@@ -33,6 +33,8 @@ Furthermore, Marc points out that those small modifications usually involve writ
 Instead, from a storage point of view, it is desirable only to store the changes. As we'll see, it boils down to a trade-off between read and write performance. On the one hand, a page must be reconstructed in memory from scattered incremental changes. On the other hand, a storage system has to store more records than necessarily have changed to fast-track the reconstruction of pages in memory.
 
 ## How we built an Open Source storage system based on these observations from scratch
+SirixDB stores data in resources (the equivalent of relations/tables in relational database systems) within databases. A resource session allows starting a single read-write transaction per resource bound to the most recent revision. It's also possible to revert to any past state, whereas modifications and changes to the past revision, once committed, create a new revision. All revisions between the past revision and the former most recent revision are still available. Instead of the single read-write transaction, a resource session allows to begin N-concurrent read-only transactions bound to any revision (per default, the most recent revision). Instead of revision numbers, SirixDB also allows starting the transaction bound to a specific revision by a given timestamp. Logically the storage manager searches via binary search on a sorted array of timestamps for the first revision, which is closest to the given timestamp and greater.
+
 SirixDB stores per revision and page deltas. Due to the zero seek time of flash drives, SirixDB does not have to cluster data. It only ever clusters data during transaction commits. Data is written sequentially to log-structured storage. It is never modified in place.
 
 Database pages are copied to memory, updated, and synced to a file in batches. When a transaction commits, SirixDB flushes pages to persistent storage during a postorder traversal of the internal tree structure.
@@ -45,7 +47,9 @@ SirixDB stores `databases`, that is, collections of `resources`. Resources are t
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-json-tree-encoding.png">
 <img src="/images/sirix-json-tree-encoding.png" align="center" width="100%" style="text-decoration: none"></a>
 
-**Each node and revision in SirixDB is referenced by a unique, stable identifier, which never changes.** A simple sequence generator assignes monotonically increasing 64-bit node IDs. Neighbour nodes are referenced through their IDs, as well as the first- and last child and the parent. Thus, the node encoding is based on a local encoding.
+We've omitted several details here for brevity, but a simple dictionary compression ensures that object field names are only stored once in an in-memory map ((re-)constructed from a keyed trie) and referenced through a 32-bit integer from the node. Similarly, as we'll see in a bit, path summary nodes/path class records are referenced from the nodes and stored in another trie.
+
+**Each node and revision in SirixDB is referenced by a unique, stable identifier, which never changes.** A simple sequence generator assigns monotonically increasing 64-bit node IDs. Neighbour nodes are referenced through their IDs, as well as the first- and last child and the parent. Thus, the node encoding is based on a local encoding.
 
 ### Index types
 SirixDB stores a small in-memory path summary, a set of all paths in the resource (stored in a tree structure). The paths are not ordered. The individual nodes in the path summary are also referenced through unique, stable 64-bit node IDs, so-called path class references. The path summary is crucial for user-defined path indexes on individual paths and for so-called cas (content-and-structure) indexes, which index both typed values and the path to the root.
