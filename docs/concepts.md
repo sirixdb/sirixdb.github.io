@@ -53,7 +53,7 @@ Optionally, the storage manager also computes a rolling hash when inserting/upda
 
 **Each node and revision in SirixDB is referenced by a unique, stable identifier, which never changes.** A simple sequence generator assigns monotonically increasing 64-bit node IDs. Neighbour nodes are referenced through their IDs, as well as the first- and last child and the parent. Thus, the node encoding is based on a local encoding.
 
-### Index types
+### Secondary index types
 SirixDB stores a small in-memory path summary, a set of all paths in the resource (stored in a tree structure). The paths are not ordered. The individual nodes in the path summary are also referenced through unique, stable 64-bit node IDs, so-called path class references. The path summary is crucial for user-defined path indexes on individual paths and for so-called cas (content-and-structure) indexes, which index both typed values and the path to the root.
 
 The storage engine stores three types of indexes: Name/field indexes, path indexes, and cas indexes.
