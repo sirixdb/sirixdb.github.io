@@ -6,7 +6,7 @@ title: SirixDB - DOM-alike API
 
 ### Maven artifacts
 
-First, you have to get the dependeny on our Sirix xquery project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
+First, you have to get the dependency on our Sirix XQuery project. At this stage of development, please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
 
 ```xml
 <repository>
@@ -34,7 +34,7 @@ repositories {
 }
 ```
 
-Maven artifacts are deployed to the central maven repository (however please use the SNAPSHOT-variants as of now). Currently the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
+Maven artifacts are deployed to the central maven repository (however, please use the SNAPSHOT-variants as of now). Currently, the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
 
 XQuery project:
 
@@ -42,14 +42,14 @@ XQuery project:
 <dependency>
   <groupId>io.sirix</groupId>
   <artifactId>sirix-xquery</artifactId>
-  <version>0.9.4-SNAPSHOT</version>
+  <version>0.9.7-SNAPSHOT</version>
 </dependency>
 ```
 
 To add the dependency in Gradle:
 ```gradle
 dependencies {
-  compile 'io.sirix:sirix-xquery:0.9.4-SNAPSHOT'
+  compile 'io.sirix:sirix-xquery:0.9.7-SNAPSHOT'
 }
 ```
 
