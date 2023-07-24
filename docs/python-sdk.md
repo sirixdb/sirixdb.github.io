@@ -6,7 +6,7 @@ title: SirixDB - Python SDK API
 
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/python-sdk.md)
 
-## Introduction
+### Introduction
 
 The python SDK for provides a simple, intuitive API for accessing the SirixDB REST-API. It can be used both with synchronous code, or with asynchronous code.
 
@@ -16,7 +16,7 @@ This document concentrates on JSON data, but much of it valid with XML data as w
 
 The API docs can be found [here](https://pysirix.readthedocs.io/).
 
-## Setting up SirixDB locally
+### Setting up SirixDB locally
 
 Unfortunately, this is currently a bit messy, but still rather straightforward.
 
@@ -38,7 +38,7 @@ docker-compose up -d server
 
 The Sirix database is now ready for use.
 
-## Getting started with `pysirix`
+### Getting started with `pysirix`
 
 First, let's install `pysirix`:
 
@@ -92,7 +92,7 @@ Should you want to use the asynchronous version of pysirix, you can run the REPL
 
 In async mode, any method that will do a network request must be awaited, while any method that returns a pysirix object should not be awaited (excepting the `sirix_async` function). The rest of this tutorial will use async mode, to make it obvious which methods are doing network requests, and which are not.
 
-## Creating databases and resources
+### Creating databases and resources
 
 ```python
 >>> from pysirix import DBType
@@ -158,9 +158,9 @@ If we aren't interested in the resources, and want only the database names and t
 [{'name': 'test-json-database', 'type': 'json'}]
 ```
 
-## Manipulating resources
+### Manipulating resources
 
-### Read resource data
+#### Read resource data
 
 Let us now read the resource from the SirixDB server:
 
@@ -182,7 +182,7 @@ Let's read some particular nodes:
 
 There are more parameters that can be passed to `resource.read()`, and we will come back to them later.
 
-### Updating resource data
+#### Updating resource data
 
 Let us update some data:
 
@@ -223,7 +223,7 @@ Let's insert a more complex object:
 '[{"hey":"test"},{},{},"blah",{"a key":5}]'
 ```
 
-### Reading metadata
+#### Reading metadata
 
 To read metadata, we can call the ``read_with_metadata()`` method, which takes the same parameters as read(). Let's call it for the initial state of the resource:
 
@@ -235,7 +235,7 @@ To read metadata, we can call the ``read_with_metadata()`` method, which takes t
 The structure of the metadata returned is of type ``MetaNode``, and is a bit complex. See the API docs for details. If you are using python 3.8+, then you can use ``MetaNode`` as a type hint in your code.
 
 
-### The history of the resource
+#### The history of the resource
 
 We can get a list of the commits/revisions of this resource with the ``history()`` method:
 
@@ -246,7 +246,7 @@ We can get a list of the commits/revisions of this resource with the ``history()
 
 Commits are ordered from most recent to least recent.
 
-### Differentials
+#### Differentials
 
 We can obtain the differences between revisions as follows:
 
@@ -255,7 +255,7 @@ We can obtain the differences between revisions as follows:
 [{'insert': {'nodeKey': 8, 'insertPositionNodeKey': 1, 'insertPosition': 'asFirstChild', 'deweyID': '1.3.2.2.2.3', 'depth': 2, 'type': 'jsonFragment', 'data': '{"hey":"test"}'}}]
 ```
 
-### Deleting a node
+#### Deleting a node
 
 Finally, we can delete a node:
 
@@ -275,7 +275,7 @@ We can also delete the entire resource by specifying ``None`` as both arguments:
 False
 ```
 
-## Using the JsonStore abstraction
+### Using the JsonStore abstraction
 
 `pysirix` provides a convenient interface for storing records in SirixDB.
 
