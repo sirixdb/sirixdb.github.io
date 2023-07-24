@@ -36,7 +36,7 @@ repositories {
 }
 ```
 
-Maven artifacts are deployed to the central maven repository once we release a new version (however, please use the SNAPSHOT-versions as of now). Currently, the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
+Maven artifacts are deployed to the central maven repository once we release a new version (however, please use the SNAPSHOT versions as of now). Currently, the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
 
 Core project:
 
@@ -44,21 +44,21 @@ Core project:
 <dependency>
   <groupId>io.sirix</groupId>
   <artifactId>sirix-xquery</artifactId>
-  <version>0.9.6-SNAPSHOT</version>
+  <version>0.9.7-SNAPSHOT</version>
 </dependency>
 ```
 
 To add the dependency in Gradle:
 ```gradle
 dependencies {
-  compile 'io.sirix:sirix-xquery:0.9.6-SNAPSHOT'
+  compile 'io.sirix:sirix-xquery:0.9.7-SNAPSHOT'
 }
 ```
 
-**You have to use Java 20 and the provided Gradle wrapper**
+**You have to use Java 19 and the provided Gradle wrapper**
 
 ## Import and Query
-First, we might want to import an XML document into Sirix. We'll create a database with the imported XML document as a single resource file with the XQuery function `sdb:load(xs:string, xs:string, xs:string) as node()`. The first argument is the database to create, the second the resource representing the imported XML document, and the third parameter is the resource to import. Then we'll be able to load the resource again and execute our first query (`sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
+First, we should import an XML document into Sirix. We'll create a database with the imported XML document as a single resource file with the XQuery function `sdb:load(xs:string, xs:string, xs:string) as node()`. The first argument is the database to create, the second the resource representing the imported XML document, and the third parameter is the resource to import. Then we'll be able to load the resource again and execute our first query (`sdb:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
 
 ```java
 final var doc = Paths.get("src", "main", "resources", "orga.xml");
@@ -85,13 +85,13 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 }
 ```
 
-In the above example we are importing (loading) an XML document from a file into SirixDB. We can import XML documents stored as simple Strings with the store-function:
+In the above example, we are importing (loading) an XML document from a file into SirixDB. We can import XML documents stored as simple Strings with the store function:
 
 ```xquery
 xml:store('mydoc.col', 'mydoc.xml', '<xml>foo<bar/></xml>')
 ```
 
-Loading a collection of XML files in SirixDB is as simple as using the following query. `dir` is a directory path and we're importing all files with an `.xml` suffix:
+Loading a collection of XML files in SirixDB is as simple as using the following query. `dir` is a directory path, and we're importing all files with an `.xml` suffix:
 
 ```xquery
 final var ctx = SirixQueryContext.createWithNodeStore(store);
@@ -140,13 +140,13 @@ We can open the stored resources again, either via a jn:collection(...) function
 for $doc in jn:collection('mydocs.col') return $doc
 ```
 
-or via `jn:doc(xs:string, xs:string, xs:int) as json-item()`, which is almost identical as the version to open XML resources. The first parameter is the database to open, the second parameter is the resource, and the last parameter is the optional revision to open. Without the last parameter, SirixDB opens the most recent revision.
+or via `jn:doc(xs:string, xs:string, xs:int) as json-item()`, almost identical to the version to open XML resources. The first parameter is the database to open, the second is the resource, and the last is the optional revision to open. Without the last parameter, SirixDB opens the most recent revision.
 
 For instance, if we have stored the following very JSON-string as a resource in SirixDB `{"sirix":{"revisionNumber":1}}`, then we'll be able to retrieve the revision number simply via:
 
 `jn:doc('mycol.jn','mydoc.jn').sirix.revisionNumber`
 
-This example query shows the `deref`-operator `.` which is used to select object values by their key name.
+This example query shows the `dere-operator `.` used to select object values by their key name.
 
 We'll save other JSON examples for later. First, we want to show how to update XML and JSON resources.
 
@@ -253,7 +253,7 @@ Once we've stored a few revisions of a resource in SirixDB we might want to open
 
 `xml:doc('mycol.xml', 'mydoc.xml', 1)`
 
-SirixDB opens the database `mycol.xml` and the resource `mydoc.xml` in revision one. Without the additional revision-number parameter SirixDB would have opened the most recent revision.
+SirixDB opens the database `mycol.xml` and the resource `mydoc.xml` in revision one. Without the additional revision-number parameter, SirixDB would have opened the most recent revision.
 
 However, we might also want to load a revision by a given point in time. We're able to use the function `sdb:open($database as xs:string, $resource as xs:string, $pointInTime as xs:dateTime) as $doc`:
 
@@ -275,7 +275,7 @@ With the function `open-revisions` we're able to load all revisions of a resourc
 
 `xml:open-revisions($database as xs:string, $resource as xs:string, $startDateTime as xs:dateTime, $endDateTime as xs:dateTime) as node()*`
 
-For instance we can use the following Java code:
+For instance, we can use the following Java code:
 
 ```java
 try (final var store = BasicDBStore.newBuilder().build()
