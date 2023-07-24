@@ -7,7 +7,7 @@ title: SirixDB - An Evolutionary, Versioned NoSQL Document Store
 
 				<header class="special container">
 					<span class="icon solid fa-chart-bar"></span>
-					<h2>SirixDB keeps storage space to a minimum, while retaining the full history of your data.</h2>
+					<h2>SirixDB keeps storage space to a minimum while retaining the full history of your data.</h2>
 				       <br /> 
 				        It allows <strong>time-travel</strong> queries on its binary <strong>XML</strong> and <strong>JSON</strong> encoding.
                                         <br />
@@ -22,9 +22,9 @@ title: SirixDB - An Evolutionary, Versioned NoSQL Document Store
 								<header>
 									<h2>Keep the full history of your data for time travel analysis, audits, to correct human or application errors...</h2>
 								</header>
-								<p>SirixDB takes care of keeping storage space to a minimum while supporting the reconstruction of any revision in linear time.</p>
-								<p>Furthermore, it allows time travel queries such that you're able to analyze the history of your data efficiently to predict the future or for audits.</p>
-                                                                <p>Not enough? What about correcting any human or application errors or to compare any revision of your XML or JSON documents efficiently?</p>
+								<p>SirixDB keeps storage space to a minimum while supporting the reconstruction of any revision in linear time.</p>
+								<p>Furthermore, it allows time travel queries such that you can analyze the history of your data efficiently to predict the future or for audits.</p>
+                                                                <p>Not enough? What about correcting any human or application errors or comparing any revision of your XML or JSON documents efficiently?</p>
                                                      
 								
 								<footer>
@@ -52,7 +52,7 @@ title: SirixDB - An Evolutionary, Versioned NoSQL Document Store
 <section class="wrapper style3 container special-alt">
 	<header><h2>Supported by</h2></header>
 	<p><img src="https://www.yourkit.com/images/yklogo.png" width="185" height="44"></p>
-	<p>SirixDB is supported by YourKit: YourKit supports open source projects with innovative and intelligent tools
+	<p>SirixDB is supported by YourKit: YourKit supports open-source projects with innovative and intelligent tools
 for monitoring and profiling Java and .NET applications.
 YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourKit Java Profiler</a>,
 <a href="https://www.yourkit.com/.net/profiler/">YourKit .NET Profiler</a>,
@@ -68,9 +68,9 @@ YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourK
 	<p>The following time-travel query to be executed on our binary JSON representation of <a href="https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-core/src/test/resources/json/twitter.json">Twitter sample data</a> gives an initial impression of what's possible:</p>
 
 <div class="language-xquery highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span><span class="w"> </span><span class="nv">$doc</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">jn:open</span><span class="p">(</span><span class="s">'database'</span><span class="o">,</span><span class="s">'resource'</span><span class="o">,</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">'2019-04-13T16:24:27Z'</span><span class="p">))</span><span class="w">
-</span><span class="k">let</span><span class="w"> </span><span class="nv">$statuses</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nv">$doc</span><span class="o">=&gt;</span><span class="nt">statuses</span><span class="w">
+</span><span class="k">let</span><span class="w"> </span><span class="nv">$statuses</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nv">$doc</span><span class="o">.</span><span class="nt">statuses</span><span class="w">
 </span><span class="k">let</span><span class="w"> </span><span class="nv">$foundStatus</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">$status</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$statuses</span><span class="w">
-  </span><span class="k">let</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="nv">$status</span><span class="o">=&gt;</span><span class="nt">created_at</span><span class="p">)</span><span class="w">
+  </span><span class="k">let</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="nv">$status</span><span class="o">.</span><span class="nt">created_at</span><span class="p">)</span><span class="w">
   </span><span class="k">where</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">"2018-02-01T00:00:00"</span><span class="p">)</span><span class="w">
         </span><span class="ow">and</span><span class="w"> </span><span class="nf">not</span><span class="p">(</span><span class="nf">exists</span><span class="p">(</span><span class="nf">jn:previous</span><span class="p">(</span><span class="nv">$status</span><span class="p">)))</span><span class="w">
   </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w">
@@ -78,41 +78,10 @@ YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourK
 </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="s">"revision"</span><span class="o">:</span><span class="w"> </span><span class="nf">sdb:revision</span><span class="p">(</span><span class="nv">$foundStatus</span><span class="p">)</span><span class="o">,</span><span class="w"> </span><span class="nv">$foundStatus</span><span class="p">{</span><span class="k">text</span><span class="p">}}</span><span class="w">
 </span></code></pre></div></div>
 
-	<p>The query basically opens a database and therein a resource in a specific revision based on a timestamp (<code class="highlighter-rouge">2019–04–13T16:24:27Z</code>) and searchs for all statuses, which have a <code class="highlighter-rouge">created_at</code> timestamp, that has to be greater than the 1st of February in 2018 and did not exist in the previous revision. <code class="highlighter-rouge">=&gt;</code> is a dereferencing operator used to dereference keys in JSON objects, array values can be accessed as shown with the function bit:array-values or through specifying an index, starting with zero: <code class="highlighter-rouge">array[[0]]</code> for instance specifies the first value of the array.</p>
+	<p>The query opens a database and therein a resource in a specific revision based on a timestamp (<code class="highlighter-rouge">2019–04–13T16:24:27Z</code>) and searches for all statuses, which have a <code class="highlighter-rouge">created_at</code> timestamp, that has to be greater than the 1st of February in 2018 and did not exist in the previous revision. <code class="highlighter-rouge">.</code> is a dereferencing operator used to dereference keys in JSON objects. Array values can be accessed as shown or through specifying an index, starting with zero: <code class="highlighter-rouge">array[[0]]</code>, for instance, specifies the first value of the array.</p>
 </section>
 
-<section class="wrapper style3 container special">
-	<!-- Begin Mailchimp Signup Form -->
-<!-- <style type="text/css">
-	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
-	/* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
-	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-</style> -->
-<div id="mc_embed_signup">
-<form action="https://gmail.us4.list-manage.com/subscribe/post?u=67c1b53483a6cfcb2d3570b21&amp;id=3ac8b5aecf" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-    <div id="mc_embed_signup_scroll">
-	<h2>Keep up-to-date with SirixDB releases and best practices</h2>
-	    <div class="indicates-required"><span class="asterisk">*</span> <i>indicates required</i></div><br>
-<div class="mc-field-group">
-	<label for="mce-EMAIL"><b>Email Address  <span class="asterisk">*</span></b>
-</label>
-<br>
-	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
-</div>
-	<div id="mce-responses" class="clear">
-		<div class="response" id="mce-error-response" style="display:none"></div>
-		<div class="response" id="mce-success-response" style="display:none"></div>
-	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_67c1b53483a6cfcb2d3570b21_3ac8b5aecf" tabindex="-1" value=""></div>
-    <br><div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button" ></div>
-    </div>
-</form>
-</div>
-<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
-<!--End mc_embed_signup-->
-</section>
-
-					
+				
 				<!-- Two -->
 					<section class="wrapper style1 container special" id="more">
 						<div class="row">
@@ -144,7 +113,7 @@ YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourK
 									<header>
 										<h3>Persistent Tree-Structure With Variable Sized Pages</h3>
 									</header>
-									<p>SirixDB uses <strong>variable sized page-fragments</strong>, stored in a huge <strong>persistent and durable tree-structure</strong> for indexing revisions as well as data and the nodes of secondary indexes.</p>
+									<p>SirixDB uses <strong> variable-sized page-fragments</strong>, stored in a huge <strong>persistent and durable tree-structure</strong> for indexing revisions as well as data and the nodes of secondary indexes.</p>
 								</section>
 							
 							</div>
@@ -157,7 +126,7 @@ YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourK
 									<header>
 										<h3>Versioning</h3>
 									</header>
-									<p>SirixDB versions data as well as index-structures on a per revision and record level. As such versioning takes place at a fine-granular level. Furthermore, through a novel versioning algorithm called <em>sliding snapshot</em>, it can avoid write and read peaks.</p>
+									<p>SirixDB versions data and index structures on a per revision and record level. As such, versioning takes place at a fine-granular level. Furthermore, through a novel versioning algorithm called <em>sliding snapshot</em>, it can avoid write and read peaks.</p>
 								</section>
 							
 							</div>
@@ -168,7 +137,7 @@ YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourK
 									<header>
 										<h3>Time travel queries</h3>
 									</header>
-									<p>SirixDB allows sophisticated time travel queries, such that you can analyze the history of your data or to retrieve the differences efficiently.</p>
+									<p>SirixDB allows sophisticated time travel queries such that you can analyze the history of your data or retrieve the differences efficiently.</p>
 								</section>
 							
 							</div>
@@ -236,7 +205,7 @@ YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourK
 									<header>
 										<h3>Diffing-API</h3>
 									</header>
-									<p>SirixDB provides a way to import several revisions of an XML document with the help of a diffing algorithm called Fast Matching Simple EditScript. With the help of this diffing-algorithm SirixDB can store the encountered differences in the tree structures instead of storing the whole revision.</p>
+									<p>SirixDB provides a way to import several revisions of an XML document with the help of a diffing algorithm called Fast Matching Simple EditScript. With the help of this diffing-algorithm, SirixDB can store the encountered differences in the tree structures instead of storing the whole revision.</p>
 <p>Once you've stored several revisions in SirixDB, either through the import based on the diffing algorithm or simply through working with SirixDB in the first place, you can quickly compute diffs between any two revisions. SirixDB makes use of its stable node identifiers and optionally stored hashes. Each time the hashes of two nodes are equal, the whole subtrees in both revisions can be skipped while traversing both tree structures.</p>
 								</section>
 
