@@ -56,12 +56,14 @@ body {
 }
 
 #img-link, #img-link img {
-   text-decoration: none !important;
-   border:0px !important;
-   outline:none;
-   border-width: 0px;
-   outline-width:0px;
-   border-bottom: none;
+	text-decoration: none !important;
+	border:0px !important;
+	outline:none;
+	border-width: 0px;
+	outline-width:0px;
+	border-bottom: none;
+	margin-top: 3em;
+	margin-bottom: 3em;
 }
 
 ol, ul {
