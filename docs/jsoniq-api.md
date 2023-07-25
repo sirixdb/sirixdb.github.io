@@ -183,32 +183,54 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 ```
 Note that a transaction is auto-committed in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case, we open the most recent revision, which is revision two. After creating and bootstrapping a resource, the revision number is 0 with only a document-root node. Once we commit our imported XML document we have stored a first revision. We're serializing the stored revision in another query to `STDOUT` again.
 
-Brackit supports all JSONiq update expressions:
+Brackit supports all JSONiq update expressions.
+
+To rename a field in an object:
 ```xquery
-(: rename a field in an object :)
 let $object := {"foo": 0}
 return rename json $object.foo as "bar"  (: renames the field foo of the object to bar :)
+```
 
-(: append values into an array :)
+Append values into an array.
+
+```xquery
 append json (1, 2, 3) into ["foo", true, false, null]  (: appends the sequence (1,2,3) into the array (["foo",true,false,null,[1,2,3]]) :)
+```
 
-(: insert at a specific position :)
+Insert at a specific location:
+
+```xquery
 insert json (1, 2, 3) into ["foo", true, false, null] at position 2  (: inserts the sequence (1,2,3) into the second position of the array (["foo",true,[1,2,3],false,null]) :)
+```
 
-(: insert a json object and merge the field/values into an existing object :)
+Insert a JSON object and merge the field/values into an existing object:
+
+```xquery
 insert json {"foo": not(true), "baz": null} into {"bar": false}   (: inserts/appends the two field/value pairs into the object ({"bar":false,"foo":false,"baz:null}) :)
+```
 
-(: delete a field/value from an object :)
+Delete a field/value in an object:
+
+```xquery
 delete json {"foo": not(true), "baz": null}.foo    (: removes the field "foo" from the object :)
+```
 
-(: delete an array item at position 1 in the array :)
+Delete an array item at position 1 in the array:
+
+```xquery
 delete json ["foo", 0, 1][[1]]  (: removes the 0 (["foo",1]) :)
+```
 
-(: replace a JSON value of a field with another value :)
+Replace a JSON value of a field with another value:
+
+```xquery
 replace json value of {"foo": not(true), "baz": null}.foo with 1     (: thus, the object is adapted to {"foo":1,"baz":null} :)
+```
 
-(: replace an item in an array at the second position (that is the third) :)
-replace json value of ["foo", 0, 1][[2]] with "bar"   (: thus, the array is adapted to ["foo",0,"bar"]
+Replace an item in an array at the second position (that is the third):
+
+```xquery
+replace json value of ["foo", 0, 1][[2]] with "bar"   (: thus, the array is adapted to ["foo",0,"bar"] :)
 ```
 
 SirixDB also supports a transactional cursor-based API to update JSON resources. We can simply open the database with XQuery and get the transactional cursor via the `getTrx()`-method on the result sequence:
