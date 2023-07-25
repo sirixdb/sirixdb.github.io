@@ -208,8 +208,10 @@ input, select, textarea {
 	}
 
 	blockquote {
-		border-left: solid 0.5em rgba(124, 128, 129, 0.2);
+		background-color: #1b1b1e;
+		border-left: solid 0.5em #33658a;
 		font-style: italic;
+		color: #FFF;
 		padding: 0.5em 1em 0.5em 1em;
 	}
 
