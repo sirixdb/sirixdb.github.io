@@ -55,15 +55,13 @@ body {
 	line-height: 1;
 }
 
-img {
-	margin-top: 1em;
-	margin-bottom: 1em;
-	text-decoration: none !important;
-	border: 0px !important;
-	outline: none;
-	border-width: 0px;
-	outline-width: 0px;
-	border-bottom: none;
+#img-link, #img-link img {
+   text-decoration: none !important;
+   border:0px !important;
+   outline:none;
+   border-width: 0px;
+   outline-width:0px;
+   border-bottom: none;
 }
 
 ol, ul {
