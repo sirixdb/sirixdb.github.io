@@ -3468,7 +3468,7 @@ section.markdown h2,
 section.markdown h3,
 section.markdown h4,
 section.markdown h5 {
-	border-bottom: 4px solid #CCC;
+	border-bottom: 1px dotted #c0820e;
 	width: 100%;
 	padding-bottom: 3px;
 	color: #000;
