@@ -152,7 +152,7 @@ We'll save other JSON examples for later. First, we want to show how to update X
 
 ### Update a Resource
 
-In order to update a resource, we're able to use XQuery Update statements. First, we load an XML document again into a resource in a (to be created) database. The database is named `mycol.xml`, and the resource `mydoc.xml`. Then we open the database and the resource again. We open the resource in its most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. We serialize the result to `STDOUT` again.
+To update a resource, we're able to use XQuery Update statements. First, we load an XML document again into a resource in a (to be created) database. The database is named `mycol.xml`, and the resource `mydoc.xml`. Then we open the database and the resource again. We open the resource in its most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. We serialize the result to `STDOUT` again.
 
 ```java
 // Prepare sample document.
@@ -183,14 +183,42 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 ```
 Note that a transaction is auto-committed in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case, we open the most recent revision, which is revision two. After creating and bootstrapping a resource, the revision number is 0 with only a document-root node. Once we commit our imported XML document we have stored a first revision. We're serializing the stored revision in another query to `STDOUT` again.
 
-SirixDB currently doesn't support update expressions for the JSON-XQuery extension. For now, we have to use the transactional cursor-based API to update JSON resources. We can simply open the database with XQuery and get the transactional cursor via the `getTrx()`-method on the result sequence:
+Brackit supports all JSONiq update expressions:
+```xml
+(: rename a field in an object :)
+let $object := {"foo": 0}
+return rename json $object.foo as "bar"  (: renames the field foo of the object to bar :)
+
+(: append values into an array :)
+append json (1, 2, 3) into ["foo", true, false, null]  (: appends the sequence (1,2,3) into the array (["foo",true,false,null,[1,2,3]]) :)
+
+(: insert at a specific position :)
+insert json (1, 2, 3) into ["foo", true, false, null] at position 2  (: inserts the sequence (1,2,3) into the second position of the array (["foo",true,[1,2,3],false,null]) :)
+
+(: insert a json object and merge the field/values into an existing object :)
+insert json {"foo": not(true), "baz": null} into {"bar": false}   (: inserts/appends the two field/value pairs into the object ({"bar":false,"foo":false,"baz:null}) :)
+
+(: delete a field/value from an object :)
+delete json {"foo": not(true), "baz": null}.foo    (: removes the field "foo" from the object :)
+
+(: delete an array item at position 1 in the array :)
+delete json ["foo", 0, 1][[1]]  (: removes the 0 (["foo",1]) :)
+
+(: replace a JSON value of a field with another value :)
+replace json value of {"foo": not(true), "baz": null}.foo with 1     (: thus, the object is adapted to {"foo":1,"baz":null} :)
+
+(: replace an item in an array at the second position (that is the third) :)
+replace json value of ["foo", 0, 1][[2]] with "bar"   (: thus, the array is adapted to ["foo",0,"bar"]
+```
+
+SirixDB also supports a transactional cursor-based API to update JSON resources. We can simply open the database with XQuery and get the transactional cursor via the `getTrx()`-method on the result sequence:
 
 ```java
 final var seq = new XQuery(compileChain, query).execute(ctx);
 final var rtx = seq.getTrx();
 ```
 
-In Java or Kotlin we can use the transaction to insert Object-structures, Arrays, String, Number, Boolean, and Null-values.
+In Java or Kotlin, we can use the transaction to insert Objects, Arrays, Strings, Numbers, Booleans, and Null-values.
 
 For instance, we can insert JSON data as the first children of arrays or as the right siblings of array items:
 
@@ -215,7 +243,7 @@ Temporal axes are compatible with node tests:
 
 `<temporalaxis>::<nodetest>` is defined as `<temporalaxis>::*/self::<nodetest>`
 
-For instance, to simply serialize all revisions, we can use the axis `all-times::`
+For instance, to serialize all revisions, we can use the axis `all-times::`
 
 ```java
 try (final var store = BasicXmlDBStore.newBuilder().build();
@@ -232,7 +260,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 
 SirixDB supports a lot of temporal axes: `first::` to get a node in the first revision, `last::` to get a node in the last revision, `previous::` to get the node in the previous revision, `next::` to get the node in the next revision, `future::` and `future-or-self::` to get a node in all future revisions or the current and future revisions, `past::` and `past-or-self::` to get a node in past revisions or the current and past revisions. We have already seen the `all-times::`-axis, which iterates over a node in all revisions.
 
-JSON instead has no notion of the navigational axis, instead, SirixDB provides custom functions:
+JSONiq instead has no notion of the navigational axis for JSON. Instead, SirixDB provides custom functions:
 
 - `jn:future($item as json-item(), $includeSelf as xs:boolean) as json-item()*`: Function for selecting a json-item in the future or the future-or-self. The first parameter is the context item. The second parameter denotes if the current item should be included in the result or not.
 
