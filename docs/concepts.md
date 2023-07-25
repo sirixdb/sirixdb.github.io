@@ -63,7 +63,7 @@ Name/field indexes are trivial. They store node keys for the given names in an i
 It keeps the indexes at all times up-to-date. Furthermore, it stores the indexes and the actual data in dedicated tries. As such, they are part of a read-write transaction and versioned.
 The following diagram shows a path summary built for a given JSON input. It is built along with the actual data, the JSON tree.
 
-<a id="img-link" khref="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-pathsummary.png">
+<a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-pathsummary.png">
 <img id="img-link" src="/images/sirix-pathsummary.png" align="center" width="100%" style="text-decoration: none"></a>
 
 The next diagram depicts the relationship between the actual data, the stored JSON tree, and the path summary. Each inner node references the corresponding path node key/path class reference (PCR).
