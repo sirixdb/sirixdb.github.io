@@ -129,7 +129,7 @@ input, select, textarea {
 		}
 
 	body, input, select, textarea {
-		color: #7c8081;
+		color: #454545;
 		font-family: 'Merriweather', serif;
 		font-size: 14pt;
 		font-weight: 300;
@@ -3471,7 +3471,7 @@ section.markdown h5 {
 	border-bottom: 4px solid #CCC;
 	width: 100%;
 	padding-bottom: 3px;
-	color: inherit;
+	color: #000;
 	font-weight: bold;
 	line-height: 1.75em;
 	text-transform: none;
