@@ -184,7 +184,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
 Note that a transaction is auto-committed in this case and that the element nodes `a` and `b` are stored in a new revision. Thus, in this case, we open the most recent revision, which is revision two. After creating and bootstrapping a resource, the revision number is 0 with only a document-root node. Once we commit our imported XML document we have stored a first revision. We're serializing the stored revision in another query to `STDOUT` again.
 
 Brackit supports all JSONiq update expressions:
-```xml
+```xquery
 (: rename a field in an object :)
 let $object := {"foo": 0}
 return rename json $object.foo as "bar"  (: renames the field foo of the object to bar :)
@@ -237,7 +237,7 @@ Object record values can be all JSON node types (`ArrayValue`, `ObjectValue`, `B
 We can find all possible methods in the interface `org.sirix.api.json.JsonNodeTrx`.
 
 ### Temporal axis
-SirixDB not only provides all standard XPath axes for the stored XML documents but also temporal XPath axes. We can use these axes to analyze how a resource or a subtree therein has changed between several revisions.
+SirixDB provides not only all standard XPath axes for the stored XML documents but also temporal XPath axes. We can use these axes to analyze how a resource or a subtree therein has changed between several revisions.
 
 Temporal axes are compatible with node tests:
 
