@@ -63,24 +63,24 @@ Name/field indexes are trivial. They store node keys for the given names in an i
 It keeps the indexes at all times up-to-date. Furthermore, it stores the indexes and the actual data in dedicated tries. As such, they are part of a read-write transaction and versioned.
 The following diagram shows a path summary built for a given JSON input. It is built along with the actual data, the JSON tree.
 
-<a id="img-lin" khref="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-pathsummary.png">
-<img src="/images/sirix-pathsummary.png" align="center" width="100%" style="text-decoration: none"></a>
+<a id="img-link" khref="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-pathsummary.png">
+<img id="img-link" src="/images/sirix-pathsummary.png" align="center" width="100%" style="text-decoration: none"></a>
 
 The next diagram depicts the relationship between the actual data, the stored JSON tree, and the path summary. Each inner node references the corresponding path node key/path class reference (PCR).
 
 <a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-doc-storage-and-path-summary.png">
-<img src="/images/sirix-doc-storage-and-path-summary.png" align="center" width="100%" style="text-decoration: none"></a>
+<img id="img-link" src="/images/sirix-doc-storage-and-path-summary.png" align="center" width="100%" style="text-decoration: none"></a>
 
 The path summary is crucial for index *selectivity*. That is fine-grained, user-defined indexes on individual paths. It ensures that indexes can be adjusted to document characteristics, query workload, and maintenance overhead. Moreover, selective indexes reduce *update costs*, compared to indexes covering all paths. 
 The next diagram depicts a simple algorithm to build path indexes. As the path summary is small, it's kept in memory, and access to individual nodes is cheap due to a map (path class reference <=> path node). The path class references matching a given path are cached. Individual path class references are recomputed on demand whenever a new path node with a given name is inserted.
 
 <a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-path-indexes.png">
-<img src="/images/sirix-path-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
+<img id="img-link" src="/images/sirix-path-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
 
 The most selective type of index in SirixDB is a user-defined, typed, content-and-structure (CAS) index. In addition to individual paths, typed values are stored in the indexes. Thus, whenever potential index matches are searched for leaf value nodes, matching PCRs are based on the parent paths of the object field value nodes. Furthermore, non-matching types are not indexed.
 
 <a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-cas-indexes.png">
-<img src="/images/sirix-cas-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
+<img id="img-link" src="/images/sirix-cas-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
 
 ### Transaction commit and persistent data structures
 
@@ -88,14 +88,14 @@ All data structures are stored in log-structured persistent tries. Whenever upda
 The following figure depicts the main document index: a trie, which stores the nodes based on their 64-bit node keys. Each commit creates a new revision root page with a monotonically increasing revision number and, as said, a chain of ancestor pages starting with a copy of a leaf node page.
 
 <a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-revisions.png">
-<img src="/images/sirix-revisions.png" align="center" width="100%" style="text-decoration: none"></a>
+<img id="img-link" src="/images/sirix-revisions.png" align="center" width="100%" style="text-decoration: none"></a>
 
 We assume that a read-write transaction modifies a record in the leftmost *DataPageFragment*, a leaf node page of the trie. Depending on the versioning algorithm SirixDB uses, the modified nodes and probably some other nodes in the page are copied to a new page fragment. First, SirixDB stores all changes in an in-memory transaction (intent) log only visible to the write trx. Second, during a transaction commit, the page structure of the new *RevisionRootPage* is serialized in a postorder traversal and appended to a data file.
 
 We've borrowed ideas from the Adaptive Radix Tree (ART) and Hash Array Mapped Tries (HAMT) to compress inner pages (*IndirectPage*s) with a lot of null references (currently in our system the rightmost *IndirectPage*s, which are the inner nodes of the tries). The *IndirectPage*s thus might be based on storing only four references, a bitmap page or a full page, currently.
 
 <a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-on-device-layout.png">
-<img src="/images/sirix-on-device-layout.png" align="center" width="100%" style="text-decoration: none"></a>
+<img id="img-link" src="/images/sirix-on-device-layout.png" align="center" width="100%" style="text-decoration: none"></a>
 
 All changed *DataPageFragments* are written to persistent storage, starting with the leftmost. If other changed data pages exist underneath an inner node page of the trie (*IndirectPage*), SirixDB serializes these before the *IndirectPage*, which points to the updated data pages. Then the *IndirectPage*, which points to the updated revision root page, is written. The indirect pages are written with updated references to the new persistent locations of the data pages.
 
