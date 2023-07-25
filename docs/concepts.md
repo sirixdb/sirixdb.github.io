@@ -71,7 +71,7 @@ The next diagram depicts the relationship between the actual data, the stored JS
 <a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-doc-storage-and-path-summary.png">
 <img src="/images/sirix-doc-storage-and-path-summary.png" align="center" width="100%" style="text-decoration: none"></a>
 
-The path summary is crucial for index *selectivity*. That is fine-grained, user-defined indexes on individual paths. It ensures that a set of indexes can be adjusted to document characteristics, query workload, and maintenance overhead. Moreover, selective indexes reduce *update costs*, compared to indexes covering all paths. 
+The path summary is crucial for index *selectivity*. That is fine-grained, user-defined indexes on individual paths. It ensures that indexes can be adjusted to document characteristics, query workload, and maintenance overhead. Moreover, selective indexes reduce *update costs*, compared to indexes covering all paths. 
 The next diagram depicts a simple algorithm to build path indexes. As the path summary is small, it's kept in memory, and access to individual nodes is cheap due to a map (path class reference <=> path node). The path class references matching a given path are cached. Individual path class references are recomputed on demand whenever a new path node with a given name is inserted.
 
 <a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-path-indexes.png">
@@ -87,7 +87,7 @@ The most selective type of index in SirixDB is a user-defined, typed, content-an
 All data structures are stored in log-structured persistent tries. Whenever updates are made (e.g., a node is inserted), the path to a revision root page is copied, and a new chain of pages is appended to a data storage file. The nodes themselves are stored in leaf node pages of keyed tries. Instead of copying the whole leaf node pages, however, SirixDB supports a clever new algorithm called sliding snapshot.
 The following figure depicts the main document index: a trie, which stores the nodes based on their 64-bit node keys. Each commit creates a new revision root page with a monotonically increasing revision number and, as said, a chain of ancestor pages starting with a copy of a leaf node page.
 
-<a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-revisions">
+<a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-revisions.png">
 <img src="/images/sirix-revisions.png" align="center" width="100%" style="text-decoration: none"></a>
 
 We assume that a read-write transaction modifies a record in the leftmost *DataPageFragment*, a leaf node page of the trie. Depending on the versioning algorithm SirixDB uses, the modified nodes and probably some other nodes in the page are copied to a new page fragment. First, SirixDB stores all changes in an in-memory transaction (intent) log only visible to the write trx. Second, during a transaction commit, the page structure of the new *RevisionRootPage* is serialized in a postorder traversal and appended to a data file.
