@@ -44,8 +44,8 @@ The page structure is heavily inspired by the operating system ZFS. We used some
 ### Tree-structure
 SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding. The following figure depicts constructing a JSON tree by parsing the input JSON string and creating fine-grained nodes. 
 
-<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-json-tree-encoding.png">
-<img src="/images/sirix-json-tree-encoding.png" align="center" width="100%" style="text-decoration: none"></a>
+<a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-json-tree-encoding.png">
+<img id="img-link" src="/images/sirix-json-tree-encoding.png" align="center" width="100%" style="text-decoration: none"></a>
 
 We've omitted several details here for brevity. Still, a simple dictionary compression ensures that object field names are only stored once in an in-memory map ((re-)constructed from a keyed trie) and referenced through a 32-bit integer from the node. Similarly, as we'll see in a bit, path summary nodes/path class records are referenced from the nodes and stored in another trie.
 
