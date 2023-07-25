@@ -47,7 +47,7 @@ SirixDB stores `databases`, that is, collections of `resources`. Resources are t
 <a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-json-tree-encoding.png">
 <img src="/images/sirix-json-tree-encoding.png" align="center" width="100%" style="text-decoration: none"></a>
 
-We've omitted several details here for brevity, but a simple dictionary compression ensures that object field names are only stored once in an in-memory map ((re-)constructed from a keyed trie) and referenced through a 32-bit integer from the node. Similarly, as we'll see in a bit, path summary nodes/path class records are referenced from the nodes and stored in another trie.
+We've omitted several details here for brevity. Still, a simple dictionary compression ensures that object field names are only stored once in an in-memory map ((re-)constructed from a keyed trie) and referenced through a 32-bit integer from the node. Similarly, as we'll see in a bit, path summary nodes/path class records are referenced from the nodes and stored in another trie.
 
 Optionally, the storage manager also computes a rolling hash when inserting/updating/deleting nodes, adapting all ancestor hashes. When using the REST-API, this is especially important for a lightweight optimistical concurrency control system. Each `GET` request results in a response with an ETag-Header with the new hash set as the value. A subsequent request might be an update to the node (by sending the previously received hash value in the request). If the subtree has been modified concurrently and in parallel by another user, the hashes won't match, and the operation fails/the transaction is aborted. TODO: figure. The hashes are also crucial in order to speed up an ID-based diffing algorithm, which computes a set of diff operations. Also optionally, however, trading space and time for fast change tracking between revisions, SirixDB records the changes in small JSON files in a specific format, which includes the anchor node, the type of change, the changed nodes, and optionally metadata.
 
@@ -63,23 +63,23 @@ Name/field indexes are trivial. They store node keys for the given names in an i
 It keeps the indexes at all times up-to-date. Furthermore, it stores the indexes and the actual data in dedicated tries. As such, they are part of a read-write transaction and versioned.
 The following diagram shows a path summary built for a given JSON input. It is built along with the actual data, the JSON tree.
 
-<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-pathsummary.png">
+<a id="img-lin" khref="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-pathsummary.png">
 <img src="/images/sirix-pathsummary.png" align="center" width="100%" style="text-decoration: none"></a>
 
 The next diagram depicts the relationship between the actual data, the stored JSON tree, and the path summary. Each inner node references the corresponding path node key/path class reference (PCR).
 
-<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-doc-storage-and-path-summary.png">
+<a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-doc-storage-and-path-summary.png">
 <img src="/images/sirix-doc-storage-and-path-summary.png" align="center" width="100%" style="text-decoration: none"></a>
 
 The path summary is crucial for index *selectivity*. That is fine-grained, user-defined indexes on individual paths. It ensures that a set of indexes can be adjusted to document characteristics, query workload, and maintenance overhead. Moreover, selective indexes reduce *update costs*, compared to indexes covering all paths. 
 The next diagram depicts a simple algorithm to build path indexes. As the path summary is small, it's kept in memory, and access to individual nodes is cheap due to a map (path class reference <=> path node). The path class references matching a given path are cached. Individual path class references are recomputed on demand whenever a new path node with a given name is inserted.
 
-<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-path-indexes.png">
+<a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-path-indexes.png">
 <img src="/images/sirix-path-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
 
 The most selective type of index in SirixDB is a user-defined, typed, content-and-structure (CAS) index. In addition to individual paths, typed values are stored in the indexes. Thus, whenever potential index matches are searched for leaf value nodes, matching PCRs are based on the parent paths of the object field value nodes. Furthermore, non-matching types are not indexed.
 
-<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-cas-indexes.png">
+<a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-cas-indexes.png">
 <img src="/images/sirix-cas-indexes.png" align="center" width="100%" style="text-decoration: none"></a>
 
 ### Transaction commit and persistent data structures
@@ -87,27 +87,27 @@ The most selective type of index in SirixDB is a user-defined, typed, content-an
 All data structures are stored in log-structured persistent tries. Whenever updates are made (e.g., a node is inserted), the path to a revision root page is copied, and a new chain of pages is appended to a data storage file. The nodes themselves are stored in leaf node pages of keyed tries. Instead of copying the whole leaf node pages, however, SirixDB supports a clever new algorithm called sliding snapshot.
 The following figure depicts the main document index: a trie, which stores the nodes based on their 64-bit node keys. Each commit creates a new revision root page with a monotonically increasing revision number and, as said, a chain of ancestor pages starting with a copy of a leaf node page.
 
-<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-revisions">
+<a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-revisions">
 <img src="/images/sirix-revisions.png" align="center" width="100%" style="text-decoration: none"></a>
 
 We assume that a read-write transaction modifies a record in the leftmost *DataPageFragment*, a leaf node page of the trie. Depending on the versioning algorithm SirixDB uses, the modified nodes and probably some other nodes in the page are copied to a new page fragment. First, SirixDB stores all changes in an in-memory transaction (intent) log only visible to the write trx. Second, during a transaction commit, the page structure of the new *RevisionRootPage* is serialized in a postorder traversal and appended to a data file.
 
-We've borrowed ideas from the Adaptive Radix Tree (ART) and Hash Array Mapped Tries (HAMT) to compress inner pages (*IndirectPage*s) with a lot of null references (currently in our system the rightmost *IndirectPage*s, which are the inner nodes of the tries). The *IndirectPage*s thus might be based on storing only 4 references, a bitmap page or a full page, currently.
+We've borrowed ideas from the Adaptive Radix Tree (ART) and Hash Array Mapped Tries (HAMT) to compress inner pages (*IndirectPage*s) with a lot of null references (currently in our system the rightmost *IndirectPage*s, which are the inner nodes of the tries). The *IndirectPage*s thus might be based on storing only four references, a bitmap page or a full page, currently.
 
-<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-on-device-layout.png">
+<a id="img-link" href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/sirix-on-device-layout.png">
 <img src="/images/sirix-on-device-layout.png" align="center" width="100%" style="text-decoration: none"></a>
 
 All changed *DataPageFragments* are written to persistent storage, starting with the leftmost. If other changed data pages exist underneath an inner node page of the trie (*IndirectPage*), SirixDB serializes these before the *IndirectPage*, which points to the updated data pages. Then the *IndirectPage*, which points to the updated revision root page, is written. The indirect pages are written with updated references to the new persistent locations of the data pages.
 
-SirixDB also stores checksums in the parent pointers as in ZFS. Thus, the storage engine in the future will be able to detect data corruption and heal itself once we partition and replicate the data. SirixDB serializes the whole page structure in this manner. We also intend to store an encryption key in the references in the future to support encryption at rest.
+SirixDB also stores checksums in the parent pointers as in ZFS. Thus, the storage engine in the future will be able to detect data corruption and heal itself once we partition and replicate the data. SirixDB serializes the whole page structure in this manner. We also intend to store an encryption key in the references to support encryption at rest.
 
-SirixDB must update the ancestor path of each changed *RecordPage*/*DataPageFragment*. However, storing indirect pages is cheap. Each reference is left unchanged, which doesn't point to a new page or page fragment. Thus, unchanged pages (not on the ancestor path of changed pages) are referenced at their respective position in the previous revision and never copied or rewritten.
+SirixDB must update the ancestor path of each changed *RecordPage*/*DataPageFragment*. However, storing indirect pages is cheap. Each reference is left unchanged, not pointing to a new page or page fragment. Thus, unchanged pages (not on the ancestor path of changed pages) are referenced at their respective position in the previous revision and never copied or rewritten.
 
 ### Versioning at the page-level
 
 One of the most distinctive features of SirixDB is that it versions the *RecordPages*. It doesn't merely copy all records of the page, even if a transaction only modifies a single record. The new data page fragment always contains a reference to the previous version. Thus, the versioning algorithms can dereference a fixed predefined number of page fragments at maximum to reconstruct a RecordPage in memory.
 
-**A sliding snapshot algorithm used to version data pages can avoid read and write peaks. The algorithm avoids intermittent full-page snapshots, which are needed during incremental or differential page-versioning to fast-track its reconstruction.**
+**A sliding snapshot algorithm used to version data pages can avoid read and write peaks. The algorithm avoids intermittent full-page snapshots needed during incremental or differential page-versioning to fast-track its reconstruction.**
 
 ### Versioning algorithms for storing and retrieving page snapshots
 
@@ -121,10 +121,10 @@ SirixDB implements several versioning strategies best known from backup systems 
 
 Incremental versioning is one extreme. Write performance is best, as it stores the optimum (only changed records). On the other hand, reconstructing a page needs intermittent full snapshots of pages. Otherwise, performance deteriorates with each new page revision as increments increase with each new version.
 
-Differential-versioning tries to balance reads and writes better but is still not optimal. A system implementing a differential versioning strategy has to write all changed records since a past full dump of the page. Thus, only two revisions of the page fragment must be read to reconstruct a data page. However, write performance also deteriorates with each new revision of the page.
+Differential-versioning tries to balance reads and writes better but is still not optimal. A system implementing a differential versioning strategy has to write all changed records since a past full dump of the page. Thus, only two revisions of the page fragment must be read to reconstruct a data page. However, write-performance also deteriorates with each new revision of the page.
 
 Write peaks occur during incremental versioning due to the requirement of intermittent full dumps of the page. Differential versioning also suffers from a similar problem. Without an intermittent full dump, a differential versioning system has to duplicate vast amounts of data during each new write.
 
-Marc Kramis came up with the idea of a novel sliding snapshot algorithm, which balances read/write performance to circumvent any write-peaks.
+Marc Kramis came up with a novel sliding snapshot algorithm, which balances read/write performance to circumvent any write-peaks.
 
-The algorithm makes use of a sliding window. First, any changed record must be written during a commit. Second, any record which is older than a predefined length N of the window and which has not been changed during these N-revisions must be written, too. Only these N-revisions at max have to be read. Fetching of the page fragments can be done in parallel or linear. In the latter case, the page fragments are read starting with the most recent revision. The algorithm stops once the full page has been reconstructed. You can find the best high-level overview of the algorithm in Marc's Thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695)
+The algorithm makes use of a sliding window. First, any changed record must be written during a commit. Second, any record older than a predefined length N of the window and which has not been changed during these N-revisions must be written, too. Only these N-revisions at max have to be read. Fetching of the page fragments can be done in parallel or linear. In the latter case, the page fragments are read starting with the most recent revision. The algorithm stops once the full page has been reconstructed. You can find the best high-level overview of the algorithm in Marc's Thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695)
