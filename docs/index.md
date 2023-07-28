@@ -34,7 +34,7 @@ SirixDB not only supports all XPath axes to query a resource in one revision but
 ![sunburstview](/images/sunburstview-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"} ![moves](/images/moves-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"}
 </div>
 
-You may find a quick overview of the [main features](/features.html) useful.
+You may find a quick overview of the [main features](/docs/features.html) useful.
 
 ### API Documentation
 We provide several APIs to interact with SirixDB.
