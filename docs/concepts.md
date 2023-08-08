@@ -24,6 +24,8 @@ The main insight is that flash drives such as SSDs, which are common nowadays, h
 
 ### Evolution of state through fine-grained modifications
 
+The next figure from Marc Kramis describes the evolution of state over time through fine grained modifications
+
 <a id="img-link" href="https://miro.medium.com/max/771/1*bHwVd6phGROGnZi1hJqHHQ.png">
 <img id="img-link" src="https://miro.medium.com/max/771/1*bHwVd6phGROGnZi1hJqHHQ.png" align="center" width="100%" style="text-decoration: none"></a>
 
