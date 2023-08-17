@@ -58,7 +58,7 @@ dependencies {
 **You have to use Java 20 and the provided Gradle wrapper**
 
 ## Import and Query
-First, we should import an XML document into Sirix. We'll create a database with the imported XML document as a single resource file with the XQuery function `xml:load(xs:string, xs:string, xs:string) as node()`. The first argument is the database to create, the second the resource representing the imported XML document, and the third parameter is the resource to import. Then we'll be able to load the resource again and execute our first query (`xml:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
+First, we should import an XML document into Sirix. We'll create a database with the imported XML document as a single resource file with the function `xml:load(xs:string, xs:string, xs:string) as node()`. The first argument is the database to create, the second the resource representing the imported XML document, and the third parameter is the resource to import. Then we'll be able to load the resource again and execute our first query (`xml:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
 
 ```java
 final var doc = Paths.get("src", "main", "resources", "orga.xml");
@@ -67,18 +67,18 @@ final var doc = Paths.get("src", "main", "resources", "orga.xml");
 try (final var store = BasicXmlDBStore.newBuilder().build();
      final var ctx = SirixQueryContext.createWithNodeStore(store);
      final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
-  // Use XQuery to load sample document into store.
+  // Use JSONiq to load sample document into store.
   System.out.println("Loading document:");
   final var docUri = doc.toUri();
   final var queryLoadIntoSirix = String.format("xml:load('mydoc.col', 'mydoc.xml', '%s')", docUri.toString());
   System.out.println(queryLoadIntoSirix);
-  new XQuery(queryLoadIntoSirix).evaluate(ctx);
+  new Query(queryLoadIntoSirix).evaluate(ctx);
 
   System.out.println("");
   System.out.println("Query loaded document:");
   final var query = "xml:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']";
   System.out.println(query);
-  final var query = new XQuery(compileChain, query);
+  final var query = new Query(compileChain, query);
   query.prettyPrint().serialize(ctx, System.out);
 
   System.out.println("");
@@ -96,7 +96,7 @@ Loading a collection of XML files in SirixDB is as simple as using the following
 ```xquery
 final var ctx = SirixQueryContext.createWithNodeStore(store);
 final var query = String.format("bit:load('mydocs.col', io:ls('%s', '\\.xml$'))", dir);
-new XQuery(query).evaluate(ctx);
+new Query(query).evaluate(ctx);
 ```
 
 And querying the collection is as simple as using the function collection:
@@ -112,11 +112,11 @@ To store JSON data in SirixDB, we can use the store function within another name
 try (final var store = BasicJsonDBStore.newBuilder().build();
     final var ctx = SirixQueryContext.createWithJsonStore(store);
     final var chain = SirixCompileChain.createWithJsonStore(store)) {
-  // Use XQuery to store a JSON string into the store.
+  // Use JSONiq to store a JSON string into the store.
   System.out.println("Storing document:");
   final var storeQuery = "jn:store('mycol.jn','mydoc.jn','[\"bla\", \"blubb\"]')";
   System.out.println(storeQuery);
-  new XQuery(chain, storeQuery).evaluate(ctx);
+  new Query(chain, storeQuery).evaluate(ctx);
 }
 ```
 
@@ -152,7 +152,7 @@ We'll save other JSON examples for later. First, we want to show how to update X
 
 ### Update a Resource
 
-To update a resource, we're able to use XQuery Update statements. First, we load an XML document again into a resource in a (to be created) database. The database is named `mycol.xml`, and the resource `mydoc.xml`. Then we open the database and the resource again. We open the resource in its most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. We serialize the result to `STDOUT` again.
+To update a resource, we're able to use XQuery Update / JSONiq Update statements. First, we load an XML document again into a resource in a (to be created) database. The database is named `mycol.xml`, and the resource `mydoc.xml`. Then we open the database and the resource again. We open the resource in its most recent revision and insert an XML fragment (`<a><b/></a>`) as a first child into the root element log. We serialize the result to `STDOUT` again.
 
 ```java
 // Prepare sample document.
@@ -166,7 +166,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   final var docUri = doc.toUri();
   final var xq1 = String.format("xml:load('mycol.xml', 'mydoc.xml', '%s')", docUri.toString());
   System.out.println(xq1);
-  new XQuery(xq1).evaluate(ctx);
+  new Query(xq1).evaluate(ctx);
 
   // Reuse store and query loaded document.
   System.out.println();
@@ -174,9 +174,9 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   final var xq2 = "let $doc := xml:doc('mycol.xml', 'mydoc.xml')\n" + "let $log = $doc/log return \n"
     + "( insert nodes <a><b/></a> into $log )\n";
   System.out.println(xq2);
-  new XQuery(xq2).execute(ctx);
+  new Query(xq2).execute(ctx);
 
-  final var query = new XQuery("xml:doc('mycol.xml', 'mydoc.xml')");
+  final var query = new Query("xml:doc('mycol.xml', 'mydoc.xml')");
   query.prettyPrint().serialize(ctx, System.out);
   System.out.println();
 }
@@ -275,7 +275,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println("Query loaded document:");
   final var queryString = "xml:doc('mycol.xml', 'mydoc.xml')/log/all-times::*";
   System.out.println(queryString);
-  final var query = new XQuery(compileChain, queryString);
+  final var query = new Query(compileChain, queryString);
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
