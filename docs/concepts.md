@@ -15,6 +15,11 @@ SirixDB can help answer questions such as the following: Give me last month's hi
 
 Let's turn our focus toward the question of why historical data has not been retained in the past. We postulate that new storage advances in recent years present possibilities to build sophisticated solutions to help answer those questions without the hurdle state-of-the-art systems bring.
 
+## A brief overview of the overall architecture.
+Before we go into the specifics of SirixDB, its important to have an understanding of the overall architecture. At the core of SirxDB are databases. These instances store resources, which are generally binary tree encodings of either JSON or XML files - (more on that under the Tree-structure subheading).
+
+From this database instance, you may either create a new resource or begin a resource session to start as many read-only transactions as you would like or just a single read-write transaction. In essence, you may think of the architecture as one big tree full of prefix trees, where revisions to the tree are always appended. The data of the prefix trees either store the nodes of the JSON or XML trees or they store secondary indexes!
+
 ## Advantages and disadvantages of flash drives, for instance, SSDs
 As Marc Kramis points out in his paper "Growing Persistent Trees into the 21st Century":
 
