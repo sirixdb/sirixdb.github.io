@@ -136,4 +136,15 @@ Marc Kramis developed a novel sliding snapshot algorithm, which balances read/wr
 The algorithm makes use of a sliding window. First, any changed record must be written during a commit. Second, any record older than a predefined length N of the window that has not been changed during these N-revisions must be written, too. Only these N-revisions at max have to be read. Fetching of the page fragments can be done in parallel or linear. In the latter case, the page fragments are read starting with the most recent revision. The algorithm stops once the full page has been reconstructed. You can find the best high-level overview of the algorithm in Marc's Thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695)
 
 ## Examples and Tutorials
-We know this can be alot to take in so there are some handmade tutorials and examples for you to see all of this theory in action! Within the bundles directory of this repository you will find sirix-examples! This contains both tutorials and examples of how you may directly interact with the code base.
+We know this can be alot to take in so there are some handmade tutorials and examples for you to see all of this theory in action! Within the bundles directory of the sirix repository you will find sirix-examples! This contains both tutorials and examples of how you may directly interact with the code base. You may use these in conjunction with the following how to's in order to get started with sirix!
+
+## How to create your first Json database
+The following may prove useful in helping you to understand CreateJsonDatabase.java within the tutorials directory of sirix.
+1 - Create a Path variable that points to the directory containing the Json files you would like to store.
+2 - Create a new variable storing the specific Json file you would like to store using the path variable from the previous step.
+3 - Create a new variable to store the database file using "Constants.SIRIX_DATA_LOCATION.resolve("nameOfDataBase");"
+4 - Check if the database already exists and if so, delete it.
+5 - Create a new variable to store a new database configuration and use this variable to create a new Json database instance.
+6 - Try to create a new variable, storing the database
+7 - If able to create this variable, create a new Resource to store in the database
+8 - Try to begin a new Resource Session and if able, Insert the specified Json file into the subtree.
