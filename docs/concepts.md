@@ -150,7 +150,7 @@ The following may prove useful in helping you to understand CreateJsonDatabase.j
 * 8 - Try to begin a new Resource Session and if able, Insert the specified file into the subtree.
 
 ## How to create a versioned Resource
-The following may prove useful in helping you to understand CreateJsonDatabase.java or CreateXmlDatabase.java within the tutorials directory of sirix.
+The following may prove useful in helping you to understand CreateVersionedJsonResource.java or CreateVersionedXmlResource.java within the tutorials directory of sirix.
 
 Please note that if you have already created a database, you may skip steps 1 - 3
 * 1 - Create a new variable to store the database file using "Constants.SIRIX_DATA_LOCATION.resolve("nameOfDataBase");"
