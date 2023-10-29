@@ -138,13 +138,13 @@ The algorithm makes use of a sliding window. First, any changed record must be w
 ## Examples and Tutorials
 We know this can be alot to take in so there are some handmade tutorials and examples for you to see all of this theory in action! Within the bundles directory of the sirix repository you will find sirix-examples! This contains both tutorials and examples of how you may directly interact with the code base. You may use these in conjunction with the following how to's in order to get started with sirix!
 
-## How to create your first Json database
-The following may prove useful in helping you to understand CreateJsonDatabase.java within the tutorials directory of sirix.
-* 1 - Create a Path variable that points to the directory containing the Json files you would like to store.
-* 2 - Create a new variable storing the specific Json file you would like to store using the path variable from the previous step.
+## How to create your first database
+The following may prove useful in helping you to understand CreateJsonDatabase.java or CreateXmlDatabase.java within the tutorials directory of sirix.
+* 1 - Create a Path variable that points to the directory containing the files you would like to store.
+* 2 - Create a new variable storing the specific file you would like to store using the path variable from the previous step.
 * 3 - Create a new variable to store the database file using "Constants.SIRIX_DATA_LOCATION.resolve("nameOfDataBase");"
 * 4 - Check if the database already exists and if so, delete it.
-* 5 - Create a new variable to store a new database configuration and use this variable to create a new Json database instance.
+* 5 - Create a new variable to store a new database configuration and use this variable to create a new Json/Xml database instance.
 * 6 - Try to create a new variable, storing the database
 * 7 - If able to create this variable, create a new Resource to store in the database
-* 8 - Try to begin a new Resource Session and if able, Insert the specified Json file into the subtree.
+* 8 - Try to begin a new Resource Session and if able, Insert the specified file into the subtree.
