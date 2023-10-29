@@ -140,8 +140,8 @@ We know this can be alot to take in so there are some handmade tutorials and exa
 
 ## How to create your first Json database
 The following may prove useful in helping you to understand CreateJsonDatabase.java within the tutorials directory of sirix.
-1 - Create a Path variable that points to the directory containing the Json files you would like to store.
-2 - Create a new variable storing the specific Json file you would like to store using the path variable from the previous step.
+* 1 - Create a Path variable that points to the directory containing the Json files you would like to store.
+* 2 - Create a new variable storing the specific Json file you would like to store using the path variable from the previous step.
 3 - Create a new variable to store the database file using "Constants.SIRIX_DATA_LOCATION.resolve("nameOfDataBase");"
 4 - Check if the database already exists and if so, delete it.
 5 - Create a new variable to store a new database configuration and use this variable to create a new Json database instance.
