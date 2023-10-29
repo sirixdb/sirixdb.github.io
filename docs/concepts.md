@@ -156,8 +156,8 @@ Please note that if you have already created a database, you may skip steps 1 - 
 * 1 - Create a new variable to store the database file using "Constants.SIRIX_DATA_LOCATION.resolve("nameOfDataBase");"
 * 2 - Check if the database already exists and if so, delete it.
 * 3 - Create a new variable to store a new database configuration and use this variable to create a new Json/Xml database instance.
-* 6 - Try to create a new variable, storing the database
-* 7 - If able to create this variable, create a new Resource to store in the database
-* 8 - Try to begin a new Resource Session and if able, begin a Node transaction
-* 9 - use the JsonDocumentCreator to create a new document, giving the Node transaction as input.
-* 10 - From here you may add as many changes as you like using various methods upon the Node Transaction. Once you are happy with your changes use .commit(); to confirm them.
+* 4 - Try to create a new variable, storing the database
+* 5 - If able to create this variable, create a new Resource to store in the database
+* 6 - Try to begin a new Resource Session and if able, begin a Node transaction
+* 7 - Use the JsonDocumentCreator to create a new document, giving the Node transaction as input.
+* 8 - From here you may add as many changes as you like using various methods upon the Node Transaction. Once you are happy with your changes use .commit(); to confirm them.
