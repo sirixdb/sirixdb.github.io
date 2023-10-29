@@ -148,3 +148,16 @@ The following may prove useful in helping you to understand CreateJsonDatabase.j
 * 6 - Try to create a new variable, storing the database
 * 7 - If able to create this variable, create a new Resource to store in the database
 * 8 - Try to begin a new Resource Session and if able, Insert the specified file into the subtree.
+
+## How to create a versioned Resource
+The following may prove useful in helping you to understand CreateJsonDatabase.java or CreateXmlDatabase.java within the tutorials directory of sirix.
+
+Please note that if you have already created a database, you may skip steps 1 - 3
+* 1 - Create a new variable to store the database file using "Constants.SIRIX_DATA_LOCATION.resolve("nameOfDataBase");"
+* 2 - Check if the database already exists and if so, delete it.
+* 3 - Create a new variable to store a new database configuration and use this variable to create a new Json/Xml database instance.
+* 6 - Try to create a new variable, storing the database
+* 7 - If able to create this variable, create a new Resource to store in the database
+* 8 - Try to begin a new Resource Session and if able, begin a Node transaction
+* 9 - use the JsonDocumentCreator to create a new document, giving the Node transaction as input.
+* 10 - From here you may add as many changes as you like using various methods upon the Node Transaction. Once you are happy with your changes use .commit(); to confirm them.
