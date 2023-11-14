@@ -7,7 +7,7 @@ title: SirixDB - Architecture and Concepts
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/concepts.md)
 
 ## Introduction
-SirixDB is an evolutionary, temporal, tamper-proof append-only database system that never overwrites data. Every time you commit a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page and node level. Let's first define what a temporal database system is all about.
+SirixDB is an evolutionary, (bi)temporal, tamper-proof append-only database system and event store that never overwrites data. Every time you commit a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page and node level. Let's first define what a temporal database system is all about.
 
 A temporal database is capable of retrieving past states. Typically, it stores the transaction time when a transaction commits data. If the valid time is also stored, when a fact is true in the real world, we have a bitemporal relation: two time-axes.
 
