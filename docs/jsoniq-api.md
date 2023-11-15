@@ -55,7 +55,7 @@ dependencies {
 }
 ```
 
-**You have to use Java 20 and the provided Gradle wrapper**
+**You have to use Java 21 and the provided Gradle wrapper**
 
 ## Import and Query
 First, we should import an XML document into Sirix. We'll create a database with the imported XML document as a single resource file with the function `xml:load(xs:string, xs:string, xs:string) as node()`. The first argument is the database to create, the second the resource representing the imported XML document, and the third parameter is the resource to import. Then we'll be able to load the resource again and execute our first query (`xml:doc('mydoc.col', 'mydoc.xml')/Organization/Project[@id='4711']`):
