@@ -44,14 +44,14 @@ Core project:
 <dependency>
   <groupId>io.sirix</groupId>
   <artifactId>sirix-query</artifactId>
-  <version>0.9.7-SNAPSHOT</version>
+  <version>0.10.1-SNAPSHOT</version>
 </dependency>
 ```
 
 To add the dependency in Gradle:
 ```gradle
 dependencies {
-  compile 'io.sirix:sirix-query:0.9.7-SNAPSHOT'
+  compile 'io.sirix:sirix-query:0.10.1-SNAPSHOT'
 }
 ```
 
