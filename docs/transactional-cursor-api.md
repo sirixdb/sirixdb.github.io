@@ -44,14 +44,14 @@ Core project:
 <dependency>
   <groupId>io.sirix</groupId>
   <artifactId>sirix-core</artifactId>
-  <version>0.9.7-SNAPSHOT</version>
+  <version>0.20.1-SNAPSHOT</version>
 </dependency>
 ```
 
 To add the dependency in Gradle:
 ```gradle
 dependencies {
-  compile 'io.sirix:sirix-core:0.9.7-SNAPSHOT'
+  compile 'io.sirix:sirix-core:0.10.q-SNAPSHOT'
 }
 ```
 
