@@ -135,3 +135,15 @@ Result is:
 ```
 
 The timestamps are the transactional commit timestamps, the system time when data is known to the system (one axis of the bitemporality).
+
+If we want to search for a specific timestamp, we can for instance specify:
+
+```
+jn:open('mycol.jn','resource2',xs:dateTime('2023-11-19T22:23:00'))
+```
+
+Result is the second revision (as the third revision was committed one day later):
+
+```json
+{"bar":true}
+```
