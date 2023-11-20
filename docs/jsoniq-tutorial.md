@@ -89,7 +89,7 @@ jn:doc('mycol.jn','resource2',2)
 
 Result is:
 
-```
+```json
 {"bar":true}
 ```
 
@@ -101,7 +101,7 @@ jn:all-times(jn:doc('mycol.jn','resource2'))
 
 Result is:
 
-```
+```json
 {"foo":true} {"bar":true}
 ```
 
@@ -129,7 +129,8 @@ return {"revision": $revision, "timestamp":sdb:timestamp($revision), "data": $re
 ```
 
 Result is:
-```
+
+```json
 {"revision":{"foo":true},"timestamp":"2023-11-19T22:17:55:717000Z","data":{"foo":true}} {"revision":{"bar":true},"timestamp":"2023-11-19T22:19:38:157000Z","data":{"bar":true}} {"revision":{"bar":false},"timestamp":"2023-11-20T17:59:38:68000Z","data":{"bar":false}}
 ```
 
