@@ -125,13 +125,13 @@ Thus, we now have 3 revisions:
 ```xquery
 let $revisions := jn:all-times(jn:doc('mycol.jn','resource2'))
 for $revision in $revisions
-return {"revision": $revision, "timestamp":sdb:timestamp($revision), "data": $revision}
+return {"revision": sdb:revision($revision), "timestamp":sdb:timestamp($revision), "data": $revision}
 ```
 
 Result is:
 
 ```json
-{"revision":{"foo":true},"timestamp":"2023-11-19T22:17:55:717000Z","data":{"foo":true}} {"revision":{"bar":true},"timestamp":"2023-11-19T22:19:38:157000Z","data":{"bar":true}} {"revision":{"bar":false},"timestamp":"2023-11-20T17:59:38:68000Z","data":{"bar":false}}
+{"revision":1,"timestamp":"2023-11-19T22:17:55:717000Z","data":{"foo":true}} {"revision":2,"timestamp":"2023-11-19T22:19:38:157000Z","data":{"bar":true}} {"revision":3,"timestamp":"2023-11-20T17:59:38:68000Z","data":{"bar":false}}
 ```
 
 The timestamps are the transactional commit timestamps, the system time when data is known to the system (one axis of the bitemporality).
