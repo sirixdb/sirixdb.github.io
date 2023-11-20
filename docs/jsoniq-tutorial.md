@@ -4,8 +4,6 @@ doctitle: Using the Java CLI via JSONiq queries
 title: SirixDB - Using the Java CLI via JSONiq queries
 ---
 
-# Tutorial for using the Java CLI and JSONiq queries
-
 ## Setup a Shell
 First, you should make sure to download the current sirix-query-all.jar (SNAPSHOT)-release from [the OSS snapshot repository](https://oss.sonatype.org/content/repositories/snapshots/io/sirix/) in the `sirix-query` subfolder-
 
@@ -42,11 +40,33 @@ Now we can import the directory into a SirixDB `database` as follows:
 jn:load('mycol', (), io:ls('/path/to/your/json/directory', '\\.json$'))
 ```
 
-In order to query the contents we can simply open the database:
+In order to query the contents we can simply open the database:x
 
 ```xquery
 jn:collection('mycol')
 ```
+
 The quey result will be: `{"foo":true} ["bla","blubb"]`
 
-Th
+Of course you can query single documents either by looping over the result of `jn:collection` or via `jn:doc`:
+
+```xquery
+jn:doc('mycol.jn','resource1')
+```
+
+```xquery
+jn:doc('mycol.jn','resource2')
+```
+
+
+## Updates
+
+You can update `resource2` in the database/collection `mycol.jn` via JSONiq update statements:
+
+```xquery
+let $doc := jn:doc('mycol.jn','resource2')
+return rename json $doc.foo as "bar"
+```
+
+This query renames the field `foo` to `bar`.
+
