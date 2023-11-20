@@ -150,6 +150,28 @@ The result is the second revision (as the third revision was committed one day l
 
 Of course, the system times when a specific revision has been created are different on your computer.
 
+In order to check what has been updated between revisions of a resource we can use the following query:
+
+```xquery
+let $maxRevision := sdb:revision(jn:doc('mycol.jn','resource2'))
+let $result := for $i in (1 to $maxRevision)
+               return
+                 if ($i > 1) then
+                   jn:diff('mycol.jn','resource2',$i - 1, $i)
+                 else
+                   ()
+return [
+  for $diff at $pos in $result
+  return {"diffRev" || $pos || "toRev" || $pos + 1: jn:parse($diff).diffs}
+]
+```
+
+Result is:
+
+```json
+[{"diffRev1toRev2":[{"update":{"nodeKey":2,"deweyID":"1.17.17","depth":2,"name":"bar"}}]},{"diffRev2toRev3":[{"replace":{"oldNodeKey":3,"newNodeKey":4,"deweyID":"1.17.17.0","depth":2,"type":"boolean","data":false}}]}]
+```
+
 We can also add resources from a specific URL (as in this [Twitter](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/test/resources/json/twitter.json) example):
 
 ```xquery
