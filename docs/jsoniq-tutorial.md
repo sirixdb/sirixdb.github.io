@@ -67,7 +67,7 @@ You can update `resource2` in the database/collection `mycol.jn` via JSONiq upda
 let $doc := jn:doc('mycol.jn','resource2')
 return rename json $doc.foo as "bar"
 ```
-This query renames the field `foo` to `bar`.
+This query renames the field `foo` to `bar`. The implicit read-write transaction is automatically committed.
 
 SirixDB only ever appends data and never overwrites old revisions. Thus, we can, of course, load the first revision via an optional third parameter to the `jn:doc` function:
 
@@ -92,3 +92,45 @@ Result is:
 ```
 {"bar":true}
 ```
+
+With the function `jn:all-times` we can retrieve all revisions of the resource (or any node in the revision):
+
+```xquery
+jn:all-times(jn:doc('mycol.jn','resource2'))
+```
+
+Result is:
+
+```
+{"foo":true} {"bar":true}
+```
+
+Other temporal functions exist to navigate not only in space, but also in time.
+- `jn:previous`: Retrieve the node in the previous revision
+- `jn:next`: Retrieve the node in the next revision
+- `jn:first`: Retrieve the node in the first revision
+- `jn:last`: Retrieve the node in the last revision
+- `jn:future`: Retrieve the node in the future revisions
+- `jn:past`: Retrieve the node in the past revisions
+
+we can also change the value via:
+
+```xquery
+let $doc := jn:doc('mycol.jn','resource2')
+return replace json value of $doc.bar with false
+```
+
+Thus, we now have 3 revisions:
+
+```xquery
+let $revisions := jn:all-times(jn:doc('mycol.jn','resource2'))
+for $revision in $revisions
+return {"revision": $revision, "timestamp":sdb:timestamp($revision), "data": $revision}
+```
+
+Result is:
+```
+{"revision":{"foo":true},"timestamp":"2023-11-19T22:17:55:717000Z","data":{"foo":true}} {"revision":{"bar":true},"timestamp":"2023-11-19T22:19:38:157000Z","data":{"bar":true}} {"revision":{"bar":false},"timestamp":"2023-11-20T17:59:38:68000Z","data":{"bar":false}}
+```
+
+The timestamps are the transactional commit timestamps, the system time when data is known to the system (one axis of the bitemporality).
