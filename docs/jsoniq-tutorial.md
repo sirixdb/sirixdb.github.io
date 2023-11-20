@@ -40,7 +40,7 @@ Now we can import the directory into a SirixDB `database` as follows:
 jn:load('mycol', (), io:ls('/path/to/your/json/directory', '\\.json$'))
 ```
 
-In order to query the contents we can simply open the database:x
+In order to query the contents we can open the database using the `jn:collection` function:
 
 ```xquery
 jn:collection('mycol')
@@ -67,6 +67,28 @@ You can update `resource2` in the database/collection `mycol.jn` via JSONiq upda
 let $doc := jn:doc('mycol.jn','resource2')
 return rename json $doc.foo as "bar"
 ```
-
 This query renames the field `foo` to `bar`.
 
+SirixDB only ever appends data and never overwrites old revisions. Thus, we can, of course, load the first revision via an optional third parameter to the `jn:doc` function:
+
+```xquery
+jn:doc('mycol.jn','resource2',1)
+```
+
+will retrieve the first revision of the resource:
+
+```
+{"foo":true}
+```
+
+The new revision can be queried using (we can omit specifying revision 2 as it's equivalent):
+
+```xquery
+jn:doc('mycol.jn','resource2',2)
+```
+
+Result is:
+
+```
+{"bar":true}
+```
