@@ -59,7 +59,7 @@ jn:doc('mycol.jn','resource2')
 ```
 
 
-## Updates
+## Updates and time travel queries
 
 You can update `resource2` in the database/collection `mycol.jn` via JSONiq update statements:
 
@@ -148,5 +148,10 @@ The result is the second revision (as the third revision was committed one day l
 {"bar":true}
 ```
 
-Of course, the system times, when a specific revision has been created are different on your computer.
+Of course, the system times when a specific revision has been created are different on your computer.
 
+We can also add resources from a specific URL (as in this [Twitter](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/test/resources/json/twitter.json) example):
+
+```xquery
+jn:load('mycol.jn','mydoc.jn','https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/test/resources/json/twitter.json')
+```
