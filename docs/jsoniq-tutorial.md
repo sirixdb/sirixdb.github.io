@@ -153,5 +153,5 @@ Of course, the system times when a specific revision has been created are differ
 We can also add resources from a specific URL (as in this [Twitter](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/test/resources/json/twitter.json) example):
 
 ```xquery
-jn:load('mycol.jn','mydoc.jn','https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/test/resources/json/twitter.json')
+jn:load('mycol.jn','mydoc.jn','https://raw.githubusercontent.com/sirixdb/sirix/main/bundles/sirix-core/src/test/resources/json/twitter.json')
 ```
