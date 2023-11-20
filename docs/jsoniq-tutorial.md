@@ -171,6 +171,8 @@ Result is:
 ```json
 [{"diffRev1toRev2":[{"update":{"nodeKey":2,"deweyID":"1.17.17","depth":2,"name":"bar"}}]},{"diffRev2toRev3":[{"replace":{"oldNodeKey":3,"newNodeKey":4,"deweyID":"1.17.17.0","depth":2,"type":"boolean","data":false}}]}]
 ```
+Each node is assigned a unique, monotonically increasing 64Bit `nodeKey` (`ID`), which never changes and is not reassigned once the node has been removed.
+In our example we first updated the field name in revision 2 to `"bar"`. We then replace the value, the node with `nodeKey` 3 and `true` with a new node getting `nodeKey` 4 assigned having the value `false`.
 
 We can also add resources from a specific URL (as in this [Twitter](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/test/resources/json/twitter.json) example):
 
