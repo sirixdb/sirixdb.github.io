@@ -138,7 +138,7 @@ The timestamps are the transactional commit timestamps, the system time when dat
 
 If we want to search for a specific timestamp, we can for instance specify:
 
-```
+```xquery
 jn:open('mycol.jn','resource2',xs:dateTime('2023-11-19T22:23:00'))
 ```
 
@@ -147,3 +147,6 @@ Result is the second revision (as the third revision was committed one day later
 ```json
 {"bar":true}
 ```
+
+Of course the system times, when a specific revision has been created is different.
+
