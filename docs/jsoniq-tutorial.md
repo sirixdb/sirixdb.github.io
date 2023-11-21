@@ -148,6 +148,20 @@ The result is the second revision (as the third revision was committed one day l
 {"bar":true}
 ```
 
+If you want to retrieve all states of a resource between two timestamps you can invoke the following:
+
+```xquery
+let $revisions := jn:open-revisions('mycol.jn','resource2',xs:dateTime('2023-11-19T00:00:00-00:00'),xs:dateTime('2023-11-19T23:00:00-00:00'))
+for $revision in $revisions
+return {"revision": sdb:revision($revision), "timestamp":sdb:timestamp($revision), "data": $revision}
+```
+
+Result for my database is:
+
+```json
+{"revision":1,"timestamp":"2023-11-19T22:17:55:717000Z","data":{"foo":true}} {"revision":2,"timestamp":"2023-11-19T22:19:38:157000Z","data":{"bar":true}}
+```
+
 Of course, the system times when a specific revision has been created are different on your computer.
 
 In order to check what has been updated between revisions of a resource we can use the following query:
