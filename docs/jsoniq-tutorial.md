@@ -4,6 +4,8 @@ doctitle: Using the Java CLI via JSONiq queries
 title: SirixDB - Using the Java CLI via JSONiq queries
 ---
 
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/jsoniq-tutorial.md)
+
 ## Setup a Shell
 First, you should make sure to download the current sirix-query-all.jar (SNAPSHOT)-release from [the OSS snapshot repository](https://oss.sonatype.org/content/repositories/snapshots/io/sirix/) in the `sirix-query` subfolder-
 
