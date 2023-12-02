@@ -210,14 +210,14 @@ jn:store('json-path1','mydoc.jn','[{"test": "test string"},{"test": ["a", {"blab
 
 ```xquery
 let $doc := jn:doc('json-path1','mydoc.jn')
-let $stats := jn:create-cas-index($doc, 'xs:string', '/[]/test/[]')
+let $stats := jn:create-cas-index($doc, 'xs:string', '//[]')
 return {"revision": sdb:commit($doc)}
 ```
 
 ```xquery
 let $doc := jn:doc('json-path1','mydoc.jn')
-let $casIndexNumber := jn:find-cas-index($doc, 'xs:string', '//[]')
-for $node in jn:scan-cas-index($doc, $casIndexNumber, 'b', '==', ())
+let $casIndexNumber := jn:find-cas-index($doc, 'xs:string', '/[]/test/[]')
+for $node in jn:scan-cas-index($doc, $casIndexNumber, 'b', '==', '/[]/test/[]')
 order by sdb:revision($node), sdb:nodekey($node)
 return {"nodeKey": sdb:nodekey($node), "node": $node, "path": sdb:path(sdb:select-parent($node))}
 ```
