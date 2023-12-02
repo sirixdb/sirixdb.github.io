@@ -193,9 +193,31 @@ Result is:
 Each node is assigned a unique, monotonically increasing 64Bit `nodeKey` (`ID`), which never changes and is not reassigned once the node has been removed.
 In our example we first updated the field name in revision 2 to `"bar"`. We then replace the value, the node with `nodeKey` 3 and `true` with a new node getting `nodeKey` 4 assigned having the value `false`.
 
-
+## Adding a database/resource from a specific URL
 We can also add resources from a specific URL (as in this [Twitter](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/test/resources/json/twitter.json) example):
 
 ```xquery
 jn:load('mycol.jn','mydoc.jn','https://raw.githubusercontent.com/sirixdb/sirix/main/bundles/sirix-core/src/test/resources/json/twitter.json')
+```
+
+## Indexing
+
+### CAS (content-and-structure) indexes
+
+```xquery
+jn:store('json-path1','mydoc.jn','[{"test": "test string"},{"test": ["a", {"blabla": "test blabla string"}, null, "b", "c"]}]')
+```
+
+```xquery
+let $doc := jn:doc('json-path1','mydoc.jn')
+let $stats := jn:create-cas-index($doc, 'xs:string', '/[]/test/[]')
+return {"revision": sdb:commit($doc)}
+```
+
+```xquery
+let $doc := jn:doc('json-path1','mydoc.jn')
+let $casIndexNumber := jn:find-cas-index($doc, 'xs:string', '//[]')
+for $node in jn:scan-cas-index($doc, $casIndexNumber, 'b', '==', ())
+order by sdb:revision($node), sdb:nodekey($node)
+return {"nodeKey": sdb:nodekey($node), "node": $node, "path": sdb:path(sdb:select-parent($node))}
 ```
