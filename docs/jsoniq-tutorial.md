@@ -95,6 +95,8 @@ Result is:
 {"bar":true}
 ```
 
+### Time travel functions to retrieve the state of nodes in different revisions
+
 With the function `jn:all-times` we can retrieve all revisions of the resource (or any node in the revision):
 
 ```xquery
