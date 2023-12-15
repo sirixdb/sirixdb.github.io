@@ -48,7 +48,11 @@ In order to query the contents we can open the database using the `jn:collection
 jn:collection('mycol')
 ```
 
-The quey result will be: `{"foo":true} ["bla","blubb"]`
+The quey result will be:
+
+```json
+{"foo":true} ["bla","blubb"]
+```
 
 Of course you can query single documents either by looping over the result of `jn:collection` or via `jn:doc`:
 
@@ -79,7 +83,7 @@ jn:doc('mycol.jn','resource2',1)
 
 will retrieve the first revision of the resource:
 
-```
+```json
 {"foo":true}
 ```
 
