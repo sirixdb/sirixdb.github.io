@@ -236,7 +236,7 @@ replace json value of ["foo", 0, 1][[2]] with "bar"   (: thus, the array is adap
 SirixDB also supports a transactional cursor-based API to update JSON resources. We can simply open the database with XQuery and get the transactional cursor via the `getTrx()`-method on the result sequence:
 
 ```java
-final var seq = new XQuery(compileChain, query).execute(ctx);
+final var seq = new Query(compileChain, query).execute(ctx);
 final var rtx = seq.getTrx();
 ```
 
@@ -315,7 +315,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println("Query loaded document:");
   final var queryString = "xml:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2019-04-01T05:00:00-00:00\"))/log";
   System.out.println(xq3);
-  final var query = new XQuery(compileChain, queryString);
+  final var query = new Query(compileChain, queryString);
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
@@ -335,7 +335,7 @@ try (final var store = BasicDBStore.newBuilder().build()
   System.out.println("Query loaded document:");
   final var queryString = "xml:open('mycol.xml', 'mydoc.xml', xs:dateTime(\"2018-04-01T05:00:00-00:00\"), xs:dateTime(\"2019-04-01T05:00:00-00:00\"))";
   System.out.println(queryString);
-  final var query = new XQuery(compileChain, queryString);
+  final var query = new Query(compileChain, queryString);
   query.prettyPrint().serialize(ctx, System.out);
 }
 ```
@@ -523,7 +523,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build()
   final var compileChain = SirixCompileChain.createWithNodeStore(store)) {
   System.out.println("");
   System.out.println("Create name index for all elements with name 'src':");
-  final var query = new XQuery(compileChain,
+  final var query = new Query(compileChain,
         "let $doc := xml:doc('mydocs.col', 'resource1') "
             + "let $stats := xml:create-name-index($doc, fn:QName((), 'src')) "
             + "return <rev>{xml:commit($doc)}</rev>");
@@ -546,7 +546,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   final var queryString = "let $doc := xml:doc('mydocs.col', 'resource1')"
       + " let $sequence := xml:scan-name-index($doc, xml:find-name-index($doc, fn:QName((), 'src')), fn:QName((), 'src'))"
       + " return sdb:sort($sequence)";
-  final var query = new XQuery(compileChain, queryString);
+  final var query = new Query(compileChain, queryString);
   query.prettyPrint();
   query.serialize(ctx, System.out);
 }
@@ -562,7 +562,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println("");
   System.out.println("Create path index for all elements (all paths):");
   final var query =
-      new XQuery(compileChain, "let $doc := xml:doc('mydocs.col', 'resource1') "
+      new Query(compileChain, "let $doc := xml:doc('mydocs.col', 'resource1') "
           + "let $stats := xml:create-path-index($doc, '//*') " + "return <rev>{sdb:commit($doc)}</rev>");
   query.serialize(ctx, System.out);
   System.out.println("");
@@ -580,12 +580,12 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   System.out.println("");
   System.out.println("Find path index for all elements which are children of the log-element (only elements).");
   
-  final var node = (DBNode) new XQuery(new SirixCompileChain(store), "doc('mydocs.col')").execute(ctx);
+  final var node = (DBNode) new Query(new SirixCompileChain(store), "doc('mydocs.col')").execute(ctx);
 
   // We can simply use sdb:find-path-index('xs:node', 'xs:string') to find the appropriate index number and then scan the index.
   final var query = "let $doc := xml:doc('mydocs.col', 'resource1') " + "return sdb:sort(xml:scan-path-index($doc, "
       + "xml:find-path-index($doc, '//log/*'), '//log/*'))";
-  final var sortedSeq = new XQuery(compileChain, query).execute(ctx);
+  final var sortedSeq = new Query(compileChain, query).execute(ctx);
   final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
@@ -607,7 +607,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build()
   System.out.println("");
   System.out.println(
       "Create a CAS index for all attributes and another one for text nodes. A third one is created for all integers:");
-  final var query = new XQuery(compileChain,
+  final var query = new Query(compileChain,
       "let $doc := xml:doc('mydocs.col', 'resource1') "
           + "let $casStats1 := xml:create-cas-index($doc, 'xs:string', '//@*') "
           + "let $casStats2 := xml:create-cas-index($doc, 'xs:string', '//*') "
@@ -631,7 +631,7 @@ try (final var store = BasicXmlDBStore.newBuilder().build();
   
   final var sortedSeq =
       "let $doc := xml:doc('mydocs.col', 'resource1') return sdb:sort(sdb:scan-cas-index($doc, sdb:find-cas-index($doc, 'xs:string', '//@*'), 'bar', true(), true(), '==', ()))";
-  final var sortedSeq = new XQuery(compileChain, query).execute(ctx);
+  final var sortedSeq = new Query(compileChain, query).execute(ctx);
   final var sortedIter = sortedSeq.iterate();
 
   System.out.println("Sorted index entries in document order: ");
