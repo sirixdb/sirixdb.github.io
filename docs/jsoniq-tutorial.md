@@ -206,6 +206,29 @@ jn:load('mycol.jn','mydoc.jn','https://raw.githubusercontent.com/sirixdb/sirix/m
 
 ## Indexing
 
+
+### Name / object field indexes
+
+```xquery
+jn:store('json-path1','mydoc.jn','[{"test": "test string"},{"test": ["a", {"testfield": "test blabla string", "foo": {"testfield": true}}, null, "b", "c"]}]')
+```
+
+```xquery
+let $doc := jn:doc('mycol.jn','mydoc.jn')
+let $stats := jn:create-name-index($doc, ('testfield','test'))
+return {"revision": sdb:commit($doc)}
+```
+
+```xquery
+let $doc := jn:doc('mycol.jn','mydoc.jn')
+let $nameIndexNumber := jn:find-name-index($doc, 'testfield')
+for $node in jn:scan-name-index($doc, $nameIndexNumber, 'testfield')
+order by sdb:revision($node), sdb:nodekey($node)
+return {"nodeKey": sdb:nodekey($node), "path": sdb:path($node), "revision": sdb:revision($node)}
+```
+
+### Path indexes
+
 ### CAS (content-and-structure) indexes
 
 ```xquery
