@@ -7,7 +7,7 @@ title: SirixDB - Using the Java CLI via JSONiq queries
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/jsoniq-tutorial.md)
 
 ## Setup a Shell
-First, you should make sure to download the current sirix-query-all.jar (SNAPSHOT)-release from [the OSS snapshot repository](https://oss.sonatype.org/content/repositories/snapshots/io/sirix/) in the `sirix-query` subfolder-
+First, you should make sure to download the current sirix-query-all.jar (SNAPSHOT)-release from [the OSS snapshot repository](https://oss.sonatype.org/content/repositories/snapshots/io/sirix/) in the `sirix-query` subfolder. (or you can get it locally in your `/bundles/sirix-query/build/libs` directory after doing `./gradlew build`)
 
 You can then add a shell script on linux(like) systems, for instance named `sirix-shell.sh`:
 
@@ -17,7 +17,24 @@ You can then add a shell script on linux(like) systems, for instance named `siri
 java -DLOGGER_HOME=~/sirix-data -Xms3g -Xmx8g --enable-preview --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED --add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED -XX:+UseZGC -jar sirix-query-0.10.4-all.jar -iq
 ```
 
-Make sure to adapt the JAR file to the downloaded version.
+Make sure to adapt the JAR file to the downloaded version. (Rename the JAR `sirix-query-0.10.4-all.jar` in `sirix-shell.sh` script to the JAR you are using)
+
+In order to execute queries, open sirix shell through following command:
+
+```xquery
+./sirix-shell.sh
+```
+
+Example to execute queries: 
+
+```xquery
+sirix > let $doc := jn:doc('mycol.jn','resource2')
+> return rename json $doc.foo as "bar"
+> (make sure to give last as NULL, Simply Enter)
+
+Query result:
+//RESULT
+```
 
 On Windows, you can create a batch file accordingly.
 
@@ -40,6 +57,12 @@ Now we can import the directory into a SirixDB `database` as follows:
 
 ```xquery
 jn:load('mycol', (), io:ls('/path/to/your/json/directory', '\\.json$'))
+```
+
+If your JSON directory (named `json`) is in same folder as `sirix-shell.sh` and JAR, give path to query as follows:
+
+```xquery
+jn:load('mycol', (), io:ls('json', '\\.json$'))
 ```
 
 In order to query the contents we can open the database using the `jn:collection` function:
