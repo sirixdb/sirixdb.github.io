@@ -15,6 +15,11 @@ SirixDB can help answer questions such as the following: Give me last month's hi
 
 Let's turn our focus toward the question of why historical data has not been retained in the past. We postulate that new storage advances in recent years present possibilities to build sophisticated solutions to help answer those questions without the hurdle state-of-the-art systems bring.
 
+## A brief overview of the overall architecture
+Before we go into the specifics of SirixDB, its important to have an understanding of the overall architecture. At the core of SirxDB are databases. These database instances store resources, which are generally binary tree encodings of either JSON or XML files - (more on that under the Tree-structure subheading).
+
+From this database instance, you may either create a new resource or begin a resource session to start as many read-only transactions as you would like or just a single read-write transaction. In essence, you may think of the architecture as one big tree full of tries (the main document index), where revisions to the tree are always appended. The data of the tries either store the nodes of the JSON or XML trees or they store secondary indexes!
+
 ## Advantages and disadvantages of flash drives, for instance, SSDs
 As Marc Kramis points out in his paper "Growing Persistent Trees into the 21st Century":
 
@@ -129,3 +134,30 @@ Write peaks occur during incremental versioning due to the requirement of interm
 Marc Kramis developed a novel sliding snapshot algorithm, which balances read/write performance to circumvent any write-peaks.
 
 The algorithm makes use of a sliding window. First, any changed record must be written during a commit. Second, any record older than a predefined length N of the window that has not been changed during these N-revisions must be written, too. Only these N-revisions at max have to be read. Fetching of the page fragments can be done in parallel or linear. In the latter case, the page fragments are read starting with the most recent revision. The algorithm stops once the full page has been reconstructed. You can find the best high-level overview of the algorithm in Marc's Thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695)
+
+## Examples and Tutorials
+We know this can be alot to take in so there are some handmade tutorials and examples for you to see all of this theory in action! Within the bundles directory of the sirix repository you will find sirix-examples! This contains both tutorials and examples of how you may directly interact with the code base. You may use these in conjunction with the following how to's in order to get started with sirix!
+
+## How to create your first database
+The following may prove useful in helping you to understand CreateJsonDatabase.java or CreateXmlDatabase.java within the tutorials directory of sirix.
+* 1 - Create a Path variable that points to the directory containing the files you would like to store.
+* 2 - Create a new variable storing the specific file you would like to store using the path variable from the previous step.
+* 3 - Create a new variable to store the database file using "Constants.SIRIX_DATA_LOCATION.resolve("nameOfDataBase");"
+* 4 - Check if the database already exists and if so, delete it.
+* 5 - Create a new variable to store a new database configuration and use this variable to create a new Json/Xml database instance.
+* 6 - Try to create a new variable, storing the database
+* 7 - If able to create this variable, create a new Resource to store in the database
+* 8 - Try to begin a new Resource Session and if able, Insert the specified file into the subtree.
+
+## How to create a versioned Resource
+The following may prove useful in helping you to understand CreateVersionedJsonResource.java or CreateVersionedXmlResource.java within the tutorials directory of sirix.
+
+Please note that if you have already created a database, you may skip steps 1 - 3
+* 1 - Create a new variable to store the database file using "Constants.SIRIX_DATA_LOCATION.resolve("nameOfDataBase");"
+* 2 - Check if the database already exists and if so, delete it.
+* 3 - Create a new variable to store a new database configuration and use this variable to create a new Json/Xml database instance.
+* 4 - Try to create a new variable, storing the database
+* 5 - If able to create this variable, create a new Resource to store in the database
+* 6 - Try to begin a new Resource Session and if able, begin a Node transaction
+* 7 - Use the JsonDocumentCreator to create a new document, giving the Node transaction as input.
+* 8 - From here you may add as many changes as you like using various methods upon the Node Transaction. Once you are happy with your changes use .commit(); to confirm them.
