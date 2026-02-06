@@ -1,219 +1,188 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif">
+<svg viewBox="0 0 960 520" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
   <defs>
-    <!-- Hatched pattern for UberPage blocks -->
-    <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
-      <rect width="6" height="6" fill="#fef3c7"/>
-      <line x1="0" y1="0" x2="0" y2="6" stroke="#f59e0b" stroke-width="1.5"/>
-    </pattern>
-    <!-- Subtle grid pattern -->
-    <pattern id="grid" patternUnits="userSpaceOnUse" width="20" height="20">
-      <rect width="20" height="20" fill="none"/>
-      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e5e7eb" stroke-width="0.5" opacity="0.5"/>
-    </pattern>
-    <!-- Drop shadow -->
-    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
-      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.1"/>
-    </filter>
-    <!-- Arrow marker -->
-    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280"/>
-    </marker>
-    <marker id="arrow-blue" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0,0 10,3.5 0,7" fill="#F47B20"/>
     </marker>
   </defs>
 
-  <!-- Background -->
-  <rect width="960" height="520" fill="#fafafa" rx="8"/>
-  <rect width="960" height="520" fill="url(#grid)" rx="8"/>
-
   <!-- Title -->
-  <text x="40" y="38" font-size="18" font-weight="700" fill="#111827">Logical Device Layout of a Resource</text>
-  <text x="40" y="56" font-size="12" fill="#6b7280">How SirixDB stores versioned data on disk using copy-on-write page fragments</text>
-
-  <!-- Legend box -->
-  <rect x="620" y="14" width="320" height="115" rx="6" fill="white" stroke="#d1d5db" stroke-width="1" filter="url(#shadow)"/>
-  <text x="640" y="35" font-size="12" font-weight="600" fill="#374151">Legend</text>
-  <line x1="640" y1="42" x2="920" y2="42" stroke="#e5e7eb" stroke-width="1"/>
-
-  <!-- Legend items - left column -->
-  <rect x="640" y="50" width="14" height="10" fill="url(#hatch)" stroke="#f59e0b" stroke-width="0.8" rx="1"/>
-  <text x="660" y="59" font-size="10" fill="#4b5563">H  &#8212;  UberPage (header)</text>
-
-  <rect x="640" y="68" width="14" height="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="0.8" rx="1"/>
-  <text x="660" y="77" font-size="10" fill="#4b5563">PF  &#8212;  Page Fragment <tspan font-size="9" font-style="italic">p</tspan> of revision <tspan font-size="9" font-style="italic">r</tspan></text>
-
-  <rect x="640" y="86" width="14" height="10" fill="#fed7aa" stroke="#f97316" stroke-width="0.8" rx="1"/>
-  <text x="660" y="95" font-size="10" fill="#4b5563">RRP  &#8212;  RevisionRootPage</text>
-
-  <rect x="640" y="104" width="14" height="10" fill="#f3e8ff" stroke="#a855f7" stroke-width="0.8" rx="1"/>
-  <text x="660" y="113" font-size="10" fill="#4b5563">LD  &#8212;  Logical Device (file)</text>
-
-  <!-- Legend items - right column -->
-  <text x="820" y="59" font-size="10" fill="#4b5563">R<tspan font-size="8" baseline-shift="sub">n</tspan>  &#8212;  Revision <tspan font-size="9" font-style="italic">n</tspan></text>
-  <text x="820" y="77" font-size="10" fill="#4b5563">TSP  &#8212;  Timestamp</text>
-  <text x="820" y="95" font-size="10" fill="#4b5563">OFFS  &#8212;  Offset into LD</text>
-  <text x="820" y="113" font-size="10" fill="#4b5563">Blk  &#8212;  Block size</text>
+  <text x="480" y="30" text-anchor="middle" fill="#e8e6e3" font-size="18" font-weight="600">Logical Device Layout of a Resource</text>
+  <text x="480" y="50" text-anchor="middle" fill="#9ca3af" font-size="12">How SirixDB stores versioned data on disk using two append-only files</text>
 
   <!-- ============================================ -->
-  <!-- LD₂ — UberPage / Revision Index              -->
+  <!-- LD₂ &#8212; UberPage (Revision Index)        -->
   <!-- ============================================ -->
 
   <!-- LD₂ label -->
-  <rect x="20" y="150" width="36" height="80" rx="4" fill="#f3e8ff" stroke="#a855f7" stroke-width="1.2"/>
-  <text x="38" y="195" font-size="13" font-weight="600" fill="#7e22ce" text-anchor="middle">LD<tspan font-size="9" baseline-shift="sub">2</tspan></text>
+  <rect x="30" y="80" width="50" height="80" rx="8" fill="rgba(156,163,175,0.08)" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="55" y="117" text-anchor="middle" fill="#9ca3af" font-size="14" font-family="JetBrains Mono,monospace" font-weight="600">LD₂</text>
+
+  <!-- LD₂ subtitle -->
+  <text x="55" y="178" text-anchor="middle" fill="#6b7280" font-size="10">UberPage</text>
 
   <!-- LD₂ timeline -->
-  <line x1="70" y1="190" x2="920" y2="190" stroke="#d1d5db" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="100" y1="120" x2="900" y2="120" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
 
-  <!-- UberPage slot 1 (R₁) -->
-  <rect x="90" y="160" width="90" height="60" rx="4" fill="url(#hatch)" stroke="#f59e0b" stroke-width="1.2" filter="url(#shadow)"/>
-  <text x="135" y="182" font-size="10" font-weight="600" fill="#92400e" text-anchor="middle">TSP</text>
-  <line x1="135" y1="186" x2="135" y2="186" stroke="#d97706" stroke-width="0.5"/>
-  <text x="135" y="198" font-size="10" font-weight="600" fill="#92400e" text-anchor="middle">OFFS</text>
-  <text x="135" y="212" font-size="8" fill="#b45309" text-anchor="middle">rev 1</text>
+  <!-- Densely packed UberPage entries (no block alignment) -->
 
-  <!-- UberPage slot 2 (R₂) -->
-  <rect x="200" y="160" width="90" height="60" rx="4" fill="url(#hatch)" stroke="#f59e0b" stroke-width="1.2" filter="url(#shadow)"/>
-  <text x="245" y="182" font-size="10" font-weight="600" fill="#92400e" text-anchor="middle">TSP</text>
-  <text x="245" y="198" font-size="10" font-weight="600" fill="#92400e" text-anchor="middle">OFFS</text>
-  <text x="245" y="212" font-size="8" fill="#b45309" text-anchor="middle">rev 2</text>
+  <!-- UberPage slot: Rev 1 -->
+  <rect x="130" y="90" width="70" height="60" rx="5" fill="rgba(244,123,32,0.35)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="165" y="110" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">TSP₁</text>
+  <text x="165" y="126" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">OFFS₁</text>
+  <text x="165" y="143" text-anchor="middle" fill="#9ca3af" font-size="9">rev 1</text>
 
-  <!-- UberPage slot 3 (R₃) -->
-  <rect x="310" y="160" width="90" height="60" rx="4" fill="url(#hatch)" stroke="#f59e0b" stroke-width="1.2" filter="url(#shadow)"/>
-  <text x="355" y="182" font-size="10" font-weight="600" fill="#92400e" text-anchor="middle">TSP</text>
-  <text x="355" y="198" font-size="10" font-weight="600" fill="#92400e" text-anchor="middle">OFFS</text>
-  <text x="355" y="212" font-size="8" fill="#b45309" text-anchor="middle">rev 3</text>
+  <!-- UberPage slot: Rev 2 (packed tight) -->
+  <rect x="200" y="90" width="70" height="60" rx="5" fill="rgba(244,123,32,0.35)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="235" y="110" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">TSP₂</text>
+  <text x="235" y="126" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">OFFS₂</text>
+  <text x="235" y="143" text-anchor="middle" fill="#9ca3af" font-size="9">rev 2</text>
 
-  <!-- Ellipsis after UberPage slots -->
-  <text x="430" y="195" font-size="18" fill="#9ca3af" text-anchor="middle">...</text>
+  <!-- UberPage slot: Rev 3 (packed tight) -->
+  <rect x="270" y="90" width="70" height="60" rx="5" fill="rgba(244,123,32,0.35)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="305" y="110" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">TSP₃</text>
+  <text x="305" y="126" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">OFFS₃</text>
+  <text x="305" y="143" text-anchor="middle" fill="#9ca3af" font-size="9">rev 3</text>
 
-  <!-- Block size bracket for LD₂ -->
-  <line x1="90" y1="230" x2="90" y2="238" stroke="#9ca3af" stroke-width="0.8"/>
-  <line x1="90" y1="238" x2="180" y2="238" stroke="#9ca3af" stroke-width="0.8"/>
-  <line x1="180" y1="230" x2="180" y2="238" stroke="#9ca3af" stroke-width="0.8"/>
-  <text x="135" y="250" font-size="9" fill="#9ca3af" text-anchor="middle">Blk</text>
+  <!-- Ellipsis -->
+  <text x="365" y="125" fill="#6b7280" font-size="20" text-anchor="middle">...</text>
+
+  <!-- "densely packed" annotation -->
+  <text x="235" y="168" text-anchor="middle" fill="#6b7280" font-size="9" font-style="italic">densely packed (no block alignment)</text>
 
   <!-- ============================================ -->
-  <!-- LD₁ — Data Pages                              -->
+  <!-- LD₁ &#8212; Data Pages + UberPage copy       -->
   <!-- ============================================ -->
 
   <!-- LD₁ label -->
-  <rect x="20" y="280" width="36" height="130" rx="4" fill="#f3e8ff" stroke="#a855f7" stroke-width="1.2"/>
-  <text x="38" y="350" font-size="13" font-weight="600" fill="#7e22ce" text-anchor="middle">LD<tspan font-size="9" baseline-shift="sub">1</tspan></text>
+  <rect x="30" y="220" width="50" height="140" rx="8" fill="rgba(156,163,175,0.08)" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="55" y="295" text-anchor="middle" fill="#9ca3af" font-size="14" font-family="JetBrains Mono,monospace" font-weight="600">LD₁</text>
+
+  <!-- LD₁ subtitle -->
+  <text x="55" y="378" text-anchor="middle" fill="#6b7280" font-size="10">Data +</text>
+  <text x="55" y="390" text-anchor="middle" fill="#6b7280" font-size="10">UberPage</text>
 
   <!-- LD₁ timeline -->
-  <line x1="70" y1="345" x2="920" y2="345" stroke="#d1d5db" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="100" y1="290" x2="900" y2="290" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
 
   <!-- === Revision 1 === -->
 
-  <!-- Header (H) -->
-  <rect x="80" y="302" width="40" height="36" rx="3" fill="url(#hatch)" stroke="#f59e0b" stroke-width="1.2" filter="url(#shadow)"/>
-  <text x="100" y="324" font-size="11" font-weight="700" fill="#92400e" text-anchor="middle">H</text>
-
   <!-- PF₁,₁ -->
-  <rect x="130" y="302" width="70" height="36" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" filter="url(#shadow)"/>
-  <text x="165" y="318" font-size="9" font-weight="600" fill="#1e40af" text-anchor="middle">PF<tspan font-size="7" baseline-shift="sub">1,1</tspan></text>
-  <text x="165" y="330" font-size="8" fill="#3b82f6" text-anchor="middle">IndirPage</text>
+  <rect x="110" y="255" width="75" height="36" rx="5" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="148" y="271" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">PF₁,₁</text>
+  <text x="148" y="285" text-anchor="middle" fill="#6b7280" font-size="9">IndirPage</text>
 
   <!-- PF₂,₁ -->
-  <rect x="210" y="302" width="70" height="36" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" filter="url(#shadow)"/>
-  <text x="245" y="318" font-size="9" font-weight="600" fill="#1e40af" text-anchor="middle">PF<tspan font-size="7" baseline-shift="sub">2,1</tspan></text>
-  <text x="245" y="330" font-size="8" fill="#3b82f6" text-anchor="middle">RecordPage</text>
+  <rect x="195" y="255" width="75" height="36" rx="5" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="233" y="271" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">PF₂,₁</text>
+  <text x="233" y="285" text-anchor="middle" fill="#6b7280" font-size="9">RecordPage</text>
 
-  <!-- More pages indicator -->
-  <text x="295" y="324" font-size="14" fill="#93c5fd" text-anchor="middle">...</text>
+  <!-- ... -->
+  <text x="284" y="277" fill="#42B6F0" font-size="14" text-anchor="middle" opacity="0.5">...</text>
 
-  <!-- PF₃,₁ -->
-  <rect x="310" y="302" width="70" height="36" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" filter="url(#shadow)"/>
-  <text x="345" y="318" font-size="9" font-weight="600" fill="#1e40af" text-anchor="middle">PF<tspan font-size="7" baseline-shift="sub">n,1</tspan></text>
-  <text x="345" y="330" font-size="8" fill="#3b82f6" text-anchor="middle">NamePage</text>
+  <!-- PFₙ,₁ -->
+  <rect x="298" y="255" width="75" height="36" rx="5" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="336" y="271" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">PFₙ,₁</text>
+  <text x="336" y="285" text-anchor="middle" fill="#6b7280" font-size="9">NamePage</text>
 
   <!-- RRP₁ -->
-  <rect x="390" y="296" width="55" height="48" rx="4" fill="#fed7aa" stroke="#f97316" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="418" y="318" font-size="10" font-weight="700" fill="#c2410c" text-anchor="middle">RRP</text>
-  <text x="418" y="332" font-size="8" fill="#ea580c" text-anchor="middle">rev 1</text>
+  <rect x="383" y="249" width="60" height="48" rx="6" fill="rgba(244,123,32,0.55)" stroke="#F47B20" stroke-width="1.5"/>
+  <text x="413" y="271" text-anchor="middle" fill="#F47B20" font-size="11" font-family="JetBrains Mono,monospace" font-weight="700">RRP</text>
+  <text x="413" y="287" text-anchor="middle" fill="#e8e6e3" font-size="9">rev 1</text>
 
   <!-- === Revision 2 === -->
 
-  <!-- PF₁,₂ (modified page) -->
-  <rect x="460" y="302" width="70" height="36" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" filter="url(#shadow)"/>
-  <text x="495" y="318" font-size="9" font-weight="600" fill="#1e40af" text-anchor="middle">PF<tspan font-size="7" baseline-shift="sub">1,2</tspan></text>
-  <text x="495" y="330" font-size="8" fill="#3b82f6" text-anchor="middle">RecordPage</text>
+  <!-- PF₁,₂ -->
+  <rect x="460" y="255" width="75" height="36" rx="5" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="498" y="271" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">PF₁,₂</text>
+  <text x="498" y="285" text-anchor="middle" fill="#6b7280" font-size="9">RecordPage</text>
 
-  <!-- More pages indicator -->
-  <text x="545" y="324" font-size="14" fill="#93c5fd" text-anchor="middle">...</text>
+  <!-- ... -->
+  <text x="549" y="277" fill="#42B6F0" font-size="14" text-anchor="middle" opacity="0.5">...</text>
 
   <!-- PF₂,₂ -->
-  <rect x="560" y="302" width="70" height="36" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" filter="url(#shadow)"/>
-  <text x="595" y="318" font-size="9" font-weight="600" fill="#1e40af" text-anchor="middle">PF<tspan font-size="7" baseline-shift="sub">2,2</tspan></text>
-  <text x="595" y="330" font-size="8" fill="#3b82f6" text-anchor="middle">PathPage</text>
+  <rect x="563" y="255" width="75" height="36" rx="5" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="601" y="271" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">PF₂,₂</text>
+  <text x="601" y="285" text-anchor="middle" fill="#6b7280" font-size="9">PathPage</text>
 
   <!-- RRP₂ -->
-  <rect x="640" y="296" width="55" height="48" rx="4" fill="#fed7aa" stroke="#f97316" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="668" y="318" font-size="10" font-weight="700" fill="#c2410c" text-anchor="middle">RRP</text>
-  <text x="668" y="332" font-size="8" fill="#ea580c" text-anchor="middle">rev 2</text>
+  <rect x="648" y="249" width="60" height="48" rx="6" fill="rgba(244,123,32,0.55)" stroke="#F47B20" stroke-width="1.5"/>
+  <text x="678" y="271" text-anchor="middle" fill="#F47B20" font-size="11" font-family="JetBrains Mono,monospace" font-weight="700">RRP</text>
+  <text x="678" y="287" text-anchor="middle" fill="#e8e6e3" font-size="9">rev 2</text>
 
   <!-- === Revision 3 === -->
 
   <!-- PF₁,₃ -->
-  <rect x="710" y="302" width="70" height="36" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" filter="url(#shadow)"/>
-  <text x="745" y="318" font-size="9" font-weight="600" fill="#1e40af" text-anchor="middle">PF<tspan font-size="7" baseline-shift="sub">1,3</tspan></text>
-  <text x="745" y="330" font-size="8" fill="#3b82f6" text-anchor="middle">RecordPage</text>
+  <rect x="725" y="255" width="75" height="36" rx="5" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="763" y="271" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">PF₁,₃</text>
+  <text x="763" y="285" text-anchor="middle" fill="#6b7280" font-size="9">RecordPage</text>
 
   <!-- RRP₃ -->
-  <rect x="790" y="296" width="55" height="48" rx="4" fill="#fed7aa" stroke="#f97316" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="818" y="318" font-size="10" font-weight="700" fill="#c2410c" text-anchor="middle">RRP</text>
-  <text x="818" y="332" font-size="8" fill="#ea580c" text-anchor="middle">rev 3</text>
+  <rect x="810" y="249" width="60" height="48" rx="6" fill="rgba(244,123,32,0.55)" stroke="#F47B20" stroke-width="1.5"/>
+  <text x="840" y="271" text-anchor="middle" fill="#F47B20" font-size="11" font-family="JetBrains Mono,monospace" font-weight="700">RRP</text>
+  <text x="840" y="287" text-anchor="middle" fill="#e8e6e3" font-size="9">rev 3</text>
 
   <!-- Continuation -->
-  <text x="870" y="324" font-size="18" fill="#9ca3af" text-anchor="middle">...</text>
+  <text x="890" y="277" fill="#6b7280" font-size="20" text-anchor="middle">...</text>
 
-  <!-- Block size brackets for LD₁ -->
-  <line x1="80" y1="348" x2="80" y2="356" stroke="#9ca3af" stroke-width="0.8"/>
-  <line x1="80" y1="356" x2="120" y2="356" stroke="#9ca3af" stroke-width="0.8"/>
-  <line x1="120" y1="348" x2="120" y2="356" stroke="#9ca3af" stroke-width="0.8"/>
-  <text x="100" y="367" font-size="9" fill="#9ca3af" text-anchor="middle">Blk</text>
+  <!-- Block size bracket for LD₁ -->
+  <line x1="110" y1="297" x2="110" y2="305" stroke="#6b7280" stroke-width="0.8"/>
+  <line x1="110" y1="305" x2="185" y2="305" stroke="#6b7280" stroke-width="0.8"/>
+  <line x1="185" y1="297" x2="185" y2="305" stroke="#6b7280" stroke-width="0.8"/>
+  <text x="148" y="317" text-anchor="middle" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Blk</text>
 
-  <line x1="130" y1="348" x2="130" y2="356" stroke="#9ca3af" stroke-width="0.8"/>
-  <line x1="130" y1="356" x2="200" y2="356" stroke="#9ca3af" stroke-width="0.8"/>
-  <line x1="200" y1="348" x2="200" y2="356" stroke="#9ca3af" stroke-width="0.8"/>
-  <text x="165" y="367" font-size="9" fill="#9ca3af" text-anchor="middle">Blk</text>
+  <!-- UberPage copy in LD₁ (after all revision data) -->
+  <rect x="110" y="330" width="180" height="28" rx="5" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="200" y="348" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">UberPage (copy)</text>
+  <text x="310" y="348" fill="#6b7280" font-size="9" font-style="italic">&#8592; stored redundantly in both files</text>
 
   <!-- === Offset arrows from LD₂ to LD₁ === -->
 
-  <!-- R₁ offset arrow -->
-  <path d="M 135 220 L 135 250 Q 135 260 145 260 L 408 260 Q 418 260 418 270 L 418 296"
-        fill="none" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+  <!-- Rev 1: OFFS₁ → RRP₁ -->
+  <path d="M 165 150 L 165 205 Q 165 215 175 215 L 403 215 Q 413 215 413 225 L 413 249"
+        fill="none" stroke="#F47B20" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowOrange)"/>
 
-  <!-- R₂ offset arrow -->
-  <path d="M 245 220 L 245 250 Q 245 265 255 265 L 658 265 Q 668 265 668 275 L 668 296"
-        fill="none" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+  <!-- Rev 2: OFFS₂ → RRP₂ -->
+  <path d="M 235 150 L 235 200 Q 235 210 245 210 L 668 210 Q 678 210 678 220 L 678 249"
+        fill="none" stroke="#F47B20" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowOrange)"/>
 
-  <!-- R₃ offset arrow -->
-  <path d="M 355 220 L 355 255 Q 355 270 365 270 L 808 270 Q 818 270 818 280 L 818 296"
-        fill="none" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+  <!-- Rev 3: OFFS₃ → RRP₃ -->
+  <path d="M 305 150 L 305 195 Q 305 205 315 205 L 830 205 Q 840 205 840 215 L 840 249"
+        fill="none" stroke="#F47B20" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowOrange)"/>
 
-  <!-- === Revision labels === -->
-  <line x1="80" y1="385" x2="445" y2="385" stroke="#3b82f6" stroke-width="1.5"/>
-  <line x1="80" y1="380" x2="80" y2="390" stroke="#3b82f6" stroke-width="1.5"/>
-  <line x1="445" y1="380" x2="445" y2="390" stroke="#3b82f6" stroke-width="1.5"/>
-  <text x="262" y="402" font-size="12" font-weight="600" fill="#1d4ed8" text-anchor="middle">R<tspan font-size="9" baseline-shift="sub">1</tspan></text>
+  <!-- === Revision brackets === -->
 
-  <line x1="460" y1="385" x2="695" y2="385" stroke="#3b82f6" stroke-width="1.5"/>
-  <line x1="460" y1="380" x2="460" y2="390" stroke="#3b82f6" stroke-width="1.5"/>
-  <line x1="695" y1="380" x2="695" y2="390" stroke="#3b82f6" stroke-width="1.5"/>
-  <text x="578" y="402" font-size="12" font-weight="600" fill="#1d4ed8" text-anchor="middle">R<tspan font-size="9" baseline-shift="sub">2</tspan></text>
+  <!-- R₁ bracket -->
+  <line x1="110" y1="400" x2="443" y2="400" stroke="#42B6F0" stroke-width="1.5"/>
+  <line x1="110" y1="395" x2="110" y2="405" stroke="#42B6F0" stroke-width="1.5"/>
+  <line x1="443" y1="395" x2="443" y2="405" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="277" y="420" text-anchor="middle" fill="#42B6F0" font-size="13" font-family="JetBrains Mono,monospace" font-weight="600">R₁</text>
 
-  <line x1="710" y1="385" x2="845" y2="385" stroke="#3b82f6" stroke-width="1.5"/>
-  <line x1="710" y1="380" x2="710" y2="390" stroke="#3b82f6" stroke-width="1.5"/>
-  <line x1="845" y1="380" x2="845" y2="390" stroke="#3b82f6" stroke-width="1.5"/>
-  <text x="778" y="402" font-size="12" font-weight="600" fill="#1d4ed8" text-anchor="middle">R<tspan font-size="9" baseline-shift="sub">3</tspan></text>
+  <!-- R₂ bracket -->
+  <line x1="460" y1="400" x2="708" y2="400" stroke="#42B6F0" stroke-width="1.5"/>
+  <line x1="460" y1="395" x2="460" y2="405" stroke="#42B6F0" stroke-width="1.5"/>
+  <line x1="708" y1="395" x2="708" y2="405" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="584" y="420" text-anchor="middle" fill="#42B6F0" font-size="13" font-family="JetBrains Mono,monospace" font-weight="600">R₂</text>
 
-  <!-- === Key insight annotation === -->
-  <rect x="40" y="430" width="880" height="70" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
-  <text x="60" y="452" font-size="11" font-weight="600" fill="#1e40af">Copy-on-Write Versioning</text>
-  <text x="60" y="468" font-size="10" fill="#3b82f6">LD<tspan font-size="8" baseline-shift="sub">2</tspan> stores the UberPage with timestamp + offset pairs pointing to each revision's RRP in LD<tspan font-size="8" baseline-shift="sub">1</tspan>.</text>
-  <text x="60" y="482" font-size="10" fill="#3b82f6">Each revision only writes modified page fragments (copy-on-write). Unchanged pages are shared across revisions via references.</text>
-  <text x="60" y="496" font-size="10" fill="#3b82f6">The RRP (RevisionRootPage) anchors each revision's page tree, enabling O(1) access to any historical version.</text>
+  <!-- R₃ bracket -->
+  <line x1="725" y1="400" x2="870" y2="400" stroke="#42B6F0" stroke-width="1.5"/>
+  <line x1="725" y1="395" x2="725" y2="405" stroke="#42B6F0" stroke-width="1.5"/>
+  <line x1="870" y1="395" x2="870" y2="405" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="798" y="420" text-anchor="middle" fill="#42B6F0" font-size="13" font-family="JetBrains Mono,monospace" font-weight="600">R₃</text>
+
+  <!-- === Legend === -->
+
+  <rect x="130" y="450" width="18" height="10" rx="3" fill="rgba(244,123,32,0.55)" stroke="#F47B20" stroke-width="0.8"/>
+  <text x="156" y="460" fill="#9ca3af" font-size="12">RRP &#8212; RevisionRootPage (revision anchor)</text>
+
+  <rect x="130" y="472" width="18" height="10" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="156" y="482" fill="#9ca3af" font-size="12">PF &#8212; Page Fragment (IndirPage, RecordPage, NamePage, ...)</text>
+
+  <rect x="560" y="450" width="18" height="10" rx="3" fill="rgba(244,123,32,0.35)" stroke="#F47B20" stroke-width="0.8"/>
+  <text x="586" y="460" fill="#9ca3af" font-size="12">UberPage entry (TSP + OFFS per revision)</text>
+
+  <line x1="560" y1="477" x2="610" y2="477" stroke="#F47B20" stroke-width="1.2" stroke-dasharray="4,2"/>
+  <text x="620" y="482" fill="#9ca3af" font-size="12">Offset pointer from LD₂ to RRP in LD₁</text>
+
+  <!-- Note -->
+  <text x="480" y="510" text-anchor="middle" fill="#6b7280" font-size="11">Each revision appends only modified page fragments (copy-on-write). The UberPage is written last to both files as an atomic commit.</text>
 </svg>
