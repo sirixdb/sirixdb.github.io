@@ -44,18 +44,18 @@ Core project:
 <dependency>
   <groupId>io.sirix</groupId>
   <artifactId>sirix-core</artifactId>
-  <version>0.20.1-SNAPSHOT</version>
+  <version>0.10.1-SNAPSHOT</version>
 </dependency>
 ```
 
 To add the dependency in Gradle:
 ```gradle
 dependencies {
-  compile 'io.sirix:sirix-core:0.10.q-SNAPSHOT'
+  compile 'io.sirix:sirix-core:0.10.1-SNAPSHOT'
 }
 ```
 
-**You have to use Java 20 and the provided Gradle wrapper**
+**You have to use Java 25 and the provided Gradle wrapper**
 
 ## Article Describing the JSON Transactional Cursor API
 You can find an article about this API regarding only JSON stuff on [Baeldung](https://www.baeldung.com/sirix).
