@@ -42,7 +42,7 @@ For snapshot versions, add the Sonatype snapshot repository:
 </repository>
 ```
 
-**Requires Java 21 and the provided Gradle wrapper.**
+**Requires Java 25 and the provided Gradle wrapper.**
 
 ## Running Queries from Java
 
