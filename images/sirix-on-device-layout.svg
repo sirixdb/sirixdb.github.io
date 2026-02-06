@@ -45,7 +45,8 @@
   <text x="368" y="122" fill="#6b7280" font-size="18" text-anchor="middle">...</text>
 
   <!-- Annotation: densely packed -->
-  <text x="262" y="165" text-anchor="middle" fill="#6b7280" font-size="9" font-style="italic">densely packed (no block alignment)</text>
+  <text x="400" y="100" fill="#6b7280" font-size="9" font-style="italic">densely packed</text>
+  <text x="400" y="112" fill="#6b7280" font-size="9" font-style="italic">(no block alignment)</text>
 
   <!-- ============================================ -->
   <!-- LD₁ — Data file                              -->
