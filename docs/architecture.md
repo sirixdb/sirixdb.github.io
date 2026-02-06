@@ -26,48 +26,48 @@ Field names are stored once in an in-memory dictionary and referenced by 32-bit 
   <!-- Document root -->
   <rect x="330" y="45" width="60" height="28" rx="4" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.5"/>
   <text x="360" y="63" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">DOC</text>
-  <text x="360" y="87" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=0</text>
+  <text x="395" y="63" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=0</text>
 
   <!-- Object node -->
   <line x1="360" y1="73" x2="360" y2="102" stroke="#42B6F0" stroke-width="1.2"/>
   <rect x="326" y="102" width="68" height="26" rx="4" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.5"/>
   <text x="360" y="119" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">OBJECT</text>
-  <text x="360" y="143" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=1</text>
+  <text x="399" y="119" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=1</text>
 
   <!-- Left branch: "name" key -->
   <line x1="345" y1="128" x2="220" y2="165" stroke="#42B6F0" stroke-width="1"/>
   <rect x="170" y="165" width="100" height="24" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
   <text x="220" y="181" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">OBJ_KEY "name"</text>
-  <text x="220" y="203" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=2</text>
+  <text x="275" y="181" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=2</text>
 
   <!-- "Alice" value -->
   <line x1="220" y1="189" x2="220" y2="215" stroke="#10b981" stroke-width="1"/>
   <rect x="175" y="218" width="90" height="22" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
   <text x="220" y="233" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">STR "Alice"</text>
-  <text x="220" y="253" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=3</text>
+  <text x="270" y="233" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=3</text>
 
   <!-- Right branch: "scores" key -->
   <line x1="375" y1="128" x2="500" y2="165" stroke="#42B6F0" stroke-width="1"/>
   <rect x="445" y="165" width="110" height="24" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
   <text x="500" y="181" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">OBJ_KEY "scores"</text>
-  <text x="500" y="203" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=4</text>
+  <text x="560" y="181" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=4</text>
 
   <!-- Array node -->
   <line x1="500" y1="189" x2="500" y2="215" stroke="#42B6F0" stroke-width="1"/>
   <rect x="465" y="218" width="70" height="22" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1.2"/>
   <text x="500" y="233" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">ARRAY</text>
-  <text x="500" y="253" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=5</text>
+  <text x="540" y="233" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=5</text>
 
   <!-- Array values -->
   <line x1="487" y1="240" x2="455" y2="265" stroke="#10b981" stroke-width="1"/>
   <rect x="425" y="265" width="60" height="20" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
   <text x="455" y="279" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">NUM 95</text>
-  <text x="455" y="297" text-anchor="middle" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=6</text>
+  <text x="420" y="279" text-anchor="end" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=6</text>
 
   <line x1="513" y1="240" x2="545" y2="265" stroke="#10b981" stroke-width="1"/>
   <rect x="515" y="265" width="60" height="20" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
   <text x="545" y="279" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">NUM 87</text>
-  <text x="545" y="297" text-anchor="middle" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=7</text>
+  <text x="580" y="279" text-anchor="start" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=7</text>
 
   <!-- Sibling arrow between array items -->
   <line x1="485" y1="275" x2="515" y2="275" stroke="#9ca3af" stroke-width="0.8" stroke-dasharray="3 2" marker-end="url(#arrowGray)"/>
