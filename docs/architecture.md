@@ -1,124 +1,492 @@
 ---
 layout: documentation
-doctitle: Architecture and Concepts
-title: SirixDB - Architecture and Concepts
+doctitle: Architecture
+title: SirixDB - Architecture
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/concepts.md)
+[Edit this page on GitHub](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/architecture.md)
 
-## Introduction
-SirixDB is a temporal, tamper-proof append-only database system that never overwrites data. Every time you're committing a transaction, SirixDB creates a new lightweight snapshot. It uses a log-structured copy-on-write approach, whereas versioning takes place at the page as well as node-level. Let's first define what a temporal database system is all about.
+SirixDB is a temporal, append-only database that never overwrites data. Every transaction commit creates an immutable snapshot. It uses **copy-on-write with path copying** to share unchanged data between revisions, keeping storage minimal. The storage engine is log-structured and optimized for flash drives — sequential writes only, no WAL, no compaction.
 
-A temporal database is capable of retrieving past states. Typically it stores the transaction time; that is the time at which a transaction commits data. If the valid time is also stored, that is when a fact is true in the real world, we have a bitemporal relation, which is two time axes.
+## Node-Based Document Model
 
-SirixDB can help answer questions such as the following: Give me last month's history of the Dollar-Pound Euro exchange rate. What was the customer's address on July 12th in 2015 as it was recorded back in the day? Did they move or did someone correct an error? Did we have errors in the database, which were corrected later on?
+Unlike document databases that store JSON as opaque blobs, SirixDB decomposes each document into a tree of fine-grained **nodes**. Each node has a stable 64-bit `nodeKey` that never changes across revisions. Nodes are linked via parent, child, and sibling pointers, enabling O(1) navigation in any direction.
 
-Let's turn our focus towards the question of why historical data has not been retained in the past. We postulate that new storage advances in recent years present possibilities, to build sophisticated solutions to help answer those questions without the hurdle, state-of-the-art systems bring.
+Field names are stored once in an in-memory dictionary and referenced by 32-bit keys, saving space when the same field appears thousands of times.
 
-## Advantages and disadvantages of flash drives, for instance, SSDs
-As Marc Kramis points out in his paper "Growing Persistent Trees into the 21st Century":
+<svg viewBox="0 0 720 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="JSON document decomposed into a tree of nodes with stable node keys">
+  <!-- Title -->
+  <text x="360" y="20" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">JSON Tree Encoding</text>
 
-> The switch to flash drives keenly motivates to shift from the "current state" paradigm towards remembering the evolutionary steps leading to this state.
+  <!-- Source JSON -->
+  <rect x="20" y="38" width="300" height="42" rx="6" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="1" opacity="0.6"/>
+  <text x="30" y="55" fill="#9ca3af" font-size="9" font-family="Inter,sans-serif">Input JSON</text>
+  <text x="30" y="72" fill="#42B6F0" font-size="11" font-family="JetBrains Mono,monospace">{"name":"Alice","scores":[95,87]}</text>
 
-The main insight is that flash drives as SSDs, which are common nowadays have zero seek time while not being able to do in-place modifications of the data. Flash drives are organized into pages and blocks. Due to their characteristics, they can read data on a fine-granular page-level, but can only erase data at the coarser block-level. Furthermore, blocks first have to be erased before they can be updated. Thus, whenever a flash drive updates data, it is written to another place. A garbage collector marks the data, which has been rewritten to the new place as erased at the previous block location. The flash drive can store new data in the future at the former location. Metadata to find the data at the new location is updated.
+  <!-- Document root -->
+  <rect x="330" y="45" width="60" height="28" rx="4" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="360" y="63" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">DOC</text>
+  <text x="360" y="87" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=0</text>
 
-### Evolution of state through fine-grained modifications
+  <!-- Object node -->
+  <line x1="360" y1="73" x2="360" y2="102" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="326" y="102" width="68" height="26" rx="4" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="360" y="119" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">OBJECT</text>
+  <text x="360" y="143" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=1</text>
 
-<div class="img_container">
-![stateEvolution](https://miro.medium.com/max/771/1*bHwVd6phGROGnZi1hJqHHQ.png){: style="max-width: 80%; height: auto; margin: 0em"}
-</div>
+  <!-- Left branch: "name" key -->
+  <line x1="345" y1="128" x2="220" y2="165" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="170" y="165" width="100" height="24" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="220" y="181" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">OBJ_KEY "name"</text>
+  <text x="220" y="203" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=2</text>
 
-Furthermore, Marc points out that those small modifications usually involve writing not only the modified data but also all other records on the modified page. This is an undesired effect. Traditional spinning disks require clustering due to slow random reads of traditionally mechanical disk head seek times. 
+  <!-- "Alice" value -->
+  <line x1="220" y1="189" x2="220" y2="215" stroke="#F47B20" stroke-width="1"/>
+  <rect x="175" y="218" width="90" height="22" rx="3" fill="rgba(244,123,32,0.1)" stroke="#F47B20" stroke-width="1"/>
+  <text x="220" y="233" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">STR "Alice"</text>
+  <text x="220" y="253" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=3</text>
 
-Instead, from a storage point of view, it is desirable only to store the changes. As we'll see, it boils down to a trade-off between read and write performance. On the one hand, a page needs to be reconstructed in-memory from scattered incremental changes. On the other hand, a storage system probably has to store more records than necessarily have changed to fast-track the reconstruction of pages in memory.
+  <!-- Right branch: "scores" key -->
+  <line x1="375" y1="128" x2="500" y2="165" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="445" y="165" width="110" height="24" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="500" y="181" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">OBJ_KEY "scores"</text>
+  <text x="500" y="203" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=4</text>
 
-## How we built an Open Source storage system based on these observations from scratch
-SirixDB stores per revision and page deltas. Due to zero seek time of flash drives, SirixDB does not have to cluster data. It only ever clusters data during transaction commits. Data is written sequentially to log-structured storage. It is never modified in-place.
+  <!-- Array node -->
+  <line x1="500" y1="189" x2="500" y2="215" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="465" y="218" width="70" height="22" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="500" y="233" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">ARRAY</text>
+  <text x="500" y="253" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=5</text>
 
-Database pages are copied to memory, updated and synced to a file in batches. When a transaction commits, SirixDB flushes pages to persistent storage during a postorder traversal of the internal tree-structure.
+  <!-- Array values -->
+  <line x1="487" y1="240" x2="455" y2="265" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="425" y="265" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="455" y="279" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">NUM 95</text>
+  <text x="455" y="297" text-anchor="middle" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=6</text>
 
-The page-structure is heavily inspired by the operating system ZFS. We used some of the ideas to store and version data on a sub-file level. We'll see that Marc Kramis came up with a novel sliding snapshot algorithm to version record pages, based on observed shortcomings of versioning approaches from backup systems.
+  <line x1="513" y1="240" x2="545" y2="265" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="515" y="265" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="545" y="279" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">NUM 87</text>
+  <text x="545" y="297" text-anchor="middle" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=7</text>
 
-### Page structure
-SirixDB stores `databases`, that is, collections of `resources`. Resources are the equivalent unit to relations/tables in relational database systems. A resource typically is a JSON or XML file stored in SirixDBs binary tree-encoding.
+  <!-- Sibling arrow between array items -->
+  <line x1="485" y1="275" x2="515" y2="275" stroke="#9ca3af" stroke-width="0.8" stroke-dasharray="3 2" marker-end="url(#arrowGray)"/>
+  <defs><marker id="arrowGray" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="#9ca3af"/></marker></defs>
 
-The page-structure for one revision of a resource is depicted in the following figure (click for full size):
+  <!-- Legend -->
+  <rect x="600" y="105" width="10" height="10" rx="2" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="616" y="114" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Structure node</text>
+  <rect x="600" y="123" width="10" height="10" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1"/>
+  <text x="616" y="132" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Named node</text>
+</svg>
 
-<a href="https://raw.githubusercontent.com/sirixdb/sirixdb.github.io/master/images/architecture-overview.png">
-<img src="/images/architecture-overview.png" align="center" width="80%" style="text-decoration: none"></a>
+Each node type maps directly to a JSON construct: `OBJECT`, `ARRAY`, `OBJECT_KEY`, `STRING_VALUE`, `NUMBER_VALUE`, `BOOLEAN_VALUE`, and `NULL_VALUE`. Navigation between nodes is O(1) via stored pointers — no scanning required.
 
-**Each node and revision in SirixDB is referenced by a unique, stable identifier.** First, SirixDB has to find the revision by its revision number traversing a tree of indirect-pages. Addressing nodes is done in the same manner.
+## Copy-on-Write with Path Copying
 
-The pages SirixDB stores are:
+When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instead, it **copies only the modified page and its ancestor path** to the root. All unchanged pages are shared between the old and new revision via pointers. This is the same principle used in persistent data structures and ZFS.
 
-UberPage
-: The `UberPage` is the main entry point. It contains header information about the configuration of the resource as well as a reference to an `IndirectPage`. The reference contains the offset of the IndirectPage in the data-file or the transaction-intent log and an in-memory pointer. SirixDB always writes the `UberPage` as the last page in an atomic operation to persistent storage. Thus, even in case the transaction fails, we always have a valid, consistent state of the storage.
+<svg viewBox="0 0 720 330" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Copy-on-write: modifying a leaf copies only the path to root, sharing unchanged pages">
+  <!-- Legend -->
+  <rect x="20" y="8" width="12" height="12" rx="2" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="38" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">New / copied page</text>
+  <rect x="170" y="8" width="12" height="12" rx="2" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1.5"/>
+  <text x="188" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">Modified page</text>
+  <line x1="320" y1="14" x2="360" y2="14" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>
+  <text x="368" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">Shared pointer (unchanged)</text>
 
-IndirectPage
-: IndirectPages are used to increase the fanout of the tree.  SirixDB uses these pages to be able to store and retrieve a large number of records while only ever having to read a predefined number of pages.  We currently store 512 references in the `IndirectPage` to either another layer of indirect pages or the data pages, either a `RevisionRootPage` or a `RecordPage`. SirixDB adds a new level of indirect pages whenever it runs out of the number of records it can address in the leaf pages. It stores the height of the current subtree that is the number of levels of indirect pages in the respective subtree-root page. We borrowed the ideas from the filesystem ZFS and hash-array based tries as we also store checksums in parent database-pages/page-fragments, which in turn form a self-validating merkle-tree. As IndirectPages potentially may have many `null`-pointers, SirixDB uses a bitset to keep track of which array indices contain references. Thus, it can store a compact array or list in-memory.
+  <!-- Timeline -->
+  <line x1="60" y1="285" x2="680" y2="285" stroke="#6b7280" stroke-width="1.5"/>
+  <polygon points="680,285 670,280 670,290" fill="#6b7280"/>
+  <text x="370" y="320" text-anchor="middle" fill="#9ca3af" font-size="12" font-family="Inter,sans-serif" font-weight="500">Time</text>
 
-RevisionRootPage
-: The `RevisionRootPage` is the main entry point to a revision. It stores the author-ID, an optional commit-message and a timestamp in the form of the unix epoch (milliseconds since 1970). Furthermore it stores a reference to a `PathPage`, a `CASPage` (if it exists), a `NamePage` and an `IndirectPage`. The indirect page is the entry point to the data stored in the leaf `RecordPage`s. The right subtree of the `RevisionRootPage` started by the `IndirectPage` actually is the main entry point to our data stored in the leaf nodes, the `RecordPage`s once again.
-To support fast access to a `RevisionRootPage`, SirixDB stores a second file with just the offsets to specific revisions in a revisions-file,  which is read into main-memory on startup.
+  <!-- Rev labels -->
+  <line x1="130" y1="280" x2="130" y2="290" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="130" y="305" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 1</text>
+  <line x1="370" y1="280" x2="370" y2="290" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="370" y="305" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 2</text>
+  <line x1="580" y1="280" x2="580" y2="290" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="580" y="305" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 3</text>
 
-PathPage
-: The `PathPage` has references to `IndirectPage`s, whereas each of the indirect pages is the root entry point to a user-defined path index. A unique index ID is also the reference offset in the path page to retrieve the respective path index/`IndirectPage` subtree root. SirixDB adds references to indirect pages, once a user creates path indexes. SirixDB stores a balanced binary search tree (RedBlack) for each index in the leaf pages (the `RecordPage`s), which are referenced by the indirect pages. The index contains path nodes as keys as well as an array of record-identifiers in the values. Furthermore, a path page contains a reference to a `PathSummary` page.
+  <!-- === Rev 1 === -->
+  <!-- UberPage -->
+  <rect x="104" y="40" width="52" height="24" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="130" y="56" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">Uber</text>
+  <!-- IndirectPage -->
+  <line x1="130" y1="64" x2="130" y2="90" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="100" y="92" width="60" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="130" y="107" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">Indirect</text>
+  <!-- RevRootPage -->
+  <line x1="130" y1="114" x2="130" y2="135" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="97" y="137" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="130" y="152" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
+  <!-- Data indirect -->
+  <line x1="115" y1="159" x2="90" y2="178" stroke="#42B6F0" stroke-width="1"/>
+  <line x1="145" y1="159" x2="170" y2="178" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="62" y="180" width="56" height="20" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="90" y="194" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect</text>
+  <rect x="142" y="180" width="56" height="20" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="170" y="194" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect</text>
+  <!-- RecordPages -->
+  <line x1="76" y1="200" x2="66" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="104" y1="200" x2="114" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="46" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="66" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page A</text>
+  <rect x="94" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="114" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page B</text>
+  <line x1="156" y1="200" x2="146" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="184" y1="200" x2="194" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="126" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="146" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page C</text>
+  <rect x="174" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="194" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page D</text>
 
-PathSummaryPage
-: A path summary page has a reference to an indirect page, which is the main entry point to retrieve and restore a lightweight path summary in the leaves of the tree, the `RecordPage`s. In this case, the record pages store the path nodes.
+  <!-- === Rev 2: modify Page A, copy path === -->
+  <rect x="344" y="40" width="52" height="24" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="370" y="56" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">Uber</text>
+  <line x1="370" y1="64" x2="370" y2="90" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="340" y="92" width="60" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="370" y="107" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">Indirect</text>
+  <line x1="370" y1="114" x2="370" y2="135" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="337" y="137" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="370" y="152" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
+  <!-- Left branch: copied (modified) -->
+  <line x1="355" y1="159" x2="330" y2="178" stroke="#F47B20" stroke-width="1.2"/>
+  <rect x="302" y="180" width="56" height="20" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="330" y="194" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
+  <!-- Modified Page A' -->
+  <line x1="316" y1="200" x2="306" y2="218" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="286" y="220" width="40" height="18" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="306" y="232" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">Page A'</text>
+  <!-- Shared pointer to Page B -->
+  <line x1="344" y1="200" x2="114" y2="229" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <!-- Right branch: shared pointer to Rev1's right indirect -->
+  <line x1="385" y1="159" x2="170" y2="190" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
 
-NamePage
-: The `NamePage` contains dictionaries of frequently used names, that is element/attribute names and namespaces in XML or object key names in JSON. The nodes store the dictionary keys. Furthermore, once a user creates name-indexes, SirixDB creates `IndirectPage`s. Each indirect page is the root of an index. Just as described for the path page the indexes are stored in the leaf record pages in RedBlack-trees.
+  <!-- === Rev 3: modify Page D, share rest === -->
+  <rect x="554" y="40" width="52" height="24" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="580" y="56" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">Uber</text>
+  <line x1="580" y1="64" x2="580" y2="90" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="550" y="92" width="60" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="580" y="107" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">Indirect</text>
+  <line x1="580" y1="114" x2="580" y2="135" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="547" y="137" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="580" y="152" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
+  <!-- Left: share Rev2's left indirect (which includes Page A') -->
+  <line x1="565" y1="159" x2="330" y2="190" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <!-- Right: modified -->
+  <line x1="595" y1="159" x2="620" y2="178" stroke="#F47B20" stroke-width="1.2"/>
+  <rect x="592" y="180" width="56" height="20" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="620" y="194" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
+  <!-- Shared Page C -->
+  <line x1="606" y1="200" x2="146" y2="229" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <!-- Modified Page D' -->
+  <line x1="634" y1="200" x2="644" y2="218" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="624" y="220" width="40" height="18" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="644" y="232" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">Page D'</text>
 
-CASPage
-: A `CASPage` is the main entry point to store and retrieve CAS (content-and-structure) indexes. They are a hybrid consisting of path class definitions and typed content. `/book/published[xs:dateTime]` for instance indexes the path `/book/published` and the content as `xs:dateTime`. The indexes are as always stored in RedBlack-trees.
+  <!-- Annotations -->
+  <text x="306" y="258" text-anchor="middle" fill="#F47B20" font-size="8" font-family="Inter,sans-serif" font-style="italic">only changed path copied</text>
+</svg>
 
-RecordPage/UnorderedKeyValuePage
-: `UnorderedKeyValuePage`s store the actual data. Currently, SirixDB stores 512 records in a record page. The `IndirectPage`, which has a page reference to this record page, might also have up to `N` page references to previous revisions of this page called page fragments. This pointer is crucial for our versioning algorithms, which have to retrieve several record pages (or record page fragments) to reconstruct a record page in-memory. Furthermore, records, which exceed a predefined size, are stored in so-called `OverflowPage`s and referenced in a record page.
+This means a revision that modifies a single record only writes the modified page plus its ancestor path — typically 3-4 pages. A 10 GB database with 1,000 revisions and 0.1% change each requires roughly 20 GB total, not 10 TB.
 
-OverflowPage
-: `OverflowPage`s are used to store records, which exceeds a predefined size in bytes. When a transaction reads a record, SirixDB reconstructs the record page in-memory.
+The `UberPage` is always written last as an atomic operation. Even if a crash occurs mid-commit, the previous valid state is preserved.
 
-However, potentially only a small fraction of records in the page have to be retrieved and reconstructed from byte-arrays in-memory for reads. SirixDB can delay this reconstruction until a transaction reads the overlong record.
+## Page Structure
 
-### Transaction commit
+Each resource is organized as a trie of pages. The `RevisionRootPage` is the entry point for a single revision, branching into subtrees for data, indexes, and metadata.
 
-The next figure depicts what happens during a transaction-commit.
+<svg viewBox="0 0 720 310" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Page hierarchy: UberPage to RevisionRootPage to data and index subtrees">
+  <text x="360" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Page Hierarchy (single revision)</text>
 
-<div class="img_container">
-![pageStructure](/images/copy-on-write.png){: style="max-width: 100%; height: auto; margin: 0em"}
-</div>
+  <!-- UberPage -->
+  <rect x="320" y="32" width="80" height="28" rx="5" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="360" y="50" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">UberPage</text>
 
-We assume that a read-write transaction modifies a record in the leftmost *RecordPage*. Depending on the versioning algorithm used by SirixDB, the modified record, as well as probably some other records of the page, are copied to a new page fragment. First, SirixDB stores all changes in an in-memory transaction (intent) log. Second, during a transaction commit, the page-structure of the current *RevisionRootPage* is serialized in a postorder traversal.
+  <!-- IndirectPage (to revisions) -->
+  <line x1="360" y1="60" x2="360" y2="78" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="310" y="80" width="100" height="24" rx="4" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="360" y="96" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace">IndirectPages</text>
 
-All changed *RecordPages* are written to persistent storage, starting with the leftmost. If other changed record pages exist underneath an indirect page, SirixDB serializes these before the *IndirectPage*, which points to the updated record pages. Then the *IndirectPage* which points to the updated revision root page is written. The indirect pages are written with updated references to the new persistent locations of the record pages.
+  <!-- RevisionRootPage -->
+  <line x1="360" y1="104" x2="360" y2="122" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="290" y="124" width="140" height="28" rx="5" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.5"/>
+  <text x="360" y="142" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">RevisionRootPage</text>
+  <text x="360" y="168" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">author, timestamp, commit message</text>
 
-SirixDB also stores checksums in the parent pointers as in ZFS. Thus, the storage engine in the future will be able to detect data corruption and heal itself, once we partition and replicate the data. SirixDB serializes the whole page-structure in this manner. We also intend to store an encryption key in the references in the future, to support encryption at rest.
+  <!-- Branches from RevisionRootPage -->
+  <!-- Data branch (center-left) -->
+  <line x1="310" y1="152" x2="120" y2="195" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="62" y="197" width="116" height="24" rx="4" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="120" y="213" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace">Data IndirectPages</text>
+  <line x1="98" y1="221" x2="72" y2="242" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="142" y1="221" x2="168" y2="242" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="42" y="244" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="72" y="258" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">RecordPage</text>
+  <rect x="138" y="244" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="168" y="258" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">RecordPage</text>
+  <text x="120" y="282" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">JSON/XML nodes</text>
 
-Note that SirixDB has to update the ancestor path of each changed *RecordPage*. However, storing indirect pages as well as the *RevisionRootPage*, *CASPage*, *PathSummaryPage*, and the *PathPage* is cheap. We currently store copies of the *NamePages*, but in the future might also version these according to the chosen versioning algorithm. Thus, we do not need to copy the whole dictionaries and save storage costs thereof. Each reference, which doesn't point to a new page or page-fragment, is left unchanged. Thus, unchanged pages (which are also not on the ancestor-path of changed pages) are referenced at their respective position in the previous revision and never rewritten.
+  <!-- PathSummary branch -->
+  <line x1="335" y1="152" x2="300" y2="195" stroke="#F47B20" stroke-width="1"/>
+  <rect x="252" y="197" width="96" height="24" rx="4" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="300" y="213" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">PathSummary</text>
+  <text x="300" y="237" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">unique path trie</text>
 
-### Versioning at the page-level
+  <!-- NamePage branch -->
+  <line x1="385" y1="152" x2="440" y2="195" stroke="#F47B20" stroke-width="1"/>
+  <rect x="398" y="197" width="84" height="24" rx="4" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="440" y="213" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">NamePage</text>
+  <text x="440" y="237" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">field name dictionary</text>
 
-One of the most distinctive features of SirixDB is that it versions the *RecordPages*. It doesn't merely copy all records of the page, even if a transaction only modifies a single record. The new record page fragment always contains a reference to the previous version. Thus, the versioning algorithms can dereference a fixed predefined number of page-fragments at maximum to reconstruct a RecordPage in-memory.
+  <!-- Index branches (PathPage + CASPage) -->
+  <line x1="410" y1="152" x2="600" y2="195" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="548" y="197" width="104" height="24" rx="4" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="600" y="213" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">PathPage / CASPage</text>
+  <line x1="580" y1="221" x2="564" y2="242" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="620" y1="221" x2="636" y2="242" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="530" y="244" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="564" y="258" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 1</text>
+  <rect x="602" y="244" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="636" y="258" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 2</text>
+  <text x="600" y="282" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">user-defined indexes</text>
+</svg>
 
-**A sliding snapshot algorithm used to version record pages can avoid read and write peaks. The algorithm avoids intermittent full-page snapshots, which are otherwise needed during incremental or differential page-versioning to fast-track its reconstruction.**
+**UberPage** — The root entry point. Written last during a commit as an atomic operation. Contains a reference to the IndirectPage tree that addresses all revisions.
 
-### Versioning algorithms for storing and retrieving page snapshots
+**IndirectPages** — Fan-out nodes (512 references each) that form the trie structure. Borrowed from ZFS, they store checksums in parent references for data integrity. Unused slots are tracked with a bitset for compact storage.
 
-SirixDB stores at most a fixed number of records. That is the actual data per database-page (currently limited to 512 records). The records themselves are of variable size. Overlong records, which exceed a predefined length in bytes, are stored in additional overflow pages. SirixDB stores references to these pages in the record pages.
+**RevisionRootPage** — Entry point for a single revision. Stores the author, timestamp, and optional commit message. Branches to the data trie, path summary, name dictionary, and index pages.
 
-SirixDB implements several versioning strategies best known from backup systems for copy-on-write operations of record-pages. Namely it either copies
+**RecordPages** — Leaf pages storing up to 1024 nodes each. These are the pages that get versioned by the sliding snapshot algorithm.
 
-- the full record-page that is any record in the page (full)
-- only the changed records in a record-page regarding the former version (incremental)
-- only the changed records in a record-page since a full-page dump (differential)
+## Sliding Snapshot Versioning
 
-Incremental-versioning is one extreme. Write performance is best, as it stores the optimum (only changed records). On the other hand, reconstructing a page needs intermittent full snapshots of pages. Otherwise, performance deteriorates with each new revision of the page as the number of increments increases with each new version.
+SirixDB doesn't just copy entire pages on every change. It versions `RecordPages` at a sub-page level, storing only changed records. The **sliding snapshot** algorithm, developed by Marc Kramis, avoids the trade-off between read performance and write amplification that plagues traditional approaches.
 
-Differential-versioning tries to balance reads and writes a bit better, but is still not optimal. A system, implementing a differential versioning strategy has to write all changed records since a past full dump of the page. Thus, only ever two revisions of the page-fragment have to be read to reconstruct a record-page. However, write-performance also deteriorates with each new revision of the page.
+<svg viewBox="0 0 720 290" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Three versioning strategies compared: Full, Incremental, and Sliding Snapshot">
+  <text x="360" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Page Versioning Strategies</text>
 
-Write peaks occur both during incremental versioning, due to the requirement of intermittent full dumps of the page. Differential versioning also suffers from a similar problem. Without an intermittent full dump, a system using differential versioning has to duplicate vast amounts of data during each new write.
+  <!-- Column headers -->
+  <text x="120" y="42" text-anchor="middle" fill="#42B6F0" font-size="11" font-family="Inter,sans-serif" font-weight="600">Full Copy</text>
+  <text x="360" y="42" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif" font-weight="600">Incremental</text>
+  <text x="600" y="42" text-anchor="middle" fill="#10b981" font-size="11" font-family="Inter,sans-serif" font-weight="600">Sliding Snapshot</text>
 
-Marc Kramis came up with the idea of a novel sliding snapshot algorithm, which balances read/write-performance to circumvent any write-peaks.
+  <!-- Separators -->
+  <line x1="240" y1="30" x2="240" y2="260" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
+  <line x1="480" y1="30" x2="480" y2="260" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
 
-The algorithm makes use of a sliding window. First, any changed record must be written during a commit. Second, any record, which is older than a predefined length N of the window and which has not been changed during these N-revisions must be written, too. Only these N-revisions at max have to be read. Fetching of the page-fragments can be done in parallel or linear. In the latter case the page fragments are read starting with the most recent revision. The algorithm stops once the full-page has been reconstructed. You can find the best high-level overview of the algorithm in Marc's Thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695)
+  <!-- Rev labels -->
+  <text x="20" y="78" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 1</text>
+  <text x="20" y="118" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 2</text>
+  <text x="20" y="158" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 3</text>
+  <text x="20" y="198" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 4</text>
+  <text x="20" y="238" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 5</text>
+
+  <!-- FULL COPY column -->
+  <!-- Rev 1: full page [A B C D] -->
+  <rect x="68" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="120" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <!-- Rev 2: full page [A B' C D] -->
+  <rect x="68" y="102" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="120" y="117" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  <tspan fill="#F47B20">B'</tspan> C  D</text>
+  <!-- Rev 3 -->
+  <rect x="68" y="142" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="120" y="157" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B' <tspan fill="#F47B20">C'</tspan> D</text>
+  <!-- Rev 4 -->
+  <rect x="68" y="182" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="120" y="197" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace"><tspan fill="#F47B20">A'</tspan> B' C' D</text>
+  <!-- Rev 5 -->
+  <rect x="68" y="222" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="120" y="237" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' <tspan fill="#F47B20">D'</tspan></text>
+
+  <text x="120" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Fast reads, wasteful writes</text>
+
+  <!-- INCREMENTAL column -->
+  <!-- Rev 1: full dump -->
+  <rect x="308" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="360" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <!-- Rev 2: only delta -->
+  <rect x="338" y="102" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
+  <text x="360" y="117" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+  <!-- Rev 3: only delta -->
+  <rect x="338" y="142" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
+  <text x="360" y="157" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
+  <!-- Rev 4: full dump again (write spike!) -->
+  <rect x="308" y="182" width="104" height="22" rx="3" fill="rgba(244,123,32,0.3)" stroke="#F47B20" stroke-width="1.5"/>
+  <text x="360" y="197" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
+  <text x="425" y="197" fill="#F47B20" font-size="7" font-family="Inter,sans-serif" font-style="italic">write spike!</text>
+  <!-- Rev 5: delta -->
+  <rect x="338" y="222" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
+  <text x="360" y="237" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
+
+  <text x="360" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Compact, but periodic write spikes</text>
+
+  <!-- SLIDING SNAPSHOT column (window N=3) -->
+  <!-- Rev 1: full -->
+  <rect x="548" y="62" width="104" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="600" y="77" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <!-- Rev 2: changed + window carry -->
+  <rect x="558" y="102" width="84" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="600" y="117" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+  <!-- Rev 3 -->
+  <rect x="558" y="142" width="84" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="600" y="157" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">C' <tspan fill="#9ca3af" font-size="7">+ A,D</tspan></text>
+  <!-- Rev 4: changed + expired from window -->
+  <rect x="558" y="182" width="84" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="600" y="197" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">A' <tspan fill="#9ca3af" font-size="7">+ B',C'</tspan></text>
+  <!-- Rev 5 -->
+  <rect x="558" y="222" width="84" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="600" y="237" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">D' <tspan fill="#9ca3af" font-size="7">+ A'</tspan></text>
+
+  <text x="600" y="265" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">Bounded reads, no spikes</text>
+</svg>
+
+| Strategy | Reads to reconstruct | Write cost per revision | Write spikes? |
+|----------|---------------------|------------------------|---------------|
+| **Full** | 1 page | Entire page (all records) | No |
+| **Incremental** | Up to all revisions | Only changed records | Yes (periodic full dump) |
+| **Differential** | 2 pages | All changes since last full dump | Yes (growing deltas) |
+| **Sliding Snapshot** | At most N fragments | Changed + expired records | **No** |
+
+The sliding snapshot uses a window of size N (typically 3-5). Changed records are always written. Records older than N revisions that haven't been written are carried forward. This guarantees that at most N page fragments need to be read to reconstruct any page — regardless of total revision count.
+
+For details, see Marc Kramis's thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695).
+
+## Secondary Indexes
+
+SirixDB supports three types of user-defined secondary indexes, all stored in the same versioned trie structure as the data. Indexes are part of the transaction and version with the data — the index at revision 42 always matches the data at revision 42.
+
+### Path Summary
+
+Every resource maintains a compact **path summary** — a trie of all unique paths in the document. Each unique path gets a **path class reference (PCR)**, a stable integer ID. Nodes in the main data tree reference their PCR, enabling efficient path-based lookups.
+
+<svg viewBox="0 0 720 340" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Path Summary maps unique paths to path class references, connecting data tree nodes to index entries">
+  <text x="360" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Path Summary and Index Architecture</text>
+
+  <!-- Left side: JSON Data Tree -->
+  <text x="160" y="44" text-anchor="middle" fill="#42B6F0" font-size="11" font-family="Inter,sans-serif" font-weight="600">Data Tree</text>
+
+  <!-- Root object -->
+  <rect x="130" y="55" width="60" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="160" y="70" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">OBJECT</text>
+
+  <!-- "users" key -->
+  <line x1="160" y1="77" x2="100" y2="95" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="62" y="97" width="76" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="100" y="111" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">KEY "users"</text>
+
+  <!-- "config" key -->
+  <line x1="160" y1="77" x2="220" y2="95" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="182" y="97" width="76" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="220" y="111" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">KEY "config"</text>
+
+  <!-- Array under users -->
+  <line x1="100" y1="117" x2="100" y2="132" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="74" y="134" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="100" y="147" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">ARRAY</text>
+
+  <!-- User objects -->
+  <line x1="88" y1="152" x2="60" y2="168" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="112" y1="152" x2="140" y2="168" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="34" y="170" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="60" y="183" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">OBJ</text>
+  <rect x="114" y="170" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="140" y="183" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">OBJ</text>
+
+  <!-- name fields -->
+  <line x1="48" y1="188" x2="48" y2="202" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="22" y="204" width="52" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="48" y="215" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"name"</text>
+  <line x1="72" y1="188" x2="72" y2="202" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="60" y="224" width="42" height="14" rx="2" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="0.6"/>
+  <text x="81" y="234" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">"Alice"</text>
+
+  <line x1="128" y1="188" x2="128" y2="202" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="102" y="204" width="52" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="128" y="215" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"name"</text>
+  <line x1="152" y1="188" x2="152" y2="202" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="140" y="224" width="42" height="14" rx="2" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="0.6"/>
+  <text x="161" y="234" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">"Bob"</text>
+
+  <!-- Right side: Path Summary -->
+  <text x="520" y="44" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif" font-weight="600">Path Summary</text>
+
+  <!-- Root path -->
+  <rect x="494" y="55" width="52" height="22" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="520" y="70" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">/</text>
+  <text x="556" y="70" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=0</text>
+
+  <!-- /users -->
+  <line x1="508" y1="77" x2="470" y2="95" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="434" y="97" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="470" y="111" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">users</text>
+  <text x="516" y="111" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=1</text>
+
+  <!-- /config -->
+  <line x1="532" y1="77" x2="590" y2="95" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="554" y="97" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="590" y="111" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">config</text>
+  <text x="636" y="111" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=5</text>
+
+  <!-- /users/[] -->
+  <line x1="470" y1="117" x2="470" y2="132" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="440" y="134" width="60" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="470" y="148" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">[]</text>
+  <text x="510" y="148" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=2</text>
+
+  <!-- /users/[]/name -->
+  <line x1="458" y1="154" x2="440" y2="170" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="404" y="172" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="440" y="186" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">name</text>
+  <text x="486" y="186" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=3</text>
+
+  <!-- /users/[]/age -->
+  <line x1="482" y1="154" x2="540" y2="170" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="504" y="172" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="540" y="186" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">age</text>
+  <text x="586" y="186" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=4</text>
+
+  <!-- PCR arrows from data to path summary -->
+  <line x1="138" y1="100" x2="434" y2="100" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
+  <line x1="154" y1="210" x2="404" y2="183" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
+
+  <!-- Index section below -->
+  <line x1="40" y1="256" x2="680" y2="256" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
+  <text x="360" y="278" text-anchor="middle" fill="#e8e6e3" font-size="11" font-family="Inter,sans-serif" font-weight="600">Index Types</text>
+
+  <!-- Name Index -->
+  <rect x="40" y="292" width="190" height="38" rx="5" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="135" y="306" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="Inter,sans-serif" font-weight="600">Name Index</text>
+  <text x="135" y="322" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">hash("name") → {key5,key12}</text>
+
+  <!-- Path Index -->
+  <rect x="260" y="292" width="200" height="38" rx="5" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1"/>
+  <text x="360" y="306" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="600">Path Index</text>
+  <text x="360" y="322" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">PCR=3 → {key5, key12}</text>
+
+  <!-- CAS Index -->
+  <rect x="490" y="292" width="200" height="38" rx="5" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="1"/>
+  <text x="590" y="306" text-anchor="middle" fill="#10b981" font-size="9" font-family="Inter,sans-serif" font-weight="600">CAS Index</text>
+  <text x="590" y="322" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">(PCR=4, 30) → {key7}</text>
+</svg>
+
+### Index Types
+
+| Index | Key | Use case |
+|-------|-----|----------|
+| **Name** | Field name hash → node keys | Find all nodes named `"email"` regardless of path |
+| **Path** | PCR → node keys | Find all nodes at path `/users/[]/name` |
+| **CAS** | (PCR + typed value) → node keys | Find all users where `age > 30` on path `/users/[]/age` |
+
+CAS (content-and-structure) indexes are the most selective — they index both the path and the typed value, enabling efficient range queries. All indexes are stored in balanced binary search trees (Red-Black trees) within the same versioned page structure.
+
+For the JSONiq API to create and query indexes, see the [Function Reference](/docs/jsoniq-functions.html#indexes).
+
+## Further Reading
+
+- [Evolutionary Tree-Structured Storage](http://kops.uni-konstanz.de/handle/123456789/27695) — Marc Kramis's thesis describing the sliding snapshot algorithm
+- [SirixDB on GitHub](https://github.com/sirixdb/sirix) — source code and detailed `docs/ARCHITECTURE.md`
+- [REST API documentation](/docs/rest-api.html) — HTTP interface for SirixDB
+- [JSONiq API](/docs/jsoniq-api.html) — query language guide
