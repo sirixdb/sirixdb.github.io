@@ -88,10 +88,7 @@ Each node type maps directly to a JSON construct: `OBJECT`, `ARRAY`, `OBJECT_KEY
 
 When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instead, it **copies only the modified page and its ancestor path** to the root. All unchanged pages are shared between the old and new revision via pointers. This is the same principle used in persistent data structures and ZFS.
 
-<svg viewBox="0 0 720 380" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Copy-on-write: modifying a leaf copies only the path to root, sharing unchanged pages">
-  <defs>
-    <marker id="arrowAppend" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="#6b7280"/></marker>
-  </defs>
+<svg viewBox="0 0 720 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Copy-on-write: modifying a leaf copies only the path to root, sharing unchanged pages">
 
   <!-- Legend -->
   <rect x="20" y="8" width="12" height="12" rx="2" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
@@ -171,45 +168,16 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <!-- Annotation -->
   <text x="306" y="182" text-anchor="middle" fill="#F47B20" font-size="8" font-family="Inter,sans-serif" font-style="italic">only changed path copied</text>
 
-  <!-- === Physical Storage === -->
-  <line x1="30" y1="200" x2="690" y2="200" stroke="#6b7280" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.4"/>
-  <text x="360" y="218" text-anchor="middle" fill="#e8e6e3" font-size="11" font-family="Inter,sans-serif" font-weight="600">On-Disk Layout (append-only)</text>
-
-  <!-- revisions file -->
-  <rect x="30" y="230" width="660" height="24" rx="4" fill="rgba(255,255,255,0.03)" stroke="#6b7280" stroke-width="0.8"/>
-  <text x="40" y="246" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">revisions</text>
-  <rect x="110" y="234" width="44" height="16" rx="2" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.6"/>
-  <text x="132" y="245" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Rev 1</text>
-  <rect x="158" y="234" width="44" height="16" rx="2" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.6"/>
-  <text x="180" y="245" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Rev 2</text>
-  <rect x="206" y="234" width="44" height="16" rx="2" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.6"/>
-  <text x="228" y="245" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Rev 3</text>
-  <line x1="260" y1="242" x2="290" y2="242" stroke="#6b7280" stroke-width="1" marker-end="url(#arrowAppend)"/>
-
-  <!-- data file -->
-  <rect x="30" y="262" width="660" height="24" rx="4" fill="rgba(255,255,255,0.03)" stroke="#6b7280" stroke-width="0.8"/>
-  <text x="40" y="278" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">data</text>
-  <!-- Rev 1 pages -->
-  <rect x="110" y="266" width="100" height="16" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.6"/>
-  <text x="160" y="277" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Rev 1 pages</text>
-  <!-- Rev 2 delta -->
-  <rect x="214" y="266" width="50" height="16" rx="2" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="239" y="277" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">&#x394; Rev 2</text>
-  <!-- Rev 3 delta -->
-  <rect x="268" y="266" width="50" height="16" rx="2" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="293" y="277" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">&#x394; Rev 3</text>
-  <line x1="328" y1="274" x2="358" y2="274" stroke="#6b7280" stroke-width="1" marker-end="url(#arrowAppend)"/>
-
   <!-- Timeline -->
-  <line x1="60" y1="320" x2="680" y2="320" stroke="#6b7280" stroke-width="1.5"/>
-  <polygon points="680,320 670,315 670,325" fill="#6b7280"/>
-  <text x="370" y="360" text-anchor="middle" fill="#9ca3af" font-size="12" font-family="Inter,sans-serif" font-weight="500">Time</text>
-  <line x1="130" y1="315" x2="130" y2="325" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="130" y="340" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 1</text>
-  <line x1="370" y1="315" x2="370" y2="325" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="370" y="340" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 2</text>
-  <line x1="580" y1="315" x2="580" y2="325" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="580" y="340" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 3</text>
+  <line x1="60" y1="210" x2="680" y2="210" stroke="#6b7280" stroke-width="1.5"/>
+  <polygon points="680,210 670,205 670,215" fill="#6b7280"/>
+  <text x="370" y="250" text-anchor="middle" fill="#9ca3af" font-size="12" font-family="Inter,sans-serif" font-weight="500">Time</text>
+  <line x1="130" y1="205" x2="130" y2="215" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="130" y="230" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 1</text>
+  <line x1="370" y1="205" x2="370" y2="215" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="370" y="230" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 2</text>
+  <line x1="580" y1="205" x2="580" y2="215" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="580" y="230" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 3</text>
 </svg>
 
 This means a revision that modifies a single record only writes the modified page plus its ancestor path — typically 3-4 pages. A 10 GB database with 1,000 revisions and 0.1% change each requires roughly 20 GB total, not 10 TB.
