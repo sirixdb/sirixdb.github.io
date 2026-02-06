@@ -34,7 +34,7 @@ SirixDB not only supports all XPath axes to query a resource in one revision but
 ![sunburstview](/images/sunburstview-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"} ![moves](/images/moves-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"}
 </div>
 
-You may find a quick overview of the [main features](/docs/features.html) useful.
+You may find a quick overview of the [main features](/docs/features.html) useful. See also [how SirixDB compares](/docs/comparison.html) to XTDB, event sourcing, Git-for-data tools, and traditional temporal database extensions.
 
 ### API Documentation
 We provide several APIs to interact with SirixDB.
@@ -71,3 +71,9 @@ Other publications include:
 - [Integrity Assurance for RESTful XML](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-123507)  (WISM100) 
 - [Temporal REST, How to really exploit XML](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84476) (IADIS WWW/Internet08)
 - [Distributing XML with focus on parallel evaluation](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84487) (DBISP2P08)
+
+### Roadmap
+
+- **Cloud offering**: A managed SirixDB service is planned, so you can use temporal document storage without operational overhead.
+- **Enhanced query capabilities**: Continued improvements to the JSONiq processor and temporal query functions.
+- **Web GUI improvements**: Additional visualization modes and collaborative features in the [SirixDB Web GUI](https://github.com/sirixdb/sirixdb-web-gui).

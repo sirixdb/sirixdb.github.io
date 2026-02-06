@@ -1,96 +1,102 @@
-/*
-	Twenty by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
+(function() {
+  'use strict';
 
-(function($) {
+  // Mobile nav toggle
+  var menuToggle = document.getElementById('menu-toggle');
+  var siteNav = document.getElementById('site-nav');
 
-	var	$window = $(window),
-		$body = $('body'),
-		$header = $('#header'),
-		$banner = $('#banner');
+  if (menuToggle && siteNav) {
+    menuToggle.addEventListener('click', function() {
+      var isOpen = siteNav.classList.toggle('is-open');
+      menuToggle.setAttribute('aria-expanded', isOpen);
+    });
+  }
 
-	// Breakpoints.
-		breakpoints({
-			wide:      [ '1281px',  '1680px' ],
-			normal:    [ '981px',   '1280px' ],
-			narrow:    [ '841px',   '980px'  ],
-			narrower:  [ '737px',   '840px'  ],
-			mobile:    [ null,      '736px'  ]
-		});
+  // Close mobile nav on link click
+  if (siteNav) {
+    siteNav.addEventListener('click', function(e) {
+      if (e.target.tagName === 'A') {
+        siteNav.classList.remove('is-open');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
 
-	// Play initial animations on page load.
-		$window.on('load', function() {
-			window.setTimeout(function() {
-				$body.removeClass('is-preload');
-			}, 100);
-		});
+  // GUI showcase — auto-cycling slideshow
+  var showcase = document.getElementById('gui-showcase');
+  if (showcase) {
+    var tabs = showcase.querySelectorAll('.gui-showcase__tab');
+    var slides = showcase.querySelectorAll('.gui-showcase__slide');
+    var captions = showcase.querySelectorAll('.gui-showcase__caption');
+    var current = 0;
+    var interval;
 
-	// Scrolly.
-		$('.scrolly').scrolly({
-			speed: 1000,
-			offset: function() { return $header.height() + 10; }
-		});
+    function showSlide(i) {
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      slides.forEach(function(s) { s.classList.remove('active'); });
+      captions.forEach(function(c) { c.classList.remove('active'); });
+      tabs[i].classList.add('active');
+      slides[i].classList.add('active');
+      captions[i].classList.add('active');
+      current = i;
+    }
 
-	// Dropdowns.
-		$('#nav > ul').dropotron({
-			mode: 'fade',
-			noOpenerFade: true,
-			expandMode: (browser.mobile ? 'click' : 'hover')
-		});
+    function nextSlide() { showSlide((current + 1) % slides.length); }
 
-	// Nav Panel.
+    function startCycle() { interval = setInterval(nextSlide, 5000); }
+    startCycle();
 
-		// Button.
-			$(
-				'<div id="navButton">' +
-					'<a href="#navPanel" class="toggle"></a>' +
-				'</div>'
-			)
-				.appendTo($body);
+    tabs.forEach(function(tab, i) {
+      tab.addEventListener('click', function() {
+        clearInterval(interval);
+        showSlide(i);
+        startCycle();
+      });
+    });
 
-		// Panel.
-			$(
-				'<div id="navPanel">' +
-					'<nav>' +
-						$('#nav').navList() +
-					'</nav>' +
-				'</div>'
-			)
-				.appendTo($body)
-				.panel({
-					delay: 500,
-					hideOnClick: true,
-					hideOnSwipe: true,
-					resetScroll: true,
-					resetForms: true,
-					side: 'left',
-					target: $body,
-					visibleClass: 'navPanel-visible'
-				});
+    showcase.addEventListener('mouseenter', function() { clearInterval(interval); });
+    showcase.addEventListener('mouseleave', startCycle);
+  }
 
-		// Fix: Remove navPanel transitions on WP<10 (poor/buggy performance).
-			if (browser.os == 'wp' && browser.osVersion < 10)
-				$('#navButton, #navPanel, #page-wrapper')
-					.css('transition', 'none');
+  // Query showcase tabs
+  var queryShowcase = document.getElementById('query-showcase');
+  if (queryShowcase) {
+    var qTabs = queryShowcase.querySelectorAll('.query-showcase__tab');
+    var qPanels = queryShowcase.querySelectorAll('.query-showcase__panel');
+    qTabs.forEach(function(tab, i) {
+      tab.addEventListener('click', function() {
+        qTabs.forEach(function(t) { t.classList.remove('active'); });
+        qPanels.forEach(function(p) { p.classList.remove('active'); });
+        tab.classList.add('active');
+        qPanels[i].classList.add('active');
+      });
+    });
+  }
 
-	// Header.
-		if (!browser.mobile
-		&&	$header.hasClass('alt')
-		&&	$banner.length > 0) {
+  // Auto-scroll terminal during animation
+  var termBody = document.querySelector('.terminal__body');
+  if (termBody) {
+    termBody.querySelectorAll('.t-block').forEach(function(block) {
+      block.addEventListener('animationstart', function() {
+        termBody.scrollTo({ top: block.offsetTop - 16, behavior: 'smooth' });
+      });
+    });
+  }
 
-			$window.on('load', function() {
-
-				$banner.scrollex({
-					bottom:		$header.outerHeight(),
-					terminate:	function() { $header.removeClass('alt'); },
-					enter:		function() { $header.addClass('alt reveal'); },
-					leave:		function() { $header.removeClass('alt'); }
-				});
-
-			});
-
-		}
-
-})(jQuery);
+  // Fade-in on scroll
+  var fadeEls = document.querySelectorAll('.fade-in');
+  if (fadeEls.length && 'IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    fadeEls.forEach(function(el) { observer.observe(el); });
+  } else {
+    // Fallback: show everything immediately
+    fadeEls.forEach(function(el) { el.classList.add('is-visible'); });
+  }
+})();

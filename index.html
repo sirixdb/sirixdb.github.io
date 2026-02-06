@@ -1,239 +1,615 @@
 ---
 layout: landing-page
-title: SirixDB - An Evolutionary, Temporal, JSON Store
----		
-		<!-- Main -->
-			<article id="main">
+title: SirixDB - A Bitemporal, Evolutionary Document Store
+---
 
-				<header class="special container">
-					<span class="icon solid fa-chart-bar"></span>
-					<h2>SirixDB keeps storage space to a minimum while retaining the full history of your data.</h2>
-				       <br /> 
-				        It allows <strong>time-travel</strong> queries on its binary <strong>XML</strong> and <strong>JSON</strong> encoding.
-                                        <br />
-					It is released for free under <a href="https://opensource.org/licenses/BSD-3-Clause">The 3-Clause BSD License</a> license. Have fun!</p>
-				</header>
-					
-				<!-- One -->
-					<section class="wrapper style2 container special-alt">
-						<div class="row gtr-50">
-							<div class="col-8 col-12-narrower">
-							
-								<header>
-									<h2>Keep the full history of your data for time travel analysis, audits, to correct human or application errors...</h2>
-								</header>
-								<p>SirixDB keeps storage space to a minimum while supporting the reconstruction of any revision in linear time.</p>
-								<p>Furthermore, it allows time travel queries such that you can analyze the history of your data efficiently to predict the future or for audits.</p>
-                                                                <p>Not enough? What about correcting any human or application errors or comparing any revision of your XML or JSON documents efficiently?</p>
-                                                     
-								
-								<footer>
-									<ul class="buttons">
-										<li><a href="#more" class="button fit scrolly">Find Out More</a></li>
-									</ul>
-								</footer>
-							
-							</div>
-							<div class="col-4 col-12-narrower imp-narrower">
-							
-								<ul class="featured-icons">
-									<li><span class="icon solid fa-clock"><span class="label">Time Travel</span></span></li>
-									<li><span class="icon solid fa-rocket"><span class="label">Fast</span></span></li>
-									<li><span class="icon solid fa-laptop"><span class="label">JVM-based (available on any platform)</span></span></li>
-									<li><span class="icon solid fa-database"><span class="label">Versioned, temporal database system</span></span></li>
-									<li><span class="icon solid fa-cloud"><span class="label">Open Source and free on Github</span></span></li>
-									<li><span class="icon solid fa-archive"><span class="label">Replication/Partitioning soon to be added</span></span></li>
-								</ul>
-							
-							</div>				
-						</div>
-					</section>
-
-<section class="wrapper style3 container special-alt">
-	<header><h2>Supported by</h2></header>
-	<p><img src="https://www.yourkit.com/images/yklogo.png" width="185" height="44"></p>
-	<p>SirixDB is supported by YourKit: YourKit supports open-source projects with innovative and intelligent tools
-for monitoring and profiling Java and .NET applications.
-YourKit is the creator of <a href="https://www.yourkit.com/java/profiler/">YourKit Java Profiler</a>,
-<a href="https://www.yourkit.com/.net/profiler/">YourKit .NET Profiler</a>,
-		and <a href="https://www.yourkit.com/youmonitor/">YourKit YouMonitor</a>.</p>
-	<p>SirixDB is supported by JetBrains. They support Open Source with licenses for their products and we love Kotlin.</p>
+<!-- Section: Shell Demo -->
+<section class="section section--alt fade-in">
+  <div class="container">
+    <h2 class="section-heading">See it in action</h2>
+    <p class="section-subheading">Create revisions, modify data, then travel back in time &mdash; all from the interactive JSONiq shell.</p>
+    <div class="terminal">
+      <div class="terminal__header">
+        <span class="terminal__dot terminal__dot--red"></span>
+        <span class="terminal__dot terminal__dot--yellow"></span>
+        <span class="terminal__dot terminal__dot--green"></span>
+        <span class="terminal__title">sirix-shell</span>
+      </div>
+      <div class="terminal__body"><pre><span class="t-block"><span class="t-comment">(: Rev 1 &mdash; store initial data :)</span>
+<span class="t-prompt">sirix&gt;</span> <span class="t-fn">jn:store</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>,<span class="t-str">'[
+          {"name":"Laptop", "price":999},
+          {"name":"Phone",  "price":699}
+        ]'</span>)
+</span><span class="t-block">
+<span class="t-comment">(: Rev 2 &mdash; price drop on the laptop :)</span>
+<span class="t-prompt">sirix&gt;</span> <span class="t-kw">let</span> <span class="t-var">$doc</span> <span class="t-op">:=</span> <span class="t-fn">jn:doc</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>)
+       <span class="t-kw">return</span> <span class="t-kw">replace json value of</span> <span class="t-var">$doc</span>[<span class="t-num">0</span>].<span class="t-op">price</span> <span class="t-kw">with</span> <span class="t-num">899</span>
+</span><span class="t-block">
+<span class="t-comment">(: Rev 3 &mdash; add a new product :)</span>
+<span class="t-prompt">sirix&gt;</span> <span class="t-kw">let</span> <span class="t-var">$doc</span> <span class="t-op">:=</span> <span class="t-fn">jn:doc</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>)
+       <span class="t-kw">return</span> <span class="t-kw">append json</span> {<span class="t-str">"name"</span>:<span class="t-str">"Tablet"</span>,<span class="t-str">"price"</span>:<span class="t-num">449</span>} <span class="t-kw">into</span> <span class="t-var">$doc</span>
+</span><span class="t-block">
+<span class="t-comment">(: Rev 4 &mdash; discontinue the phone :)</span>
+<span class="t-prompt">sirix&gt;</span> <span class="t-kw">let</span> <span class="t-var">$doc</span> <span class="t-op">:=</span> <span class="t-fn">jn:doc</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>)
+       <span class="t-kw">return</span> <span class="t-kw">delete json</span> <span class="t-var">$doc</span>[<span class="t-num">1</span>]
+</span><span class="t-block">
+<span class="t-comment">(: Time travel &mdash; what was the original catalog? :)</span>
+<span class="t-prompt">sirix&gt;</span> <span class="t-fn">jn:open</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>, <span class="t-num">1</span>)
+<span class="t-output">=&gt; [{"name":"Laptop","price":999}, {"name":"Phone","price":699}]</span>
+</span><span class="t-block">
+<span class="t-comment">(: Track how the laptop price evolved across revisions :)</span>
+<span class="t-prompt">sirix&gt;</span> <span class="t-kw">let</span> <span class="t-var">$item</span> <span class="t-op">:=</span> <span class="t-fn">sdb:select-item</span>(<span class="t-fn">jn:doc</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>), <span class="t-num">6</span>)
+       <span class="t-kw">for</span> <span class="t-var">$v</span> <span class="t-kw">in</span> <span class="t-fn">sdb:item-history</span>(<span class="t-var">$item</span>)
+       <span class="t-kw">return</span> {<span class="t-str">"rev"</span>: <span class="t-fn">sdb:revision</span>(<span class="t-var">$v</span>), <span class="t-str">"price"</span>: <span class="t-var">$v</span>}
+<span class="t-output">=&gt; {"rev":<span class="t-rev">1</span>, "price":999}
+   {"rev":<span class="t-rev">2</span>, "price":899}</span>
+</span><span class="t-block">
+<span class="t-comment">(: How did the catalog evolve across all revisions? :)</span>
+<span class="t-prompt">sirix&gt;</span> <span class="t-kw">for</span> <span class="t-var">$v</span> <span class="t-kw">in</span> <span class="t-fn">jn:all-times</span>(<span class="t-fn">jn:doc</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>))
+       <span class="t-kw">return</span> {<span class="t-str">"rev"</span>: <span class="t-fn">sdb:revision</span>(<span class="t-var">$v</span>), <span class="t-str">"products"</span>: <span class="t-fn">count</span>(<span class="t-var">$v</span>[])}
+<span class="t-output">=&gt; {"rev":<span class="t-rev">1</span>, "products":2}
+   {"rev":<span class="t-rev">2</span>, "products":2}
+   {"rev":<span class="t-rev">3</span>, "products":3}
+   {"rev":<span class="t-rev">4</span>, "products":2}</span>
+</span><span class="t-block">
+<span class="t-comment">(: What changed between rev 1 and the latest? :)</span>
+<span class="t-prompt">sirix&gt;</span> <span class="t-fn">jn:diff</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>, <span class="t-num">1</span>, <span class="t-num">4</span>)
+<span class="t-output">=&gt; {"diffs": [
+     {"update": {"path":"/[0]/price", "value":<span class="t-rev">899</span>}},
+     {"insert": {"path":"/[1]", "data":"{\"name\":\"Tablet\"}"}},
+     {"delete": {"path":"/[1]"}}
+   ]}</span></span><span class="t-cursor">&#9608;</span></pre>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section class="wrapper style3 container special">
-	<header><h2>Compact snapshots / efficient time-travel queries</h2></header>
-	<div class="img_container">
-		<p><img src="images/evolution-of-state.webp" style="margin: 3em 3em; width: 70%"/></p>
-	</div>
-	<p>The following time-travel query to be executed on our binary JSON representation of <a href="https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-core/src/test/resources/json/twitter.json">Twitter sample data</a> gives an initial impression of what's possible:</p>
-
-<div class="language-xquery highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span><span class="w"> </span><span class="nv">$doc</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">jn:open</span><span class="p">(</span><span class="s">'database'</span><span class="o">,</span><span class="s">'resource'</span><span class="o">,</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">'2019-04-13T16:24:27Z'</span><span class="p">))</span><span class="w">
-</span><span class="k">let</span><span class="w"> </span><span class="nv">$statuses</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nv">$doc</span><span class="o">.</span><span class="nt">statuses</span><span class="w">
-</span><span class="k">let</span><span class="w"> </span><span class="nv">$foundStatus</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">$status</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$statuses</span><span class="w">
-  </span><span class="k">let</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="nv">$status</span><span class="o">.</span><span class="nt">created_at</span><span class="p">)</span><span class="w">
-  </span><span class="k">where</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nf">xs:dateTime</span><span class="p">(</span><span class="s">"2018-02-01T00:00:00"</span><span class="p">)</span><span class="w">
-        </span><span class="ow">and</span><span class="w"> </span><span class="nf">not</span><span class="p">(</span><span class="nf">exists</span><span class="p">(</span><span class="nf">jn:previous</span><span class="p">(</span><span class="nv">$status</span><span class="p">)))</span><span class="w">
-  </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="nv">$dateTimeCreated</span><span class="w">
-  </span><span class="k">return</span><span class="w"> </span><span class="nv">$status</span><span class="w">
-</span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="s">"revision"</span><span class="o">:</span><span class="w"> </span><span class="nf">sdb:revision</span><span class="p">(</span><span class="nv">$foundStatus</span><span class="p">)</span><span class="o">,</span><span class="w"> </span><span class="nv">$foundStatus</span><span class="p">{</span><span class="k">text</span><span class="p">}}</span><span class="w">
-</span></code></pre></div></div>
-
-	<p>The query opens a database and therein a resource in a specific revision based on a timestamp (<code class="highlighter-rouge">2019–04–13T16:24:27Z</code>) and searches for all statuses, which have a <code class="highlighter-rouge">created_at</code> timestamp, that has to be greater than the 1st of February in 2018 and did not exist in the previous revision. <code class="highlighter-rouge">.</code> is a dereferencing operator used to dereference keys in JSON objects. Array values can be accessed as shown or through specifying an index, starting with zero: <code class="highlighter-rouge">array[[0]]</code>, for instance, specifies the first value of the array.</p>
+<!-- Section: Quickstart -->
+<section class="section fade-in">
+  <div class="container">
+    <div class="code-showcase">
+      <h2 class="section-heading">Get running in seconds</h2>
+      <p class="section-subheading">Pull the Docker image and start querying your data with full revision history.</p>
+      <div class="code-block typing-terminal">
+        <div class="code-block__header"><span class="code-block__lang">Bash</span></div>
+        <pre><code><span class="sh-fn">docker</span> run -t -i -p 9443:9443 sirixdb/sirix</code></pre>
+      </div>
+      <div class="section-cta" style="margin-top: 2rem;">
+        <a href="/docs/index.html" class="btn btn--primary">Read the Documentation</a>
+        <a href="https://github.com/sirixdb/sirix" class="btn btn--outline" style="margin-left: 1rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+  </div>
 </section>
 
-				
-				<!-- Two -->
-					<section class="wrapper style1 container special" id="more">
-						<div class="row">
-							<div class="col-4 col-12-narrower">
-							
-								<section>
-									<span class="icon solid featured fa-check"></span>
-									<header>
-										<h3>Lightweight Buffer Manager</h3>
-									</header>
-									<p>Page-fragments are referenced using in-memory references and a lightweight buffer manager, which can reclaim the used heap space, once a page has to be evicted.</p>
-								</section>
-							</div>
-							<div class="col-4 col-12-narrower">
-							
-								<section>
-									<span class="icon solid featured fa-check"></span>
-									<header>
-										<h3>No Write-Ahead-Log (WAL) needed</h3>
-									</header>
-									<p>An UberPage is the main entry point into a resource. <strong>It is swapped atomically as the last action of a commit</strong>.</p>
-								</section>
-							
-							</div>
-							<div class="col-4 col-12-narrower">
-							
-								<section>
-									<span class="icon solid featured fa-check"></span>
-									<header>
-										<h3>Persistent Tree-Structure With Variable Sized Pages</h3>
-									</header>
-									<p>SirixDB uses <strong> variable-sized page-fragments</strong>, stored in a huge <strong>persistent and durable tree-structure</strong> for indexing revisions as well as data and the nodes of secondary indexes.</p>
-								</section>
-							
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-4 col-12-narrower">
-							
-								<section>
-									<span class="icon solid featured fa-check"></span>
-									<header>
-										<h3>Versioning</h3>
-									</header>
-									<p>SirixDB versions data and index structures on a per revision and record level. As such, versioning takes place at a fine-granular level. Furthermore, through a novel versioning algorithm called <em>sliding snapshot</em>, it can avoid write and read peaks.</p>
-								</section>
-							
-							</div>
-							<div class="col-4 col-12-narrower">
-							
-								<section>
-									<span class="icon solid featured fa-check"></span>
-									<header>
-										<h3>Time travel queries</h3>
-									</header>
-									<p>SirixDB allows sophisticated time travel queries such that you can analyze the history of your data or retrieve the differences efficiently.</p>
-								</section>
-							
-							</div>
-							<div class="col-4 col-12-narrower">
-							
-								<section>
-									<span class="icon solid featured fa-check"></span>
-									<header>
-										<h3>XML / JSON</h3>
-									</header>
-									<p>You decide how your data looks like and which format fits best. SirixDB currently supports both the import of XML as well as JSON data.</p>
-								</section>
-							
-							</div>
-						</div>
-					</section>
-					
-				<!-- Three -->
-					<section class="wrapper style3 container special">
-					
-						<header class="major">
-							<h2>Powerful APIs</h2>
-						</header>
-						
-						<div class="row">
-							<div class="col-6 col-12-narrower">
-							
-								<section>
-									<a href="docs/rest-api.html" class="image featured"><img src="images/shutterstock_552791071-scaled.webp" alt="REST" /></a>
-									<header>
-										<h3>REST</h3>
-									</header>
-									<p>SirixDB provides an asynchronous, RESTful API, which is non-blocking. It is built with <a href="https://vertx.io">Vert.x</a>, <a href="https://kotlinlang.org">Kotlin</a> (coroutines) and <a href="https://www.keycloak.org">Keycloak</a>.</p>
-								</section>
+<!-- Section 1: Benefit Pillars -->
+<section class="section fade-in">
+  <div class="container">
+    <h2 class="section-heading">Why SirixDB?</h2>
+    <p class="section-subheading">Most databases remember only the present. SirixDB remembers everything &mdash; what changed, when it changed, and when you knew about it.</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-card__number">01</div>
+        <h3>Bitemporal Versioning</h3>
+        <p>Every revision preserved, every correction tracked. Two time axes &mdash; <em>system time</em> and <em>valid time</em> &mdash; without duplicating data.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__number">02</div>
+        <h3>Zero-Overhead History</h3>
+        <p>A novel <em>sliding snapshot</em> algorithm eliminates write peaks and storage bloat. Only changed page-fragments are stored per revision.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__number">03</div>
+        <h3>JSON &amp; XML Native</h3>
+        <p>First-class document store for semi-structured data with temporal XPath axes and JSONiq for navigating in both space and time.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__number">04</div>
+        <h3>No Write-Ahead Log</h3>
+        <p>An UberPage is swapped atomically as the last action of a commit. No WAL, no background compaction &mdash; just efficient, append-only evolution.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__number">05</div>
+        <h3>Efficient Diffing</h3>
+        <p>Compute diffs between any two revisions using stable node IDs and hashes. Import changes via a fast matching edit-script algorithm.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__number">06</div>
+        <h3>Flash-Drive Optimized</h3>
+        <p>Designed from scratch for modern SSDs. Log-structured, append-only architecture exploits sequential write patterns and zero seek times.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-							</div>
-							<div class="col-6 col-12-narrower">
-							
-								<section>
-									<a href="docs/jsoniq-api.html" class="image featured"><img src="images/shutterstock_667831573-scaled.webp" alt="XQuery / JSONiq" /></a>
-									<header>
-										<h3>XQuery / JSONiq</h3>
-									</header>
-									<p>Several extensions to an XQuery-processor called <a href="http://brackit.org">Brackit</a> are available. SirixDB, for instance, supports navigation via additional temporal XPath axes or XQuery functions for JSON data to navigate not only in space but also in time. Furthermore, SirixDB offers several additional precompiled functions to simplify the analysis of your temporal data. The API also provides a very convenient way to interact with SirixDB. Think of it as an in-memory representation of a DOM.</p>
-								</section>
-								
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-6 col-12-narrower">
-							
-								<section>
-									<a href="docs/transactional-cursor-api.html" class="image featured"><img src="images/shutterstock_534465157-scaled.webp" alt="Transactional cursor API" /></a>
-									<header>
-										<h3>Transactional cursor API</h3>
-									</header>
-									<p>SirixDB provides a transactional low-level, cursor-based API which is very powerful. SirixDB not only provides standard XPath axes. It also provides additional temporal enhancements to navigate in time. Furthermore, several other axes, for instance, a LevelOrder axis, a PostorderAxis, and a DescendantAxis, which can skip whole subtrees, exists. Additionally, SirixDB provides several filters, a NestedAxis, a PredicateAxis and much more.</p>
-								</section>
+<!-- Section 2: Bitemporal Query Showcase -->
+<section class="section section--alt fade-in">
+  <div class="container">
+    <h2 class="section-heading">Query across time</h2>
+    <p class="section-subheading">Navigate revision history, find corrections, and diff any two snapshots &mdash; all with a single query.</p>
+    <div class="query-showcase" id="query-showcase">
+      <div class="query-showcase__tabs">
+        <button class="query-showcase__tab active">Time Travel</button>
+        <button class="query-showcase__tab">Track Changes</button>
+        <button class="query-showcase__tab">Revision History</button>
+        <button class="query-showcase__tab">Diff</button>
+      </div>
+      <div class="query-showcase__panels">
+        <div class="query-showcase__panel active">
+          <div class="code-block">
+            <div class="code-block__header"><span class="code-block__lang">JSONiq</span></div>
+            <pre><code><span class="sh-comment">(: Open a resource at a specific point in time :)</span>
+<span class="sh-kw">let</span> <span class="sh-var">$doc</span> <span class="sh-op">:=</span> <span class="sh-fn">jn:open</span>(<span class="sh-str">'database'</span>, <span class="sh-str">'resource'</span>,
+                    <span class="sh-fn">xs:dateTime</span>(<span class="sh-str">'2024-01-15T10:30:00Z'</span>))
+<span class="sh-kw">for</span> <span class="sh-var">$user</span> <span class="sh-kw">in</span> <span class="sh-var">$doc</span>.<span class="sh-prop">users</span>[]
+<span class="sh-kw">where</span> <span class="sh-var">$user</span>.<span class="sh-prop">age</span> <span class="sh-op">&gt;</span> <span class="sh-num">25</span>
+<span class="sh-kw">return</span> <span class="sh-var">$user</span></code></pre>
+          </div>
+          <p class="query-showcase__desc">Open any resource at an exact timestamp and query it as it existed at that moment. System time is tracked automatically on every commit.</p>
+        </div>
+        <div class="query-showcase__panel">
+          <div class="code-block">
+            <div class="code-block__header"><span class="code-block__lang">JSONiq</span></div>
+            <pre><code><span class="sh-comment">(: Find items added in this revision :)</span>
+<span class="sh-kw">for</span> <span class="sh-var">$status</span> <span class="sh-kw">in</span> <span class="sh-fn">jn:open</span>(<span class="sh-str">'db'</span>,<span class="sh-str">'feed'</span>).<span class="sh-prop">statuses</span>
+<span class="sh-kw">where</span> <span class="sh-fn">not</span>(<span class="sh-fn">exists</span>(<span class="sh-fn">jn:previous</span>(<span class="sh-var">$status</span>)))
+<span class="sh-kw">return</span> {
+  <span class="sh-str">"revision"</span>: <span class="sh-fn">sdb:revision</span>(<span class="sh-var">$status</span>),
+  <span class="sh-var">$status</span>{<span class="sh-prop">text</span>, <span class="sh-prop">created_at</span>}
+}</code></pre>
+          </div>
+          <p class="query-showcase__desc">Use <code>jn:previous()</code> to detect new items &mdash; nodes that didn't exist in the prior revision. Combine with <code>jn:next()</code>, <code>jn:future()</code>, and <code>jn:past()</code> to navigate freely.</p>
+        </div>
+        <div class="query-showcase__panel">
+          <div class="code-block">
+            <div class="code-block__header"><span class="code-block__lang">JSONiq</span></div>
+            <pre><code><span class="sh-comment">(: Track a node's evolution across all revisions :)</span>
+<span class="sh-kw">let</span> <span class="sh-var">$node</span> <span class="sh-op">:=</span> <span class="sh-fn">sdb:select-item</span>(<span class="sh-fn">jn:doc</span>(<span class="sh-str">'database'</span>,<span class="sh-str">'resource'</span>), <span class="sh-num">1</span>)
+<span class="sh-kw">for</span> <span class="sh-var">$version</span> <span class="sh-kw">in</span> <span class="sh-fn">sdb:item-history</span>(<span class="sh-var">$node</span>)
+<span class="sh-kw">return</span> {
+  <span class="sh-str">"revision"</span>:  <span class="sh-fn">sdb:revision</span>(<span class="sh-var">$version</span>),
+  <span class="sh-str">"timestamp"</span>: <span class="sh-fn">sdb:timestamp</span>(<span class="sh-var">$version</span>),
+  <span class="sh-str">"value"</span>:     <span class="sh-var">$version</span>
+}</code></pre>
+          </div>
+          <p class="query-showcase__desc">Track how a specific node evolves over time. <code>sdb:select-item()</code> finds a node by its stable key; <code>sdb:item-history()</code> returns it from every revision in which it changed.</p>
+        </div>
+        <div class="query-showcase__panel">
+          <div class="code-block">
+            <div class="code-block__header"><span class="code-block__lang">JSONiq</span></div>
+            <pre><code><span class="sh-comment">(: Compute differences between any two revisions :)</span>
+<span class="sh-fn">sdb:diff</span>(<span class="sh-str">'database'</span>, <span class="sh-str">'resource'</span>, <span class="sh-num">1</span>, <span class="sh-num">5</span>)
 
-							</div>
-							<div class="col-6 col-12-narrower">
-							
-								<section>
-									<a href="#" class="image featured"><img src="images/shutterstock_709259401-scaled.webp" alt="Diffing-API" /></a>
-									<header>
-										<h3>Diffing-API</h3>
-									</header>
-									<p>SirixDB provides a way to import several revisions of an XML document with the help of a diffing algorithm called Fast Matching Simple EditScript. With the help of this diffing-algorithm, SirixDB can store the encountered differences in the tree structures instead of storing the whole revision.</p>
-<p>Once you've stored several revisions in SirixDB, either through the import based on the diffing algorithm or simply through working with SirixDB in the first place, you can quickly compute diffs between any two revisions. SirixDB makes use of its stable node identifiers and optionally stored hashes. Each time the hashes of two nodes are equal, the whole subtrees in both revisions can be skipped while traversing both tree structures.</p>
-								</section>
+<span class="sh-comment">(: Returns an XQuery Update statement:
+   insert nodes {"name":"Ada"} into sdb:select-item($doc, 23)
+   replace value of node sdb:select-item($doc, 7) with "updated"
+   delete node sdb:select-item($doc, 14)  :)</span></code></pre>
+          </div>
+          <p class="query-showcase__desc">Get a precise edit script between any two revisions. SirixDB uses stable node IDs and hashes to compute structural diffs efficiently.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-							</div>
-						</div>
+<!-- Section 3: Bitemporality Explainer -->
+<section class="section section--alt fade-in">
+  <div class="container">
+    <div class="feature-row">
+      <div class="feature-row__content">
+        <div class="feature-row__number">Bitemporality</div>
+        <h3>What did you know, and when?</h3>
+        <p>A customer address was entered on <strong>March 5</strong>. On <strong>April 10</strong>, you discover it was wrong since <strong>February 1</strong>. SirixDB lets you correct it while preserving what you believed on March 5.</p>
+        <p>Two independent time axes make this possible:</p>
+        <div class="feature-row__icon-grid" style="margin-top: 1rem;">
+          <div class="feature-row__icon-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span><strong>System time</strong> &mdash; when SirixDB recorded it</span>
+          </div>
+          <div class="feature-row__icon-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span><strong>Valid time</strong> &mdash; when it actually happened</span>
+          </div>
+        </div>
+      </div>
+      <div class="feature-row__visual">
+        <svg viewBox="0 0 560 390" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;" role="img" aria-label="Bitemporality diagram showing two time axes: system time (when recorded) and valid time (when true in the real world)">
+          <!-- Background grid -->
+          <line x1="100" y1="310" x2="100" y2="40" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
+          <line x1="210" y1="310" x2="210" y2="40" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
+          <line x1="350" y1="310" x2="350" y2="40" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
+          <line x1="80" y1="100" x2="510" y2="100" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
+          <line x1="80" y1="190" x2="510" y2="190" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
+          <line x1="80" y1="255" x2="510" y2="255" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
+          <!-- System Time axis (horizontal) -->
+          <line x1="80" y1="310" x2="520" y2="310" stroke="#6b7280" stroke-width="1.5"/>
+          <polygon points="520,310 510,305 510,315" fill="#6b7280"/>
+          <text x="300" y="370" text-anchor="middle" fill="#9ca3af" font-size="13" font-family="Inter,sans-serif" font-weight="500">System Time (when recorded)</text>
+          <!-- Valid Time axis (vertical) -->
+          <line x1="80" y1="310" x2="80" y2="30" stroke="#6b7280" stroke-width="1.5"/>
+          <polygon points="80,30 75,40 85,40" fill="#6b7280"/>
+          <text x="18" y="170" text-anchor="middle" fill="#9ca3af" font-size="13" font-family="Inter,sans-serif" font-weight="500" transform="rotate(-90 18 170)">Valid Time (when true)</text>
+          <!-- Date tick marks + labels on System Time axis -->
+          <line x1="210" y1="305" x2="210" y2="315" stroke="#42B6F0" stroke-width="1.5"/>
+          <text x="210" y="332" text-anchor="middle" fill="#42B6F0" font-size="12" font-family="JetBrains Mono,monospace" font-weight="500">Mar 5</text>
+          <line x1="350" y1="305" x2="350" y2="315" stroke="#F47B20" stroke-width="1.5"/>
+          <text x="350" y="332" text-anchor="middle" fill="#F47B20" font-size="12" font-family="JetBrains Mono,monospace" font-weight="500">Apr 10</text>
+          <!-- Date tick marks + labels on Valid Time axis -->
+          <line x1="75" y1="255" x2="85" y2="255" stroke="#9ca3af" stroke-width="1.5"/>
+          <text x="68" y="259" text-anchor="end" fill="#9ca3af" font-size="12" font-family="JetBrains Mono,monospace">Feb 1</text>
+          <line x1="75" y1="190" x2="85" y2="190" stroke="#9ca3af" stroke-width="1.5"/>
+          <text x="68" y="194" text-anchor="end" fill="#9ca3af" font-size="12" font-family="JetBrains Mono,monospace">Mar 5</text>
+          <!-- Original record: entered Mar 5, valid from Mar 5 -->
+          <rect x="190" y="90" width="150" height="68" rx="8" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="2"/>
+          <text x="265" y="120" text-anchor="middle" fill="#42B6F0" font-size="14" font-family="Inter,sans-serif" font-weight="600">Address v1</text>
+          <text x="265" y="143" text-anchor="middle" fill="#8b949e" font-size="11" font-family="Inter,sans-serif">"123 Old St"</text>
+          <!-- Correction: entered Apr 10, valid from Feb 1 -->
+          <rect x="330" y="185" width="160" height="68" rx="8" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="2"/>
+          <text x="410" y="215" text-anchor="middle" fill="#F47B20" font-size="14" font-family="Inter,sans-serif" font-weight="600">Address v2</text>
+          <text x="410" y="238" text-anchor="middle" fill="#8b949e" font-size="11" font-family="Inter,sans-serif">"456 New Ave" &mdash; corrected</text>
+          <!-- Dashed projection lines -->
+          <line x1="210" y1="310" x2="210" y2="162" stroke="#42B6F0" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
+          <line x1="350" y1="310" x2="350" y2="255" stroke="#F47B20" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
+          <line x1="80" y1="190" x2="210" y2="190" stroke="#42B6F0" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
+          <line x1="80" y1="255" x2="330" y2="255" stroke="#F47B20" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
+          <!-- Curved arrow from v1 to v2 -->
+          <path d="M330 155 C360 140, 370 165, 345 190" stroke="#F47B20" stroke-width="1.5" stroke-dasharray="5 3" fill="none" opacity="0.7"/>
+          <polygon points="345,190 338,181 349,183" fill="#F47B20" opacity="0.7"/>
+          <!-- Small dot markers at intersections -->
+          <circle cx="210" cy="190" r="4" fill="#42B6F0" opacity="0.6"/>
+          <circle cx="350" cy="255" r="4" fill="#F47B20" opacity="0.6"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
 
-						<footer class="major">
-							<ul class="buttons">
-								<li><a href="/docs/index.html" class="button">See More</a></li>
-							</ul>
-						</footer>
-					
-					</section>
-					
-			</article>
+<!-- Section 3: Web GUI -->
+<section class="section fade-in">
+  <div class="container">
+    <h2 class="section-heading">Explore your data visually</h2>
+    <p class="section-subheading">The SirixDB Web GUI lets you browse databases, run queries, visualize document structure, and travel through revision history &mdash; all from your browser.</p>
+    <div class="gui-showcase" id="gui-showcase">
+      <div class="gui-showcase__tabs">
+        <button class="gui-showcase__tab active" data-slide="0">Dashboard</button>
+        <button class="gui-showcase__tab" data-slide="1">Explorer</button>
+        <button class="gui-showcase__tab" data-slide="2">Sunburst</button>
+        <button class="gui-showcase__tab" data-slide="3">Treemap</button>
+        <button class="gui-showcase__tab" data-slide="4">Diff View</button>
+      </div>
+      <div class="gui-showcase__viewport">
+        <div class="gui-showcase__slide active">
+          <img src="/images/gui-dashboard.png" alt="SirixDB Web GUI Dashboard" loading="lazy">
+        </div>
+        <div class="gui-showcase__slide">
+          <img src="/images/gui-explorer.png" alt="SirixDB Web GUI Database Explorer" loading="lazy">
+        </div>
+        <div class="gui-showcase__slide">
+          <img src="/images/gui-sunburst.png" alt="SirixDB Web GUI Sunburst Visualization" loading="lazy">
+        </div>
+        <div class="gui-showcase__slide">
+          <img src="/images/gui-treemap.png" alt="SirixDB Web GUI Treemap" loading="lazy">
+        </div>
+        <div class="gui-showcase__slide">
+          <img src="/images/gui-diff-view.png" alt="SirixDB Web GUI Diff View comparing revisions" loading="lazy">
+        </div>
+      </div>
+      <div class="gui-showcase__captions">
+        <div class="gui-showcase__caption active">
+          <h4>Dashboard</h4>
+          <p>Overview of your databases, resources, and tracked revisions. Create new databases or jump straight into the query editor.</p>
+        </div>
+        <div class="gui-showcase__caption">
+          <h4>Database Explorer</h4>
+          <p>Navigate JSON and XML document trees with expandable nodes. Each node shows its stable ID, type, and value at a glance.</p>
+        </div>
+        <div class="gui-showcase__caption">
+          <h4>Sunburst Visualization</h4>
+          <p>Hierarchical sunburst chart for exploring document structure. Click to zoom into subtrees, adjust depth and minimum arc size.</p>
+        </div>
+        <div class="gui-showcase__caption">
+          <h4>Treemap View</h4>
+          <p>Space-filling treemap visualization shows document structure at a glance. Hover for details, click to drill into subtrees.</p>
+        </div>
+        <div class="gui-showcase__caption">
+          <h4>Revision Diff</h4>
+          <p>Compare any two revisions side by side. See inserts, updates, and deletes at a glance with Explorer, Tree, and List diff views.</p>
+        </div>
+      </div>
+    </div>
+    <div class="section-cta">
+      <a href="https://github.com/sirixdb/sirixdb-web-gui" class="btn btn--outline">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View Web GUI on GitHub
+      </a>
+    </div>
+  </div>
+</section>
 
-		<!-- CTA -->
-			<section id="cta">
-			
-				<header>
-					<h2>Ready for using <strong>SirixDB</strong>?</h2>
-					<p>Give it a try and let us know your thoughts.</p>
-				</header>
-				<footer>
-					<ul class="buttons">
-						<li><a href="/docs/index.html" class="button special">First steps</a></li>
-						<li><a href="https://github.com/sirixdb/sirix" class="button">Fork me on Github</a></li>
-					</ul>
-				</footer>
-			
-			</section>
+<!-- Section 4: How It Works (alternating rows) -->
+<section class="section section--alt fade-in">
+  <div class="container">
+    <h2 class="section-heading">How it works</h2>
+    <p class="section-subheading">SirixDB stores data in an append-only, persistent tree structure. Revisions share unchanged pages via copy-on-write &mdash; keeping storage minimal.</p>
+
+    <div class="feature-row">
+      <div class="feature-row__content">
+        <div class="feature-row__number">01. Persistent Data Structure</div>
+        <h3>Lightweight revisions that share unchanged data</h3>
+        <p>Every commit creates an immutable snapshot. New revisions reference unchanged page-fragments from prior versions via copy-on-write pointers &mdash; only modified data is written. This eliminates the need for full copies or expensive compaction.</p>
+      </div>
+      <div class="feature-row__visual">
+        <svg viewBox="0 0 540 220" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:540px;" role="img" aria-label="Persistent data structure: revisions share unchanged pages via copy-on-write">
+          <!-- Legend -->
+          <rect x="20" y="8" width="12" height="12" rx="2" fill="#42B6F0" opacity="0.9"/>
+          <text x="38" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">New page</text>
+          <rect x="110" y="8" width="12" height="12" rx="2" fill="#F47B20" opacity="0.9"/>
+          <text x="128" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">Modified page</text>
+          <line x1="230" y1="14" x2="270" y2="14" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>
+          <text x="278" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">Shared (copy-on-write pointer)</text>
+
+          <!-- Timeline axis -->
+          <line x1="60" y1="175" x2="510" y2="175" stroke="#6b7280" stroke-width="1.5"/>
+          <polygon points="510,175 500,170 500,180" fill="#6b7280"/>
+          <text x="280" y="210" text-anchor="middle" fill="#9ca3af" font-size="12" font-family="Inter,sans-serif" font-weight="500">Time</text>
+
+          <!-- Revision labels -->
+          <line x1="120" y1="170" x2="120" y2="180" stroke="#9ca3af" stroke-width="1.5"/>
+          <text x="120" y="195" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 1</text>
+          <line x1="280" y1="170" x2="280" y2="180" stroke="#9ca3af" stroke-width="1.5"/>
+          <text x="280" y="195" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 2</text>
+          <line x1="440" y1="170" x2="440" y2="180" stroke="#9ca3af" stroke-width="1.5"/>
+          <text x="440" y="195" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 3</text>
+
+          <!-- ======================== Rev 1: All new pages ======================== -->
+          <!-- root (new) -->
+          <rect x="100" y="42" width="40" height="22" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+          <text x="120" y="57" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">root</text>
+          <line x1="110" y1="64" x2="96" y2="88" stroke="#42B6F0" stroke-width="1.2"/>
+          <line x1="130" y1="64" x2="144" y2="88" stroke="#42B6F0" stroke-width="1.2"/>
+          <!-- A (new) -->
+          <rect x="78" y="90" width="36" height="20" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+          <text x="96" y="104" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A</text>
+          <!-- B (new) -->
+          <rect x="126" y="90" width="36" height="20" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+          <text x="144" y="104" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">B</text>
+          <!-- a1 (new) -->
+          <line x1="96" y1="110" x2="96" y2="130" stroke="#42B6F0" stroke-width="1"/>
+          <rect x="82" y="132" width="28" height="16" rx="2" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+          <text x="96" y="143" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">a1</text>
+          <!-- b1 (new) -->
+          <line x1="144" y1="110" x2="144" y2="130" stroke="#42B6F0" stroke-width="1"/>
+          <rect x="130" y="132" width="28" height="16" rx="2" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+          <text x="144" y="143" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">b1</text>
+          <line x1="120" y1="155" x2="120" y2="175" stroke="#9ca3af" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.15"/>
+
+          <!-- ======================== Rev 2: modify B (b1→b1'), share A ======================== -->
+          <!-- root (new) -->
+          <rect x="260" y="42" width="40" height="22" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+          <text x="280" y="57" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">root</text>
+          <!-- shared pointer → A (unchanged) -->
+          <line x1="270" y1="64" x2="96" y2="100" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+          <!-- branch to B' -->
+          <line x1="290" y1="64" x2="304" y2="88" stroke="#42B6F0" stroke-width="1.2"/>
+          <!-- B' (modified) -->
+          <rect x="286" y="90" width="36" height="20" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1.5"/>
+          <text x="304" y="104" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+          <!-- b1' (modified leaf) -->
+          <line x1="304" y1="110" x2="304" y2="130" stroke="#F47B20" stroke-width="1"/>
+          <rect x="290" y="132" width="28" height="16" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1"/>
+          <text x="304" y="143" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">b1'</text>
+          <line x1="280" y1="155" x2="280" y2="175" stroke="#9ca3af" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.15"/>
+
+          <!-- ======================== Rev 3: modify A (add a2), share B' ======================== -->
+          <!-- root (new) -->
+          <rect x="420" y="42" width="40" height="22" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+          <text x="440" y="57" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">root</text>
+          <!-- branch to A' -->
+          <line x1="430" y1="64" x2="424" y2="88" stroke="#42B6F0" stroke-width="1.2"/>
+          <!-- shared pointer → B' (unchanged) -->
+          <line x1="450" y1="64" x2="304" y2="100" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+          <!-- A' (modified — new child added) -->
+          <rect x="406" y="90" width="36" height="20" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1.5"/>
+          <text x="424" y="104" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">A'</text>
+          <!-- shared pointer → a1 (unchanged) -->
+          <line x1="418" y1="110" x2="96" y2="140" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+          <!-- a2 (added leaf) -->
+          <line x1="430" y1="110" x2="440" y2="130" stroke="#F47B20" stroke-width="1"/>
+          <rect x="426" y="132" width="28" height="16" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1"/>
+          <text x="440" y="143" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">a2</text>
+          <line x1="440" y1="155" x2="440" y2="175" stroke="#9ca3af" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.15"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="feature-row feature-row--reverse">
+      <div class="feature-row__content">
+        <div class="feature-row__number">02. Persistent Tree</div>
+        <h3>Variable-sized page-fragments in a durable tree</h3>
+        <p>Data, indexes, and revision metadata are stored in a persistent tree structure. Variable-sized page-fragments minimize storage while enabling reconstruction of any revision in linear time. The tree is checksummed for integrity, inspired by ZFS.</p>
+      </div>
+      <div class="feature-row__visual">
+        <div class="feature-row__icon-grid">
+          <div class="feature-row__icon-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Time Travel</span>
+          </div>
+          <div class="feature-row__icon-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <span>High Performance</span>
+          </div>
+          <div class="feature-row__icon-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>ACID Compliant</span>
+          </div>
+          <div class="feature-row__icon-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>XML &amp; JSON</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 5: Code Example -->
+<section class="section fade-in">
+  <div class="container">
+    <div class="code-showcase">
+      <h2 class="section-heading">Time-travel queries with JSONiq</h2>
+      <p class="section-subheading">Open a database at a specific point in time and query across revisions. Find data that was added, modified, or corrected &mdash; all in a single query.</p>
+      <div class="code-block">
+        <div class="code-block__header"><span class="code-block__lang">JSONiq</span></div>
+        <pre><code><span class="sh-kw">let</span> <span class="sh-var">$doc</span> <span class="sh-op">:=</span> <span class="sh-fn">jn:open</span>(<span class="sh-str">'database'</span>,<span class="sh-str">'resource'</span>, <span class="sh-fn">xs:dateTime</span>(<span class="sh-str">'2019-04-13T16:24:27Z'</span>))
+<span class="sh-kw">let</span> <span class="sh-var">$statuses</span> <span class="sh-op">:=</span> <span class="sh-var">$doc</span>.<span class="sh-prop">statuses</span>
+<span class="sh-kw">let</span> <span class="sh-var">$foundStatus</span> <span class="sh-op">:=</span> <span class="sh-kw">for</span> <span class="sh-var">$status</span> <span class="sh-kw">in</span> <span class="sh-var">$statuses</span>
+  <span class="sh-kw">let</span> <span class="sh-var">$dateTimeCreated</span> <span class="sh-op">:=</span> <span class="sh-fn">xs:dateTime</span>(<span class="sh-var">$status</span>.<span class="sh-prop">created_at</span>)
+  <span class="sh-kw">where</span> <span class="sh-var">$dateTimeCreated</span> <span class="sh-op">&gt;</span> <span class="sh-fn">xs:dateTime</span>(<span class="sh-str">"2018-02-01T00:00:00"</span>)
+        <span class="sh-kw">and</span> <span class="sh-fn">not</span>(<span class="sh-fn">exists</span>(<span class="sh-fn">jn:previous</span>(<span class="sh-var">$status</span>)))
+  <span class="sh-kw">order by</span> <span class="sh-var">$dateTimeCreated</span>
+  <span class="sh-kw">return</span> <span class="sh-var">$status</span>
+<span class="sh-kw">return</span> {<span class="sh-str">"revision"</span>: <span class="sh-fn">sdb:revision</span>(<span class="sh-var">$foundStatus</span>), <span class="sh-var">$foundStatus</span>{<span class="sh-prop">text</span>}}</code></pre>
+      </div>
+      <p class="code-showcase__caption">This query opens a resource at a specific revision timestamp and finds statuses created after Feb 1, 2018 that did not exist in the previous revision. The <code>jn:previous()</code> function navigates the revision history; <code>sdb:revision()</code> returns the revision number.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section 7: APIs -->
+<section class="section fade-in">
+  <div class="container">
+    <h2 class="section-heading">Powerful APIs</h2>
+    <p class="section-subheading">Multiple ways to interact with your temporal data.</p>
+    <div class="api-grid">
+      <a href="/docs/rest-api.html" class="api-card">
+        <div class="api-card__illustration">
+          <svg viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="60" y="50" width="60" height="80" rx="8" stroke="#F47B20" stroke-width="1.5" fill="rgba(244,123,32,0.06)"/>
+            <rect x="170" y="30" width="60" height="120" rx="8" stroke="#42B6F0" stroke-width="1.5" fill="rgba(66,182,240,0.06)"/>
+            <rect x="280" y="50" width="60" height="80" rx="8" stroke="#F47B20" stroke-width="1.5" fill="rgba(244,123,32,0.06)"/>
+            <line x1="120" y1="90" x2="170" y2="90" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="230" y1="90" x2="280" y2="90" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 4"/>
+            <circle cx="90" cy="75" r="4" fill="#F47B20"/>
+            <circle cx="90" cy="90" r="4" fill="#F47B20"/>
+            <circle cx="90" cy="105" r="4" fill="#F47B20"/>
+            <circle cx="200" cy="60" r="5" fill="#42B6F0"/>
+            <circle cx="200" cy="80" r="5" fill="#42B6F0"/>
+            <circle cx="200" cy="100" r="5" fill="#42B6F0"/>
+            <circle cx="200" cy="120" r="5" fill="#42B6F0"/>
+            <circle cx="310" cy="75" r="4" fill="#F47B20"/>
+            <circle cx="310" cy="90" r="4" fill="#F47B20"/>
+            <circle cx="310" cy="105" r="4" fill="#F47B20"/>
+            <text x="200" y="170" text-anchor="middle" fill="#6b7280" font-size="10" font-family="Inter,sans-serif">GET / POST / PUT / DELETE</text>
+          </svg>
+        </div>
+        <div class="api-card__content">
+          <h3>REST API</h3>
+          <p>Asynchronous, non-blocking RESTful API built with Vert.x, Kotlin coroutines, and Keycloak for authentication.</p>
+        </div>
+      </a>
+      <a href="/docs/jsoniq-api.html" class="api-card">
+        <div class="api-card__illustration">
+          <svg viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <text x="80" y="55" fill="#F47B20" font-size="28" font-family="JetBrains Mono,monospace" font-weight="600">{</text>
+            <text x="110" y="75" fill="#42B6F0" font-size="12" font-family="JetBrains Mono,monospace">let $doc :=</text>
+            <text x="110" y="95" fill="#9ca3af" font-size="12" font-family="JetBrains Mono,monospace">jn:open(</text>
+            <text x="110" y="115" fill="#e8e6e3" font-size="12" font-family="JetBrains Mono,monospace">'db','res')</text>
+            <text x="110" y="140" fill="#42B6F0" font-size="12" font-family="JetBrains Mono,monospace">return $doc</text>
+            <text x="310" y="140" fill="#F47B20" font-size="28" font-family="JetBrains Mono,monospace" font-weight="600">}</text>
+            <rect x="250" y="40" width="110" height="30" rx="6" stroke="#42B6F0" stroke-width="1" fill="rgba(66,182,240,0.06)"/>
+            <text x="305" y="60" text-anchor="middle" fill="#42B6F0" font-size="11" font-family="Inter,sans-serif">XPath axes</text>
+            <rect x="250" y="80" width="110" height="30" rx="6" stroke="#F47B20" stroke-width="1" fill="rgba(244,123,32,0.06)"/>
+            <text x="305" y="100" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif">Time travel</text>
+          </svg>
+        </div>
+        <div class="api-card__content">
+          <h3>XQuery / JSONiq</h3>
+          <p>Extensions to the Brackit XQuery processor with temporal XPath axes and functions for navigating in both space and time.</p>
+        </div>
+      </a>
+      <a href="/docs/transactional-cursor-api.html" class="api-card">
+        <div class="api-card__illustration">
+          <svg viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="200" cy="50" r="18" stroke="#F47B20" stroke-width="1.5" fill="rgba(244,123,32,0.08)"/>
+            <circle cx="120" cy="110" r="14" stroke="#42B6F0" stroke-width="1.5" fill="rgba(66,182,240,0.06)"/>
+            <circle cx="200" cy="130" r="14" stroke="#42B6F0" stroke-width="1.5" fill="rgba(66,182,240,0.06)"/>
+            <circle cx="280" cy="110" r="14" stroke="#42B6F0" stroke-width="1.5" fill="rgba(66,182,240,0.06)"/>
+            <line x1="190" y1="66" x2="128" y2="98" stroke="#6b7280" stroke-width="1"/>
+            <line x1="200" y1="68" x2="200" y2="116" stroke="#6b7280" stroke-width="1"/>
+            <line x1="210" y1="66" x2="272" y2="98" stroke="#6b7280" stroke-width="1"/>
+            <path d="M155 80 L165 90 L155 100" stroke="#F47B20" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="200" cy="50" r="5" fill="#F47B20"/>
+            <circle cx="120" cy="110" r="4" fill="#42B6F0"/>
+            <circle cx="200" cy="130" r="4" fill="#42B6F0"/>
+            <circle cx="280" cy="110" r="4" fill="#42B6F0"/>
+            <text x="200" y="170" text-anchor="middle" fill="#6b7280" font-size="10" font-family="Inter,sans-serif">traverse &middot; filter &middot; navigate</text>
+          </svg>
+        </div>
+        <div class="api-card__content">
+          <h3>Transactional Cursor API</h3>
+          <p>Low-level, cursor-based API with standard and temporal XPath axes, filters, and powerful traversal capabilities.</p>
+        </div>
+      </a>
+      <a href="/docs/index.html" class="api-card">
+        <div class="api-card__illustration">
+          <svg viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="50" y="30" width="120" height="120" rx="8" stroke="#42B6F0" stroke-width="1.5" fill="rgba(66,182,240,0.04)"/>
+            <rect x="230" y="30" width="120" height="120" rx="8" stroke="#F47B20" stroke-width="1.5" fill="rgba(244,123,32,0.04)"/>
+            <rect x="70" y="50" width="80" height="10" rx="3" fill="rgba(66,182,240,0.2)"/>
+            <rect x="70" y="70" width="60" height="10" rx="3" fill="rgba(66,182,240,0.2)"/>
+            <rect x="70" y="90" width="70" height="10" rx="3" fill="rgba(66,182,240,0.15)"/>
+            <rect x="70" y="110" width="50" height="10" rx="3" fill="rgba(66,182,240,0.15)"/>
+            <rect x="250" y="50" width="80" height="10" rx="3" fill="rgba(244,123,32,0.2)"/>
+            <rect x="250" y="70" width="60" height="10" rx="3" fill="rgba(244,123,32,0.2)"/>
+            <rect x="250" y="90" width="70" height="10" rx="3" fill="rgba(244,123,32,0.25)"/>
+            <rect x="250" y="110" width="50" height="10" rx="3" fill="rgba(244,123,32,0.15)"/>
+            <path d="M185 70 L215 70" stroke="#F47B20" stroke-width="2" stroke-linecap="round"/>
+            <path d="M185 90 L215 90" stroke="#42B6F0" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="200" cy="80" r="10" stroke="#6b7280" stroke-width="1" fill="none"/>
+            <path d="M196 80 L200 84 L204 76" stroke="#F47B20" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="110" y="168" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="Inter,sans-serif">Rev N</text>
+            <text x="290" y="168" text-anchor="middle" fill="#F47B20" font-size="10" font-family="Inter,sans-serif">Rev N+1</text>
+          </svg>
+        </div>
+        <div class="api-card__content">
+          <h3>Diffing API</h3>
+          <p>Import revisions via a Fast Matching Simple EditScript algorithm and compute diffs between any two revisions using stable node IDs and hashes.</p>
+        </div>
+      </a>
+    </div>
+    <div class="section-cta">
+      <a href="/docs/index.html" class="btn btn--outline">View All Documentation</a>
+    </div>
+  </div>
+</section>
+
+<!-- Section 8: Sponsors -->
+<section class="section section--alt fade-in">
+  <div class="container">
+    <h2 class="section-heading">Supported by</h2>
+    <div class="sponsors">
+      <div class="sponsor-card">
+        <img src="https://www.yourkit.com/images/yklogo.png" width="185" height="44" alt="YourKit" loading="lazy">
+        <p>YourKit supports open-source projects with innovative and intelligent tools for monitoring and profiling Java and .NET applications.</p>
+      </div>
+      <div class="sponsor-card">
+        <p>JetBrains supports Open Source with licenses for their products. We love Kotlin.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 9: CTA -->
+<section class="cta fade-in">
+  <div class="container">
+    <h2>Your data has a story.<br>SirixDB remembers every chapter.</h2>
+    <p>Get started with the documentation or contribute on GitHub.</p>
+    <div class="cta__actions">
+      <a href="/docs/index.html" class="btn btn--primary btn--lg">Get Started</a>
+      <a href="https://github.com/sirixdb/sirix" class="btn btn--ghost btn--lg">Fork on GitHub</a>
+    </div>
+  </div>
+</section>

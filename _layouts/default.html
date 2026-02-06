@@ -1,26 +1,12 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
   {% include head.html %}
-
-  <body class="no-sidebar is-preload">
-
+  <body>
     {% include header.html %}
-    <div class="page-content">
-        {{ content }}
-    </div>
+    <main class="page-content">
+      {{ content }}
+    </main>
     {% include footer.html %}
-
-    <!-- Scripts -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/jquery.dropotron.min.js"></script>
-    <script src="js/jquery.scrolly.min.js"></script>
-    <script src="js/jquery.scrollex.min.js"></script>
-    <script src="js/browser.min.js"></script>
-    <script src="js/breakpoints.min.js"></script>
-    <script src="js/util.js"></script>
-    <script src="js/main.js"></script>
-
+    <script src="/js/main.js"></script>
   </body>
-
 </html>

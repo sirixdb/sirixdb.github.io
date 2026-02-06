@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-
   {% include head.html %}
-
-  <body class="no-sidebar is-preload">
-
+  <body class="page-docs">
     {% include header.html %}
-    <div class="page-content">
-        {% include article-head.html %}
-            {{ content }}
-        {% include article-foot.html %}
-    </div>
+    <main class="docs-layout">
+      <aside class="docs-sidebar">
+        <nav class="docs-nav" aria-label="Documentation">
+          <h3 class="docs-nav__title">Documentation</h3>
+          <ul class="docs-nav__list">
+            <li><a href="/docs/index.html" {% if page.url == '/docs/index.html' %}class="active"{% endif %}>Introduction</a></li>
+            <li><a href="/docs/features.html" {% if page.url == '/docs/features.html' %}class="active"{% endif %}>Features</a></li>
+            <li><a href="/docs/concepts.html" {% if page.url == '/docs/concepts.html' %}class="active"{% endif %}>Concepts</a></li>
+            <li><a href="/docs/architecture.html" {% if page.url == '/docs/architecture.html' %}class="active"{% endif %}>Architecture</a></li>
+            <li><a href="/docs/comparison.html" {% if page.url == '/docs/comparison.html' %}class="active"{% endif %}>Comparison</a></li>
+            <li class="docs-nav__group-label">APIs</li>
+            <li><a href="/docs/rest-api.html" {% if page.url == '/docs/rest-api.html' %}class="active"{% endif %}>REST API</a></li>
+            <li><a href="/docs/jsoniq-api.html" {% if page.url == '/docs/jsoniq-api.html' %}class="active"{% endif %}>JSONiq API</a></li>
+            <li><a href="/docs/jsoniq-functions.html" {% if page.url == '/docs/jsoniq-functions.html' %}class="active"{% endif %}>Function Reference</a></li>
+            <li><a href="/docs/dom-alike-api.html" {% if page.url == '/docs/dom-alike-api.html' %}class="active"{% endif %}>DOM-alike API</a></li>
+            <li><a href="/docs/transactional-cursor-api.html" {% if page.url == '/docs/transactional-cursor-api.html' %}class="active"{% endif %}>Cursor API</a></li>
+            <li class="docs-nav__group-label">SDKs</li>
+            <li><a href="/docs/python-sdk.html" {% if page.url == '/docs/python-sdk.html' %}class="active"{% endif %}>Python SDK</a></li>
+            <li class="docs-nav__group-label">Tutorials</li>
+            <li><a href="/docs/jsoniq-tutorial.html" {% if page.url == '/docs/jsoniq-tutorial.html' %}class="active"{% endif %}>JSONiq Tutorial</a></li>
+          </ul>
+        </nav>
+      </aside>
+      <article class="docs-content">
+        {% if page.doctitle %}<h1 class="docs-content__title">{{ page.doctitle }}</h1>{% endif %}
+        {{ content }}
+      </article>
+    </main>
     {% include footer.html %}
-
-    <!-- Scripts -->
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/jquery.dropotron.min.js"></script>
-    <script src="/js/jquery.scrolly.min.js"></script>
-    <script src="/js/jquery.scrollex.min.js"></script>
-    <script src="/js/browser.min.js"></script>
-    <script src="/js/breakpoints.min.js"></script>
-    <script src="/js/util.js"></script>
     <script src="/js/main.js"></script>
-
   </body>
-
 </html>

@@ -1,0 +1,109 @@
+<svg viewBox="0 0 680 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Timeline -->
+  <line x1="40" y1="55" x2="640" y2="55" stroke="#6b7280" stroke-width="1.5"/>
+  <polygon points="645,55 635,50 635,60" fill="#6b7280"/>
+  <text x="340" y="32" text-anchor="middle" fill="#9ca3af" font-size="14" font-family="Inter,system-ui,sans-serif" font-weight="500" letter-spacing="0.1em">TIME</text>
+
+  <!-- Rev ticks -->
+  <line x1="90" y1="43" x2="90" y2="67" stroke="#9ca3af" stroke-width="2.5"/>
+  <text x="90" y="86" text-anchor="middle" fill="#9ca3af" font-size="13" font-family="JetBrains Mono,monospace" font-weight="600">Rev 1</text>
+
+  <line x1="240" y1="43" x2="240" y2="67" stroke="#9ca3af" stroke-width="2.5"/>
+  <text x="240" y="86" text-anchor="middle" fill="#9ca3af" font-size="13" font-family="JetBrains Mono,monospace" font-weight="600">Rev 2</text>
+
+  <line x1="400" y1="43" x2="400" y2="67" stroke="#9ca3af" stroke-width="2.5"/>
+  <text x="400" y="86" text-anchor="middle" fill="#9ca3af" font-size="13" font-family="JetBrains Mono,monospace" font-weight="600">Rev 3</text>
+
+  <line x1="560" y1="43" x2="560" y2="67" stroke="#9ca3af" stroke-width="2.5"/>
+  <text x="560" y="86" text-anchor="middle" fill="#9ca3af" font-size="13" font-family="JetBrains Mono,monospace" font-weight="600">Rev 4</text>
+
+  <!-- ===== Snapshot boxes with page-fragments ===== -->
+
+  <!-- Rev 1: Initial state — all pages are inserted -->
+  <rect x="42" y="105" width="96" height="140" rx="10" fill="rgba(156,163,175,0.08)" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="90" y="122" text-anchor="middle" fill="#9ca3af" font-size="10" font-family="Inter,system-ui,sans-serif" font-weight="600" opacity="0.7">STATE</text>
+  <rect x="54" y="132" width="72" height="14" rx="4" fill="rgba(244,123,32,0.55)"/>
+  <rect x="54" y="152" width="72" height="14" rx="4" fill="rgba(244,123,32,0.55)"/>
+  <rect x="54" y="172" width="50" height="14" rx="4" fill="rgba(244,123,32,0.55)"/>
+  <rect x="54" y="192" width="72" height="14" rx="4" fill="rgba(244,123,32,0.55)"/>
+  <rect x="54" y="212" width="58" height="14" rx="4" fill="rgba(244,123,32,0.55)"/>
+
+  <!-- Arrow: Rev 1 → Rev 2 -->
+  <path d="M146,175 L184,175" stroke="#F47B20" stroke-width="1.5" marker-end="url(#arrowOrange)"/>
+  <text x="165" y="167" text-anchor="middle" fill="#F47B20" font-size="10" font-family="Inter,system-ui,sans-serif" font-weight="600">edit</text>
+
+  <!-- Rev 2: Page 2 changed (orange), rest shared -->
+  <rect x="192" y="105" width="96" height="140" rx="10" fill="rgba(156,163,175,0.08)" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="240" y="122" text-anchor="middle" fill="#9ca3af" font-size="10" font-family="Inter,system-ui,sans-serif" font-weight="600" opacity="0.7">STATE</text>
+  <rect x="204" y="132" width="72" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+  <rect x="204" y="152" width="72" height="14" rx="4" fill="rgba(244,123,32,0.55)"/>
+  <rect x="204" y="172" width="50" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+  <rect x="204" y="192" width="72" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+  <rect x="204" y="212" width="58" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+
+  <!-- Shared-data connection lines: Rev 1 → Rev 2 (pages 1, 3, 4, 5 shared) -->
+  <line x1="126" y1="139" x2="204" y2="139" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+  <line x1="104" y1="179" x2="204" y2="179" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+  <line x1="126" y1="199" x2="204" y2="199" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+  <line x1="112" y1="219" x2="204" y2="219" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+
+  <!-- Arrow: Rev 2 → Rev 3 -->
+  <path d="M296,175 L344,175" stroke="#F47B20" stroke-width="1.5" marker-end="url(#arrowOrange)"/>
+  <text x="320" y="167" text-anchor="middle" fill="#F47B20" font-size="10" font-family="Inter,system-ui,sans-serif" font-weight="600">edit</text>
+
+  <!-- Rev 3: Pages 3+4 changed, rest shared -->
+  <rect x="352" y="105" width="96" height="140" rx="10" fill="rgba(156,163,175,0.08)" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="400" y="122" text-anchor="middle" fill="#9ca3af" font-size="10" font-family="Inter,system-ui,sans-serif" font-weight="600" opacity="0.7">STATE</text>
+  <rect x="364" y="132" width="72" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+  <rect x="364" y="152" width="72" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+  <rect x="364" y="172" width="50" height="14" rx="4" fill="rgba(244,123,32,0.55)"/>
+  <rect x="364" y="192" width="72" height="14" rx="4" fill="rgba(244,123,32,0.55)"/>
+  <rect x="364" y="212" width="58" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+
+  <!-- Shared-data connection lines: Rev 2 → Rev 3 (pages 1, 2, 5 shared) -->
+  <line x1="276" y1="139" x2="364" y2="139" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+  <line x1="276" y1="159" x2="364" y2="159" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+  <line x1="262" y1="219" x2="364" y2="219" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+
+  <!-- Arrow: Rev 3 → Rev 4 -->
+  <path d="M456,175 L504,175" stroke="#F47B20" stroke-width="1.5" marker-end="url(#arrowOrange)"/>
+  <text x="480" y="167" text-anchor="middle" fill="#F47B20" font-size="10" font-family="Inter,system-ui,sans-serif" font-weight="600">edit</text>
+
+  <!-- Rev 4: Page 1 changed, rest shared -->
+  <rect x="512" y="105" width="96" height="140" rx="10" fill="rgba(156,163,175,0.08)" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="560" y="122" text-anchor="middle" fill="#9ca3af" font-size="10" font-family="Inter,system-ui,sans-serif" font-weight="600" opacity="0.7">STATE</text>
+  <rect x="524" y="132" width="72" height="14" rx="4" fill="rgba(244,123,32,0.55)"/>
+  <rect x="524" y="152" width="72" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+  <rect x="524" y="172" width="50" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+  <rect x="524" y="192" width="72" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+  <rect x="524" y="212" width="58" height="14" rx="4" fill="rgba(66,182,240,0.15)"/>
+
+  <!-- Shared-data connection lines: Rev 3 → Rev 4 (pages 2, 3, 4, 5 shared) -->
+  <line x1="436" y1="159" x2="524" y2="159" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+  <line x1="414" y1="179" x2="524" y2="179" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+  <line x1="436" y1="199" x2="524" y2="199" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+  <line x1="422" y1="219" x2="524" y2="219" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.3"/>
+
+  <!-- Snapshot labels -->
+  <text x="90" y="268" text-anchor="middle" fill="#e8e6e3" font-size="12" font-family="Inter,system-ui,sans-serif">Snapshot</text>
+  <text x="240" y="268" text-anchor="middle" fill="#e8e6e3" font-size="12" font-family="Inter,system-ui,sans-serif">Snapshot</text>
+  <text x="400" y="268" text-anchor="middle" fill="#e8e6e3" font-size="12" font-family="Inter,system-ui,sans-serif">Snapshot</text>
+  <text x="560" y="268" text-anchor="middle" fill="#e8e6e3" font-size="12" font-family="Inter,system-ui,sans-serif">Snapshot</text>
+
+  <!-- Legend -->
+  <rect x="130" y="310" width="18" height="10" rx="3" fill="rgba(244,123,32,0.55)"/>
+  <text x="156" y="320" fill="#9ca3af" font-size="12" font-family="Inter,system-ui,sans-serif">Changed page-fragment</text>
+
+  <rect x="370" y="310" width="18" height="10" rx="3" fill="rgba(66,182,240,0.25)"/>
+  <text x="396" y="320" fill="#9ca3af" font-size="12" font-family="Inter,system-ui,sans-serif">Shared (copy-on-write)</text>
+
+  <line x1="150" y1="342" x2="200" y2="342" stroke="#42B6F0" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.5"/>
+  <text x="210" y="346" fill="#9ca3af" font-size="11" font-family="Inter,system-ui,sans-serif">Pointer to shared data</text>
+
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0,0 10,3.5 0,7" fill="#F47B20"/>
+    </marker>
+  </defs>
+</svg>

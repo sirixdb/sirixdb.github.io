@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="sirixGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color: hsl(25, 95%, 55%)" />
+      <stop offset="100%" style="stop-color: hsl(200, 85%, 60%)" />
+    </linearGradient>
+  </defs>
+  <!-- Stylized database with time layers -->
+  <ellipse cx="50" cy="25" rx="35" ry="12" fill="url(#sirixGradient)" opacity="0.3" />
+  <ellipse cx="50" cy="40" rx="35" ry="12" fill="url(#sirixGradient)" opacity="0.5" />
+  <ellipse cx="50" cy="55" rx="35" ry="12" fill="url(#sirixGradient)" opacity="0.7" />
+  <ellipse cx="50" cy="70" rx="35" ry="12" fill="url(#sirixGradient)" />
+  <!-- Connecting lines representing versioning -->
+  <path d="M50 25 L50 70" stroke="url(#sirixGradient)" stroke-width="2" opacity="0.5" />
+  <path d="M30 30 L30 75" stroke="url(#sirixGradient)" stroke-width="1.5" opacity="0.3" />
+  <path d="M70 30 L70 75" stroke="url(#sirixGradient)" stroke-width="1.5" opacity="0.3" />
+</svg>
+
