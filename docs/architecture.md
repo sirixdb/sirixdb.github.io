@@ -41,9 +41,9 @@ Field names are stored once in an in-memory dictionary and referenced by 32-bit 
   <text x="220" y="203" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=2</text>
 
   <!-- "Alice" value -->
-  <line x1="220" y1="189" x2="220" y2="215" stroke="#42B6F0" stroke-width="1"/>
-  <rect x="175" y="218" width="90" height="22" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="220" y="233" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">STR "Alice"</text>
+  <line x1="220" y1="189" x2="220" y2="215" stroke="#10b981" stroke-width="1"/>
+  <rect x="175" y="218" width="90" height="22" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
+  <text x="220" y="233" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">STR "Alice"</text>
   <text x="220" y="253" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=3</text>
 
   <!-- Right branch: "scores" key -->
@@ -59,14 +59,14 @@ Field names are stored once in an in-memory dictionary and referenced by 32-bit 
   <text x="500" y="253" text-anchor="middle" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=5</text>
 
   <!-- Array values -->
-  <line x1="487" y1="240" x2="455" y2="265" stroke="#42B6F0" stroke-width="1"/>
-  <rect x="425" y="265" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="455" y="279" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">NUM 95</text>
+  <line x1="487" y1="240" x2="455" y2="265" stroke="#10b981" stroke-width="1"/>
+  <rect x="425" y="265" width="60" height="20" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
+  <text x="455" y="279" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">NUM 95</text>
   <text x="455" y="297" text-anchor="middle" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=6</text>
 
-  <line x1="513" y1="240" x2="545" y2="265" stroke="#42B6F0" stroke-width="1"/>
-  <rect x="515" y="265" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="545" y="279" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">NUM 87</text>
+  <line x1="513" y1="240" x2="545" y2="265" stroke="#10b981" stroke-width="1"/>
+  <rect x="515" y="265" width="60" height="20" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
+  <text x="545" y="279" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">NUM 87</text>
   <text x="545" y="297" text-anchor="middle" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=7</text>
 
   <!-- Sibling arrow between array items -->
@@ -75,9 +75,11 @@ Field names are stored once in an in-memory dictionary and referenced by 32-bit 
 
   <!-- Legend -->
   <rect x="600" y="105" width="10" height="10" rx="2" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="616" y="114" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Structure / value</text>
+  <text x="616" y="114" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Structure node</text>
   <rect x="600" y="123" width="10" height="10" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1"/>
   <text x="616" y="132" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Object key</text>
+  <rect x="600" y="141" width="10" height="10" rx="2" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
+  <text x="616" y="150" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Value node</text>
 </svg>
 
 Each node type maps directly to a JSON construct: `OBJECT`, `ARRAY`, `OBJECT_KEY`, `STRING_VALUE`, `NUMBER_VALUE`, `BOOLEAN_VALUE`, and `NULL_VALUE`. Navigation between nodes is O(1) via stored pointers — no scanning required.
@@ -121,25 +123,25 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <rect x="97" y="137" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
   <text x="130" y="152" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
   <!-- Data indirect -->
-  <line x1="115" y1="159" x2="90" y2="178" stroke="#42B6F0" stroke-width="1"/>
-  <line x1="145" y1="159" x2="170" y2="178" stroke="#42B6F0" stroke-width="1"/>
-  <rect x="62" y="180" width="56" height="20" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="90" y="194" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect</text>
-  <rect x="142" y="180" width="56" height="20" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="170" y="194" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect</text>
+  <line x1="115" y1="159" x2="80" y2="178" stroke="#42B6F0" stroke-width="1"/>
+  <line x1="145" y1="159" x2="180" y2="178" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="52" y="180" width="56" height="20" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="80" y="194" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect</text>
+  <rect x="152" y="180" width="56" height="20" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="180" y="194" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect</text>
   <!-- RecordPages -->
-  <line x1="76" y1="200" x2="66" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="104" y1="200" x2="114" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="46" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="66" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page A</text>
-  <rect x="94" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="114" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page B</text>
-  <line x1="156" y1="200" x2="146" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="184" y1="200" x2="194" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="126" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="146" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page C</text>
-  <rect x="174" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="194" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page D</text>
+  <line x1="66" y1="200" x2="58" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="94" y1="200" x2="102" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="38" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="58" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page A</text>
+  <rect x="82" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="102" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page B</text>
+  <line x1="166" y1="200" x2="158" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="194" y1="200" x2="202" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="138" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="158" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page C</text>
+  <rect x="182" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="202" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page D</text>
 
   <!-- === Rev 2: modify Page A, copy path === -->
   <rect x="344" y="40" width="52" height="24" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
@@ -159,9 +161,9 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <rect x="286" y="220" width="40" height="18" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
   <text x="306" y="232" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">Page A'</text>
   <!-- Shared pointer to Page B -->
-  <line x1="344" y1="200" x2="114" y2="229" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="344" y1="200" x2="102" y2="229" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
   <!-- Right branch: shared pointer to Rev1's right indirect -->
-  <line x1="385" y1="159" x2="170" y2="190" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="385" y1="159" x2="180" y2="190" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
 
   <!-- === Rev 3: modify Page D, share rest === -->
   <rect x="554" y="40" width="52" height="24" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
@@ -179,7 +181,7 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <rect x="592" y="180" width="56" height="20" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
   <text x="620" y="194" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
   <!-- Shared Page C -->
-  <line x1="606" y1="200" x2="146" y2="229" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="606" y1="200" x2="158" y2="229" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
   <!-- Modified Page D' -->
   <line x1="634" y1="200" x2="644" y2="218" stroke="#F47B20" stroke-width="0.8"/>
   <rect x="624" y="220" width="40" height="18" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
