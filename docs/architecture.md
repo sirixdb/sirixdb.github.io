@@ -88,7 +88,11 @@ Each node type maps directly to a JSON construct: `OBJECT`, `ARRAY`, `OBJECT_KEY
 
 When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instead, it **copies only the modified page and its ancestor path** to the root. All unchanged pages are shared between the old and new revision via pointers. This is the same principle used in persistent data structures and ZFS.
 
-<svg viewBox="0 0 720 330" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Copy-on-write: modifying a leaf copies only the path to root, sharing unchanged pages">
+<svg viewBox="0 0 720 380" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Copy-on-write: modifying a leaf copies only the path to root, sharing unchanged pages">
+  <defs>
+    <marker id="arrowAppend" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="#6b7280"/></marker>
+  </defs>
+
   <!-- Legend -->
   <rect x="20" y="8" width="12" height="12" rx="2" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
   <text x="38" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">New / copied page</text>
@@ -97,103 +101,120 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <line x1="320" y1="14" x2="360" y2="14" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>
   <text x="368" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">Shared pointer (unchanged)</text>
 
-  <!-- Timeline -->
-  <line x1="60" y1="285" x2="680" y2="285" stroke="#6b7280" stroke-width="1.5"/>
-  <polygon points="680,285 670,280 670,290" fill="#6b7280"/>
-  <text x="370" y="320" text-anchor="middle" fill="#9ca3af" font-size="12" font-family="Inter,sans-serif" font-weight="500">Time</text>
-
-  <!-- Rev labels -->
-  <line x1="130" y1="280" x2="130" y2="290" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="130" y="305" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 1</text>
-  <line x1="370" y1="280" x2="370" y2="290" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="370" y="305" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 2</text>
-  <line x1="580" y1="280" x2="580" y2="290" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="580" y="305" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 3</text>
-
   <!-- === Rev 1 === -->
-  <!-- UberPage -->
-  <rect x="104" y="40" width="52" height="24" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
-  <text x="130" y="56" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">Uber</text>
-  <!-- IndirectPage -->
-  <line x1="130" y1="64" x2="130" y2="90" stroke="#42B6F0" stroke-width="1.2"/>
-  <rect x="100" y="92" width="60" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
-  <text x="130" y="107" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">Indirect</text>
+  <!-- UberPage (conceptual top, no trie to RevRoot) -->
+  <rect x="107" y="38" width="46" height="20" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="130" y="52" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">Uber</text>
+  <line x1="130" y1="58" x2="130" y2="68" stroke="#42B6F0" stroke-width="1" stroke-dasharray="3 2"/>
   <!-- RevRootPage -->
-  <line x1="130" y1="114" x2="130" y2="135" stroke="#42B6F0" stroke-width="1.2"/>
-  <rect x="97" y="137" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
-  <text x="130" y="152" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
-  <!-- Data indirect -->
-  <line x1="115" y1="159" x2="80" y2="178" stroke="#42B6F0" stroke-width="1"/>
-  <line x1="145" y1="159" x2="180" y2="178" stroke="#42B6F0" stroke-width="1"/>
-  <rect x="52" y="180" width="56" height="20" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="80" y="194" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect</text>
-  <rect x="152" y="180" width="56" height="20" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="180" y="194" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect</text>
+  <rect x="97" y="70" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="130" y="85" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
+  <!-- Data trie -->
+  <line x1="115" y1="92" x2="80" y2="110" stroke="#42B6F0" stroke-width="1"/>
+  <line x1="145" y1="92" x2="180" y2="110" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="52" y="112" width="56" height="18" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="80" y="125" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect</text>
+  <rect x="152" y="112" width="56" height="18" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="180" y="125" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect</text>
   <!-- RecordPages -->
-  <line x1="66" y1="200" x2="58" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="94" y1="200" x2="102" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="38" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="58" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page A</text>
-  <rect x="82" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="102" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page B</text>
-  <line x1="166" y1="200" x2="158" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="194" y1="200" x2="202" y2="218" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="138" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="158" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page C</text>
-  <rect x="182" y="220" width="40" height="18" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="202" y="232" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page D</text>
+  <line x1="66" y1="130" x2="58" y2="147" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="94" y1="130" x2="102" y2="147" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="38" y="149" width="40" height="16" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="58" y="160" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page A</text>
+  <rect x="82" y="149" width="40" height="16" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="102" y="160" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page B</text>
+  <line x1="166" y1="130" x2="158" y2="147" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="194" y1="130" x2="202" y2="147" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="138" y="149" width="40" height="16" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="158" y="160" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page C</text>
+  <rect x="182" y="149" width="40" height="16" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="202" y="160" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Page D</text>
 
   <!-- === Rev 2: modify Page A, copy path === -->
-  <rect x="344" y="40" width="52" height="24" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
-  <text x="370" y="56" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">Uber</text>
-  <line x1="370" y1="64" x2="370" y2="90" stroke="#42B6F0" stroke-width="1.2"/>
-  <rect x="340" y="92" width="60" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
-  <text x="370" y="107" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">Indirect</text>
-  <line x1="370" y1="114" x2="370" y2="135" stroke="#42B6F0" stroke-width="1.2"/>
-  <rect x="337" y="137" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
-  <text x="370" y="152" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
+  <rect x="347" y="38" width="46" height="20" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="370" y="52" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">Uber</text>
+  <line x1="370" y1="58" x2="370" y2="68" stroke="#42B6F0" stroke-width="1" stroke-dasharray="3 2"/>
+  <rect x="337" y="70" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="370" y="85" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
   <!-- Left branch: copied (modified) -->
-  <line x1="355" y1="159" x2="330" y2="178" stroke="#F47B20" stroke-width="1.2"/>
-  <rect x="302" y="180" width="56" height="20" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
-  <text x="330" y="194" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
+  <line x1="355" y1="92" x2="330" y2="110" stroke="#F47B20" stroke-width="1.2"/>
+  <rect x="302" y="112" width="56" height="18" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="330" y="125" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
   <!-- Modified Page A' -->
-  <line x1="316" y1="200" x2="306" y2="218" stroke="#F47B20" stroke-width="0.8"/>
-  <rect x="286" y="220" width="40" height="18" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
-  <text x="306" y="232" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">Page A'</text>
+  <line x1="316" y1="130" x2="306" y2="147" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="286" y="149" width="40" height="16" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="306" y="160" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">Page A'</text>
   <!-- Shared pointer to Page B -->
-  <line x1="344" y1="200" x2="102" y2="229" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="344" y1="130" x2="102" y2="157" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
   <!-- Right branch: shared pointer to Rev1's right indirect -->
-  <line x1="385" y1="159" x2="180" y2="190" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="385" y1="92" x2="180" y2="121" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
 
   <!-- === Rev 3: modify Page D, share rest === -->
-  <rect x="554" y="40" width="52" height="24" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
-  <text x="580" y="56" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">Uber</text>
-  <line x1="580" y1="64" x2="580" y2="90" stroke="#42B6F0" stroke-width="1.2"/>
-  <rect x="550" y="92" width="60" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
-  <text x="580" y="107" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">Indirect</text>
-  <line x1="580" y1="114" x2="580" y2="135" stroke="#42B6F0" stroke-width="1.2"/>
-  <rect x="547" y="137" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
-  <text x="580" y="152" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
-  <!-- Left: share Rev2's left indirect (which includes Page A') -->
-  <line x1="565" y1="159" x2="330" y2="190" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <rect x="557" y="38" width="46" height="20" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="580" y="52" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">Uber</text>
+  <line x1="580" y1="58" x2="580" y2="68" stroke="#42B6F0" stroke-width="1" stroke-dasharray="3 2"/>
+  <rect x="547" y="70" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="580" y="85" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
+  <!-- Left: share Rev2's left indirect -->
+  <line x1="565" y1="92" x2="330" y2="121" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
   <!-- Right: modified -->
-  <line x1="595" y1="159" x2="620" y2="178" stroke="#F47B20" stroke-width="1.2"/>
-  <rect x="592" y="180" width="56" height="20" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
-  <text x="620" y="194" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
+  <line x1="595" y1="92" x2="620" y2="110" stroke="#F47B20" stroke-width="1.2"/>
+  <rect x="592" y="112" width="56" height="18" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="620" y="125" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
   <!-- Shared Page C -->
-  <line x1="606" y1="200" x2="158" y2="229" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="606" y1="130" x2="158" y2="157" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
   <!-- Modified Page D' -->
-  <line x1="634" y1="200" x2="644" y2="218" stroke="#F47B20" stroke-width="0.8"/>
-  <rect x="624" y="220" width="40" height="18" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
-  <text x="644" y="232" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">Page D'</text>
+  <line x1="634" y1="130" x2="644" y2="147" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="624" y="149" width="40" height="16" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="644" y="160" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">Page D'</text>
 
-  <!-- Annotations -->
-  <text x="306" y="258" text-anchor="middle" fill="#F47B20" font-size="8" font-family="Inter,sans-serif" font-style="italic">only changed path copied</text>
+  <!-- Annotation -->
+  <text x="306" y="182" text-anchor="middle" fill="#F47B20" font-size="8" font-family="Inter,sans-serif" font-style="italic">only changed path copied</text>
+
+  <!-- === Physical Storage === -->
+  <line x1="30" y1="200" x2="690" y2="200" stroke="#6b7280" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.4"/>
+  <text x="360" y="218" text-anchor="middle" fill="#e8e6e3" font-size="11" font-family="Inter,sans-serif" font-weight="600">On-Disk Layout (append-only)</text>
+
+  <!-- revisions file -->
+  <rect x="30" y="230" width="660" height="24" rx="4" fill="rgba(255,255,255,0.03)" stroke="#6b7280" stroke-width="0.8"/>
+  <text x="40" y="246" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">revisions</text>
+  <rect x="110" y="234" width="44" height="16" rx="2" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.6"/>
+  <text x="132" y="245" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Rev 1</text>
+  <rect x="158" y="234" width="44" height="16" rx="2" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.6"/>
+  <text x="180" y="245" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Rev 2</text>
+  <rect x="206" y="234" width="44" height="16" rx="2" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.6"/>
+  <text x="228" y="245" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Rev 3</text>
+  <line x1="260" y1="242" x2="290" y2="242" stroke="#6b7280" stroke-width="1" marker-end="url(#arrowAppend)"/>
+
+  <!-- data file -->
+  <rect x="30" y="262" width="660" height="24" rx="4" fill="rgba(255,255,255,0.03)" stroke="#6b7280" stroke-width="0.8"/>
+  <text x="40" y="278" fill="#9ca3af" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">data</text>
+  <!-- Rev 1 pages -->
+  <rect x="110" y="266" width="100" height="16" rx="2" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.6"/>
+  <text x="160" y="277" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">Rev 1 pages</text>
+  <!-- Rev 2 delta -->
+  <rect x="214" y="266" width="50" height="16" rx="2" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="239" y="277" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">&#x394; Rev 2</text>
+  <!-- Rev 3 delta -->
+  <rect x="268" y="266" width="50" height="16" rx="2" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="293" y="277" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">&#x394; Rev 3</text>
+  <line x1="328" y1="274" x2="358" y2="274" stroke="#6b7280" stroke-width="1" marker-end="url(#arrowAppend)"/>
+
+  <!-- Timeline -->
+  <line x1="60" y1="320" x2="680" y2="320" stroke="#6b7280" stroke-width="1.5"/>
+  <polygon points="680,320 670,315 670,325" fill="#6b7280"/>
+  <text x="370" y="360" text-anchor="middle" fill="#9ca3af" font-size="12" font-family="Inter,sans-serif" font-weight="500">Time</text>
+  <line x1="130" y1="315" x2="130" y2="325" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="130" y="340" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 1</text>
+  <line x1="370" y1="315" x2="370" y2="325" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="370" y="340" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 2</text>
+  <line x1="580" y1="315" x2="580" y2="325" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="580" y="340" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 3</text>
 </svg>
 
 This means a revision that modifies a single record only writes the modified page plus its ancestor path — typically 3-4 pages. A 10 GB database with 1,000 revisions and 0.1% change each requires roughly 20 GB total, not 10 TB.
 
-The `UberPage` is always written last as an atomic operation. Even if a crash occurs mid-commit, the previous valid state is preserved.
+Physically, each resource is stored in two append-only files: a **data** file for page content (IndirectPages, RecordPages) and a **revisions** file for revision metadata (RevisionRootPages, UberPage references). The `UberPage` is conceptually at the top — it references the latest RevisionRootPage — and is always written last as an atomic operation. Even if a crash occurs mid-commit, the previous valid state is preserved.
 
 ## Page Structure
 
