@@ -214,7 +214,11 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
 
 This means a revision that modifies a single record only writes the modified page plus its ancestor path — typically 3-4 pages. A 10 GB database with 1,000 revisions and 0.1% change each requires roughly 20 GB total, not 10 TB.
 
-Physically, each resource is stored in two append-only files: a **data** file for page content (IndirectPages, RecordPages) and a **revisions** file for revision metadata (RevisionRootPages, UberPage references). The `UberPage` is conceptually at the top — it references the latest RevisionRootPage — and is always written last as an atomic operation. Even if a crash occurs mid-commit, the previous valid state is preserved.
+Physically, each resource is stored in two append-only logical devices (files). **LD₁** stores page content (IndirectPages, RecordPages, NamePages) followed by a RevisionRootPage at the end of each revision's data. **LD₂** stores the UberPage — a sequence of timestamp + offset pairs, one per revision, pointing to the corresponding RRP in LD₁.
+
+<img src="/images/sirix-on-device-layout.svg" alt="Logical Device Layout: LD₂ stores UberPage with timestamp and offset pairs pointing to each revision's RevisionRootPage in LD₁. Each revision appends only modified page fragments (copy-on-write)." style="width:100%;max-width:960px;">
+
+The `UberPage` is always written last as an atomic operation. Even if a crash occurs mid-commit, the previous valid state is preserved.
 
 ## Page Structure
 
