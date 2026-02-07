@@ -69,9 +69,8 @@ Field names are stored once in an in-memory dictionary and referenced by 32-bit 
   <text x="545" y="279" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">NUM 87</text>
   <text x="580" y="279" text-anchor="start" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=7</text>
 
-  <!-- Sibling arrow between array items -->
-  <line x1="485" y1="275" x2="515" y2="275" stroke="#9ca3af" stroke-width="0.8" stroke-dasharray="3 2" marker-end="url(#arrowGray)"/>
-  <defs><marker id="arrowGray" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="#9ca3af"/></marker></defs>
+  <!-- Sibling link between array items -->
+  <line x1="485" y1="275" x2="515" y2="275" stroke="#10b981" stroke-width="1"/>
 
   <!-- Legend -->
   <rect x="600" y="105" width="10" height="10" rx="2" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
@@ -192,60 +191,54 @@ The `UberPage` is always written last as an atomic operation. Even if a crash oc
 
 Each resource is organized as a trie of pages. The `RevisionRootPage` is the entry point for a single revision, branching into subtrees for data, indexes, and metadata.
 
-<svg viewBox="0 0 720 310" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Page hierarchy: UberPage to RevisionRootPage to data and index subtrees">
+<svg viewBox="0 0 720 256" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Page hierarchy: RevisionRootPage branching into data and index subtrees, with UberPage as logical header">
   <text x="360" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Page Hierarchy (single revision)</text>
 
-  <!-- UberPage -->
+  <!-- UberPage (logical header, no subtree) -->
   <rect x="320" y="32" width="80" height="28" rx="5" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
   <text x="360" y="50" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">UberPage</text>
 
-  <!-- IndirectPage (to revisions) -->
-  <line x1="360" y1="60" x2="360" y2="78" stroke="#42B6F0" stroke-width="1.2"/>
-  <rect x="310" y="80" width="100" height="24" rx="4" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="360" y="96" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace">IndirectPages</text>
-
   <!-- RevisionRootPage -->
-  <line x1="360" y1="104" x2="360" y2="122" stroke="#42B6F0" stroke-width="1.2"/>
-  <rect x="290" y="124" width="140" height="28" rx="5" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.5"/>
-  <text x="360" y="142" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">RevisionRootPage</text>
-  <text x="360" y="168" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">author, timestamp, commit message</text>
+  <rect x="290" y="70" width="140" height="28" rx="5" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.5"/>
+  <text x="360" y="88" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">RevisionRootPage</text>
+  <text x="360" y="114" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">author, timestamp, commit message</text>
 
   <!-- Branches from RevisionRootPage -->
   <!-- Data branch (center-left) -->
-  <line x1="310" y1="152" x2="120" y2="195" stroke="#42B6F0" stroke-width="1.2"/>
-  <rect x="62" y="197" width="116" height="24" rx="4" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
-  <text x="120" y="213" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace">Data IndirectPages</text>
-  <line x1="98" y1="221" x2="72" y2="242" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="142" y1="221" x2="168" y2="242" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="42" y="244" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="72" y="258" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">RecordPage</text>
-  <rect x="138" y="244" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="168" y="258" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">RecordPage</text>
-  <text x="120" y="282" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">JSON/XML nodes</text>
+  <line x1="310" y1="98" x2="120" y2="141" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="62" y="143" width="116" height="24" rx="4" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="120" y="159" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace">Data IndirectPages</text>
+  <line x1="98" y1="167" x2="72" y2="188" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="142" y1="167" x2="168" y2="188" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="42" y="190" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="72" y="204" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">RecordPage</text>
+  <rect x="138" y="190" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="168" y="204" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">RecordPage</text>
+  <text x="120" y="228" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">JSON/XML nodes</text>
 
   <!-- PathSummary branch -->
-  <line x1="335" y1="152" x2="300" y2="195" stroke="#F47B20" stroke-width="1"/>
-  <rect x="252" y="197" width="96" height="24" rx="4" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="300" y="213" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">PathSummary</text>
-  <text x="300" y="237" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">unique path trie</text>
+  <line x1="335" y1="98" x2="300" y2="141" stroke="#F47B20" stroke-width="1"/>
+  <rect x="252" y="143" width="96" height="24" rx="4" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="300" y="159" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">PathSummary</text>
+  <text x="300" y="183" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">unique path trie</text>
 
   <!-- NamePage branch -->
-  <line x1="385" y1="152" x2="440" y2="195" stroke="#F47B20" stroke-width="1"/>
-  <rect x="398" y="197" width="84" height="24" rx="4" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="440" y="213" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">NamePage</text>
-  <text x="440" y="237" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">field name dictionary</text>
+  <line x1="385" y1="98" x2="440" y2="141" stroke="#F47B20" stroke-width="1"/>
+  <rect x="398" y="143" width="84" height="24" rx="4" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="440" y="159" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">NamePage</text>
+  <text x="440" y="183" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">field name dictionary</text>
 
   <!-- Index branches (PathPage + CASPage) -->
-  <line x1="410" y1="152" x2="600" y2="195" stroke="#42B6F0" stroke-width="1"/>
-  <rect x="548" y="197" width="104" height="24" rx="4" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="600" y="213" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">PathPage / CASPage</text>
-  <line x1="580" y1="221" x2="564" y2="242" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="620" y1="221" x2="636" y2="242" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="530" y="244" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="564" y="258" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 1</text>
-  <rect x="602" y="244" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="636" y="258" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 2</text>
-  <text x="600" y="282" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">user-defined indexes</text>
+  <line x1="410" y1="98" x2="600" y2="141" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="548" y="143" width="104" height="24" rx="4" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="600" y="159" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">PathPage / CASPage</text>
+  <line x1="580" y1="167" x2="564" y2="188" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="620" y1="167" x2="636" y2="188" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="530" y="190" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="564" y="204" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 1</text>
+  <rect x="602" y="190" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="636" y="204" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 2</text>
+  <text x="600" y="228" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">user-defined indexes</text>
 </svg>
 
 **UberPage** — The root entry point. Written last during a commit as an atomic operation. Contains a reference to the IndirectPage tree that addresses all revisions.
