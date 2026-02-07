@@ -112,6 +112,26 @@
     });
   });
 
+  // Copy-to-clipboard buttons on code blocks
+  document.querySelectorAll('.code-block, div.highlighter-rouge').forEach(function(block) {
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', function() {
+      var pre = block.querySelector('pre');
+      if (!pre) return;
+      navigator.clipboard.writeText(pre.textContent).then(function() {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    });
+    block.appendChild(btn);
+  });
+
   // Fade-in on scroll
   var fadeEls = document.querySelectorAll('.fade-in');
   if (fadeEls.length && 'IntersectionObserver' in window) {
