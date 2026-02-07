@@ -106,7 +106,7 @@
         clone = el.cloneNode(true);
         clone.removeAttribute('style');
       }
-      clone.className = 'svg-lightbox__content';
+      clone.setAttribute('class', 'svg-lightbox__content');
       overlay.appendChild(clone);
       overlay.classList.add('is-open');
     });
