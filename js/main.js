@@ -73,17 +73,6 @@
     });
   }
 
-  // Auto-scroll terminal during animation
-  var termBody = document.querySelector('.terminal__body');
-  if (termBody) {
-    termBody.scrollTop = 0;
-    termBody.querySelectorAll('.t-block').forEach(function(block) {
-      block.addEventListener('animationstart', function() {
-        termBody.scrollTo({ top: block.offsetTop - 16, behavior: 'smooth' });
-      });
-    });
-  }
-
   // SVG lightbox
   var overlay = document.createElement('div');
   overlay.className = 'svg-lightbox';
