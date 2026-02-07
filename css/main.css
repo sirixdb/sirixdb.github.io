@@ -1149,6 +1149,9 @@ pre::-webkit-scrollbar-thumb:hover {
   .hero { padding: var(--space-16) 0 var(--space-12); }
   .hero__title { font-size: var(--text-3xl); }
   .hero__visual { margin-top: var(--space-8); }
+  .hero__actions { justify-content: center; }
+  .section-cta { display: flex; justify-content: center; flex-wrap: wrap; gap: var(--space-4); }
+  .section-cta .btn { margin-left: 0 !important; }
 
   .feature-grid { grid-template-columns: 1fr; }
   .api-grid { grid-template-columns: 1fr; }
