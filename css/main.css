@@ -709,12 +709,9 @@ div.highlighter-rouge {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.15s, color 0.15s, background 0.15s;
+  transition: color 0.15s, background 0.15s;
   z-index: 2;
 }
-.code-block:hover .copy-btn,
-div.highlighter-rouge:hover .copy-btn { opacity: 1; }
 .copy-btn:hover { color: var(--color-text); background: rgba(255, 255, 255, 0.1); }
 .copy-btn.copied { color: var(--color-accent); }
 
