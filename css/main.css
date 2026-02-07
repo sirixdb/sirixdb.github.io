@@ -1061,6 +1061,8 @@ pre::-webkit-scrollbar-thumb:hover {
   display: block;
   opacity: 0;
   transform: translateY(8px);
+  max-height: 0;
+  overflow: hidden;
 }
 .is-visible .t-block {
   animation: termReveal 0.5s ease forwards;
@@ -1074,7 +1076,7 @@ pre::-webkit-scrollbar-thumb:hover {
 .is-visible .t-block:nth-child(7) { animation-delay: 7.5s; }
 .is-visible .t-block:nth-child(8) { animation-delay: 8.7s; }
 @keyframes termReveal {
-  to { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(0); max-height: 20em; overflow: visible; }
 }
 .t-cursor {
   display: inline-block;
