@@ -1,349 +1,516 @@
 ---
 layout: documentation
-doctitle: REST-API
-title: SirixDB - REST-API
+doctitle: REST API
+title: SirixDB - REST API
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/rest-api.md)
+[Edit this page on GitHub](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/rest-api.md)
 
-## Shorter Article Describing the JSON REST-API
+## Overview
 
-You can find an article about this API regarding only JSON stuff on Medium: [Asynchronous, Temporal REST With Vert.x, Keycloak and Kotlin Coroutines](https://medium.com/hackernoon/asynchronous-temporal-rest-with-vert-x-keycloak-and-kotlin-coroutines-217b25756314)
+The SirixDB REST API is fully asynchronous, built on Vert.x and Netty. It supports both JSON and XML databases through content negotiation. All mutating operations automatically commit a new revision, making every previous state permanently queryable.
 
-## Introduction
+**Base URL:** `https://localhost:9443`
 
-This API is asynchronous at its very core. We use Vert.x which is a toolkit, built on top of Netty. It is heavily inspired by Node.js but for the JVM. As such it uses event loop(s), that is thread(s), which never should by blocked by long running CPU tasks or disk bound I/O. We are using Kotlin with coroutines to keep the code simple.
-Authorization is done via OAuth2 (Password Credentials/Resource Owner Flow) using a Keycloak authorization server instance.
+**Content negotiation:** every request must include `Content-Type` and/or `Accept` headers set to `application/json` or `application/xml`.
 
-### Start Docker Keycloak-Container using docker-compose
-For setting up the SirixDB HTTP-Server and a basic Keycloak-instance with a test realm:
+**Authentication:** OAuth2 via Keycloak. Obtain a token from `POST /token` and include it as `Authorization: Bearer <token>` on all subsequent requests.
 
-1. `git clone https://github.com/sirixdb/sirix.git`
-2. `sudo docker-compose up keycloak`
+**Concurrency control:** updates and deletes require an `ETag` header containing the rolling hash of the context node (obtained via `HEAD` or `GET`). If the hash has changed since the read, the server rejects the write to prevent lost updates.
 
-### Keycloak setup
+---
 
-Keycloak can be set up as described in this excellent [tutorial](
-https://piotrminkowski.wordpress.com/2017/09/15/building-secure-apis-with-vert-x-and-oauth2/). Our [docker-compose](https://raw.githubusercontent.com/sirixdb/sirix/master/docker-compose.yml) file imports a sirix realm with a default admin user with all available roles assigned. Basically you can skip the steps 3 - 7 and 10 and 11 and simply recreate a `client-secret` and change `oAuthFlowType` to "PASSWORD". If you want to run or modify the integration tests the client secret must not be changed. Make sure to delete the line "build: ." in the `docker-compse.yml` file for the server image if you simply want to use the Docker Hub image.
+## Authentication
 
-1. Open your browser. URL: http://localhost:8080
-2. Login with username "admin", password "admin"
-3. Create a new **realm** with the name **"sirixdb"**
-4. Go to `Clients` => `account`
-5. Change client-id to "sirix"
-6. Make sure `access-type` is set to `confidential`
-7. Go to `Credentials` tab
-8. Put the `client secret` into the SirixDB HTTP-Server [configuration file]( https://raw.githubusercontent.com/sirixdb/sirix/master/bundles/sirix-rest-api/src/main/resources/sirix-conf.json). Change the value of "client.secret" to whatever Keycloak set up.
-9. If "oAuthFlowType" is specified in the ame configuration file change the value to "PASSWORD" (if not default is "PASSWORD").
-10. Regarding Keycloak the `direct access` grant on the settings tab must be `enabled`.
-11. Our (user-/group-)roles are "create" to allow creating databases/resources, "view" to allow to query database resources, "modify" to modify a database resource and "delete" to allow deletion thereof. You can also assign `${databaseName}-` prefixed roles.
- 
-### Start the SirixDB HTTP-Server and the Keycloak-Container using docker-compose
-The following command will start the docker container
+### `POST /token`
 
-1. `sudo docker-compose up`
+Obtain or refresh an OAuth2 access token.
 
-### SirixDB HTTP-Server Setup Without Docker/docker-compose
+**Content-Type:** `application/json` or `application/x-www-form-urlencoded`
 
-To created a fat-JAR. Download our ZIP-file for instance, then
+**Request body (obtain token):**
 
-1. `cd bundles/sirix-rest-api`
-2. `gradle build -x test`
-
-And a fat-JAR with all required dependencies should have been created in your target folder.
-
-Furthermore, a `key.pem` and a `cert.pem` file are needed. These two files have to be in your user home directory in a directory called "sirix-data", where Sirix stores the databases. For demo purposes they can be copied from our [resources directory](https://github.com/sirixdb/sirix/tree/master/bundles/sirix-rest-api/src/main/resources).
-
-Once also Keycloak is set up we can start the server via:
-
-`java -jar -Duser.home=/opt/sirix sirix-rest-api-*-SNAPSHOT-fat.jar -conf sirix-conf.json -cp /opt/sirix/*`
-
-If you like to change your user home directory to `/opt/sirix` for instance.
-
-The fat-JAR in the future will be downloadable from the [maven repository](https://oss.sonatype.org/content/repositories/snapshots/io/sirix/sirix-rest-api/0.9.0-SNAPSHOT/).
-
-### Run the Integration Tests
-In order to run the integration tests under `bundles/sirix-rest-api/src/test/kotlin` make sure that you assign your admin user all the user-roles you have created in the Keycloak setup (last step). Make sure that Keycloak is running first and execute the tests in your favorite IDE for instance.
-
-## API-design by Example
-After Keycloak and our server are up and running, we can write a simple HTTP-Client. We first have to obtain a token from the `/login` endpoint with a given "username/password" JSON-Object. Using an asynchronous HTTP-Client (from Vert.x) in Kotlin, it looks like this:
-
-```kotlin
-val server = "https://localhost:9443"
-
-val credentials = json {
-  obj("username" to "testUser",
-      "password" to "testPass")
-}
-
-val response = client.postAbs("$server/token").sendJsonAwait(credentials)
-
-if (200 == response.statusCode()) {
-  val user = response.bodyAsJsonObject()
-  val accessToken = user.getString("access_token")
-}
-```
-
-This access token must then be sent in the Authorization HTTP-Header for each subsequent request. Storing a first resource would look like (simple HTTP PUT-Request):
-
-```kotlin
-val xml = """
-    <xml>
-      foo
-      <bar/>
-    </xml>
-""".trimIndent()
-
-var httpResponse = client.putAbs("$server/database/resource1").putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken").putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml").putHeader(HttpHeaders.ACCEPT.toString(), "application/xml").sendBufferAwait(Buffer.buffer(xml))
-  
-if (200 == response.statusCode()) {
-  println("Stored document.")
-} else {
-  println("Something went wrong ${response.message}")
-}
-```
-First, an empty database with the name `database` with some metadata is created, second the XML-fragment is stored with the name `resource1`. The PUT HTTP-Request is idempotent. Another PUT-Request with the same URL endpoint will delete the former database and resource and create the database and resource again. Note that every request has to contain an `HTTP-Header` which content type it sends and which resource-type it expects (`Content-Type: application/xml` and `Accept: application/xml`) for instance. This is needed as SirixDB supports the storage and retrieval of both XML- and JSON-data. Furthermore in case of updates as described in [Integrity Assurance for RESTful XML](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-123507) you have to make sure to include the hashCode of the node you want to modify in the "ETag" HTTP-Header. For instance if you want to insert a subtree as the first child of a node, the hashCode of the "parent" node must be in the HTTP-Header. The following sections show the API for usage with our binary and in-memory XML representation, but the JSON version is almost analogous.
-
-The HTTP-Response should be 200 and the HTTP-body yields:
-
-```xml
-<rest:sequence xmlns:rest="https://sirix.io/rest">
-  <rest:item>
-    <xml rest:id="1">
-      foo
-      <bar rest:id="3"/>
-    </xml>
-  </rest:item>
-</rest:sequence>
-```
-
-We are serializing the generated IDs from our storage system for element-nodes.
-
-Via a `GET HTTP-Request` to `https://localhost:9443/database/resource1` we are also able to retrieve the stored resource again.
-
-However, this is not really interesting so far. We can update the resource via a `POST-Request`. Assuming we retrieved the access token as before, we can simply do a POST-Request and use the information we gathered before about the node-IDs:
-
-```kotlin
-// First get the hashCode of the node with ID 3.
-var httpResponse = client.headAbs("$server/database/resource1?nodeId=3")
-                         .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
-                         .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
-                         .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
-                         .sendAWait()
-
-val hashCode = httpResponse.getHeader(HttpHeaders.ETAG.toString())
-
-val xml = """
-    <test>
-      yikes
-      <bar/>
-    </test>
-""".trimIndent()
-
-val url = "$server/database/resource1?nodeId=3&insert=asFirstChild"
-
-httpResponse = client.postAbs(url)
-                     .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
-                     .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
-                     .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
-                     .putHeader(HttpHeaders.ETAG.toString(), hashCode)
-                     .sendBufferAwait(Buffer.buffer(xml))
-```
-
-The interesting part is the URL, we are using as the endpoint. We simply say, select the node with the ID 3, then insert the given XML-fragment as the first child. This yields the following serialized XML-document:
-
-```xml
-<rest:sequence xmlns:rest="https://sirix.io/rest">
-  <rest:item>
-    <xml rest:id="1">
-      foo
-      <bar rest:id="3">
-        <test rest:id="4">
-          yikes
-          <bar rest:id="6"/>
-        </test>
-      </bar>
-    </xml>
-  </rest:item>
-</rest:sequence>
-```
-The interesting part is that every PUT- as well as POST-request does an implicit `commit` of the underlying transaction. Thus, we are now able send the first GET-request for retrieving the contents of the whole resource again for instance through specifying an simple XPath-query, to select the root-node in all revisions `GET https://localhost:9443/database/resource1?query=/xml/all-time::*` and get the following XPath-result:
-
-```xml
-<rest:sequence xmlns:rest="https://sirix.io/rest">
-  <rest:item rest:revision="1" rest:revisionTimestamp="2018-12-20T18:44:39.464Z">
-    <xml rest:id="1">
-      foo
-      <bar rest:id="3"/>
-    </xml>
-  </rest:item>
-  <rest:item rest:revision="2" rest:revisionTimestamp="2018-12-20T18:44:39.518Z">
-    <xml rest:id="1">
-      foo
-      <bar rest:id="3">
-        <xml rest:id="4">
-          foo
-          <bar rest:id="6"/>
-        </xml>
-      </bar>
-    </xml>
-  </rest:item>
-</rest:sequence>
-```
-
-In general we support several additional temporal XPath axis:
-
-`future::`, `future-or-self::`, `past::`,`past-or-self::`,`previous::`,`previous-or-self::`,`next::`,`next-or-self::`,`first::`,`last::`,`all-time::`
-
-The same can be achieved through specifying a range of revisions to serialize (start- and end-revision parameters) in the GET-request:
-
-```GET https://localhost:9443/database/resource1?start-revision=1&end-revision=2```
-
-or via timestamps:
-
-```GET https://localhost:9443/database/resource1?start-revision-timestamp=2018-12-20T18:00:00&end-revision-timestamp=2018-12-20T19:00:00```
-
-We for sure are also able to delete the resource or any subtree thereof by an updating XQuery expression (which is not very RESTful) or with a simple `DELETE` HTTP-request:
-
-```kotlin
-// First get the hashCode of the node with ID 3.
-var httpResponse = client.headAbs("$server/database/resource1?nodeId=3")
-                         .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
-                         .putHeader(HttpHeaders.CONTENT_TYPE.toString(), "application/xml")
-                         .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
-                         .sendAWait()
-
-val hashCode = httpResponse.getHeader(HttpHeaders.ETAG.toString())
-
-val url = "$server/database/resource1?nodeId=3"
-
-val httpResponse = client.deleteAbs(url)
-                         .putHeader(HttpHeaders.AUTHORIZATION.toString(), "Bearer $accessToken")
-                         .putHeader(HttpHeaders.ACCEPT.toString(), "application/xml")
-                         .putHeader(HttpHeaders.ETAG.toString(), hashCode).sendAwait()
-
-if (200 == httpResponse.statusCode()) {
-  ...
-}
-```
-
-This deletes the node with ID 3 and in our case as it's an element node the whole subtree. For sure it's committed as revision 3 and as such all old revisions still can be queried for the whole subtree (or in the first revision it's only the element with the name "bar" without any subtree).
-
-If we want to get a diff, currently in the form of an XQuery Update Statement (but we could serialize them in any format), simply call the XQuery function `sdb:diff`:
-
-`sdb:diff($coll as xs:string, $res as xs:string, $rev1 as xs:int, $rev2 as xs:int) as xs:string`
-
-For instance via a GET-request like this for the database/resource we created above, we could make this request:
-
-`GET https://localhost:9443/?query=sdb%3Adiff%28%27database%27%2C%27resource1%27%2C1%2C2%29`
-
-Note that the query-String has to be URL-encoded, thus it's decoded
-
-`sdb:diff('database','resource1',1,2)`
-
-The output for the diff in our example is this XQuery-Update statement wrapped in an enclosing sequence-element:
-
-```xml
-<rest:sequence xmlns:rest="https://sirix.io/rest">
-  let $doc := sdb:doc('database','resource1', 1)
-  return (
-    insert nodes <xml>foo<bar/></xml> as first into sdb:select-node($doc, 3)
-  )
-</rest:sequence>
-```
-
-This means the `resource1` from `database` is opened in the first revision. Then the subtree `<xml>foo<bar/></xml>` is appended to the node with the stable node-ID 3 as a first child.
-
-The following sections give a complete specification of the routes.
-
-## API Description
-
-The API for storing and querying XML and JSON databases is almost identical.
-
-As described above, you first have to authenticate with a `username` and `password` and retrieve a token, which has to be sent in the Authentication header as a Bearer token:
-
-```kotlin
-val credentials = json {
-  obj(
-    "username" to "admin",
-    "password" to "admin"
-  )
-}
-
-val response = client.postAbs("$server/token").sendJsonAwait(credentials)
-
-if (200 == response.statusCode()) {
-  val user = response.bodyAsJsonObject()
-  accessToken = user.getString("access_token")
-}   
-```
-
-so in each request add the token: "Authorization: Bearer ${accessToken}".
-
-### Create
-
-In order to create a database either with multiple or a single resource:
-
-- `PUT https://localhost:9443/<database>`creates a new database. `Content-Type` will have to be `multipart/form-data` in order to create multiple resources. All resources sent in the request must be specified with a `Content-Type` of `application/xml` or `application/json`.
-- `PUT https://localhost:9443/<database>/<resource>` creates a database and a resource, content being the body of the request. It must be XML or JSON. The `Content-Type` must be `application/xml` or `application/json` depending if the body of the request is XML or JSON. As it's returning the serialized form with in the case of XML additional metadata of SirixDB you should also specify the `Accept` header. Additionally query params `commitMessage` to add a commit message to the initial commit as well as a custom `commitTimestamp` might be specified. Both parameters are optional.
-
-### Read
-
-In order to get a list of all databases:
-- `GET https://localhost:9443/` serializes all database names and types. For instance:
-
-  ```json
-  {"databases":[{"name":"json-database","type":"json"},{"name":"xml-database","type":"xml"}]}
-  ```
-  There is also one optional URL-parameter:
-
-  - `withResources` (a boolean) if specified as true, will include the list of resources for each database. Like so:
-
-  ```json
-  {"databases":[{"name":"json-database","type":"json", "resources": ["json-resource1", "json-resource"]}]}
-  ```
-  
-
-In order to view database contents:
-- `GET https://localhost:9443/<database>` serializes the database name and all resource names in the database
-
-In order to query a resource in a database:
-- `GET https://localhost:9443/<database>/<resource>` simply serializes the internal binary tree representation back to XML or JSON. Optional URL-parameters are
-
-  - `withMetadata` (a boolean) specifies that `nodeKey` (used for the `nodeId` parameter), `hash`, and `descendantCount` are included for every node.
-  - `revision`  or `revision-timestamp` (the former being a simple long number, the latter being an ISO formatted datetime string as the parameter, for instance `2019-01-01T05:05:01`), to open a specific revision. In case of the `revision-timestamp`parameter either the exact revision is going to be selected via binary search, or the closest revision to the given point in time.
-  - `start-revision` and `end-revision` or `start-revision-timestamp` and `end-revision-timestamp` for a specific timespan.
-  - Furthermore a `nodeId`-parameter can be specified to retrieve a specific node in a revision.
-  - The `query`-parameter can be used to specify a full blown XQuery-string. Here for instance also temporal axis can be used to analyze how a specific node or subtree changed over time or to display which nodes are new in a specific revision. There's also a `diff`-function which outputs an XQuery Update script to update the first revision to the second. Other formats as output to another diff-function are for sure have to be evaluated.
-  - When you're specifying a `query`-parameter you can also add two other parameters: `startResultSeqIndex` and `endResultSeqIndex` to specify the start index of when to deliver results from the result sequence starting from 0 and an optional end index (inclusive).
-  - You can specify `maxLevel` after which subtrees are skipped from serialization by SirixDB.
-  - `nextTopLevelNodes` is used to get the next N top level nodes, that is nodes on the first level. For instance in this JSON-string `["foo",{"bar":[true, null, "baz"]}]` the fields `foo` and the object which has the field `bar` are top level nodes. The subtress of these nodes are also serialized and returned. With `lastTopLevelNodeKey` you can specify the last node by its `nodeKey`. If it's specified it's used as the context node and the next N nodes are going to be serialized and returned (it's currently only implemented for JSON databases).
-
-### Update
-
-In order to update or delete a resource stored in a database you have to make sure to specify the `Content-Type` (`application/xml` or `application/json`). Furthermore you have to get the hashcode for the context-node first, for instance with either a GET-request as shown above or a HEAD-request against the resource with an optional `revision`-parameter and a `nodeId`-parameter. The hashcode will be sent in the `ETag` HTTP-response header. You have to set it in your `Etag` HTTP-request header, too. As it is a rolling hash to cover whole subtrees in resources, SirixDB is then able to detect concurrent modifications between the time a client has made a reading request and an updating request and thus will throw an excption and the client has to re-read the context-node of the update operation.
-
-- `POST https://localhost:9443/<database>/<resource>` for adding content from the request-body. Supported URL-parameters are
-  - `nodeId`, to select the context-Node.
-  - `insert` with the possible values, `asFirstChild`, `asLeftSibling`, `asRightSibling`, `replace`, to determine where to insert the XML-fragment or the JSON data.
-
-  If both parameters are omitted the root-node (and its subtree) is going to be replaced by the new XML fragment or JSON data. In the case of XML an error is thrown if the HTTP request body doesn't start with a start-tag.
-  - optional `commitMessage` to add a commit message to the initial commit
-  - optional custom `commitTimestamp` -- usually set during a commit by SirixDB. Should only be used to import existing versioned data. The format either is `yyyy-MM-ddTHH:mm:ss` or `yyyy-MM-dd HH:mm:ss.SSS`in UTC.
-
-- `POST https://localhost:9443`: to send a longer JSONiq/XQuery-expression in the body. For instance
 ```json
-{ 
-  "query": "jn:doc('database','resource',5)=>foo=>bar",
-  "startResultSeqIndex": 3,
-  "endResultSeqIndex": 5
+{
+  "username": "admin",
+  "password": "admin"
 }
 ```
 
-  The `startResultSeqIndex` and `endResultSeqIndex` object fields are optional. You can use `startResultSeqIndex` to specify the start index of when to deliver results from the result sequence starting from 0 and an optional end index (inclusive) with `endResultSeqIndex`. 
+**Request body (refresh token):**
 
-### Delete
+```json
+{
+  "refresh_token": "<refresh_token>"
+}
+```
 
-- `DELETE https://localhost:9443` removes all databases stored. No `Content-Type` declaration is needed.
-- `DELETE https://localhost:9443/<database>` removes the database with all resources. You have to speficy the `Content-Type` depending if the $database is of type JSON or XML (`application/xml` or `application/json`).
-- `DELETE https://localhost:9443/<database>/<resource>` removes the resource from the database. Omitting the resource in the URL, the whole database is going to be deleted. The optional parameter once again is `nodeId` to remove a node or in case the nodeId references an element node to remove the whole subtree and the element node itself.
+**Response:**
+
+```json
+{
+  "access_token": "eyJhbG...",
+  "refresh_token": "eyJhbG...",
+  "token_type": "Bearer",
+  "expires_in": 300
+}
+```
+
+### `POST /logout`
+
+Revoke the current access and refresh tokens.
+
+**Request body:** the user principal JSON object returned by the authentication system.
+
+### `GET /user/authorize`
+
+Initiate OAuth2 Authorization Code flow (redirects to Keycloak).
+
+| Parameter | Type | Description |
+|---|---|---|
+| `redirect_uri` | string | URI to redirect to after authentication |
+| `state` | string | Opaque state value for CSRF protection |
+
+---
+
+## Databases
+
+### `GET /` {#list-databases}
+
+List all databases.
+
+**Role:** `view`
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `withResources` | boolean | false | Include the list of resource names per database |
+
+**Response:**
+
+```json
+{
+  "databases": [
+    {
+      "name": "shop",
+      "type": "json",
+      "resources": ["products", "customers"]
+    }
+  ]
+}
+```
+
+### `PUT /:database` {#create-database}
+
+Create a database. Optionally include initial resources.
+
+**Role:** `create`
+
+| Content-Type | Behavior |
+|---|---|
+| `application/json` | Create a JSON database |
+| `application/xml` | Create an XML database |
+| `multipart/form-data` | Create a database with multiple resources (each part specifies its own `Content-Type`) |
+
+### `GET /:database` {#get-database}
+
+Get database metadata and the list of all resource names.
+
+**Role:** `view`
+
+### `POST /:database` {#create-multiple-resources}
+
+Create multiple resources in an existing database.
+
+**Role:** `create`
+
+**Content-Type:** `multipart/form-data` — each part must set its own `Content-Type` (`application/json` or `application/xml`).
+
+### `DELETE /` {#delete-all}
+
+Delete all databases.
+
+**Role:** `delete`
+
+### `DELETE /:database` {#delete-database}
+
+Delete a database and all its resources.
+
+**Role:** `delete`
+
+**Content-Type:** must match the database type (`application/json` or `application/xml`).
+
+---
+
+## Resources
+
+### `PUT /:database/:resource` {#create-resource}
+
+Create a new resource with initial content. If the database does not exist, it is created automatically.
+
+**Role:** `create`
+
+| Parameter | Type | Description |
+|---|---|---|
+| `commitMessage` | string | Optional commit message for the initial revision |
+| `commitTimestamp` | string | Optional custom timestamp (`yyyy-MM-ddTHH:mm:ss` or `yyyy-MM-dd HH:mm:ss.SSS`, UTC). Use only when importing existing versioned data. |
+
+**Request body:** the JSON or XML document to store.
+
+**Example:**
+
+```bash
+curl -X PUT https://localhost:9443/shop/products \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '[{"name":"Laptop","price":999},{"name":"Phone","price":699}]'
+```
+
+**Response:** the stored document, enriched with SirixDB metadata when `withMetadata` is used.
+
+### `GET /:database/:resource` {#get-resource}
+
+Retrieve a resource or query it with JSONiq.
+
+**Role:** `view`
+
+#### Revision selection
+
+| Parameter | Type | Description |
+|---|---|---|
+| `revision` | integer | Retrieve a specific revision by number |
+| `revision-timestamp` | ISO datetime | Retrieve the revision closest to this timestamp (e.g. `2024-01-15T10:30:00`) |
+| `start-revision` | integer | Start of a revision range |
+| `end-revision` | integer | End of a revision range (inclusive) |
+| `start-revision-timestamp` | ISO datetime | Start of a timestamp range |
+| `end-revision-timestamp` | ISO datetime | End of a timestamp range |
+
+#### Node selection and serialization
+
+| Parameter | Type | Description |
+|---|---|---|
+| `nodeId` | long | Retrieve a specific node by its stable key |
+| `withMetadata` | boolean | Include `nodeKey`, `hash`, and `descendantCount` for every node |
+| `maxLevel` | integer | Maximum tree depth to serialize (deeper subtrees are skipped) |
+| `prettyPrint` | boolean | Format the output for readability |
+
+#### Pagination (JSON only)
+
+| Parameter | Type | Description |
+|---|---|---|
+| `nextTopLevelNodes` | integer | Return the next N top-level nodes |
+| `lastTopLevelNodeKey` | long | Node key to start pagination from |
+
+#### Query execution
+
+| Parameter | Type | Description |
+|---|---|---|
+| `query` | string | A JSONiq expression (URL-encoded) |
+| `startResultSeqIndex` | integer | Start index in the result sequence (0-based) |
+| `endResultSeqIndex` | integer | End index in the result sequence (inclusive) |
+
+**Example — retrieve revision 1:**
+
+```bash
+curl https://localhost:9443/shop/products?revision=1 \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/json"
+```
+
+**Example — temporal query (all revisions of the root):**
+
+```bash
+curl "https://localhost:9443/shop/products?query=jn:all-times(jn:doc('shop','products'))" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/json"
+```
+
+### `HEAD /:database/:resource` {#head-resource}
+
+Get the ETag (rolling hash) of a node. Use this before `POST` or `DELETE` operations.
+
+**Role:** `view`
+
+| Parameter | Type | Description |
+|---|---|---|
+| `nodeId` | long | Node to get the hash for |
+| `revision` | integer | Specific revision |
+
+**Response headers:**
+
+| Header | Description |
+|---|---|
+| `ETag` | Rolling hash of the node (required for updates) |
+
+### `POST /:database/:resource` {#update-resource}
+
+Insert, replace, or modify content within a resource. Each POST creates a new revision.
+
+**Role:** `modify`
+
+**Required header:** `ETag` — the hash obtained from a prior `HEAD` request.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `nodeId` | long | Context node for the operation |
+| `insert` | string | Insertion mode: `asFirstChild`, `asLeftSibling`, `asRightSibling`, or `replace` |
+| `commitMessage` | string | Optional commit message |
+| `commitTimestamp` | string | Optional custom timestamp (UTC) |
+
+If both `nodeId` and `insert` are omitted, the root node is replaced entirely.
+
+**Example — insert a new product as the last child:**
+
+```bash
+# 1. Get the ETag of the array node
+ETAG=$(curl -sI "https://localhost:9443/shop/products?nodeId=1" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/json" | grep -i etag | tr -d '\r' | cut -d' ' -f2)
+
+# 2. Insert a new element
+curl -X POST "https://localhost:9443/shop/products?nodeId=1&insert=asFirstChild" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -H "ETag: $ETAG" \
+  -d '{"name":"Tablet","price":449}'
+```
+
+### `DELETE /:database/:resource` {#delete-resource}
+
+Delete a resource or a subtree within it.
+
+**Role:** `delete`
+
+**Required header:** `ETag` — the hash obtained from a prior `HEAD` request.
+
+| Parameter | Type | Description |
+|---|---|---|
+| `nodeId` | long | Node to delete. If it is a structure node, the entire subtree is removed. If omitted, the whole resource is deleted. |
+
+---
+
+## Queries
+
+### `POST /` {#query-post}
+
+Execute a JSONiq expression. Use this for longer or multi-line queries that are inconvenient to URL-encode.
+
+**Role:** `view`
+
+**Content-Type:** `application/json`
+
+**Request body:**
+
+```json
+{
+  "query": "for $rev in jn:all-times(jn:doc('shop','products')) return {\"rev\": sdb:revision($rev), \"count\": count($rev[])}",
+  "startResultSeqIndex": 0,
+  "endResultSeqIndex": 9
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `query` | string | JSONiq expression |
+| `startResultSeqIndex` | integer | Start index in result sequence (0-based) |
+| `endResultSeqIndex` | integer | End index in result sequence (inclusive) |
+
+---
+
+## History and Diffs
+
+### `GET /:database/:resource/history` {#history}
+
+Get the revision history of a resource.
+
+**Role:** `view`
+
+**Produces:** `application/json`
+
+| Parameter | Type | Description |
+|---|---|---|
+| `revisions` | integer | Return only the last N revisions |
+| `startRevision` | integer | Start of revision range |
+| `endRevision` | integer | End of revision range |
+
+If no parameters are given, the full history is returned.
+
+**Response:**
+
+```json
+{
+  "history": [
+    {
+      "revision": 1,
+      "revisionTimestamp": "2024-01-15T10:30:00.000Z",
+      "author": "admin",
+      "commitMessage": "initial import"
+    },
+    {
+      "revision": 2,
+      "revisionTimestamp": "2024-01-15T11:00:00.000Z",
+      "author": "admin",
+      "commitMessage": "price update"
+    }
+  ]
+}
+```
+
+### `GET /:database/:resource/diff` {#diff}
+
+Compute the diff between two revisions (JSON resources only).
+
+**Role:** `view`
+
+**Produces:** `application/json`
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `first-revision` | integer | yes | The base revision |
+| `second-revision` | integer | yes | The revision to compare against |
+| `startNodeKey` | long | no | Restrict the diff to a subtree rooted at this node |
+| `maxDepth` | long | no | Maximum depth to traverse |
+| `include-data` | boolean | no | Include full subtree data for inserts (default: `false`) |
+
+**Response:**
+
+```json
+{
+  "database": "shop",
+  "resource": "products",
+  "old-revision": 1,
+  "new-revision": 2,
+  "diffs": [
+    {"type": "update", "nodeKey": 6, "value": 899},
+    {"type": "insert", "nodeKey": 10, "insertPosition": "asRightSibling", "data": "{\"name\":\"Tablet\",\"price\":449}"}
+  ]
+}
+```
+
+### `GET /:database/:resource/pathSummary` {#path-summary}
+
+Get the path summary — a compact overview of all unique paths in the resource.
+
+**Role:** `view`
+
+**Produces:** `application/json`
+
+| Parameter | Type | Description |
+|---|---|---|
+| `revision` | integer | Specific revision (default: latest) |
+
+**Response:**
+
+```json
+{
+  "pathSummary": [
+    {"nodeKey": 1, "path": "/[]", "references": 1, "level": 1},
+    {"nodeKey": 2, "path": "/{}", "references": 2, "level": 2},
+    {"nodeKey": 3, "path": "/name", "references": 2, "level": 3},
+    {"nodeKey": 4, "path": "/price", "references": 2, "level": 3}
+  ]
+}
+```
+
+---
+
+## Temporal Navigation
+
+### JSON: temporal functions
+
+For JSON resources, use the `jn:` temporal functions in your JSONiq queries. Each takes a JSON item and returns it from other revisions:
+
+| Function | Description |
+|---|---|
+| `jn:all-times($item)` | The item from every revision where it exists |
+| `jn:first($item)` | The item in the first revision |
+| `jn:last($item)` | The item in the most recent revision |
+| `jn:future($item)` | All future revisions (excluding current) |
+| `jn:future($item, true())` | All future revisions (including current) |
+| `jn:past($item)` | All past revisions (excluding current) |
+| `jn:past($item, true())` | All past revisions (including current) |
+| `jn:previous($item)` | The immediately preceding revision |
+| `jn:next($item)` | The immediately following revision |
+| `jn:first-existing($item)` | The first revision where the item existed (was created) |
+| `jn:last-existing($item)` | The last revision where the item existed (before deletion) |
+
+Additionally, `sdb:item-history($item)` returns the item from every revision where it was inserted or modified.
+
+**Example — track how a value changed across revisions:**
+
+```
+let $item := sdb:select-item(jn:doc('shop','products'), 6)
+for $v in sdb:item-history($item)
+return {"rev": sdb:revision($v), "price": $v}
+```
+
+**Example — count products in every revision:**
+
+```
+for $v in jn:all-times(jn:doc('shop','products'))
+return {"rev": sdb:revision($v), "count": count($v[])}
+```
+
+### XML: temporal XPath axes
+
+For XML resources, SirixDB provides custom XPath axes with the same semantics:
+
+`all-time::` `first::` `last::` `future::` `future-or-self::` `past::` `past-or-self::` `previous::` `previous-or-self::` `next::` `next-or-self::`
+
+See the [JSONiq Function Reference](/docs/jsoniq-functions.html) for the full list of temporal and inspection functions.
+
+---
+
+## Error Codes
+
+| Status | Meaning |
+|---|---|
+| `200` | Success |
+| `400` | Bad request (malformed body, missing required parameters) |
+| `401` | Unauthorized (missing or invalid token) |
+| `403` | Forbidden (insufficient role) |
+| `404` | Database, resource, or node not found |
+| `409` | Conflict (ETag mismatch — concurrent modification detected) |
+
+---
+
+## Roles
+
+Access is controlled by Keycloak roles assigned to users or groups:
+
+| Role | Grants |
+|---|---|
+| `create` | Create databases and resources |
+| `view` | Read and query resources |
+| `modify` | Update resources |
+| `delete` | Delete databases, resources, or nodes |
+
+Roles can be scoped to a specific database by prefixing: `shop-create`, `shop-view`, etc.
+
+---
+
+## Quick Setup
+
+```bash
+# Start SirixDB + Keycloak
+git clone https://github.com/sirixdb/sirix.git
+cd sirix
+docker-compose up
+
+# Get a token
+TOKEN=$(curl -s -X POST https://localhost:9443/token \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin"}' | jq -r .access_token)
+
+# Store a JSON document
+curl -X PUT https://localhost:9443/shop/products \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '[{"name":"Laptop","price":999},{"name":"Phone","price":699}]'
+
+# Query it
+curl "https://localhost:9443/shop/products" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/json"
+```
