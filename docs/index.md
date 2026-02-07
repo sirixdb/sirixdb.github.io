@@ -31,7 +31,7 @@ SirixDB is a storage system which brings versioning to a sub-file granular level
 SirixDB not only supports all XPath axes to query a resource in one revision but also temporal axes, which facilitate navigation in time. A resource's transactional cursor can be started by specifying a specific revision number or by a given point in time. The latter starts a transaction on the revision number which was committed closest to the given timestamp.
 
 <div class="img_container">
-![sunburstview](/images/sunburstview-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"} ![moves](/images/moves-cut.png){: style="max-width: 450px; height: auto; margin: 1.5em"}
+![SirixDB Sunburst Visualization](/images/gui-sunburst.png){: style="max-width: 450px; height: auto; margin: 1.5em"} ![SirixDB Diff View](/images/gui-diff-view.png){: style="max-width: 450px; height: auto; margin: 1.5em"}
 </div>
 
 You may find a quick overview of the [main features](/docs/features.html) useful. See also [how SirixDB compares](/docs/comparison.html) to XTDB, event sourcing, Git-for-data tools, and traditional temporal database extensions.

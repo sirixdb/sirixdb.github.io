@@ -84,6 +84,45 @@
     });
   }
 
+  // SVG lightbox
+  var overlay = document.createElement('div');
+  overlay.className = 'svg-lightbox';
+  overlay.innerHTML = '<button class="svg-lightbox__close" aria-label="Close">&times;</button>';
+  document.body.appendChild(overlay);
+
+  function closeLightbox() {
+    overlay.classList.remove('is-open');
+    var content = overlay.querySelector('.svg-lightbox__content');
+    if (content) content.remove();
+  }
+
+  overlay.querySelector('.svg-lightbox__close').addEventListener('click', closeLightbox);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeLightbox();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  document.querySelectorAll('.docs-content svg[role="img"], .docs-content img[src$=".svg"]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var old = overlay.querySelector('.svg-lightbox__content');
+      if (old) old.remove();
+      var clone;
+      if (el.tagName === 'IMG') {
+        clone = document.createElement('img');
+        clone.src = el.src;
+        clone.alt = el.alt;
+      } else {
+        clone = el.cloneNode(true);
+        clone.removeAttribute('style');
+      }
+      clone.className = 'svg-lightbox__content';
+      overlay.appendChild(clone);
+      overlay.classList.add('is-open');
+    });
+  });
+
   // Fade-in on scroll
   var fadeEls = document.querySelectorAll('.fade-in');
   if (fadeEls.length && 'IntersectionObserver' in window) {

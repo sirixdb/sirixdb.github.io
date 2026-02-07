@@ -468,7 +468,7 @@ Every resource maintains a compact **path summary** — a trie of all unique pat
 | **Path** | PCR → node keys | Find all nodes at path `/users/[]/name` |
 | **CAS** | (PCR + typed value) → node keys | Find all users where `age > 30` on path `/users/[]/age` |
 
-CAS (content-and-structure) indexes are the most selective — they index both the path and the typed value, enabling efficient range queries. All indexes are stored in balanced binary search trees (Red-Black trees) within the same versioned page structure.
+CAS (content-and-structure) indexes are the most selective — they index both the path and the typed value, enabling efficient range queries. All indexes are stored in Height Optimized Tries (HOT) within the same versioned page structure.
 
 For the JSONiq API to create and query indexes, see the [Function Reference](/docs/jsoniq-functions.html#indexes).
 

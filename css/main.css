@@ -1165,3 +1165,44 @@ pre::-webkit-scrollbar-thumb:hover {
   .site-footer__grid { grid-template-columns: 1fr; }
   .site-footer__bottom { flex-direction: column; gap: var(--space-4); }
 }
+
+/* SVG lightbox overlay */
+.docs-content svg[role="img"],
+.docs-content img[src$=".svg"] {
+  cursor: zoom-in;
+}
+.svg-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.88);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.svg-lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+.svg-lightbox svg,
+.svg-lightbox img {
+  max-width: 92vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+}
+.svg-lightbox__close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+}
+.svg-lightbox__close:hover { color: #e8e6e3; }
