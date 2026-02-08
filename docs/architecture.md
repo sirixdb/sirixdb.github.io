@@ -526,41 +526,41 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
   <text x="180" y="131" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k14</text>
 
   <!-- === Right side: Path Summary === -->
-  <text x="540" y="36" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif" font-weight="600">Path Summary</text>
+  <text x="540" y="36" text-anchor="middle" fill="#a78bfa" font-size="11" font-family="Inter,sans-serif" font-weight="600">Path Summary</text>
 
   <!-- DocumentRootNode (virtual) — dashed border -->
-  <rect x="475" y="44" width="130" height="20" rx="3" fill="rgba(244,123,32,0.1)" stroke="#F47B20" stroke-width="1.2" stroke-dasharray="4 2"/>
-  <text x="540" y="58" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">DocumentRootNode</text>
+  <rect x="475" y="44" width="130" height="20" rx="3" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4 2"/>
+  <text x="540" y="58" text-anchor="middle" fill="#a78bfa" font-size="7" font-family="JetBrains Mono,monospace">DocumentRootNode</text>
   <text x="615" y="58" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=0</text>
 
   <!-- /users -->
-  <line x1="518" y1="64" x2="470" y2="117" stroke="#F47B20" stroke-width="0.8"/>
-  <rect x="434" y="119" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="470" y="133" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">users</text>
+  <line x1="518" y1="64" x2="470" y2="117" stroke="#a78bfa" stroke-width="0.8"/>
+  <rect x="434" y="119" width="72" height="20" rx="3" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="470" y="133" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">users</text>
   <text x="516" y="133" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=1</text>
 
   <!-- /config -->
-  <line x1="562" y1="64" x2="590" y2="117" stroke="#F47B20" stroke-width="0.8"/>
-  <rect x="554" y="119" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="590" y="133" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">config</text>
+  <line x1="562" y1="64" x2="590" y2="117" stroke="#a78bfa" stroke-width="0.8"/>
+  <rect x="554" y="119" width="72" height="20" rx="3" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="590" y="133" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">config</text>
   <text x="636" y="133" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=5</text>
 
   <!-- /users/[] -->
-  <line x1="470" y1="139" x2="470" y2="154" stroke="#F47B20" stroke-width="0.8"/>
-  <rect x="440" y="156" width="60" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="470" y="170" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">[]</text>
+  <line x1="470" y1="139" x2="470" y2="154" stroke="#a78bfa" stroke-width="0.8"/>
+  <rect x="440" y="156" width="60" height="20" rx="3" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="470" y="170" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">[]</text>
   <text x="510" y="170" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=2</text>
 
   <!-- /users/[]/name -->
-  <line x1="458" y1="176" x2="420" y2="224" stroke="#F47B20" stroke-width="0.8"/>
-  <rect x="384" y="226" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="420" y="240" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">name</text>
+  <line x1="458" y1="176" x2="420" y2="224" stroke="#a78bfa" stroke-width="0.8"/>
+  <rect x="384" y="226" width="72" height="20" rx="3" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="420" y="240" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">name</text>
   <text x="420" y="254" text-anchor="middle" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=3</text>
 
   <!-- /users/[]/age -->
-  <line x1="482" y1="176" x2="520" y2="224" stroke="#F47B20" stroke-width="0.8"/>
-  <rect x="484" y="226" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="520" y="240" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">age</text>
+  <line x1="482" y1="176" x2="520" y2="224" stroke="#a78bfa" stroke-width="0.8"/>
+  <rect x="484" y="226" width="72" height="20" rx="3" fill="rgba(167,139,250,0.12)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="520" y="240" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">age</text>
   <text x="566" y="240" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=4</text>
 
   <!-- PCR dashed connections from data tree to path summary -->
@@ -586,13 +586,13 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
   <text x="360" y="316" text-anchor="middle" fill="#e8e6e3" font-size="11" font-family="Inter,sans-serif" font-weight="600">Index Types</text>
 
   <!-- Name Index -->
-  <rect x="40" y="330" width="190" height="38" rx="5" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="135" y="344" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="Inter,sans-serif" font-weight="600">Name Index</text>
+  <rect x="40" y="330" width="190" height="38" rx="5" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1"/>
+  <text x="135" y="344" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="600">Name Index</text>
   <text x="135" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">hash("name") → {key5,key10}</text>
 
   <!-- Path Index -->
-  <rect x="260" y="330" width="200" height="38" rx="5" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1"/>
-  <text x="360" y="344" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="600">Path Index</text>
+  <rect x="260" y="330" width="200" height="38" rx="5" fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="360" y="344" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="Inter,sans-serif" font-weight="600">Path Index</text>
   <text x="360" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">PCR=3 → {key5, key10}</text>
 
   <!-- CAS Index -->
