@@ -146,13 +146,12 @@
     block.appendChild(btn);
   });
 
-  // Contact form (EmailJS + reCAPTCHA v3)
+  // Contact form (EmailJS + honeypot)
   var contactForm = document.getElementById('contact-form');
   if (contactForm) {
     var EMAILJS_PUBLIC_KEY = 'sJmjKtQGEPQ_pnBIe';
     var EMAILJS_SERVICE_ID = 'service_8rpifo9';
     var EMAILJS_TEMPLATE_ID = 'template_icja3qf';
-    var RECAPTCHA_SITE_KEY = '6Lcws2QsAAAAABlMD58ymDrr0G3OoOU1oVwdhFD9';
 
     emailjs.init(EMAILJS_PUBLIC_KEY);
 
@@ -169,27 +168,22 @@
       status.className = 'contact-form__status';
       status.textContent = '';
 
-      grecaptcha.ready(function() {
-        grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'contact' }).then(function(token) {
-          document.getElementById('g-recaptcha-response').value = token;
-          emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, contactForm, EMAILJS_PUBLIC_KEY).then(
-            function() {
-              status.textContent = 'Message sent! We will get back to you soon.';
-              status.className = 'contact-form__status contact-form__status--success';
-              contactForm.reset();
-              btn.disabled = false;
-              btn.textContent = 'Send Message';
-            },
-            function(err) {
-              console.error('EmailJS error:', err);
-              status.textContent = 'Something went wrong (' + (err.text || err) + '). Please try again or email us directly.';
-              status.className = 'contact-form__status contact-form__status--error';
-              btn.disabled = false;
-              btn.textContent = 'Send Message';
-            }
-          );
-        });
-      });
+      emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, contactForm, EMAILJS_PUBLIC_KEY).then(
+        function() {
+          status.textContent = 'Message sent! We will get back to you soon.';
+          status.className = 'contact-form__status contact-form__status--success';
+          contactForm.reset();
+          btn.disabled = false;
+          btn.textContent = 'Send Message';
+        },
+        function(err) {
+          console.error('EmailJS error:', err);
+          status.textContent = 'Something went wrong (' + (err.text || err) + '). Please try again or email us directly.';
+          status.className = 'contact-form__status contact-form__status--error';
+          btn.disabled = false;
+          btn.textContent = 'Send Message';
+        }
+      );
     });
   }
 
