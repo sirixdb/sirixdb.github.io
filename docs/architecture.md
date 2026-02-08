@@ -19,9 +19,9 @@ Field names are stored once in an in-memory dictionary and referenced by 32-bit 
   <text x="360" y="20" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">JSON Tree Encoding</text>
 
   <!-- Source JSON -->
-  <rect x="20" y="38" width="300" height="42" rx="6" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="1" opacity="0.6"/>
-  <text x="30" y="55" fill="#9ca3af" font-size="9" font-family="Inter,sans-serif">Input JSON</text>
-  <text x="30" y="72" fill="#42B6F0" font-size="11" font-family="JetBrains Mono,monospace">{"name":"Alice","scores":[95,87]}</text>
+  <rect x="20" y="38" width="230" height="42" rx="6" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="1" opacity="0.6"/>
+  <text x="28" y="55" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Input JSON</text>
+  <text x="28" y="72" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace">{"name":"Alice","scores":[95,87]}</text>
 
   <!-- Document root -->
   <rect x="330" y="45" width="60" height="28" rx="4" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.5"/>
@@ -273,7 +273,7 @@ Each resource is organized as a trie of pages. The `RevisionRootPage` is the ent
 
 SirixDB doesn't just copy entire pages on every change. It versions `RecordPages` at a sub-page level, storing only changed records. The **sliding snapshot** algorithm, developed by Marc Kramis, avoids the trade-off between read performance and write amplification that plagues traditional approaches.
 
-<svg viewBox="0 0 960 302" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1040px;" role="img" aria-label="Four versioning strategies compared: Full Copy, Incremental, Differential, and Sliding Snapshot">
+<svg viewBox="0 0 960 302" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1100px;" role="img" aria-label="Four versioning strategies compared: Full Copy, Incremental, Differential, and Sliding Snapshot">
   <text x="480" y="20" text-anchor="middle" fill="#e8e6e3" font-size="16" font-family="Inter,sans-serif" font-weight="600">Page Versioning Strategies</text>
 
   <!-- Column headers -->
