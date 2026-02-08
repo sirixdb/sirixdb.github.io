@@ -152,7 +152,7 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <text x="38" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">New page</text>
   <rect x="170" y="8" width="12" height="12" rx="2" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1.5"/>
   <text x="188" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">Modified page</text>
-  <line x1="320" y1="14" x2="360" y2="14" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>
+  <line x1="295" y1="14" x2="360" y2="14" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>
   <text x="368" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">Shared pointer (unchanged)</text>
 
   <!-- === Rev 1 === -->
