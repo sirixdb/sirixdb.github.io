@@ -181,7 +181,8 @@
               btn.textContent = 'Send Message';
             },
             function(err) {
-              status.textContent = 'Something went wrong. Please try again or email us directly.';
+              console.error('EmailJS error:', err);
+              status.textContent = 'Something went wrong (' + (err.text || err) + '). Please try again or email us directly.';
               status.className = 'contact-form__status contact-form__status--error';
               btn.disabled = false;
               btn.textContent = 'Send Message';
