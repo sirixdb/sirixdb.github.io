@@ -273,7 +273,7 @@ Each resource is organized as a trie of pages. The `RevisionRootPage` is the ent
 
 SirixDB doesn't just copy entire pages on every change. It versions `RecordPages` at a sub-page level, storing only changed records. The **sliding snapshot** algorithm, developed by Marc Kramis, avoids the trade-off between read performance and write amplification that plagues traditional approaches.
 
-<svg viewBox="0 0 960 302" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:960px;" role="img" aria-label="Four versioning strategies compared: Full Copy, Incremental, Differential, and Sliding Snapshot">
+<svg viewBox="0 0 960 302" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1040px;" role="img" aria-label="Four versioning strategies compared: Full Copy, Incremental, Differential, and Sliding Snapshot">
   <text x="480" y="20" text-anchor="middle" fill="#e8e6e3" font-size="16" font-family="Inter,sans-serif" font-weight="600">Page Versioning Strategies</text>
 
   <!-- Column headers -->
