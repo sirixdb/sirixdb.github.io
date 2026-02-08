@@ -118,7 +118,7 @@ A customer claims they were charged the wrong price. Your current database shows
 
 ```xquery
 let $catalog := jn:open('shop', 'products', xs:dateTime('2024-01-15T15:23:47Z'))
-return $catalog.products[.sku eq "SKU-12345"].price
+return $catalog.products[?$$.sku eq "SKU-12345"].price
 ```
 
 One query. Exact answer. No audit infrastructure required — the database remembers everything.
