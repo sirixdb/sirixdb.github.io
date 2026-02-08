@@ -465,16 +465,16 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
   <text x="510" y="170" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=2</text>
 
   <!-- /users/[]/name -->
-  <line x1="458" y1="176" x2="440" y2="192" stroke="#F47B20" stroke-width="0.8"/>
-  <rect x="404" y="194" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="440" y="208" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">name</text>
-  <text x="440" y="222" text-anchor="middle" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=3</text>
+  <line x1="458" y1="176" x2="440" y2="224" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="404" y="226" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="440" y="240" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">name</text>
+  <text x="440" y="254" text-anchor="middle" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=3</text>
 
   <!-- /users/[]/age -->
-  <line x1="482" y1="176" x2="540" y2="192" stroke="#F47B20" stroke-width="0.8"/>
-  <rect x="504" y="194" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="540" y="208" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">age</text>
-  <text x="586" y="208" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=4</text>
+  <line x1="482" y1="176" x2="540" y2="224" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="504" y="226" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="540" y="240" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">age</text>
+  <text x="586" y="240" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=4</text>
 
   <!-- PCR dashed connections from data tree to path summary -->
   <!-- DocumentRootNode → DocumentRootNode -->
@@ -486,13 +486,13 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
   <!-- ARRAY → [] -->
   <line x1="126" y1="165" x2="440" y2="165" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
   <!-- Left "name" → name -->
-  <path d="M 50,226 Q 230,210 404,202" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35" fill="none"/>
+  <line x1="50" y1="234" x2="404" y2="236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35"/>
   <!-- Right "name" → name -->
-  <path d="M 150,226 Q 290,208 404,202" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35" fill="none"/>
+  <line x1="150" y1="234" x2="404" y2="236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35"/>
   <!-- Left "age" → age -->
-  <path d="M 70,226 C 220,216 400,250 504,214" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35" fill="none"/>
+  <line x1="88" y1="234" x2="504" y2="236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35"/>
   <!-- Right "age" → age -->
-  <path d="M 170,226 C 300,218 420,248 504,214" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35" fill="none"/>
+  <line x1="188" y1="234" x2="504" y2="236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35"/>
 
   <!-- Index section below -->
   <line x1="40" y1="278" x2="680" y2="278" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
