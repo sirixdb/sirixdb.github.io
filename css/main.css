@@ -65,7 +65,7 @@
   --shadow-lg:  0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
   --shadow-xl:  0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.3);
 
-  --max-w-content: 1400px;
+  --max-w-content: 1600px;
   --max-w-narrow:  980px;
   --header-height: 64px;
 
@@ -1183,7 +1183,7 @@ pre::-webkit-scrollbar-thumb:hover {
 /* Diagram frames — break out wider than text for visual prominence */
 .docs-content .diagram-frame {
   margin-left: -50px;
-  margin-right: -70px;
+  margin-right: -150px;
 }
 .diagram-frame {
   position: relative;

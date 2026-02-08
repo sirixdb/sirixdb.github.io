@@ -14,7 +14,7 @@ Unlike document databases that store JSON as opaque blobs, SirixDB decomposes ea
 
 Field names are stored once in an in-memory dictionary and referenced by 32-bit keys, saving space when the same field appears thousands of times.
 
-<svg viewBox="0 0 720 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="JSON document decomposed into a tree of nodes with stable node keys">
+<svg viewBox="0 0 720 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="JSON document decomposed into a tree of nodes with stable node keys">
   <!-- Title -->
   <text x="360" y="20" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">JSON Tree Encoding</text>
 
@@ -87,7 +87,7 @@ Each node type maps directly to a JSON construct: `OBJECT`, `ARRAY`, `OBJECT_KEY
 
 When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instead, it **copies only the modified page and its ancestor path** to the root. All unchanged pages are shared between the old and new revision via pointers. This is the same principle used in persistent data structures and ZFS.
 
-<svg viewBox="0 0 720 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Copy-on-write: modifying a leaf copies only the path to root, sharing unchanged pages">
+<svg viewBox="0 0 720 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Copy-on-write: modifying a leaf copies only the path to root, sharing unchanged pages">
 
   <!-- Legend -->
   <rect x="20" y="8" width="12" height="12" rx="2" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
@@ -183,7 +183,7 @@ This means a revision that modifies a single record only writes the modified pag
 
 Physically, each resource is stored in two append-only logical devices (files). **LD₁** stores page content (IndirectPages, RecordPages, NamePages) followed by a RevisionRootPage at the end of each revision's data. **LD₂** stores the UberPage — a sequence of timestamp + offset pairs, one per revision, pointing to the corresponding RRP in LD₁.
 
-<img src="/images/sirix-on-device-layout.svg" alt="Logical Device Layout: LD₂ stores UberPage with timestamp and offset pairs pointing to each revision's RevisionRootPage in LD₁. Each revision appends only modified page fragments (copy-on-write)." style="width:100%;max-width:960px;">
+<img src="/images/sirix-on-device-layout.svg" alt="Logical Device Layout: LD₂ stores UberPage with timestamp and offset pairs pointing to each revision's RevisionRootPage in LD₁. Each revision appends only modified page fragments (copy-on-write)." style="width:100%;max-width:1180px;">
 
 The `UberPage` is always written last as an atomic operation. Even if a crash occurs mid-commit, the previous valid state is preserved.
 
@@ -191,7 +191,7 @@ The `UberPage` is always written last as an atomic operation. Even if a crash oc
 
 Each resource is organized as a trie of pages. The `RevisionRootPage` is the entry point for a single revision, branching into subtrees for data, indexes, and metadata.
 
-<svg viewBox="0 0 860 255" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:860px;" role="img" aria-label="Page hierarchy: RevisionRootPage branching into data and index subtrees, with UberPage as logical header">
+<svg viewBox="0 0 860 255" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Page hierarchy: RevisionRootPage branching into data and index subtrees, with UberPage as logical header">
   <text x="430" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Page Hierarchy (single revision)</text>
 
   <!-- UberPage (logical header) -->
@@ -273,7 +273,7 @@ Each resource is organized as a trie of pages. The `RevisionRootPage` is the ent
 
 SirixDB doesn't just copy entire pages on every change. It versions `RecordPages` at a sub-page level, storing only changed records. The **sliding snapshot** algorithm, developed by Marc Kramis, avoids the trade-off between read performance and write amplification that plagues traditional approaches.
 
-<svg viewBox="0 0 960 302" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1100px;" role="img" aria-label="Four versioning strategies compared: Full Copy, Incremental, Differential, and Sliding Snapshot">
+<svg viewBox="0 0 960 302" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Four versioning strategies compared: Full Copy, Incremental, Differential, and Sliding Snapshot">
   <text x="480" y="20" text-anchor="middle" fill="#e8e6e3" font-size="16" font-family="Inter,sans-serif" font-weight="600">Page Versioning Strategies</text>
 
   <!-- Column headers -->
@@ -372,7 +372,7 @@ SirixDB supports three types of user-defined secondary indexes, all stored in th
 
 Every resource maintains a compact **path summary** — a tree of all unique paths in the document. Each unique path gets a **path class reference (PCR)**, a stable integer ID. Nodes in the main data tree reference their PCR, enabling efficient path-based lookups.
 
-<svg viewBox="0 0 720 380" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Path Summary maps unique paths to path class references, connecting data tree nodes to index entries">
+<svg viewBox="0 0 720 380" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Path Summary maps unique paths to path class references, connecting data tree nodes to index entries">
   <text x="360" y="16" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Path Summary and Index Architecture</text>
 
   <!-- === Left side: JSON Data Tree === -->
