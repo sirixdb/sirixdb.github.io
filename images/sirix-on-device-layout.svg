@@ -19,7 +19,7 @@
   <text x="52" y="175" text-anchor="middle" fill="#6b7280" font-size="9">Revisions</text>
 
   <!-- LD₂ baseline (below boxes) -->
-  <line x1="95" y1="153" x2="910" y2="153" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="95" y1="162" x2="910" y2="162" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
 
   <!-- H ×2 (UberPage header, stored twice) — first block of LD₂ -->
   <rect x="110" y="88" width="55" height="60" rx="5" fill="rgba(244,123,32,0.5)" stroke="#F47B20" stroke-width="1.5"/>
