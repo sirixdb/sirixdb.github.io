@@ -994,13 +994,21 @@ pre::-webkit-scrollbar-thumb:hover {
   box-shadow: 0 0 0 3px var(--color-primary-light);
 }
 .contact-form__captcha {
-  margin-top: var(--space-4);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-5);
   display: flex;
   justify-content: center;
 }
+.contact-form__captcha iframe {
+  border-radius: var(--radius-md);
+}
 .contact-form__captcha > div {
-  transform: scale(0.92);
+  transform: scale(0.95);
   transform-origin: center;
+  filter: brightness(0.85) contrast(1.1);
+}
+#contact-submit {
+  margin-top: var(--space-4);
 }
 .contact-form__status {
   margin-top: var(--space-4);
