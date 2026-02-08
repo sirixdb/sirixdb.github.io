@@ -1165,6 +1165,7 @@ pre::-webkit-scrollbar-thumb:hover {
 
   .docs-layout { grid-template-columns: 1fr; padding-block: var(--space-8); }
   .docs-sidebar { position: static; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-6); margin-bottom: var(--space-6); max-height: none; }
+  .diagram-frame { margin-left: -16px; margin-right: -16px; padding: var(--space-4); border-radius: var(--radius-lg); }
 
   .site-footer__grid { grid-template-columns: 1fr 1fr; gap: var(--space-8); }
 }
@@ -1179,11 +1180,48 @@ pre::-webkit-scrollbar-thumb:hover {
   .site-footer__bottom { flex-direction: column; gap: var(--space-4); }
 }
 
-/* SVG lightbox overlay */
-.docs-content svg[role="img"],
-.docs-content img[src$=".svg"] {
+/* Diagram frames — break out wider than text for visual prominence */
+.diagram-frame {
+  position: relative;
+  margin: var(--space-8) -60px;
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
   cursor: zoom-in;
 }
+.diagram-frame:hover {
+  border-color: var(--color-accent-light);
+  background-color: rgba(66, 182, 240, 0.02);
+}
+.diagram-frame svg,
+.diagram-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.diagram-frame__expand {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: rgba(66, 182, 240, 0.06);
+  border: 1px solid rgba(66, 182, 240, 0.12);
+  color: var(--color-text-muted);
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  pointer-events: none;
+}
+.diagram-frame:hover .diagram-frame__expand {
+  opacity: 1;
+}
+
+/* SVG lightbox overlay */
 .svg-lightbox {
   position: fixed;
   inset: 0;
@@ -1191,10 +1229,12 @@ pre::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.88);
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 .svg-lightbox.is-open {
   opacity: 1;
@@ -1209,13 +1249,23 @@ pre::-webkit-scrollbar-thumb:hover {
 }
 .svg-lightbox__close {
   position: absolute;
-  top: 16px;
-  right: 20px;
-  background: none;
-  border: none;
-  color: #9ca3af;
-  font-size: 28px;
+  top: 20px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
   cursor: pointer;
-  line-height: 1;
+  padding: 0;
+  transition: all 0.2s ease;
 }
-.svg-lightbox__close:hover { color: #e8e6e3; }
+.svg-lightbox__close:hover {
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+}

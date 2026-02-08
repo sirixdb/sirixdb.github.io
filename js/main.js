@@ -76,7 +76,7 @@
   // SVG lightbox
   var overlay = document.createElement('div');
   overlay.className = 'svg-lightbox';
-  overlay.innerHTML = '<button class="svg-lightbox__close" aria-label="Close">&times;</button>';
+  overlay.innerHTML = '<button class="svg-lightbox__close" aria-label="Close"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>';
   document.body.appendChild(overlay);
 
   function closeLightbox() {
@@ -93,8 +93,23 @@
     if (e.key === 'Escape') closeLightbox();
   });
 
+  var expandSvg = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 10v4h4M14 6V2h-4M2 6V2h4M14 10v4h-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
   document.querySelectorAll('.docs-content svg[role="img"], .docs-content img[src$=".svg"]').forEach(function(el) {
-    el.addEventListener('click', function() {
+    // Wrap diagram in a frame for visual prominence
+    var frame = document.createElement('div');
+    frame.className = 'diagram-frame';
+    el.parentNode.insertBefore(frame, el);
+    frame.appendChild(el);
+    el.removeAttribute('style');
+
+    // Add expand indicator
+    var expandBtn = document.createElement('div');
+    expandBtn.className = 'diagram-frame__expand';
+    expandBtn.innerHTML = expandSvg;
+    frame.appendChild(expandBtn);
+
+    frame.addEventListener('click', function() {
       var old = overlay.querySelector('.svg-lightbox__content');
       if (old) old.remove();
       var clone;
@@ -104,7 +119,6 @@
         clone.alt = el.alt;
       } else {
         clone = el.cloneNode(true);
-        clone.removeAttribute('style');
       }
       clone.setAttribute('class', 'svg-lightbox__content');
       overlay.appendChild(clone);
