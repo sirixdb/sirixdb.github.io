@@ -65,8 +65,8 @@
   --shadow-lg:  0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
   --shadow-xl:  0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.3);
 
-  --max-w-content: 1200px;
-  --max-w-narrow:  800px;
+  --max-w-content: 1400px;
+  --max-w-narrow:  880px;
   --header-height: 64px;
 
   --transition-fast: 150ms ease;
@@ -859,7 +859,7 @@ pre::-webkit-scrollbar-thumb:hover {
 .docs-layout {
   display: grid;
   grid-template-columns: 260px 1fr;
-  gap: var(--space-12);
+  gap: var(--space-16);
   max-width: var(--max-w-content);
   margin-inline: auto;
   padding: var(--space-12) var(--space-6);
@@ -1187,7 +1187,7 @@ pre::-webkit-scrollbar-thumb:hover {
 }
 .diagram-frame {
   position: relative;
-  margin: var(--space-10) -100px;
+  margin: var(--space-10) -50px;
   padding: var(--space-10) var(--space-8);
   border-radius: var(--radius-xl);
   border: 1px solid rgba(66, 182, 240, 0.15);
