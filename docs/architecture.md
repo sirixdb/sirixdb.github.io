@@ -372,7 +372,7 @@ SirixDB supports three types of user-defined secondary indexes, all stored in th
 
 Every resource maintains a compact **path summary** — a tree of all unique paths in the document. Each unique path gets a **path class reference (PCR)**, a stable integer ID. Nodes in the main data tree reference their PCR, enabling efficient path-based lookups.
 
-<svg viewBox="0 0 720 380" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Path Summary maps unique paths to path class references, connecting data tree nodes to index entries">
+<svg viewBox="0 0 720 386" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Path Summary maps unique paths to path class references, connecting data tree nodes to index entries">
   <text x="360" y="16" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Path Summary and Index Architecture</text>
 
   <!-- === Left side: JSON Data Tree === -->
@@ -440,6 +440,23 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
   <rect x="158" y="256" width="24" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
   <text x="170" y="266" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">35</text>
 
+  <!-- nodeKey labels (preorder traversal: k0..k14) -->
+  <text x="93" y="56" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k0</text>
+  <text x="128" y="90" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k1</text>
+  <text x="60" y="131" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k2</text>
+  <text x="72" y="167" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k3</text>
+  <text x="22" y="203" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k4</text>
+  <text x="8" y="237" text-anchor="end" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k5</text>
+  <text x="30" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k6</text>
+  <text x="90" y="237" text-anchor="start" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k7</text>
+  <text x="70" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k8</text>
+  <text x="178" y="203" text-anchor="start" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k9</text>
+  <text x="108" y="237" text-anchor="end" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k10</text>
+  <text x="130" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k11</text>
+  <text x="190" y="237" text-anchor="start" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k12</text>
+  <text x="170" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k13</text>
+  <text x="180" y="131" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k14</text>
+
   <!-- === Right side: Path Summary === -->
   <text x="540" y="36" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif" font-weight="600">Path Summary</text>
 
@@ -497,23 +514,23 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
   <path d="M 170,226 C 330,190 484,210 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
 
   <!-- Index section below -->
-  <line x1="40" y1="278" x2="680" y2="278" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
-  <text x="360" y="300" text-anchor="middle" fill="#e8e6e3" font-size="11" font-family="Inter,sans-serif" font-weight="600">Index Types</text>
+  <line x1="40" y1="284" x2="680" y2="284" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
+  <text x="360" y="306" text-anchor="middle" fill="#e8e6e3" font-size="11" font-family="Inter,sans-serif" font-weight="600">Index Types</text>
 
   <!-- Name Index -->
-  <rect x="40" y="314" width="190" height="38" rx="5" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="135" y="328" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="Inter,sans-serif" font-weight="600">Name Index</text>
-  <text x="135" y="344" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">hash("name") → {key5,key12}</text>
+  <rect x="40" y="320" width="190" height="38" rx="5" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="135" y="334" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="Inter,sans-serif" font-weight="600">Name Index</text>
+  <text x="135" y="350" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">hash("name") → {key5,key10}</text>
 
   <!-- Path Index -->
-  <rect x="260" y="314" width="200" height="38" rx="5" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1"/>
-  <text x="360" y="328" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="600">Path Index</text>
-  <text x="360" y="344" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">PCR=3 → {key5, key12}</text>
+  <rect x="260" y="320" width="200" height="38" rx="5" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1"/>
+  <text x="360" y="334" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="600">Path Index</text>
+  <text x="360" y="350" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">PCR=3 → {key5, key10}</text>
 
   <!-- CAS Index -->
-  <rect x="490" y="314" width="200" height="38" rx="5" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="1"/>
-  <text x="590" y="328" text-anchor="middle" fill="#10b981" font-size="9" font-family="Inter,sans-serif" font-weight="600">CAS Index</text>
-  <text x="590" y="344" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">(PCR=4, 30) → {key7}</text>
+  <rect x="490" y="320" width="200" height="38" rx="5" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="1"/>
+  <text x="590" y="334" text-anchor="middle" fill="#10b981" font-size="9" font-family="Inter,sans-serif" font-weight="600">CAS Index</text>
+  <text x="590" y="350" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">(PCR=4, 28) → {key8}</text>
 </svg>
 
 ### Index Types
