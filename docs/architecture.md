@@ -463,7 +463,7 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
   <line x1="458" y1="154" x2="440" y2="170" stroke="#F47B20" stroke-width="0.8"/>
   <rect x="404" y="172" width="72" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
   <text x="440" y="186" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">name</text>
-  <text x="486" y="186" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=3</text>
+  <text x="440" y="200" text-anchor="middle" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=3</text>
 
   <!-- /users/[]/age -->
   <line x1="482" y1="154" x2="540" y2="170" stroke="#F47B20" stroke-width="0.8"/>
