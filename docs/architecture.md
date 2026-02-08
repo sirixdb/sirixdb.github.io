@@ -133,9 +133,9 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <rect x="337" y="70" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
   <text x="370" y="85" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
   <!-- Left branch: copied (modified) -->
-  <line x1="355" y1="92" x2="330" y2="110" stroke="#F47B20" stroke-width="1.2"/>
-  <rect x="302" y="112" width="56" height="18" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
-  <text x="330" y="125" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
+  <line x1="355" y1="92" x2="330" y2="110" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="302" y="112" width="56" height="18" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="330" y="125" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
   <!-- Modified Page A' -->
   <line x1="316" y1="130" x2="306" y2="147" stroke="#F47B20" stroke-width="0.8"/>
   <rect x="286" y="149" width="40" height="16" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
@@ -154,9 +154,9 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <!-- Left: share Rev2's left indirect -->
   <line x1="565" y1="92" x2="358" y2="121" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
   <!-- Right: modified -->
-  <line x1="595" y1="92" x2="620" y2="110" stroke="#F47B20" stroke-width="1.2"/>
-  <rect x="592" y="112" width="56" height="18" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
-  <text x="620" y="125" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
+  <line x1="595" y1="92" x2="620" y2="110" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="592" y="112" width="56" height="18" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="620" y="125" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
   <!-- Shared Page C -->
   <line x1="606" y1="130" x2="178" y2="149" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
   <!-- Modified Page D' -->
@@ -273,17 +273,19 @@ Each resource is organized as a trie of pages. The `RevisionRootPage` is the ent
 
 SirixDB doesn't just copy entire pages on every change. It versions `RecordPages` at a sub-page level, storing only changed records. The **sliding snapshot** algorithm, developed by Marc Kramis, avoids the trade-off between read performance and write amplification that plagues traditional approaches.
 
-<svg viewBox="0 0 720 290" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Three versioning strategies compared: Full, Incremental, and Sliding Snapshot">
-  <text x="360" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Page Versioning Strategies</text>
+<svg viewBox="0 0 960 290" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:960px;" role="img" aria-label="Four versioning strategies compared: Full Copy, Incremental, Differential, and Sliding Snapshot">
+  <text x="480" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Page Versioning Strategies</text>
 
   <!-- Column headers -->
-  <text x="120" y="42" text-anchor="middle" fill="#42B6F0" font-size="11" font-family="Inter,sans-serif" font-weight="600">Full Copy</text>
-  <text x="360" y="42" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif" font-weight="600">Incremental</text>
-  <text x="600" y="42" text-anchor="middle" fill="#10b981" font-size="11" font-family="Inter,sans-serif" font-weight="600">Sliding Snapshot</text>
+  <text x="160" y="42" text-anchor="middle" fill="#42B6F0" font-size="11" font-family="Inter,sans-serif" font-weight="600">Full Copy</text>
+  <text x="370" y="42" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif" font-weight="600">Incremental</text>
+  <text x="590" y="42" text-anchor="middle" fill="#a78bfa" font-size="11" font-family="Inter,sans-serif" font-weight="600">Differential</text>
+  <text x="810" y="42" text-anchor="middle" fill="#10b981" font-size="11" font-family="Inter,sans-serif" font-weight="600">Sliding Snapshot</text>
 
   <!-- Separators -->
-  <line x1="240" y1="30" x2="240" y2="260" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
+  <line x1="265" y1="30" x2="265" y2="260" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
   <line x1="480" y1="30" x2="480" y2="260" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
+  <line x1="700" y1="30" x2="700" y2="260" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
 
   <!-- Rev labels -->
   <text x="20" y="78" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 1</text>
@@ -292,63 +294,63 @@ SirixDB doesn't just copy entire pages on every change. It versions `RecordPages
   <text x="20" y="198" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 4</text>
   <text x="20" y="238" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 5</text>
 
-  <!-- FULL COPY column -->
-  <!-- Rev 1: full page [A B C D] -->
-  <rect x="68" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="120" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
-  <!-- Rev 2: full page [A B' C D] -->
-  <rect x="68" y="102" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="120" y="117" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  <tspan fill="#F47B20">B'</tspan> C  D</text>
-  <!-- Rev 3 -->
-  <rect x="68" y="142" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="120" y="157" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B' <tspan fill="#F47B20">C'</tspan> D</text>
-  <!-- Rev 4 -->
-  <rect x="68" y="182" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="120" y="197" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace"><tspan fill="#F47B20">A'</tspan> B' C' D</text>
-  <!-- Rev 5 -->
-  <rect x="68" y="222" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="120" y="237" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' <tspan fill="#F47B20">D'</tspan></text>
+  <!-- FULL COPY column (center: 160) -->
+  <rect x="108" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="160" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <rect x="108" y="102" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="160" y="117" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  <tspan fill="#F47B20">B'</tspan> C  D</text>
+  <rect x="108" y="142" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="160" y="157" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B' <tspan fill="#F47B20">C'</tspan> D</text>
+  <rect x="108" y="182" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="160" y="197" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace"><tspan fill="#F47B20">A'</tspan> B' C' D</text>
+  <rect x="108" y="222" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="160" y="237" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' <tspan fill="#F47B20">D'</tspan></text>
+  <text x="160" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Fast reads, wasteful writes</text>
 
-  <text x="120" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Fast reads, wasteful writes</text>
+  <!-- INCREMENTAL column (center: 370) -->
+  <rect x="318" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="370" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <rect x="348" y="102" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
+  <text x="370" y="117" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+  <rect x="348" y="142" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
+  <text x="370" y="157" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
+  <rect x="318" y="182" width="104" height="22" rx="3" fill="rgba(244,123,32,0.3)" stroke="#F47B20" stroke-width="1.5"/>
+  <text x="370" y="197" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
+  <text x="428" y="197" fill="#F47B20" font-size="7" font-family="Inter,sans-serif" font-style="italic">write spike!</text>
+  <rect x="348" y="222" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
+  <text x="370" y="237" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
+  <text x="370" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Compact, but periodic write spikes</text>
 
-  <!-- INCREMENTAL column -->
-  <!-- Rev 1: full dump -->
-  <rect x="308" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="360" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
-  <!-- Rev 2: only delta -->
-  <rect x="338" y="102" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
-  <text x="360" y="117" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
-  <!-- Rev 3: only delta -->
-  <rect x="338" y="142" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
-  <text x="360" y="157" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
-  <!-- Rev 4: full dump again (write spike!) -->
-  <rect x="308" y="182" width="104" height="22" rx="3" fill="rgba(244,123,32,0.3)" stroke="#F47B20" stroke-width="1.5"/>
-  <text x="360" y="197" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
-  <text x="425" y="197" fill="#F47B20" font-size="7" font-family="Inter,sans-serif" font-style="italic">write spike!</text>
-  <!-- Rev 5: delta -->
-  <rect x="338" y="222" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
-  <text x="360" y="237" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
+  <!-- DIFFERENTIAL column (center: 590) — all changes since last full dump -->
+  <rect x="538" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="590" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <rect x="568" y="102" width="44" height="22" rx="3" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="590" y="117" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+  <rect x="558" y="142" width="64" height="22" rx="3" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="590" y="157" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">B' C'</text>
+  <rect x="548" y="182" width="84" height="22" rx="3" fill="rgba(167,139,250,0.25)" stroke="#a78bfa" stroke-width="1.2"/>
+  <text x="590" y="197" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">A' B' C'</text>
+  <rect x="538" y="222" width="104" height="22" rx="3" fill="rgba(167,139,250,0.3)" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="590" y="237" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D'</text>
+  <text x="648" y="237" fill="#a78bfa" font-size="7" font-family="Inter,sans-serif" font-style="italic">growing!</text>
+  <text x="590" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">2 reads, but growing deltas</text>
 
-  <text x="360" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Compact, but periodic write spikes</text>
-
-  <!-- SLIDING SNAPSHOT column (window N=3) -->
-  <!-- Rev 1: full -->
-  <rect x="548" y="62" width="104" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="600" y="77" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
-  <!-- Rev 2: changed + window carry -->
-  <rect x="558" y="102" width="84" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="600" y="117" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
-  <!-- Rev 3 -->
-  <rect x="558" y="142" width="84" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="600" y="157" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">C' <tspan fill="#9ca3af" font-size="7">+ A,D</tspan></text>
-  <!-- Rev 4: changed + expired from window -->
-  <rect x="558" y="182" width="84" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="600" y="197" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">A' <tspan fill="#9ca3af" font-size="7">+ B',C'</tspan></text>
-  <!-- Rev 5 -->
-  <rect x="558" y="222" width="84" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="600" y="237" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">D' <tspan fill="#9ca3af" font-size="7">+ A'</tspan></text>
-
-  <text x="600" y="265" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">Bounded reads, no spikes</text>
+  <!-- SLIDING SNAPSHOT column (center: 810, window N=3) -->
+  <rect x="758" y="62" width="104" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="810" y="77" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <!-- Rev 2: only B changed, no carry needed -->
+  <rect x="788" y="102" width="44" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="810" y="117" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+  <!-- Rev 3: only C changed, no carry needed (all records reachable within 3 fragments) -->
+  <rect x="788" y="142" width="44" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="810" y="157" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
+  <!-- Rev 4: A changed, carry D (last written Rev 1, outside window of 3) -->
+  <rect x="773" y="182" width="74" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="810" y="197" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">A' <tspan fill="#9ca3af" font-size="7">+ D</tspan></text>
+  <!-- Rev 5: D changed, carry B' (last written Rev 2, outside window) -->
+  <rect x="773" y="222" width="74" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="810" y="237" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">D' <tspan fill="#9ca3af" font-size="7">+ B'</tspan></text>
+  <text x="810" y="265" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">Bounded reads, no spikes</text>
 </svg>
 
 | Strategy | Reads to reconstruct | Write cost per revision | Write spikes? |
