@@ -20,4 +20,6 @@ highlighter: rouge
 plugins:
   - jekyll-gzip
 
-
+exclude:
+  - vendor
+  - Gemfile.lock
