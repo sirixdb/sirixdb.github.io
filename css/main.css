@@ -1165,7 +1165,7 @@ pre::-webkit-scrollbar-thumb:hover {
 
   .docs-layout { grid-template-columns: 1fr; padding-block: var(--space-8); }
   .docs-sidebar { position: static; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-6); margin-bottom: var(--space-6); max-height: none; }
-  .diagram-frame { margin-left: -20px; margin-right: -20px; padding: var(--space-5); border-radius: var(--radius-lg); }
+  .diagram-frame { margin-left: -20px; margin-right: -20px; padding: var(--space-6) var(--space-4); border-radius: var(--radius-lg); }
 
   .site-footer__grid { grid-template-columns: 1fr 1fr; gap: var(--space-8); }
 }
@@ -1183,18 +1183,18 @@ pre::-webkit-scrollbar-thumb:hover {
 /* Diagram frames — break out wider than text for visual prominence */
 .diagram-frame {
   position: relative;
-  margin: var(--space-8) -80px;
-  padding: var(--space-8);
+  margin: var(--space-10) -100px;
+  padding: var(--space-10) var(--space-8);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(66, 182, 240, 0.12);
-  background: linear-gradient(135deg, rgba(66, 182, 240, 0.02) 0%, rgba(244, 123, 32, 0.015) 100%);
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(66, 182, 240, 0.15);
+  background: linear-gradient(145deg, rgba(66, 182, 240, 0.025) 0%, rgba(244, 123, 32, 0.02) 50%, rgba(66, 182, 240, 0.015) 100%);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.03);
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   cursor: pointer;
 }
 .diagram-frame:hover {
-  border-color: rgba(66, 182, 240, 0.2);
-  box-shadow: 0 4px 24px rgba(66, 182, 240, 0.08), 0 2px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  border-color: rgba(66, 182, 240, 0.28);
+  box-shadow: 0 8px 32px rgba(66, 182, 240, 0.1), 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   transform: translateY(-1px);
 }
 .diagram-frame svg,
