@@ -485,14 +485,14 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
   <path d="M 258,129 Q 406,167 554,129" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
   <!-- ARRAY → [] -->
   <line x1="126" y1="165" x2="440" y2="165" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
-  <!-- Left "name" → name -->
-  <path d="M 30,226 Q 210,208 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35" fill="none"/>
-  <!-- Right "name" → name -->
-  <path d="M 130,226 Q 260,210 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35" fill="none"/>
-  <!-- Left "age" → age -->
-  <path d="M 70,226 Q 280,204 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35" fill="none"/>
-  <!-- Right "age" → age -->
-  <path d="M 170,226 Q 330,208 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.35" fill="none"/>
+  <!-- Left "name" → name (arc above keys) -->
+  <path d="M 30,226 Q 210,208 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <!-- Right "name" → name (arc above keys) -->
+  <path d="M 130,226 Q 260,210 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <!-- Left "age" → age (dip below keys) -->
+  <path d="M 70,242 Q 280,256 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
+  <!-- Right "age" → age (dip below keys) -->
+  <path d="M 170,242 Q 330,254 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
 
   <!-- Index section below -->
   <line x1="40" y1="278" x2="680" y2="278" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
