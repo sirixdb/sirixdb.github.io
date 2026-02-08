@@ -6,13 +6,38 @@ title: SirixDB - Architecture
 
 [Edit this page on GitHub](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/architecture.md)
 
-SirixDB is a temporal, append-only database that never overwrites data. Every transaction commit creates an immutable snapshot. It uses **copy-on-write with path copying** to share unchanged data between revisions, keeping storage minimal. The storage engine is log-structured and optimized for flash drives — sequential writes only, no WAL, no compaction.
+What if your database never forgot anything, and you could query any point in its history as fast as querying the present — without storage exploding?
+
+SirixDB is a **bitemporal node store** that makes version control a first-class citizen of the storage engine. Every commit creates an immutable snapshot. Every revision is queryable. And unlike naive approaches that copy everything (git-style) or maintain expensive logs (event sourcing), SirixDB achieves this through **structural sharing** and a novel **sliding snapshot** versioning algorithm.
+
+| Feature | What it means | Why it matters |
+|---------|---------------|----------------|
+| **Bitemporal** | Every revision preserved | Git-like history for your data |
+| **Append-Only** | No in-place updates | No WAL needed, crash-safe by design |
+| **Copy-on-Write** | Modified pages copied, unchanged shared | O(Δ) storage per revision |
+| **Structural Sharing** | Unchanged subtrees reference existing pages | Billion-node docs with small revisions |
+| **Log-Structured** | Sequential writes only | SSD-friendly, no random write I/O |
 
 ## Node-Based Document Model
 
 Unlike document databases that store JSON as opaque blobs, SirixDB decomposes each document into a tree of fine-grained **nodes**. Each node has a stable 64-bit `nodeKey` that never changes across revisions. Nodes are linked via parent, child, and sibling pointers, enabling O(1) navigation in any direction.
 
 Field names are stored once in an in-memory dictionary and referenced by 32-bit keys, saving space when the same field appears thousands of times.
+
+### Why Node Storage Matters
+
+Most document databases (MongoDB, CouchDB) treat a document as an opaque blob: store it, retrieve it, replace it. SirixDB understands the *structure* of your data — and that changes everything.
+
+| Aspect | Document Store | SirixDB Node Store |
+|--------|----------------|-------------------|
+| **Size limits** | 16 MB (MongoDB), 1 MB (DynamoDB) | **Unlimited** — nodes stored independently |
+| **Update granularity** | Replace entire document | Write only changed nodes |
+| **Query efficiency** | Load doc, filter in app | Navigate directly to target nodes |
+| **Memory footprint** | Entire doc in memory | Stream nodes, never load full tree |
+| **Versioning granularity** | "Document changed" | "These specific nodes changed" |
+| **Diff precision** | "Something's different" | Exact path to every modified node |
+
+This means: a 100 GB JSON dataset? Store it as one logical resource — no sharding. Change one field in a deeply nested object? SirixDB writes just that node plus the modified path. Need the history of a specific field across 1,000 commits? That's a fast index lookup, not a full-document diff.
 
 <svg viewBox="0 0 720 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="JSON document decomposed into a tree of nodes with stable node keys">
   <!-- Title -->
@@ -82,6 +107,39 @@ Field names are stored once in an in-memory dictionary and referenced by 32-bit 
 </svg>
 
 Each node type maps directly to a JSON construct: `OBJECT`, `ARRAY`, `OBJECT_KEY`, `STRING_VALUE`, `NUMBER_VALUE`, `BOOLEAN_VALUE`, and `NULL_VALUE`. Navigation between nodes is O(1) via stored pointers — no scanning required.
+
+## Why Bitemporal Storage?
+
+Traditional databases force painful workarounds for temporal queries — audit tables, change data capture pipelines, backup diffs. SirixDB eliminates all of that.
+
+### Query any point in history
+
+A customer claims they were charged the wrong price. Your current database shows today's price. What was the price *at the moment of their order*?
+
+```xquery
+let $catalog := jn:open('shop', 'products', xs:dateTime('2024-01-15T15:23:47Z'))
+return $catalog.products[.sku eq "SKU-12345"].price
+```
+
+One query. Exact answer. No audit infrastructure required — the database remembers everything.
+
+### Structured diffs between any two points in time
+
+A production outage started at 2:00 AM. What configuration changes were made since midnight?
+
+```xquery
+let $midnight := jn:open('configs', 'production', xs:dateTime('2024-01-15T00:00:00Z'))
+let $incident := jn:open('configs', 'production', xs:dateTime('2024-01-15T02:00:00Z'))
+return jn:diff('configs', 'production', sdb:revision($midnight), sdb:revision($incident))
+```
+
+Returns a structured JSON diff showing exactly what was inserted, deleted, updated, and moved — with node-level precision.
+
+### No History Table Performance Tax
+
+The "standard" approach to temporal data — history tables with `valid_from` and `valid_to` timestamps — comes with hidden costs: every index grows 3x (includes timestamps), every query needs timestamp range filters, updates require two writes (insert new + update old), and joining two temporal tables means intersecting validity intervals.
+
+SirixDB sidesteps all of this. Indexes are **scoped to a revision** — query revision 42 and you get revision 42's index, no filtering. Finding the right revision for a timestamp is a single O(log R) binary search, amortized across an entire session.
 
 ## Copy-on-Write with Path Copying
 
@@ -185,7 +243,7 @@ Physically, each resource is stored in two append-only logical devices (files). 
 
 <img src="/images/sirix-on-device-layout.svg" alt="Logical Device Layout: LD₂ stores UberPage with timestamp and offset pairs pointing to each revision's RevisionRootPage in LD₁. Each revision appends only modified page fragments (copy-on-write)." style="width:100%;max-width:1180px;">
 
-The `UberPage` is always written last as an atomic operation. Even if a crash occurs mid-commit, the previous valid state is preserved.
+The `UberPage` is always written last as an atomic operation. Even if a crash occurs mid-commit, the previous valid state is preserved. Checksums are stored in parent page references (borrowed from ZFS), so corruption is detected immediately on read. Because the store is append-only and the UberPage commit is atomic, **no write-ahead log (WAL) is needed** — the on-disk state is always consistent.
 
 ## Page Structure
 
@@ -363,6 +421,16 @@ SirixDB doesn't just copy entire pages on every change. It versions `RecordPages
 The sliding snapshot uses a window of size N (typically 3-5). Changed records are always written. Records older than N revisions that haven't been written are carried forward. This guarantees that at most N page fragments need to be read to reconstruct any page — regardless of total revision count.
 
 For details, see Marc Kramis's thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695).
+
+## Transaction Model
+
+SirixDB uses a **single-writer, multiple-reader (SWMR)** concurrency model per resource. At most one write transaction can be active on a resource at any time, while an unlimited number of concurrent read transactions can proceed without locks.
+
+Read transactions are bound to a specific revision and see an **immutable snapshot** — they never observe uncommitted changes and never block writers. This is true snapshot isolation without the overhead of MVCC bookkeeping at query time.
+
+Uncommitted changes are held in an in-memory **transaction intent log (TIL)**. On commit, changes are written sequentially to the append-only log and the new UberPage is flushed atomically. On abort, the in-memory state is simply discarded — nothing was written to disk.
+
+Because each resource is an independent log-structured store, write transactions on different resources proceed in parallel with no coordination.
 
 ## Secondary Indexes
 
@@ -548,6 +616,8 @@ For the JSONiq API to create and query indexes, see the [Function Reference](/do
 ## Further Reading
 
 - [Evolutionary Tree-Structured Storage](http://kops.uni-konstanz.de/handle/123456789/27695) — Marc Kramis's thesis describing the sliding snapshot algorithm
+- [Temporal Trees: Versioning Support for Document Stores](https://nbn-resolving.org/urn:nbn:de:bsz:352-2-1h1ryg5svkqfk5) — Sebastian Graf's thesis on temporal indexing and efficient node-level versioning
+- [HOT: A Height Optimized Trie Index](https://dl.acm.org/doi/10.1145/3183713.3196896) — the trie structure used for SirixDB's secondary indexes
 - [SirixDB on GitHub](https://github.com/sirixdb/sirix) — source code and detailed `docs/ARCHITECTURE.md`
 - [REST API documentation](/docs/rest-api.html) — HTTP interface for SirixDB
 - [JSONiq API](/docs/jsoniq-api.html) — query language guide
