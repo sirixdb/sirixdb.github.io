@@ -267,8 +267,12 @@ strong { font-weight: 600; }
   border: none;
   cursor: pointer;
   padding: var(--space-2);
+  min-width: 44px;
+  min-height: 44px;
   color: var(--color-text);
   border-radius: var(--radius-sm);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
 }
 
 /* === 7. HERO BANNER === */
@@ -913,6 +917,7 @@ pre::-webkit-scrollbar-thumb:hover {
 .docs-content {
   max-width: var(--max-w-narrow);
   min-width: 0;
+  overflow-x: hidden;
 }
 .docs-content__title {
   margin-bottom: var(--space-8);
@@ -1171,14 +1176,19 @@ pre::-webkit-scrollbar-thumb:hover {
   .site-header__menu-toggle { display: block; }
   .site-nav {
     position: fixed;
-    inset: 0;
     top: var(--header-height);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: calc(100vh - var(--header-height));
+    height: calc(100dvh - var(--header-height));
     background: var(--color-bg);
     padding: var(--space-6);
     transform: translateX(100%);
     transition: transform var(--transition-base);
     z-index: 150;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     border-left: 1px solid var(--color-border);
   }
   .site-nav.is-open { transform: translateX(0); }
@@ -1210,8 +1220,6 @@ pre::-webkit-scrollbar-thumb:hover {
 
   .docs-layout { grid-template-columns: 1fr; padding-block: var(--space-8); }
   .docs-sidebar { position: static; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-6); margin-bottom: var(--space-6); max-height: none; }
-  .diagram-frame { margin-left: -20px; margin-right: -20px; padding: var(--space-6) var(--space-4); border-radius: var(--radius-lg); }
-
   .site-footer__grid { grid-template-columns: 1fr 1fr; gap: var(--space-8); }
 }
 
@@ -1223,6 +1231,7 @@ pre::-webkit-scrollbar-thumb:hover {
   .feature-row__icon-grid { grid-template-columns: 1fr; }
   .site-footer__grid { grid-template-columns: 1fr; }
   .site-footer__bottom { flex-direction: column; gap: var(--space-4); }
+
 }
 
 /* Diagram frames — break out wider than text for visual prominence */
@@ -1325,4 +1334,29 @@ pre::-webkit-scrollbar-thumb:hover {
   color: var(--color-text);
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* === 16. MOBILE OVERRIDES FOR DOCS DIAGRAMS & TABLES ===
+   Must come after .diagram-frame base rules to win the cascade */
+@media (max-width: 768px) {
+  .diagram-frame,
+  .docs-content .diagram-frame {
+    margin-left: 0;
+    margin-right: 0;
+    padding: var(--space-6) var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+  .docs-content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+@media (max-width: 480px) {
+  .diagram-frame,
+  .docs-content .diagram-frame {
+    padding: var(--space-4) var(--space-3);
+  }
+  .docs-content h1 { font-size: var(--text-3xl); }
+  .docs-content h2 { font-size: var(--text-2xl); }
 }

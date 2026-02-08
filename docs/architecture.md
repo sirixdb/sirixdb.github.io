@@ -226,7 +226,7 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <text x="306" y="182" text-anchor="middle" fill="#F47B20" font-size="8" font-family="Inter,sans-serif" font-style="italic">only changed path copied</text>
 
   <!-- Timeline -->
-  <line x1="60" y1="210" x2="680" y2="210" stroke="#6b7280" stroke-width="1.5"/>
+  <line x1="20" y1="210" x2="680" y2="210" stroke="#6b7280" stroke-width="1.5"/>
   <polygon points="680,210 670,205 670,215" fill="#6b7280"/>
   <text x="370" y="250" text-anchor="middle" fill="#9ca3af" font-size="12" font-family="Inter,sans-serif" font-weight="500">Time</text>
   <line x1="130" y1="205" x2="130" y2="215" stroke="#9ca3af" stroke-width="1.5"/>
