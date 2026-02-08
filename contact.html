@@ -29,7 +29,9 @@ title: Contact - SirixDB
       <label for="message">Message</label>
       <textarea id="message" name="message" rows="6" required></textarea>
     </div>
-    <div class="g-recaptcha" data-sitekey="6LfTu2QsAAAAAPWO8zZzE5nYauJ7dNduzzTvxzmc"></div>
+    <div class="contact-form__captcha">
+      <div class="g-recaptcha" data-sitekey="6LfTu2QsAAAAAPWO8zZzE5nYauJ7dNduzzTvxzmc" data-theme="dark"></div>
+    </div>
     <button type="submit" class="btn btn--primary" id="contact-submit">Send Message</button>
     <div id="form-status" class="contact-form__status" aria-live="polite"></div>
   </form>

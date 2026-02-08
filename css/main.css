@@ -993,6 +993,15 @@ pre::-webkit-scrollbar-thumb:hover {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-primary-light);
 }
+.contact-form__captcha {
+  margin-top: var(--space-4);
+  display: flex;
+  justify-content: center;
+}
+.contact-form__captcha > div {
+  transform: scale(0.92);
+  transform-origin: center;
+}
 .contact-form__status {
   margin-top: var(--space-4);
   padding: var(--space-3) var(--space-4);
