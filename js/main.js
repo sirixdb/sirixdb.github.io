@@ -146,7 +146,7 @@
     block.appendChild(btn);
   });
 
-  // Contact form (EmailJS + reCAPTCHA v2 invisible + honeypot)
+  // Contact form (EmailJS + reCAPTCHA v2 checkbox + honeypot)
   var contactForm = document.getElementById('contact-form');
   if (contactForm) {
     var EMAILJS_PUBLIC_KEY = 'sJmjKtQGEPQ_pnBIe';
@@ -155,9 +155,22 @@
 
     emailjs.init(EMAILJS_PUBLIC_KEY);
 
-    function sendContactForm() {
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Honeypot check
+      if (contactForm.querySelector('[name="website"]').value) return;
+
       var btn = document.getElementById('contact-submit');
       var status = document.getElementById('form-status');
+
+      // Check reCAPTCHA is completed
+      if (!grecaptcha.getResponse()) {
+        status.textContent = 'Please complete the reCAPTCHA checkbox.';
+        status.className = 'contact-form__status contact-form__status--error';
+        return;
+      }
+
       btn.disabled = true;
       btn.textContent = 'Sending...';
       status.className = 'contact-form__status';
@@ -168,6 +181,7 @@
           status.textContent = 'Message sent! We will get back to you soon.';
           status.className = 'contact-form__status contact-form__status--success';
           contactForm.reset();
+          grecaptcha.reset();
           btn.disabled = false;
           btn.textContent = 'Send Message';
         },
@@ -175,26 +189,11 @@
           console.error('EmailJS error:', err);
           status.textContent = 'Something went wrong (' + (err.text || err) + '). Please try again or email us directly.';
           status.className = 'contact-form__status contact-form__status--error';
+          grecaptcha.reset();
           btn.disabled = false;
           btn.textContent = 'Send Message';
-          grecaptcha.reset();
         }
       );
-    }
-
-    // reCAPTCHA v2 invisible callback
-    window.onRecaptchaSuccess = function() {
-      sendContactForm();
-    };
-
-    contactForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      // Honeypot check
-      if (contactForm.querySelector('[name="website"]').value) return;
-
-      // Trigger reCAPTCHA v2 invisible challenge
-      grecaptcha.execute();
     });
   }
 
