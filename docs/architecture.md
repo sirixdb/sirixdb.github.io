@@ -325,14 +325,14 @@ SirixDB doesn't just copy entire pages on every change. It versions `RecordPages
   <rect x="538" y="74" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
   <text x="590" y="89" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
   <rect x="568" y="114" width="44" height="22" rx="3" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" stroke-width="1"/>
-  <text x="590" y="129" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+  <text x="590" y="129" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
   <rect x="558" y="154" width="64" height="22" rx="3" fill="rgba(167,139,250,0.25)" stroke="#a78bfa" stroke-width="1.2"/>
-  <text x="590" y="169" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">B' C'</text>
+  <text x="590" y="169" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">B' <tspan fill="#F47B20">C'</tspan></text>
   <text x="627" y="169" fill="#a78bfa" font-size="7" font-family="Inter,sans-serif" font-style="italic">growing!</text>
   <rect x="538" y="194" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
   <text x="590" y="209" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
   <rect x="568" y="234" width="44" height="22" rx="3" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" stroke-width="1"/>
-  <text x="590" y="249" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
+  <text x="590" y="249" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
   <text x="590" y="277" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">2 reads, growing deltas + spikes</text>
 
   <!-- SLIDING SNAPSHOT column (center: 810, window N=3) -->
@@ -340,16 +340,16 @@ SirixDB doesn't just copy entire pages on every change. It versions `RecordPages
   <text x="810" y="89" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
   <!-- Rev 2: only B changed, no carry needed -->
   <rect x="788" y="114" width="44" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="810" y="129" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+  <text x="810" y="129" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
   <!-- Rev 3: only C changed, no carry needed (all records reachable within 3 fragments) -->
   <rect x="788" y="154" width="44" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="810" y="169" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
+  <text x="810" y="169" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
   <!-- Rev 4: A changed, carry D (last written Rev 1, outside window of 3) -->
   <rect x="773" y="194" width="74" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="810" y="209" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">A' <tspan fill="#9ca3af" font-size="7">+ D</tspan></text>
+  <text x="810" y="209" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">A' <tspan fill="#9ca3af" font-size="7">+ D</tspan></text>
   <!-- Rev 5: D changed, carry B' (last written Rev 2, outside window) -->
   <rect x="773" y="234" width="74" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="810" y="249" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">D' <tspan fill="#9ca3af" font-size="7">+ B'</tspan></text>
+  <text x="810" y="249" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">D' <tspan fill="#9ca3af" font-size="7">+ B'</tspan></text>
   <text x="810" y="277" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">Bounded reads, no spikes</text>
 </svg>
 
