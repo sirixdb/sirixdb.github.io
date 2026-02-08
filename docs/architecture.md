@@ -356,8 +356,8 @@ SirixDB doesn't just copy entire pages on every change. It versions `RecordPages
 | Strategy | Reads to reconstruct | Write cost per revision | Write spikes? |
 |----------|---------------------|------------------------|---------------|
 | **Full** | 1 page | Entire page (all records) | No |
-| **Incremental** | Up to all revisions | Only changed records | Yes (periodic full dump) |
-| **Differential** | 2 pages | All changes since last full dump | Yes (growing deltas) |
+| **Incremental** | All since last full dump | Only changed records | Yes (periodic full dump) |
+| **Differential** | 2 pages (full + diff) | All changes since last full dump | Yes (growing deltas + full dump) |
 | **Sliding Snapshot** | At most N fragments | Changed + expired records | **No** |
 
 The sliding snapshot uses a window of size N (typically 3-5). Changed records are always written. Records older than N revisions that haven't been written are carried forward. This guarantees that at most N page fragments need to be read to reconstruct any page — regardless of total revision count.
