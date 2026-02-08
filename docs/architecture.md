@@ -116,7 +116,7 @@ Traditional databases force painful workarounds for temporal queries — audit t
 
 A customer claims they were charged the wrong price. Your current database shows today's price. What was the price *at the moment of their order*?
 
-```
+```jsoniq
 let $catalog := jn:open('shop', 'products', xs:dateTime('2024-01-15T15:23:47Z'))
 return $catalog.products[?$$.sku eq "SKU-12345"].price
 ```
@@ -127,7 +127,7 @@ One query. Exact answer. No audit infrastructure required — the database remem
 
 A production outage started at 2:00 AM. What configuration changes were made since midnight?
 
-```xquery
+```jsoniq
 let $midnight := jn:open('configs', 'production', xs:dateTime('2024-01-15T00:00:00Z'))
 let $incident := jn:open('configs', 'production', xs:dateTime('2024-01-15T02:00:00Z'))
 return jn:diff('configs', 'production', sdb:revision($midnight), sdb:revision($incident))
