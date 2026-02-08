@@ -314,9 +314,9 @@ SirixDB doesn't just copy entire pages on every change. It versions `RecordPages
   <text x="370" y="117" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
   <rect x="348" y="142" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
   <text x="370" y="157" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
-  <rect x="318" y="182" width="104" height="22" rx="3" fill="rgba(244,123,32,0.3)" stroke="#F47B20" stroke-width="1.5"/>
-  <text x="370" y="197" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
-  <text x="428" y="197" fill="#F47B20" font-size="7" font-family="Inter,sans-serif" font-style="italic">write spike!</text>
+  <rect x="318" y="182" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="370" y="197" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
+  <text x="428" y="197" fill="#42B6F0" font-size="7" font-family="Inter,sans-serif" font-style="italic">write spike!</text>
   <rect x="348" y="222" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
   <text x="370" y="237" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
   <text x="370" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Compact, but periodic write spikes</text>
