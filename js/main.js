@@ -146,7 +146,7 @@
     block.appendChild(btn);
   });
 
-  // Contact form (EmailJS + honeypot)
+  // Contact form (EmailJS + reCAPTCHA v2 invisible + honeypot)
   var contactForm = document.getElementById('contact-form');
   if (contactForm) {
     var EMAILJS_PUBLIC_KEY = 'sJmjKtQGEPQ_pnBIe';
@@ -155,12 +155,7 @@
 
     emailjs.init(EMAILJS_PUBLIC_KEY);
 
-    contactForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      // Honeypot check
-      if (contactForm.querySelector('[name="website"]').value) return;
-
+    function sendContactForm() {
       var btn = document.getElementById('contact-submit');
       var status = document.getElementById('form-status');
       btn.disabled = true;
@@ -182,8 +177,24 @@
           status.className = 'contact-form__status contact-form__status--error';
           btn.disabled = false;
           btn.textContent = 'Send Message';
+          grecaptcha.reset();
         }
       );
+    }
+
+    // reCAPTCHA v2 invisible callback
+    window.onRecaptchaSuccess = function() {
+      sendContactForm();
+    };
+
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Honeypot check
+      if (contactForm.querySelector('[name="website"]').value) return;
+
+      // Trigger reCAPTCHA v2 invisible challenge
+      grecaptcha.execute();
     });
   }
 
