@@ -2,7 +2,7 @@
 title: Sirix
 email: johannes.lichtenberger@sirix.io
 description: >-
-    SirixDB is an evolutionary, temporal NoSQL document store for JSON and XML.
+    SirixDB is an evolutionary, bitemporal NoSQL document store for JSON and XML.
     Keep the full history of your data with minimal storage overhead.
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "" # the base hostname & protocol for your site
