@@ -116,7 +116,7 @@ Traditional databases force painful workarounds for temporal queries — audit t
 
 A customer claims they were charged the wrong price. Your current database shows today's price. What was the price *at the moment of their order*?
 
-```xquery
+```
 let $catalog := jn:open('shop', 'products', xs:dateTime('2024-01-15T15:23:47Z'))
 return $catalog.products[?$$.sku eq "SKU-12345"].price
 ```
