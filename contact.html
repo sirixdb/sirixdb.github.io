@@ -8,15 +8,18 @@ title: Contact - SirixDB
     <p>Questions? Comments? Use the form below or join our
       <a href="https://sirix.discourse.group">community forum</a>.</p>
   </header>
-  <form class="contact-form" accept-charset="UTF-8" action="https://formspree.io/Johannes.lichtenberger@sirix.io" method="POST">
+  <form class="contact-form" id="contact-form">
+    <!-- Honeypot — hidden from humans, bots fill it in -->
+    <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+    <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
     <div class="contact-form__row">
       <div class="contact-form__field">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
+        <label for="from_name">Name</label>
+        <input type="text" id="from_name" name="from_name" required>
       </div>
       <div class="contact-form__field">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
+        <label for="from_email">Email</label>
+        <input type="email" id="from_email" name="from_email" required>
       </div>
     </div>
     <div class="contact-form__field">
@@ -27,6 +30,7 @@ title: Contact - SirixDB
       <label for="message">Message</label>
       <textarea id="message" name="message" rows="6" required></textarea>
     </div>
-    <button type="submit" class="btn btn--primary">Send Message</button>
+    <button type="submit" class="btn btn--primary" id="contact-submit">Send Message</button>
+    <div id="form-status" class="contact-form__status" aria-live="polite"></div>
   </form>
 </div>

@@ -146,6 +146,52 @@
     block.appendChild(btn);
   });
 
+  // Contact form (EmailJS + reCAPTCHA v3)
+  var contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    var EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
+    var EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
+    var EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+    var RECAPTCHA_SITE_KEY = 'YOUR_RECAPTCHA_SITE_KEY';
+
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Honeypot check
+      if (contactForm.querySelector('[name="website"]').value) return;
+
+      var btn = document.getElementById('contact-submit');
+      var status = document.getElementById('form-status');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      status.className = 'contact-form__status';
+      status.textContent = '';
+
+      grecaptcha.ready(function() {
+        grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'contact' }).then(function(token) {
+          document.getElementById('g-recaptcha-response').value = token;
+          emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, contactForm).then(
+            function() {
+              status.textContent = 'Message sent! We will get back to you soon.';
+              status.className = 'contact-form__status contact-form__status--success';
+              contactForm.reset();
+              btn.disabled = false;
+              btn.textContent = 'Send Message';
+            },
+            function(err) {
+              status.textContent = 'Something went wrong. Please try again or email us directly.';
+              status.className = 'contact-form__status contact-form__status--error';
+              btn.disabled = false;
+              btn.textContent = 'Send Message';
+            }
+          );
+        });
+      });
+    });
+  }
+
   // Fade-in on scroll
   var fadeEls = document.querySelectorAll('.fade-in');
   if (fadeEls.length && 'IntersectionObserver' in window) {
