@@ -616,7 +616,7 @@ For the JSONiq API to create and query indexes, see the [Function Reference](/do
 ## Further Reading
 
 - [Evolutionary Tree-Structured Storage](http://kops.uni-konstanz.de/handle/123456789/27695) — Marc Kramis's thesis describing the sliding snapshot algorithm
-- [Temporal Trees: Versioning Support for Document Stores](https://nbn-resolving.org/urn:nbn:de:bsz:352-2-1h1ryg5svkqfk5) — Sebastian Graf's thesis on temporal indexing and efficient node-level versioning
+- [Flexible Secure Cloud Storage](https://kops.uni-konstanz.de/server/api/core/bitstreams/7dc033e4-a4ef-47ce-b1d5-6f4580191070/content) — Sebastian Graf's PhD dissertation on the trie-based page structure and formal verification of the sliding snapshot algorithm
 - [HOT: A Height Optimized Trie Index](https://dl.acm.org/doi/10.1145/3183713.3196896) — the trie structure used for SirixDB's secondary indexes
 - [SirixDB on GitHub](https://github.com/sirixdb/sirix) — source code and detailed `docs/ARCHITECTURE.md`
 - [REST API documentation](/docs/rest-api.html) — HTTP interface for SirixDB
