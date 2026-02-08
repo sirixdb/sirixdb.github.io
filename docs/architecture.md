@@ -91,7 +91,7 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
 
   <!-- Legend -->
   <rect x="20" y="8" width="12" height="12" rx="2" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
-  <text x="38" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">New / copied page</text>
+  <text x="38" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">New page</text>
   <rect x="170" y="8" width="12" height="12" rx="2" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1.5"/>
   <text x="188" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">Modified page</text>
   <line x1="320" y1="14" x2="360" y2="14" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>
@@ -141,9 +141,9 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <rect x="286" y="149" width="40" height="16" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
   <text x="306" y="160" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">Page A'</text>
   <!-- Shared pointer to Page B -->
-  <line x1="344" y1="130" x2="102" y2="157" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="344" y1="130" x2="122" y2="149" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
   <!-- Right branch: shared pointer to Rev1's right indirect -->
-  <line x1="385" y1="92" x2="180" y2="121" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="385" y1="92" x2="208" y2="121" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
 
   <!-- === Rev 3: modify Page D, share rest === -->
   <rect x="557" y="38" width="46" height="20" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
@@ -152,13 +152,13 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <rect x="547" y="70" width="66" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
   <text x="580" y="85" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">RevRoot</text>
   <!-- Left: share Rev2's left indirect -->
-  <line x1="565" y1="92" x2="330" y2="121" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="565" y1="92" x2="358" y2="121" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
   <!-- Right: modified -->
   <line x1="595" y1="92" x2="620" y2="110" stroke="#F47B20" stroke-width="1.2"/>
   <rect x="592" y="112" width="56" height="18" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
   <text x="620" y="125" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Indirect'</text>
   <!-- Shared Page C -->
-  <line x1="606" y1="130" x2="158" y2="157" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
+  <line x1="606" y1="130" x2="178" y2="149" stroke="#6b7280" stroke-width="0.8" stroke-dasharray="4 3" opacity="0.5"/>
   <!-- Modified Page D' -->
   <line x1="634" y1="130" x2="644" y2="147" stroke="#F47B20" stroke-width="0.8"/>
   <rect x="624" y="149" width="40" height="16" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
