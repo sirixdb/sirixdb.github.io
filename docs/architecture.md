@@ -273,84 +273,84 @@ Each resource is organized as a trie of pages. The `RevisionRootPage` is the ent
 
 SirixDB doesn't just copy entire pages on every change. It versions `RecordPages` at a sub-page level, storing only changed records. The **sliding snapshot** algorithm, developed by Marc Kramis, avoids the trade-off between read performance and write amplification that plagues traditional approaches.
 
-<svg viewBox="0 0 960 290" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:960px;" role="img" aria-label="Four versioning strategies compared: Full Copy, Incremental, Differential, and Sliding Snapshot">
-  <text x="480" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Page Versioning Strategies</text>
+<svg viewBox="0 0 960 302" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:960px;" role="img" aria-label="Four versioning strategies compared: Full Copy, Incremental, Differential, and Sliding Snapshot">
+  <text x="480" y="20" text-anchor="middle" fill="#e8e6e3" font-size="16" font-family="Inter,sans-serif" font-weight="600">Page Versioning Strategies</text>
 
   <!-- Column headers -->
-  <text x="160" y="42" text-anchor="middle" fill="#42B6F0" font-size="11" font-family="Inter,sans-serif" font-weight="600">Full Copy</text>
-  <text x="370" y="42" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif" font-weight="600">Incremental</text>
-  <text x="590" y="42" text-anchor="middle" fill="#a78bfa" font-size="11" font-family="Inter,sans-serif" font-weight="600">Differential</text>
-  <text x="810" y="42" text-anchor="middle" fill="#10b981" font-size="11" font-family="Inter,sans-serif" font-weight="600">Sliding Snapshot</text>
+  <text x="160" y="54" text-anchor="middle" fill="#42B6F0" font-size="11" font-family="Inter,sans-serif" font-weight="600">Full Copy</text>
+  <text x="370" y="54" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif" font-weight="600">Incremental</text>
+  <text x="590" y="54" text-anchor="middle" fill="#a78bfa" font-size="11" font-family="Inter,sans-serif" font-weight="600">Differential</text>
+  <text x="810" y="54" text-anchor="middle" fill="#10b981" font-size="11" font-family="Inter,sans-serif" font-weight="600">Sliding Snapshot</text>
 
   <!-- Separators -->
-  <line x1="265" y1="30" x2="265" y2="260" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
-  <line x1="480" y1="30" x2="480" y2="260" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
-  <line x1="700" y1="30" x2="700" y2="260" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
+  <line x1="265" y1="42" x2="265" y2="272" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
+  <line x1="480" y1="42" x2="480" y2="272" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
+  <line x1="700" y1="42" x2="700" y2="272" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
 
   <!-- Rev labels -->
-  <text x="20" y="78" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 1</text>
-  <text x="20" y="118" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 2</text>
-  <text x="20" y="158" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 3</text>
-  <text x="20" y="198" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 4</text>
-  <text x="20" y="238" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 5</text>
+  <text x="20" y="90" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 1</text>
+  <text x="20" y="130" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 2</text>
+  <text x="20" y="170" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 3</text>
+  <text x="20" y="210" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 4</text>
+  <text x="20" y="250" fill="#6b7280" font-size="9" font-family="JetBrains Mono,monospace">Rev 5</text>
 
   <!-- FULL COPY column (center: 160) -->
-  <rect x="108" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="160" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
-  <rect x="108" y="102" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="160" y="117" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  <tspan fill="#F47B20">B'</tspan> C  D</text>
-  <rect x="108" y="142" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="160" y="157" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B' <tspan fill="#F47B20">C'</tspan> D</text>
-  <rect x="108" y="182" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="160" y="197" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace"><tspan fill="#F47B20">A'</tspan> B' C' D</text>
-  <rect x="108" y="222" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="160" y="237" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' <tspan fill="#F47B20">D'</tspan></text>
-  <text x="160" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Fast reads, wasteful writes</text>
+  <rect x="108" y="74" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="160" y="89" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <rect x="108" y="114" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="160" y="129" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  <tspan fill="#F47B20">B'</tspan> C  D</text>
+  <rect x="108" y="154" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="160" y="169" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B' <tspan fill="#F47B20">C'</tspan> D</text>
+  <rect x="108" y="194" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="160" y="209" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace"><tspan fill="#F47B20">A'</tspan> B' C' D</text>
+  <rect x="108" y="234" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="160" y="249" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' <tspan fill="#F47B20">D'</tspan></text>
+  <text x="160" y="277" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Fast reads, wasteful writes</text>
 
   <!-- INCREMENTAL column (center: 370) -->
-  <rect x="318" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="370" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
-  <rect x="348" y="102" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
-  <text x="370" y="117" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
-  <rect x="348" y="142" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
-  <text x="370" y="157" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
-  <rect x="318" y="182" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="370" y="197" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
-  <text x="428" y="197" fill="#42B6F0" font-size="7" font-family="Inter,sans-serif" font-style="italic">write spike!</text>
-  <rect x="348" y="222" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
-  <text x="370" y="237" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
-  <text x="370" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Compact, but periodic write spikes</text>
+  <rect x="318" y="74" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="370" y="89" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <rect x="348" y="114" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
+  <text x="370" y="129" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+  <rect x="348" y="154" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
+  <text x="370" y="169" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
+  <rect x="318" y="194" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="370" y="209" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
+  <text x="428" y="209" fill="#42B6F0" font-size="7" font-family="Inter,sans-serif" font-style="italic">write spike!</text>
+  <rect x="348" y="234" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
+  <text x="370" y="249" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
+  <text x="370" y="277" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Compact, but periodic write spikes</text>
 
   <!-- DIFFERENTIAL column (center: 590) — all changes since last full dump -->
-  <rect x="538" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="590" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
-  <rect x="568" y="102" width="44" height="22" rx="3" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" stroke-width="1"/>
-  <text x="590" y="117" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
-  <rect x="558" y="142" width="64" height="22" rx="3" fill="rgba(167,139,250,0.25)" stroke="#a78bfa" stroke-width="1.2"/>
-  <text x="590" y="157" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">B' C'</text>
-  <text x="627" y="157" fill="#a78bfa" font-size="7" font-family="Inter,sans-serif" font-style="italic">growing!</text>
-  <rect x="538" y="182" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="590" y="197" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
-  <rect x="568" y="222" width="44" height="22" rx="3" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" stroke-width="1"/>
-  <text x="590" y="237" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
-  <text x="590" y="265" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">2 reads, growing deltas + spikes</text>
+  <rect x="538" y="74" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="590" y="89" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <rect x="568" y="114" width="44" height="22" rx="3" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="590" y="129" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+  <rect x="558" y="154" width="64" height="22" rx="3" fill="rgba(167,139,250,0.25)" stroke="#a78bfa" stroke-width="1.2"/>
+  <text x="590" y="169" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">B' C'</text>
+  <text x="627" y="169" fill="#a78bfa" font-size="7" font-family="Inter,sans-serif" font-style="italic">growing!</text>
+  <rect x="538" y="194" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="590" y="209" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
+  <rect x="568" y="234" width="44" height="22" rx="3" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="590" y="249" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
+  <text x="590" y="277" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">2 reads, growing deltas + spikes</text>
 
   <!-- SLIDING SNAPSHOT column (center: 810, window N=3) -->
-  <rect x="758" y="62" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="810" y="77" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
+  <rect x="758" y="74" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="810" y="89" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A  B  C  D</text>
   <!-- Rev 2: only B changed, no carry needed -->
-  <rect x="788" y="102" width="44" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="810" y="117" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
+  <rect x="788" y="114" width="44" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="810" y="129" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
   <!-- Rev 3: only C changed, no carry needed (all records reachable within 3 fragments) -->
-  <rect x="788" y="142" width="44" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="810" y="157" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
+  <rect x="788" y="154" width="44" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="810" y="169" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
   <!-- Rev 4: A changed, carry D (last written Rev 1, outside window of 3) -->
-  <rect x="773" y="182" width="74" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="810" y="197" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">A' <tspan fill="#9ca3af" font-size="7">+ D</tspan></text>
+  <rect x="773" y="194" width="74" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="810" y="209" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">A' <tspan fill="#9ca3af" font-size="7">+ D</tspan></text>
   <!-- Rev 5: D changed, carry B' (last written Rev 2, outside window) -->
-  <rect x="773" y="222" width="74" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
-  <text x="810" y="237" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">D' <tspan fill="#9ca3af" font-size="7">+ B'</tspan></text>
-  <text x="810" y="265" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">Bounded reads, no spikes</text>
+  <rect x="773" y="234" width="74" height="22" rx="3" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="1"/>
+  <text x="810" y="249" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">D' <tspan fill="#9ca3af" font-size="7">+ B'</tspan></text>
+  <text x="810" y="277" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">Bounded reads, no spikes</text>
 </svg>
 
 | Strategy | Reads to reconstruct | Write cost per revision | Write spikes? |
