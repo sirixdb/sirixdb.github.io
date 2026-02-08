@@ -1184,15 +1184,18 @@ pre::-webkit-scrollbar-thumb:hover {
 .diagram-frame {
   position: relative;
   margin: var(--space-8) -60px;
-  padding: var(--space-6);
+  padding: var(--space-8) var(--space-6);
   border-radius: var(--radius-xl);
-  border: 1px solid transparent;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
-  cursor: zoom-in;
+  border: 1px solid rgba(66, 182, 240, 0.08);
+  background: linear-gradient(135deg, rgba(66, 182, 240, 0.02) 0%, rgba(244, 123, 32, 0.015) 100%);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
 }
 .diagram-frame:hover {
-  border-color: var(--color-accent-light);
-  background-color: rgba(66, 182, 240, 0.02);
+  border-color: rgba(66, 182, 240, 0.2);
+  box-shadow: 0 4px 24px rgba(66, 182, 240, 0.08), 0 2px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transform: translateY(-1px);
 }
 .diagram-frame svg,
 .diagram-frame img {
@@ -1209,16 +1212,21 @@ pre::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-md);
-  background: rgba(66, 182, 240, 0.06);
-  border: 1px solid rgba(66, 182, 240, 0.12);
+  border-radius: var(--radius-full);
+  background: rgba(66, 182, 240, 0.08);
+  border: 1px solid rgba(66, 182, 240, 0.15);
   color: var(--color-text-muted);
   opacity: 0;
-  transition: opacity 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  transition: opacity 0.25s ease, color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
   pointer-events: none;
 }
 .diagram-frame:hover .diagram-frame__expand {
   opacity: 1;
+}
+.diagram-frame__expand:hover {
+  color: var(--color-accent-light);
+  background: rgba(66, 182, 240, 0.12);
+  transform: scale(1.1);
 }
 
 /* SVG lightbox overlay */
