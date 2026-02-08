@@ -993,6 +993,15 @@ pre::-webkit-scrollbar-thumb:hover {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-primary-light);
 }
+.contact-form__field input:-webkit-autofill,
+.contact-form__field input:-webkit-autofill:hover,
+.contact-form__field input:-webkit-autofill:focus,
+.contact-form__field textarea:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-bg-surface) inset;
+  -webkit-text-fill-color: var(--color-text);
+  caret-color: var(--color-text);
+  transition: background-color 5000s ease-in-out 0s;
+}
 .contact-form__captcha {
   margin-top: var(--space-5);
   margin-bottom: var(--space-5);
