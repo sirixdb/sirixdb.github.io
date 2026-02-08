@@ -191,54 +191,74 @@ The `UberPage` is always written last as an atomic operation. Even if a crash oc
 
 Each resource is organized as a trie of pages. The `RevisionRootPage` is the entry point for a single revision, branching into subtrees for data, indexes, and metadata.
 
-<svg viewBox="0 0 720 256" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Page hierarchy: RevisionRootPage branching into data and index subtrees, with UberPage as logical header">
-  <text x="360" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Page Hierarchy (single revision)</text>
+<svg viewBox="0 0 860 255" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:860px;" role="img" aria-label="Page hierarchy: RevisionRootPage branching into data and index subtrees, with UberPage as logical header">
+  <text x="430" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Page Hierarchy (single revision)</text>
 
-  <!-- UberPage (logical header, no subtree) -->
-  <rect x="320" y="32" width="80" height="28" rx="5" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
-  <text x="360" y="50" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">UberPage</text>
+  <!-- UberPage (logical header) -->
+  <rect x="390" y="32" width="80" height="28" rx="5" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="430" y="50" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">UberPage</text>
+  <line x1="430" y1="60" x2="430" y2="70" stroke="#42B6F0" stroke-width="1.2"/>
 
-  <!-- RevisionRootPage -->
-  <rect x="290" y="70" width="140" height="28" rx="5" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.5"/>
-  <text x="360" y="88" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">RevisionRootPage</text>
-  <text x="360" y="114" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">author, timestamp, commit message</text>
+  <!-- RevisionRootPage (metadata inside box so lines don't cross it) -->
+  <rect x="345" y="70" width="170" height="44" rx="5" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.5"/>
+  <text x="430" y="89" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">RevisionRootPage</text>
+  <text x="430" y="105" text-anchor="middle" fill="#6b7280" font-size="7" font-family="Inter,sans-serif">author, timestamp, commit message</text>
 
-  <!-- Branches from RevisionRootPage -->
-  <!-- Data branch (center-left) -->
-  <line x1="310" y1="98" x2="120" y2="141" stroke="#42B6F0" stroke-width="1.2"/>
-  <rect x="62" y="143" width="116" height="24" rx="4" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
-  <text x="120" y="159" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace">Data IndirectPages</text>
-  <line x1="98" y1="167" x2="72" y2="188" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="142" y1="167" x2="168" y2="188" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="42" y="190" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="72" y="204" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">RecordPage</text>
-  <rect x="138" y="190" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="168" y="204" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">RecordPage</text>
-  <text x="120" y="228" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">JSON/XML nodes</text>
+  <!-- Branches from RevisionRootPage (y=114) -->
+
+  <!-- Data IndirectPages branch -->
+  <line x1="365" y1="114" x2="90" y2="150" stroke="#42B6F0" stroke-width="1.2"/>
+  <rect x="32" y="150" width="116" height="24" rx="4" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
+  <text x="90" y="166" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace">Data IndirectPages</text>
+  <line x1="70" y1="174" x2="52" y2="198" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="110" y1="174" x2="128" y2="198" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="22" y="198" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="52" y="212" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">RecordPage</text>
+  <rect x="98" y="198" width="60" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="128" y="212" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">RecordPage</text>
+  <text x="90" y="236" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">JSON/XML nodes</text>
 
   <!-- PathSummary branch -->
-  <line x1="335" y1="98" x2="300" y2="141" stroke="#F47B20" stroke-width="1"/>
-  <rect x="252" y="143" width="96" height="24" rx="4" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="300" y="159" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">PathSummary</text>
-  <text x="300" y="183" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">unique path trie</text>
+  <line x1="390" y1="114" x2="245" y2="150" stroke="#F47B20" stroke-width="1"/>
+  <rect x="197" y="150" width="96" height="24" rx="4" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="245" y="166" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">PathSummary</text>
+  <text x="245" y="190" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">unique path trie</text>
 
   <!-- NamePage branch -->
-  <line x1="385" y1="98" x2="440" y2="141" stroke="#F47B20" stroke-width="1"/>
-  <rect x="398" y="143" width="84" height="24" rx="4" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="440" y="159" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">NamePage</text>
-  <text x="440" y="183" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">field name dictionary</text>
+  <line x1="415" y1="114" x2="400" y2="150" stroke="#F47B20" stroke-width="1"/>
+  <rect x="358" y="150" width="84" height="24" rx="4" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="400" y="166" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">NamePage</text>
+  <line x1="385" y1="174" x2="368" y2="198" stroke="#F47B20" stroke-width="0.8"/>
+  <line x1="415" y1="174" x2="432" y2="198" stroke="#F47B20" stroke-width="0.8"/>
+  <rect x="334" y="198" width="68" height="20" rx="3" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.8"/>
+  <text x="368" y="212" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 1</text>
+  <rect x="398" y="198" width="68" height="20" rx="3" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.8"/>
+  <text x="432" y="212" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">Index Tree n</text>
+  <text x="400" y="236" text-anchor="middle" fill="#6b7280" font-size="8" font-family="Inter,sans-serif">name indexes</text>
 
-  <!-- Index branches (PathPage + CASPage) -->
-  <line x1="410" y1="98" x2="600" y2="141" stroke="#42B6F0" stroke-width="1"/>
-  <rect x="548" y="143" width="104" height="24" rx="4" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="600" y="159" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">PathPage / CASPage</text>
-  <line x1="580" y1="167" x2="564" y2="188" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="620" y1="167" x2="636" y2="188" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="530" y="190" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="564" y="204" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 1</text>
-  <rect x="602" y="190" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="636" y="204" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 2</text>
-  <text x="600" y="228" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">user-defined indexes</text>
+  <!-- PathPage branch -->
+  <line x1="455" y1="114" x2="580" y2="150" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="538" y="150" width="84" height="24" rx="4" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="580" y="166" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">PathPage</text>
+  <line x1="565" y1="174" x2="548" y2="198" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="595" y1="174" x2="612" y2="198" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="514" y="198" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="548" y="212" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 1</text>
+  <rect x="578" y="198" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="612" y="212" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree n</text>
+  <text x="580" y="236" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">path indexes</text>
+
+  <!-- CASPage branch -->
+  <line x1="485" y1="114" x2="755" y2="150" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="713" y="150" width="84" height="24" rx="4" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
+  <text x="755" y="166" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">CASPage</text>
+  <line x1="740" y1="174" x2="723" y2="198" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="770" y1="174" x2="787" y2="198" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="689" y="198" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="723" y="212" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree 1</text>
+  <rect x="753" y="198" width="68" height="20" rx="3" fill="rgba(66,182,240,0.1)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="787" y="212" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">Index Tree n</text>
+  <text x="755" y="236" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">CAS indexes</text>
 </svg>
 
 **UberPage** — The root entry point. Written last during a commit as an atomic operation. Contains a reference to the IndirectPage tree that addresses all revisions.
@@ -350,7 +370,7 @@ SirixDB supports three types of user-defined secondary indexes, all stored in th
 
 Every resource maintains a compact **path summary** — a trie of all unique paths in the document. Each unique path gets a **path class reference (PCR)**, a stable integer ID. Nodes in the main data tree reference their PCR, enabling efficient path-based lookups.
 
-<svg viewBox="0 0 720 340" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Path Summary maps unique paths to path class references, connecting data tree nodes to index entries">
+<svg viewBox="0 0 720 350" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;" role="img" aria-label="Path Summary maps unique paths to path class references, connecting data tree nodes to index entries">
   <text x="360" y="18" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Path Summary and Index Architecture</text>
 
   <!-- Left side: JSON Data Tree -->
@@ -376,27 +396,42 @@ Every resource maintains a compact **path summary** — a trie of all unique pat
   <text x="100" y="147" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">ARRAY</text>
 
   <!-- User objects -->
-  <line x1="88" y1="152" x2="60" y2="168" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="112" y1="152" x2="140" y2="168" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="34" y="170" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="60" y="183" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">OBJ</text>
-  <rect x="114" y="170" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="140" y="183" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">OBJ</text>
+  <line x1="85" y1="152" x2="50" y2="170" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="115" y1="152" x2="150" y2="170" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="24" y="170" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="50" y="183" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">OBJ</text>
+  <rect x="124" y="170" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
+  <text x="150" y="183" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">OBJ</text>
 
-  <!-- name fields -->
-  <line x1="48" y1="188" x2="48" y2="202" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="22" y="204" width="52" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="48" y="215" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"name"</text>
-  <line x1="72" y1="188" x2="72" y2="202" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="60" y="224" width="42" height="14" rx="2" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="0.6"/>
-  <text x="81" y="234" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">"Alice"</text>
+  <!-- Left OBJ fields: "name" and "age" -->
+  <line x1="38" y1="188" x2="30" y2="204" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="10" y="204" width="40" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="30" y="215" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"name"</text>
+  <line x1="30" y1="220" x2="30" y2="234" stroke="#10b981" stroke-width="0.6"/>
+  <rect x="6" y="234" width="48" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
+  <text x="30" y="244" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">"Alice"</text>
 
-  <line x1="128" y1="188" x2="128" y2="202" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="102" y="204" width="52" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="128" y="215" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"name"</text>
-  <line x1="152" y1="188" x2="152" y2="202" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="140" y="224" width="42" height="14" rx="2" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="0.6"/>
-  <text x="161" y="234" text-anchor="middle" fill="#42B6F0" font-size="6" font-family="JetBrains Mono,monospace">"Bob"</text>
+  <line x1="62" y1="188" x2="70" y2="204" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="52" y="204" width="36" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="70" y="215" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"age"</text>
+  <line x1="70" y1="220" x2="70" y2="234" stroke="#10b981" stroke-width="0.6"/>
+  <rect x="56" y="234" width="28" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
+  <text x="70" y="244" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">28</text>
+
+  <!-- Right OBJ fields: "name" and "age" -->
+  <line x1="138" y1="188" x2="130" y2="204" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="110" y="204" width="40" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="130" y="215" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"name"</text>
+  <line x1="130" y1="220" x2="130" y2="234" stroke="#10b981" stroke-width="0.6"/>
+  <rect x="108" y="234" width="44" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
+  <text x="130" y="244" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">"Bob"</text>
+
+  <line x1="162" y1="188" x2="170" y2="204" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="152" y="204" width="36" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="170" y="215" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"age"</text>
+  <line x1="170" y1="220" x2="170" y2="234" stroke="#10b981" stroke-width="0.6"/>
+  <rect x="158" y="234" width="24" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
+  <text x="170" y="244" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">35</text>
 
   <!-- Right side: Path Summary -->
   <text x="520" y="44" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif" font-weight="600">Path Summary</text>
@@ -437,8 +472,8 @@ Every resource maintains a compact **path summary** — a trie of all unique pat
   <text x="586" y="186" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=4</text>
 
   <!-- PCR arrows from data to path summary -->
-  <line x1="138" y1="100" x2="434" y2="100" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
-  <line x1="154" y1="210" x2="404" y2="183" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
+  <path d="M 138,107 Q 286,70 434,107" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <line x1="50" y1="210" x2="404" y2="183" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
 
   <!-- Index section below -->
   <line x1="40" y1="256" x2="680" y2="256" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
