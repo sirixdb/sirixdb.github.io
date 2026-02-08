@@ -315,7 +315,7 @@ SirixDB doesn't just copy entire pages on every change. It versions `RecordPages
   <rect x="348" y="154" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
   <text x="370" y="169" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">C'</text>
   <rect x="318" y="194" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="370" y="209" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
+  <text x="370" y="209" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace"><tspan fill="#F47B20">A'</tspan> B' C' D</text>
   <text x="428" y="209" fill="#42B6F0" font-size="7" font-family="Inter,sans-serif" font-style="italic">write spike!</text>
   <rect x="348" y="234" width="44" height="22" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1"/>
   <text x="370" y="249" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
@@ -330,7 +330,7 @@ SirixDB doesn't just copy entire pages on every change. It versions `RecordPages
   <text x="590" y="169" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">B' <tspan fill="#F47B20">C'</tspan></text>
   <text x="627" y="169" fill="#a78bfa" font-size="7" font-family="Inter,sans-serif" font-style="italic">growing!</text>
   <rect x="538" y="194" width="104" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
-  <text x="590" y="209" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A' B' C' D</text>
+  <text x="590" y="209" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace"><tspan fill="#F47B20">A'</tspan> B' C' D</text>
   <rect x="568" y="234" width="44" height="22" rx="3" fill="rgba(167,139,250,0.2)" stroke="#a78bfa" stroke-width="1"/>
   <text x="590" y="249" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">D'</text>
   <text x="590" y="277" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">2 reads, growing deltas + spikes</text>
