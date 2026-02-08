@@ -917,7 +917,6 @@ pre::-webkit-scrollbar-thumb:hover {
 .docs-content {
   max-width: var(--max-w-narrow);
   min-width: 0;
-  overflow-x: hidden;
 }
 .docs-content__title {
   margin-bottom: var(--space-8);
