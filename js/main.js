@@ -149,10 +149,10 @@
   // Contact form (EmailJS + reCAPTCHA v3)
   var contactForm = document.getElementById('contact-form');
   if (contactForm) {
-    var EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
-    var EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
-    var EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-    var RECAPTCHA_SITE_KEY = 'YOUR_RECAPTCHA_SITE_KEY';
+    var EMAILJS_PUBLIC_KEY = 'sJmjKtQGEPQ_pnBIe';
+    var EMAILJS_SERVICE_ID = 'service_8rpifo9';
+    var EMAILJS_TEMPLATE_ID = 'template_icja3qf';
+    var RECAPTCHA_SITE_KEY = '6Lcws2QsAAAAABlMD58ymDrr0G3OoOU1oVwdhFD9';
 
     emailjs.init(EMAILJS_PUBLIC_KEY);
 
@@ -172,7 +172,7 @@
       grecaptcha.ready(function() {
         grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'contact' }).then(function(token) {
           document.getElementById('g-recaptcha-response').value = token;
-          emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, contactForm).then(
+          emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, contactForm, EMAILJS_PUBLIC_KEY).then(
             function() {
               status.textContent = 'Message sent! We will get back to you soon.';
               status.className = 'contact-form__status contact-form__status--success';
