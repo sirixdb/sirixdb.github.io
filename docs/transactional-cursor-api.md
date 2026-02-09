@@ -12,9 +12,9 @@ First, you have to get the dependency on our SirixDB core project. At this stage
 
 ```xml
 <repository>
-  <id>sonatype-nexus-snapshots</id>
-  <name>Sonatype Nexus Snapshots</name>
-  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  <id>central-snapshots</id>
+  <name>Sonatype Central Snapshots</name>
+  <url>https://central.sonatype.com/repository/maven-snapshots/</url>
   <releases>
     <enabled>false</enabled>
   </releases>
@@ -31,7 +31,7 @@ apply plugin: 'maven'
 
 repositories {
     maven {
-          url "https://oss.sonatype.org/content/repositories/snapshot"
+          url "https://central.sonatype.com/repository/maven-snapshots/"
     }
 }
 ```

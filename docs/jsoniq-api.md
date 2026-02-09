@@ -36,8 +36,8 @@ For snapshot versions, add the Sonatype snapshot repository:
 
 ```xml
 <repository>
-  <id>sonatype-nexus-snapshots</id>
-  <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  <id>central-snapshots</id>
+  <url>https://central.sonatype.com/repository/maven-snapshots/</url>
   <snapshots><enabled>true</enabled></snapshots>
 </repository>
 ```
