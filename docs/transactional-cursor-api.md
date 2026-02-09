@@ -67,9 +67,84 @@ SirixDB doesn't use range-encodings (not update-friendly) or hierarchical labels
 
 Instead of the aforementioned encodings, a node in SirixDB references other nodes by a firstChild/leftSibling/rightSibling/parentNodeKey/nodeKey encoding. Think of it as a persistent DOM:
 
-<div class="img_container">
-![encoding](/images/encoding.png)
-</div>
+<svg viewBox="0 0 720 310" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Node encoding: firstChild, lastChild, leftSibling, rightSibling, and parent pointers between nodes">
+  <text x="360" y="20" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Node Encoding — Pointer-Based Navigation</text>
+
+  <!-- Node 1 (parent) -->
+  <rect x="310" y="55" width="100" height="36" rx="6" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.5"/>
+  <text x="360" y="78" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">Node 1</text>
+
+  <!-- Node 2 (left child) -->
+  <rect x="100" y="185" width="100" height="36" rx="6" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="150" y="208" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">Node 2</text>
+
+  <!-- Node 3 (middle child) -->
+  <rect x="310" y="185" width="100" height="36" rx="6" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="360" y="208" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">Node 3</text>
+
+  <!-- Node 4 (right child) -->
+  <rect x="520" y="185" width="100" height="36" rx="6" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="570" y="208" text-anchor="middle" fill="#F47B20" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600">Node 4</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arr-blue" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#42B6F0"/>
+    </marker>
+    <marker id="arr-green" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#10b981"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#F47B20"/>
+    </marker>
+  </defs>
+
+  <!-- firstChild: Node 1 → Node 2 -->
+  <path d="M 330 91 Q 240 140 180 185" stroke="#42B6F0" stroke-width="1.3" fill="none" marker-end="url(#arr-blue)"/>
+  <text x="225" y="132" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="Inter,sans-serif" font-weight="500">firstChild</text>
+
+  <!-- parent: Node 2 → Node 1 -->
+  <path d="M 170 185 Q 260 140 340 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
+  <text x="278" y="120" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
+
+  <!-- parent: Node 3 → Node 1 -->
+  <path d="M 350 185 L 350 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
+  <text x="336" y="145" text-anchor="end" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
+
+  <!-- lastChild: Node 1 → Node 4 -->
+  <path d="M 390 91 Q 480 140 540 185" stroke="#42B6F0" stroke-width="1.3" fill="none" marker-end="url(#arr-blue)"/>
+  <text x="497" y="132" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="Inter,sans-serif" font-weight="500">lastChild</text>
+
+  <!-- parent: Node 4 → Node 1 -->
+  <path d="M 550 185 Q 470 135 380 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
+  <text x="440" y="120" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
+
+  <!-- rightSibling: Node 2 → Node 3 -->
+  <line x1="200" y1="197" x2="310" y2="197" stroke="#F47B20" stroke-width="1.3" marker-end="url(#arr-orange)"/>
+  <text x="255" y="192" text-anchor="middle" fill="#F47B20" font-size="8" font-family="Inter,sans-serif" font-weight="500">rightSibling</text>
+
+  <!-- leftSibling: Node 3 → Node 2 -->
+  <line x1="310" y1="211" x2="200" y2="211" stroke="#F47B20" stroke-width="1.3" marker-end="url(#arr-orange)"/>
+  <text x="255" y="228" text-anchor="middle" fill="#F47B20" font-size="8" font-family="Inter,sans-serif" font-weight="500">leftSibling</text>
+
+  <!-- rightSibling: Node 3 → Node 4 -->
+  <line x1="410" y1="197" x2="520" y2="197" stroke="#F47B20" stroke-width="1.3" marker-end="url(#arr-orange)"/>
+  <text x="465" y="192" text-anchor="middle" fill="#F47B20" font-size="8" font-family="Inter,sans-serif" font-weight="500">rightSibling</text>
+
+  <!-- leftSibling: Node 4 → Node 3 -->
+  <line x1="520" y1="211" x2="410" y2="211" stroke="#F47B20" stroke-width="1.3" marker-end="url(#arr-orange)"/>
+  <text x="465" y="228" text-anchor="middle" fill="#F47B20" font-size="8" font-family="Inter,sans-serif" font-weight="500">leftSibling</text>
+
+  <!-- Legend -->
+  <rect x="40" y="265" width="640" height="34" rx="6" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <line x1="55" y1="282" x2="80" y2="282" stroke="#42B6F0" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+  <text x="87" y="286" fill="#9ca3af" font-size="9" font-family="Inter,sans-serif">firstChild / lastChild</text>
+  <line x1="245" y1="282" x2="270" y2="282" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#arr-green)"/>
+  <text x="277" y="286" fill="#9ca3af" font-size="9" font-family="Inter,sans-serif">parent</text>
+  <line x1="340" y1="282" x2="365" y2="282" stroke="#F47B20" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <text x="372" y="286" fill="#9ca3af" font-size="9" font-family="Inter,sans-serif">leftSibling / rightSibling</text>
+  <text x="575" y="286" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">nodeKey = auto-generated ID</text>
+</svg>
 
 The numbers in the figure are auto-generated unique, stable node-IDs or node-keys generated with a simple sequential number generator.
 
