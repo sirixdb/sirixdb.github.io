@@ -1236,7 +1236,7 @@ pre::-webkit-scrollbar-thumb:hover {
 /* Diagram frames — break out wider than text for visual prominence */
 .docs-content .diagram-frame {
   margin-left: -50px;
-  margin-right: -150px;
+  margin-right: -50px;
 }
 .diagram-frame {
   position: relative;

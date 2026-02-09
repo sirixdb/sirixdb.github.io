@@ -105,7 +105,7 @@ Instead of the aforementioned encodings, a node in SirixDB references other node
 
   <!-- parent: Node 2 → Node 1 -->
   <path d="M 185 185 Q 290 125 345 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
-  <text x="300" y="122" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
+  <text x="285" y="148" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
 
   <!-- parent: Node 3 → Node 1 -->
   <path d="M 360 185 L 360 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
@@ -117,7 +117,7 @@ Instead of the aforementioned encodings, a node in SirixDB references other node
 
   <!-- parent: Node 4 → Node 1 -->
   <path d="M 535 185 Q 430 125 375 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
-  <text x="420" y="122" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
+  <text x="435" y="148" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
 
   <!-- rightSibling: Node 2 → Node 3 -->
   <line x1="200" y1="197" x2="310" y2="197" stroke="#F47B20" stroke-width="1.3" marker-end="url(#arr-orange)"/>
