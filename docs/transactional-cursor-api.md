@@ -100,24 +100,24 @@ Instead of the aforementioned encodings, a node in SirixDB references other node
   </defs>
 
   <!-- firstChild: Node 1 → Node 2 -->
-  <path d="M 330 91 Q 240 140 180 185" stroke="#42B6F0" stroke-width="1.3" fill="none" marker-end="url(#arr-blue)"/>
-  <text x="225" y="132" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="Inter,sans-serif" font-weight="500">firstChild</text>
+  <path d="M 325 91 Q 210 125 155 185" stroke="#42B6F0" stroke-width="1.3" fill="none" marker-end="url(#arr-blue)"/>
+  <text x="218" y="122" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="Inter,sans-serif" font-weight="500">firstChild</text>
 
   <!-- parent: Node 2 → Node 1 -->
-  <path d="M 170 185 Q 260 140 340 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
-  <text x="278" y="120" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
+  <path d="M 185 185 Q 290 125 345 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
+  <text x="300" y="122" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
 
   <!-- parent: Node 3 → Node 1 -->
-  <path d="M 350 185 L 350 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
-  <text x="336" y="145" text-anchor="end" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
+  <path d="M 360 185 L 360 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
+  <text x="348" y="145" text-anchor="end" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
 
   <!-- lastChild: Node 1 → Node 4 -->
-  <path d="M 390 91 Q 480 140 540 185" stroke="#42B6F0" stroke-width="1.3" fill="none" marker-end="url(#arr-blue)"/>
-  <text x="497" y="132" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="Inter,sans-serif" font-weight="500">lastChild</text>
+  <path d="M 395 91 Q 510 125 565 185" stroke="#42B6F0" stroke-width="1.3" fill="none" marker-end="url(#arr-blue)"/>
+  <text x="502" y="122" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="Inter,sans-serif" font-weight="500">lastChild</text>
 
   <!-- parent: Node 4 → Node 1 -->
-  <path d="M 550 185 Q 470 135 380 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
-  <text x="440" y="120" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
+  <path d="M 535 185 Q 430 125 375 91" stroke="#10b981" stroke-width="1.3" fill="none" marker-end="url(#arr-green)" stroke-dasharray="4 2"/>
+  <text x="420" y="122" text-anchor="middle" fill="#10b981" font-size="8" font-family="Inter,sans-serif" font-weight="500">parent</text>
 
   <!-- rightSibling: Node 2 → Node 3 -->
   <line x1="200" y1="197" x2="310" y2="197" stroke="#F47B20" stroke-width="1.3" marker-end="url(#arr-orange)"/>
