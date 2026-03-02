@@ -143,7 +143,7 @@ Instead of the aforementioned encodings, a node in SirixDB references other node
   <text x="277" y="286" fill="#9ca3af" font-size="9" font-family="Inter,sans-serif">parent</text>
   <line x1="340" y1="282" x2="365" y2="282" stroke="#F47B20" stroke-width="1.5" marker-end="url(#arr-orange)"/>
   <text x="372" y="286" fill="#9ca3af" font-size="9" font-family="Inter,sans-serif">leftSibling / rightSibling</text>
-  <text x="575" y="286" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">nodeKey = auto-generated ID</text>
+  <text x="540" y="286" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">nodeKey = auto-generated ID</text>
 </svg>
 
 The numbers in the figure are auto-generated unique, stable node-IDs or node-keys generated with a simple sequential number generator.

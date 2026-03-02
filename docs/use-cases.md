@@ -342,7 +342,7 @@ Traditional workarounds — audit tables, CDC pipelines, event logs, periodic sn
   <polygon points="645,128 640,118 650,118" fill="#42B6F0"/>
 
   <!-- Valid Time arrow (left → box) -->
-  <text x="490" y="172" text-anchor="end" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="500">Valid Time</text>
+  <text x="490" y="178" text-anchor="end" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="500">Valid Time</text>
   <line x1="498" y1="175" x2="528" y2="175" stroke="#F47B20" stroke-width="1.5"/>
   <polygon points="528,175 518,170 518,180" fill="#F47B20"/>
 
