@@ -17,7 +17,7 @@ These two timelines diverge constantly. A price correction recorded today might 
 
 SirixDB tracks both timelines natively. This makes an entire class of applications not just possible, but straightforward. Below are concrete use cases that are **difficult or impractical** to build on conventional databases, but become natural with SirixDB.
 
-<svg viewBox="-70 0 930 280" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Two timelines diverge: transaction time records when facts were stored, valid time records when they were true in the real world">
+<svg viewBox="-70 -5 930 290" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Two timelines diverge: transaction time records when facts were stored, valid time records when they were true in the real world">
   <!-- Title -->
   <text x="430" y="24" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Two Timelines, One Reality</text>
 
@@ -27,20 +27,20 @@ SirixDB tracks both timelines natively. This makes an entire class of applicatio
   <line x1="100" y1="85" x2="790" y2="85" stroke="#42B6F0" stroke-width="1.5" opacity="0.4"/>
   <polygon points="790,85 780,80 780,90" fill="#42B6F0" opacity="0.4"/>
 
-  <!-- TX Event: Jan 5 -->
+  <!-- TX Event: Jan 5 (labels above timeline to keep space below clear for connector) -->
   <circle cx="200" cy="85" r="6" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
-  <text x="200" y="68" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">Jan 5</text>
-  <text x="200" y="110" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Insert price $100</text>
+  <text x="200" y="58" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">Jan 5</text>
+  <text x="200" y="72" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Insert price $100</text>
 
   <!-- TX Event: Mar 15 -->
   <circle cx="520" cy="85" r="6" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
-  <text x="520" y="68" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">Mar 15</text>
-  <text x="520" y="110" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Error discovered</text>
+  <text x="520" y="58" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">Mar 15</text>
+  <text x="520" y="72" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Error discovered</text>
 
   <!-- TX Event: Mar 20 (orange accent — the correction) -->
   <circle cx="660" cy="85" r="7" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="2"/>
-  <text x="660" y="68" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">Mar 20</text>
-  <text x="660" y="110" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Correction recorded</text>
+  <text x="660" y="58" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">Mar 20</text>
+  <text x="660" y="72" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Correction recorded</text>
 
   <!-- Valid Time Timeline (Orange) -->
   <text x="88" y="208" text-anchor="end" fill="#F47B20" font-size="11" font-family="Inter,sans-serif" font-weight="600">Valid Time</text>
@@ -58,12 +58,12 @@ SirixDB tracks both timelines natively. This makes an entire class of applicatio
   <text x="340" y="198" text-anchor="middle" fill="#F47B20" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">Feb 1</text>
   <text x="340" y="240" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Corrected: $95</text>
 
-  <!-- Dashed connector: bottom of Mar 20 circle → top of Feb 1 circle (curved to clear labels) -->
-  <path d="M 660,92 C 750,135 480,185 340,208" stroke="#F47B20" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.6" fill="none"/>
+  <!-- Dashed connector: bottom of Mar 20 circle → top of Feb 1 circle -->
+  <path d="M 660,92 C 620,140 400,170 340,208" stroke="#F47B20" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.6" fill="none"/>
 
-  <!-- Annotation (positioned right of the dashed line to avoid overlap) -->
-  <rect x="570" y="133" width="260" height="26" rx="4" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1" opacity="0.6"/>
-  <text x="700" y="150" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="500">Recorded Mar 20 — but true since Feb 1</text>
+  <!-- Annotation (right side, clear of the connector path) -->
+  <rect x="560" y="130" width="260" height="26" rx="4" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1" opacity="0.6"/>
+  <text x="690" y="147" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="500">Recorded Mar 20 — but true since Feb 1</text>
 </svg>
 
 ---
@@ -76,7 +76,7 @@ Financial institutions must answer questions like: *"What did we know about this
 
 With SirixDB, this is a single bitemporal query. Without it, teams build shadow audit tables, change-data-capture pipelines, and custom versioning layers — fragile infrastructure that is expensive to maintain and inevitably incomplete.
 
-<svg viewBox="0 0 860 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Bitemporal coordinate grid showing how a query selects a specific point in two-dimensional temporal space">
+<svg viewBox="0 0 960 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Bitemporal coordinate grid showing how a query selects a specific point in two-dimensional temporal space">
   <!-- Title -->
   <text x="430" y="24" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Bitemporal Coordinate Space</text>
 
@@ -119,29 +119,29 @@ With SirixDB, this is a single bitemporal query. Without it, teams build shadow 
   <circle cx="260" cy="314" r="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.2"/>
   <text x="770" y="318" text-anchor="start" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Rev 1: Initial data</text>
 
-  <!-- Revision band: Rev 2 — Mar 15, error discovered (blue) -->
-  <rect x="161" y="163" width="598" height="24" rx="3" fill="rgba(66,182,240,0.06)"/>
-  <text x="770" y="179" text-anchor="start" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Rev 2: Discovery</text>
+  <!-- Revision band: Rev 2 — Mar 15, error discovered (blue) — y=140 is Mar 15 on the grid -->
+  <rect x="161" y="128" width="598" height="24" rx="3" fill="rgba(66,182,240,0.06)"/>
+  <text x="770" y="144" text-anchor="start" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Rev 2: Discovery (Mar 15)</text>
 
-  <!-- Revision band: Rev 3 — Mar 20, correction applied (orange) -->
-  <rect x="161" y="143" width="598" height="20" rx="3" fill="rgba(244,123,32,0.06)"/>
-  <circle cx="400" cy="153" r="4" fill="rgba(244,123,32,0.25)" stroke="#F47B20" stroke-width="1.2"/>
-  <text x="770" y="157" text-anchor="start" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Rev 3: Correction</text>
+  <!-- Revision band: Rev 3 — Mar 20, correction applied (orange) — y=128 is Mar 20 on the grid -->
+  <rect x="161" y="110" width="598" height="18" rx="3" fill="rgba(244,123,32,0.06)"/>
+  <circle cx="400" cy="119" r="4" fill="rgba(244,123,32,0.25)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="770" y="123" text-anchor="start" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Rev 3: Correction (Mar 20)</text>
 
-  <!-- Query crosshair: txn=Mar 15, valid=Mar 1 → (540, 175) -->
+  <!-- Query crosshair: txn=Mar 15, valid=Mar 1 → (540, 140) -->
   <line x1="540" y1="55" x2="540" y2="345" stroke="#F47B20" stroke-width="1" stroke-dasharray="5 3" opacity="0.4"/>
-  <line x1="160" y1="175" x2="760" y2="175" stroke="#42B6F0" stroke-width="1" stroke-dasharray="5 3" opacity="0.4"/>
+  <line x1="160" y1="140" x2="760" y2="140" stroke="#42B6F0" stroke-width="1" stroke-dasharray="5 3" opacity="0.4"/>
 
   <!-- Query dot -->
-  <circle cx="540" cy="175" r="9" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.5" opacity="0.8"/>
-  <circle cx="540" cy="175" r="3.5" fill="#F47B20"/>
+  <circle cx="540" cy="140" r="9" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.5" opacity="0.8"/>
+  <circle cx="540" cy="140" r="3.5" fill="#F47B20"/>
 
   <!-- Connector from label to dot -->
-  <line x1="555" y1="81" x2="543" y2="168" stroke="#F47B20" stroke-width="0.8" opacity="0.4"/>
+  <line x1="600" y1="85" x2="547" y2="133" stroke="#F47B20" stroke-width="0.8" opacity="0.4"/>
 
   <!-- Query label -->
-  <rect x="555" y="68" width="195" height="26" rx="4" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1" opacity="0.6"/>
-  <text x="652" y="85" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">jn:open-bitemporal(Mar 15, Mar 1)</text>
+  <rect x="600" y="68" width="155" height="26" rx="4" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1" opacity="0.6"/>
+  <text x="677" y="85" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace" font-weight="500">query(Mar 15, Mar 1)</text>
 </svg>
 
 ```xquery
