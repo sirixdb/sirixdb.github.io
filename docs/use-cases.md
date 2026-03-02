@@ -30,10 +30,9 @@ With SirixDB, this is a single bitemporal query. Without it, teams build shadow 
 ```xquery
 (: What was the recorded risk exposure on March 1st,
    as our system understood it on March 15th? :)
-jn:open('risk-db','exposures', xs:dateTime('2025-03-15T00:00:00'))
-  =>jn:all-times()
-  =>filter(fun($r) { $r=>valid-from() le xs:dateTime('2025-03-01T00:00:00')
-                      and $r=>valid-to() gt xs:dateTime('2025-03-01T00:00:00') })
+jn:open-bitemporal('risk-db', 'exposures',
+  xs:dateTime('2025-03-01T00:00:00'),
+  xs:dateTime('2025-03-15T00:00:00'))
 ```
 
 ### Sanctions & Watchlist Screening
@@ -93,11 +92,10 @@ Fraudsters manipulate records and hope the original state is lost. Bitemporality
 ```xquery
 (: Find records where valid-time was backdated
    more than 7 days before transaction-time :)
-jn:all-times(jn:open('ledger','transactions'))
-  =>filter(fun($r) {
-    jn:transaction-timestamp($r) - $r=>valid-from()
-      gt xs:dayTimeDuration('P7D')
-  })
+for $r in jn:all-times(jn:doc('ledger', 'transactions'))
+where sdb:timestamp($r) - sdb:valid-from($r)
+  gt xs:dayTimeDuration('P7D')
+return $r
 ```
 
 On a mutable database, this kind of temporal anomaly detection requires triggers, shadow tables, and append-only audit logs that are trivially bypassed by anyone with write access. SirixDB's append-only architecture makes tampering structurally impossible.
