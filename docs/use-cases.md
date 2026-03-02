@@ -323,14 +323,12 @@ Traditional workarounds — audit tables, CDC pipelines, event logs, periodic sn
   <rect x="120" y="212" width="170" height="30" rx="4" fill="rgba(127,29,29,0.08)" stroke="#7f1d1d" stroke-width="1" opacity="0.6"/>
   <text x="205" y="231" text-anchor="middle" fill="#9ca3af" font-size="9" font-family="Inter,sans-serif">Manual Versioning</text>
 
-  <!-- Tangled connecting lines -->
-  <line x1="185" y1="93" x2="230" y2="93" stroke="#6b7280" stroke-width="0.8" opacity="0.4"/>
+  <!-- Crossing lines (convey "tangled") -->
   <line x1="120" y1="108" x2="295" y2="145" stroke="#6b7280" stroke-width="0.8" opacity="0.4"/>
   <line x1="295" y1="108" x2="120" y2="145" stroke="#6b7280" stroke-width="0.8" opacity="0.4"/>
+  <!-- Down to Manual Versioning -->
   <line x1="120" y1="175" x2="205" y2="212" stroke="#6b7280" stroke-width="0.8" opacity="0.4"/>
   <line x1="295" y1="175" x2="205" y2="212" stroke="#6b7280" stroke-width="0.8" opacity="0.4"/>
-  <line x1="185" y1="90" x2="135" y2="145" stroke="#6b7280" stroke-width="0.8" opacity="0.3"/>
-  <line x1="245" y1="160" x2="185" y2="145" stroke="#6b7280" stroke-width="0.8" opacity="0.3"/>
 
   <!-- Label -->
   <text x="210" y="278" text-anchor="middle" fill="#7f1d1d" font-size="10" font-family="Inter,sans-serif" font-weight="500" opacity="0.8">Fragile · Expensive · Incomplete</text>
