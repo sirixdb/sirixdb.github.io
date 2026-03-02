@@ -27,7 +27,7 @@ Financial institutions must answer questions like: *"What did we know about this
 
 With SirixDB, this is a single bitemporal query. Without it, teams build shadow audit tables, change-data-capture pipelines, and custom versioning layers — fragile infrastructure that is expensive to maintain and inevitably incomplete.
 
-```
+```xquery
 (: What was the recorded risk exposure on March 1st,
    as our system understood it on March 15th? :)
 jn:open('risk-db','exposures', xs:dateTime('2025-03-15T00:00:00'))
@@ -90,7 +90,7 @@ With SirixDB, this is a single temporal read transaction. Without it, legal team
 
 Fraudsters manipulate records and hope the original state is lost. Bitemporality makes this detectable: you can identify that a transaction claiming to be from January was only recorded in March by comparing valid time against transaction time.
 
-```
+```xquery
 (: Find records where valid-time was backdated
    more than 7 days before transaction-time :)
 jn:all-times(jn:open('ledger','transactions'))
