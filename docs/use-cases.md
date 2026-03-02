@@ -29,10 +29,11 @@ With SirixDB, this is a single bitemporal query. Without it, teams build shadow 
 
 ```xquery
 (: What was the recorded risk exposure on March 1st,
-   as our system understood it on March 15th? :)
+   as our system understood it on March 15th?
+   Signature: jn:open-bitemporal($coll, $res, $transactionTime, $validTime) :)
 jn:open-bitemporal('risk-db', 'exposures',
-  xs:dateTime('2025-03-01T00:00:00'),
-  xs:dateTime('2025-03-15T00:00:00'))
+  xs:dateTime('2025-03-15T00:00:00Z'),
+  xs:dateTime('2025-03-01T00:00:00Z'))
 ```
 
 ### Sanctions & Watchlist Screening
@@ -92,9 +93,11 @@ Fraudsters manipulate records and hope the original state is lost. Bitemporality
 ```xquery
 (: Find records where valid-time was backdated
    more than 7 days before transaction-time :)
-for $r in jn:all-times(jn:doc('ledger', 'transactions'))
-where sdb:timestamp($r) - sdb:valid-from($r)
-  gt xs:dayTimeDuration('P7D')
+for $rev in jn:all-times(jn:doc('ledger', 'transactions'))
+for $r in $rev[]
+where sdb:timestamp($rev) gt sdb:valid-from($r)
+  and sdb:timestamp($rev) - sdb:valid-from($r)
+    gt xs:dayTimeDuration('P7D')
 return $r
 ```
 
