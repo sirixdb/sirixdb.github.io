@@ -58,8 +58,8 @@ SirixDB tracks both timelines natively. This makes an entire class of applicatio
   <text x="340" y="198" text-anchor="middle" fill="#F47B20" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">Feb 1</text>
   <text x="340" y="240" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Corrected: $95</text>
 
-  <!-- Dashed connector: bottom of Mar 20 circle → top of Feb 1 circle -->
-  <line x1="660" y1="92" x2="340" y2="208" stroke="#F47B20" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.6"/>
+  <!-- Dashed connector: bottom of Mar 20 circle → top of Feb 1 circle (curved to clear labels) -->
+  <path d="M 660,92 C 750,135 480,185 340,208" stroke="#F47B20" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.6" fill="none"/>
 
   <!-- Annotation (positioned right of the dashed line to avoid overlap) -->
   <rect x="570" y="133" width="260" height="26" rx="4" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1" opacity="0.6"/>
