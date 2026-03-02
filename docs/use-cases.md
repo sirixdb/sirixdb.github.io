@@ -17,7 +17,7 @@ These two timelines diverge constantly. A price correction recorded today might 
 
 SirixDB tracks both timelines natively. This makes an entire class of applications not just possible, but straightforward. Below are concrete use cases that are **difficult or impractical** to build on conventional databases, but become natural with SirixDB.
 
-<svg viewBox="0 0 860 280" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Two timelines diverge: transaction time records when facts were stored, valid time records when they were true in the real world">
+<svg viewBox="-70 0 930 280" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Two timelines diverge: transaction time records when facts were stored, valid time records when they were true in the real world">
   <!-- Title -->
   <text x="430" y="24" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Two Timelines, One Reality</text>
 
@@ -58,12 +58,12 @@ SirixDB tracks both timelines natively. This makes an entire class of applicatio
   <text x="340" y="198" text-anchor="middle" fill="#F47B20" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">Feb 1</text>
   <text x="340" y="240" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Corrected: $95</text>
 
-  <!-- Dashed connector: Mar 20 (top) → Feb 1 (bottom) -->
-  <line x1="660" y1="95" x2="340" y2="208" stroke="#F47B20" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.6"/>
+  <!-- Dashed connector: bottom of Mar 20 circle → top of Feb 1 circle -->
+  <line x1="660" y1="92" x2="340" y2="208" stroke="#F47B20" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.6"/>
 
-  <!-- Annotation -->
-  <rect x="430" y="138" width="260" height="26" rx="4" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1" opacity="0.6"/>
-  <text x="560" y="155" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="500">Recorded Mar 20 — but true since Feb 1</text>
+  <!-- Annotation (positioned right of the dashed line to avoid overlap) -->
+  <rect x="570" y="133" width="260" height="26" rx="4" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1" opacity="0.6"/>
+  <text x="700" y="150" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="500">Recorded Mar 20 — but true since Feb 1</text>
 </svg>
 
 ---
