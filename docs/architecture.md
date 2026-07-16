@@ -432,6 +432,17 @@ Uncommitted changes are held in an in-memory **transaction intent log (TIL)**. O
 
 Because each resource is an independent log-structured store, write transactions on different resources proceed in parallel with no coordination.
 
+### Auto-commit and the asynchronous pre-flush
+
+Long-running write transactions can bound memory and commit latency in two ways, and the distinction matters:
+
+- **Synchronous auto-commit** (after every N modifications and/or every T seconds) runs the *full* commit protocol: it creates a real revision with its own commit record, exactly like an explicit `commit()`, and the transaction stays open.
+- **Asynchronous pre-flush** (`AfterCommitState.KEEP_OPEN_ASYNC`) is *not a commit*. The transaction intent log takes an O(1) snapshot (freezing its current entries), and a background thread writes the snapshot's leaf pages to the data file through shadow references while the writer keeps working on a fresh log generation. No revision, no commit record, nothing becomes visible — if the process crashes before the next real commit, the pre-flushed bytes are unreachable dead space in the append-only file, exactly like a rolled-back transaction.
+
+At the next real commit, leaf pages that were **not** modified after the snapshot are reused by their already-written disk offsets (and content hashes) — the bulk of the commit's I/O has already happened off the commit path. Pages that **were** modified after the snapshot are copied on write into the current log generation; the new copy is authoritative, the earlier flush is superseded, and a forwarding link guarantees every reference resolves to the new version rather than the stale one. Superseded flushes stay behind as unreachable dead bytes — a deliberate write-amplification trade-off on write-hot pages in exchange for low-latency commits.
+
+Two invariants hold unconditionally: **every revision has a commit record** (there is no code path that creates a revision without one — the async pre-flush creates no revision at all), and **only reachable pages carry authority** — page hashes embedded in parent pages cover exactly what a revision can read, never dead space.
+
 ## Secondary Indexes
 
 SirixDB supports three types of user-defined secondary indexes, all stored in the same versioned trie structure as the data. Indexes are part of the transaction and version with the data — the index at revision 42 always matches the data at revision 42.

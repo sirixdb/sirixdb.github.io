@@ -744,6 +744,47 @@ session.beginNodeTrx(1000);
 session.beginNodeTrx(1000, TimeUnit.SECONDS, 30);
 ```
 
+Each synchronous auto-commit is a **real commit**: it creates a revision with
+its own commit record — exactly like calling `commit()` yourself — and the
+transaction stays open for further modifications. A bulk load with
+`beginNodeTrx(262_144)` therefore produces one revision per 262,144
+modifications.
+
+#### Asynchronous pre-flush (`KEEP_OPEN_ASYNC`)
+
+For ingest-heavy workloads there is a third mode that is often confused with
+auto-commit but deliberately is **not a commit**:
+
+```java
+// Pre-flush leaf pages in the background after every 262,144th modification;
+// an actual revision is only created when you call commit().
+session.beginNodeTrx(262_144, AfterCommitState.KEEP_OPEN_ASYNC);
+```
+
+When the threshold is reached, the transaction's in-memory intent log takes an
+O(1) snapshot and a **background thread** writes the snapshot's leaf pages to
+the data file, while your thread keeps inserting without waiting for I/O. No
+revision is created, no commit record is written, and none of the pre-flushed
+data becomes visible to readers — if the process crashes before your next real
+`commit()`, the pre-flushed bytes are unreachable and simply ignored, exactly
+like a rolled-back transaction.
+
+The benefit arrives at the next real `commit()`: leaf pages that were not
+modified again since the pre-flush are reused by their already-written disk
+locations, so the bulk of the commit's I/O has already happened in the
+background. Pages you modified *after* the pre-flush are written fresh (the
+engine copies them on write and transparently supersedes the stale flushed
+version — the earlier flush becomes unreachable dead space in the append-only
+file, a deliberate write-amplification trade-off on write-hot pages).
+
+Notes:
+
+- `KEEP_OPEN_ASYNC` currently requires the default `FILE_CHANNEL` storage
+  backend.
+- Durability semantics are unchanged: only `commit()` (or a synchronous
+  auto-commit) makes data durable *and visible*. The pre-flush is purely a
+  latency optimization for the eventual commit.
+
 Furthermore, you're able to start a read-write transaction and then revert to a former revision:
 
 ```java
