@@ -311,10 +311,15 @@ resource at the desired revision number or timestamp via
    Not blocking the typical analytical use case where the index reflects the
    most recent commit.
 
-5. **Auto-commit features are in flight.** Production should currently use
-   synchronous commits via `wtx.commit()` and avoid the
-   `AfterCommitState.KEEP_OPEN_ASYNC` path until a single design lands on
-   `main`.
+5. **Async commit modes are new.** The async modes have landed on `main` with
+   fail-fast guards and test coverage: `AfterCommitState.KEEP_OPEN_ASYNC_FLUSH`
+   (background leaf pre-flush, no intermediate revisions — the default for
+   store-level bulk imports) and `AfterCommitState.KEEP_OPEN_ASYNC_COMMIT`
+   (pipelined full commits: durable, queryable revisions hardened off the
+   writer thread, durable-before-visible). Both require the default
+   `FILE_CHANNEL` backend and count-based auto-commit. Conservative
+   deployments can stay on synchronous `wtx.commit()`; imports can opt out
+   via `-Dsirix.import.asyncFlush=false`.
 
 6. **Large-scale (Chicago-scale) ingestion tests are not in CI.** The reference
    3.6 GB Chicago dataset is not in CI; large-scale ingestion regressions are

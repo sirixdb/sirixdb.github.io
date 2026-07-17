@@ -750,7 +750,7 @@ transaction stays open for further modifications. A bulk load with
 `beginNodeTrx(262_144)` therefore produces one revision per 262,144
 modifications.
 
-#### Asynchronous pre-flush (`KEEP_OPEN_ASYNC`)
+#### Asynchronous pre-flush (`KEEP_OPEN_ASYNC_FLUSH`)
 
 For ingest-heavy workloads there is a third mode that is often confused with
 auto-commit but deliberately is **not a commit**:
@@ -758,7 +758,7 @@ auto-commit but deliberately is **not a commit**:
 ```java
 // Pre-flush leaf pages in the background after every 262,144th modification;
 // an actual revision is only created when you call commit().
-session.beginNodeTrx(262_144, AfterCommitState.KEEP_OPEN_ASYNC);
+session.beginNodeTrx(262_144, AfterCommitState.KEEP_OPEN_ASYNC_FLUSH);
 ```
 
 When the threshold is reached, the transaction's in-memory intent log takes an
@@ -779,11 +779,36 @@ file, a deliberate write-amplification trade-off on write-hot pages).
 
 Notes:
 
-- `KEEP_OPEN_ASYNC` currently requires the default `FILE_CHANNEL` storage
+- `KEEP_OPEN_ASYNC_FLUSH` currently requires the default `FILE_CHANNEL` storage
   backend.
 - Durability semantics are unchanged: only `commit()` (or a synchronous
   auto-commit) makes data durable *and visible*. The pre-flush is purely a
   latency optimization for the eventual commit.
+
+#### Asynchronous durable commits (`KEEP_OPEN_ASYNC_COMMIT`)
+
+If you want intermediate revisions that are durable **and** queryable without
+paying the commit barriers on the writer thread, use the pipelined async
+commit mode:
+
+```java
+// Every 262,144 modifications: a real revision is created and hardened in the
+// background while your thread keeps inserting. Readers see each revision as
+// soon as it is durable — never before.
+session.beginNodeTrx(262_144, AfterCommitState.KEEP_OPEN_ASYNC_COMMIT);
+```
+
+Each threshold crossing runs the full commit protocol, split in two: page
+serialization happens on your thread, then the durability barriers (fsyncs and
+uber-page beacon writes) and the publication of the revision happen on a
+background thread — strictly in that order, so a reader can never open a
+revision that a crash could still lose. Commits are pipelined with depth one:
+the next batch builds on the pending revision while the previous one hardens,
+and the writer only stalls if the storage device falls behind. On a crash you
+lose at most the in-flight batch plus your current working set.
+
+Like the pre-flush mode, this requires the default `FILE_CHANNEL` backend and
+count-based (not timed) auto-commit.
 
 Furthermore, you're able to start a read-write transaction and then revert to a former revision:
 
