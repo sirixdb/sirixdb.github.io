@@ -76,4 +76,4 @@ Other publications include:
 
 - **Cloud offering**: A managed SirixDB service is planned, so you can use temporal document storage without operational overhead.
 - **Enhanced query capabilities**: Continued improvements to the JSONiq processor and temporal query functions.
-- **Web GUI improvements**: Additional visualization modes and collaborative features in the [SirixDB Web GUI](https://github.com/sirixdb/sirixdb-web-gui).
+- **Web GUI improvements**: Additional visualization modes and collaborative features.

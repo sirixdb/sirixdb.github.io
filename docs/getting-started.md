@@ -10,43 +10,11 @@ Get SirixDB running and query temporal data in minutes. Pick the path that fits 
 
 | Path | Time | Best for |
 |---|---|---|
-| [Web GUI Demo](#web-gui-demo) | ~2 min | Exploring the UI, visualizing revisions and diffs |
 | [REST API](#rest-api) | ~5 min | Building web/mobile apps, language-agnostic integration |
 | [Embedded Java Library](#embedded-java-library) | ~10 min | JVM applications, maximum performance, full control |
 | [CLI Tools](#cli-tools) | ~10 min | Ad-hoc queries, scripting, interactive JSONiq |
 
-**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) for the first two paths, [JDK 24+](https://jdk.java.net/) for the last two.
-
----
-
-## Web GUI Demo
-
-The fastest way to see SirixDB in action. The demo starts a pre-loaded SirixDB instance with sample data and a web frontend.
-
-**1. Clone and start:**
-
-```bash
-git clone https://github.com/sirixdb/sirixdb-web-gui.git
-cd sirixdb-web-gui
-docker compose -f docker-compose.demo.yml up --build
-```
-
-**2. Open the GUI:**
-
-Navigate to [http://localhost:3000](http://localhost:3000) and log in with `admin` / `admin`.
-
-**3. Explore:**
-
-- **Tree view** — browse the JSON document structure
-- **Revision timeline** — step through the full history of a resource
-- **Diff viewer** — compare any two revisions side by side
-- **Query editor** — run JSONiq queries against any revision
-
-**4. Tear down:**
-
-```bash
-docker compose -f docker-compose.demo.yml down -v
-```
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) for the REST API path, [JDK 24+](https://jdk.java.net/) for the last two.
 
 ---
 

@@ -76,15 +76,6 @@ Git-like version control for data (DVC, lakeFS, Dolt) is increasingly popular. S
 - Your data is tabular (SQL) or file-based
 - Team collaboration with pull-request-style review is important
 
-## SirixDB vs Traditional Databases with Temporal Extensions
-
-PostgreSQL (with temporal tables), Oracle Flashback, and SQL Server temporal tables add time-travel to relational databases. Compared to SirixDB:
-
-- **Native vs bolted-on**: SirixDB was designed from the ground up for temporal data. Relational temporal extensions add history tables on top of existing architectures, which can lead to storage bloat and query complexity
-- **Document vs relational**: SirixDB natively stores semi-structured data without schema. Relational temporal tables require fixed schemas
-- **Storage model**: SirixDB's copy-on-write tree shares unchanged data across revisions automatically. Temporal tables typically duplicate entire rows on every change
-- **Valid time**: Most relational temporal extensions support only system time. Bitemporal support (both system and valid time) requires complex schema design. SirixDB supports both natively
-
 ## Roadmap
 
 SirixDB is actively evolving. Planned developments include:
