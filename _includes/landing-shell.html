@@ -1,0 +1,119 @@
+{% raw %}
+<!-- ================= SEE IT IN ACTION (sirix-shell) =================
+     Generated from a real sirix-shell session ().
+     Do not hand-edit outputs; re-run the session and regenerate instead. -->
+<section class="band shell-sec" id="see-it" aria-labelledby="shell-h">
+  <div class="lp-container">
+    <div class="sec-head reveal">
+      <div class="kicker">See it in action</div>
+      <h2 class="h2" id="shell-h">Four commits. Then travel back in time.</h2>
+      <p class="sub">A real <code>sirix-shell</code> session: build a catalog in four revisions, then read the past, follow one field through history and diff two revisions. The output is what SirixDB  printed.</p>
+    </div>
+    <div class="shell-wrap reveal">
+      <div class="shell-revs" aria-hidden="true">
+        <ol>
+          <li data-rev="1">rev 1</li><li data-rev="2">rev 2</li><li data-rev="3">rev 3</li><li data-rev="4">rev 4</li>
+        </ol>
+        <span class="shell-revs__label" id="shell-revs-label">4 immutable revisions</span>
+      </div>
+      <figure class="shell" id="shell">
+        <div class="shell__bar">
+          <span class="shell__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="shell__title">sirix-shell</span>
+          <span class="shell__ctl">
+            <button type="button" class="shell__btn" data-shell="replay" aria-label="Replay the session">&#8635; Replay</button>
+            <button type="button" class="shell__btn" data-shell="all" aria-label="Show the whole session at once">Show all</button>
+          </span>
+        </div>
+        <div class="shell__body" tabindex="0" role="region" aria-label="sirix-shell session transcript">
+        <div class="shell__step" data-rev='{&quot;kind&quot;: &quot;write&quot;, &quot;rev&quot;: 1, &quot;label&quot;: &quot;commit \u2192 revision 1&quot;}'>
+          <div class="shell__cmt">(: Revision 1: store a product catalog :)</div>
+          <div class="shell__in">
+            <span class="shell__prompt" aria-hidden="true">sirix &gt;</span>
+            <pre class="shell__cmd"><code><span class="tk-fn">jn:store</span><span class="tk-p">(</span><span class="tk-str">'shop'</span><span class="tk-p">,</span><span class="tk-str">'products'</span><span class="tk-p">,</span><span class="tk-str">'[{"name":"Laptop","price":999},{"name":"Phone","price":699}]'</span><span class="tk-p">)</span></code></pre>
+            <button type="button" class="shell__copy" data-copy="jn:store(&#x27;shop&#x27;,&#x27;products&#x27;,&#x27;[{&quot;name&quot;:&quot;Laptop&quot;,&quot;price&quot;:999},{&quot;name&quot;:&quot;Phone&quot;,&quot;price&quot;:699}]&#x27;)" aria-label="Copy command 1">copy</button>
+          </div>
+          <pre class="shell__out">(pending real run)</pre>
+        </div>
+        <div class="shell__step" data-rev='{&quot;kind&quot;: &quot;write&quot;, &quot;rev&quot;: 2, &quot;label&quot;: &quot;commit \u2192 revision 2&quot;}'>
+          <div class="shell__cmt">(: Revision 2: the laptop gets cheaper :)</div>
+          <div class="shell__in">
+            <span class="shell__prompt" aria-hidden="true">sirix &gt;</span>
+            <pre class="shell__cmd"><code><span class="tk-kw">let</span> <span class="tk-var">$doc</span> <span class="tk-p">:</span><span class="tk-p">=</span> <span class="tk-fn">jn:doc</span><span class="tk-p">(</span><span class="tk-str">'shop'</span><span class="tk-p">,</span><span class="tk-str">'products'</span><span class="tk-p">)</span>
+<span class="tk-kw">return</span> <span class="tk-kw">replace</span> <span class="tk-kw">json</span> <span class="tk-kw">value</span> <span class="tk-kw">of</span> <span class="tk-var">$doc</span><span class="tk-p">[</span><span class="tk-num">0</span><span class="tk-p">]</span><span class="tk-p">.</span>price <span class="tk-kw">with</span> <span class="tk-num">899</span></code></pre>
+            <button type="button" class="shell__copy" data-copy="let $doc := jn:doc(&#x27;shop&#x27;,&#x27;products&#x27;)
+return replace json value of $doc[0].price with 899" aria-label="Copy command 2">copy</button>
+          </div>
+          <pre class="shell__out">(pending real run)</pre>
+        </div>
+        <div class="shell__step" data-rev='{&quot;kind&quot;: &quot;write&quot;, &quot;rev&quot;: 3, &quot;label&quot;: &quot;commit \u2192 revision 3&quot;}'>
+          <div class="shell__cmt">(: Revision 3: add a product :)</div>
+          <div class="shell__in">
+            <span class="shell__prompt" aria-hidden="true">sirix &gt;</span>
+            <pre class="shell__cmd"><code><span class="tk-kw">let</span> <span class="tk-var">$doc</span> <span class="tk-p">:</span><span class="tk-p">=</span> <span class="tk-fn">jn:doc</span><span class="tk-p">(</span><span class="tk-str">'shop'</span><span class="tk-p">,</span><span class="tk-str">'products'</span><span class="tk-p">)</span>
+<span class="tk-kw">return</span> <span class="tk-kw">append</span> <span class="tk-kw">json</span> <span class="tk-p">{</span><span class="tk-str">"name"</span><span class="tk-p">:</span><span class="tk-str">"Tablet"</span><span class="tk-p">,</span><span class="tk-str">"price"</span><span class="tk-p">:</span><span class="tk-num">449</span><span class="tk-p">}</span> <span class="tk-kw">into</span> <span class="tk-var">$doc</span></code></pre>
+            <button type="button" class="shell__copy" data-copy="let $doc := jn:doc(&#x27;shop&#x27;,&#x27;products&#x27;)
+return append json {&quot;name&quot;:&quot;Tablet&quot;,&quot;price&quot;:449} into $doc" aria-label="Copy command 3">copy</button>
+          </div>
+          <pre class="shell__out">(pending real run)</pre>
+        </div>
+        <div class="shell__step" data-rev='{&quot;kind&quot;: &quot;write&quot;, &quot;rev&quot;: 4, &quot;label&quot;: &quot;commit \u2192 revision 4&quot;}'>
+          <div class="shell__cmt">(: Revision 4: discontinue the phone :)</div>
+          <div class="shell__in">
+            <span class="shell__prompt" aria-hidden="true">sirix &gt;</span>
+            <pre class="shell__cmd"><code><span class="tk-kw">let</span> <span class="tk-var">$doc</span> <span class="tk-p">:</span><span class="tk-p">=</span> <span class="tk-fn">jn:doc</span><span class="tk-p">(</span><span class="tk-str">'shop'</span><span class="tk-p">,</span><span class="tk-str">'products'</span><span class="tk-p">)</span>
+<span class="tk-kw">return</span> <span class="tk-kw">delete</span> <span class="tk-kw">json</span> <span class="tk-var">$doc</span><span class="tk-p">[</span><span class="tk-num">1</span><span class="tk-p">]</span></code></pre>
+            <button type="button" class="shell__copy" data-copy="let $doc := jn:doc(&#x27;shop&#x27;,&#x27;products&#x27;)
+return delete json $doc[1]" aria-label="Copy command 4">copy</button>
+          </div>
+          <pre class="shell__out">(pending real run)</pre>
+        </div>
+        <div class="shell__step" data-rev='{&quot;kind&quot;: &quot;read&quot;, &quot;rev&quot;: 1, &quot;label&quot;: &quot;reading revision 1&quot;}'>
+          <div class="shell__cmt">(: Time travel: the catalog as it was in revision 1 :)</div>
+          <div class="shell__in">
+            <span class="shell__prompt" aria-hidden="true">sirix &gt;</span>
+            <pre class="shell__cmd"><code><span class="tk-fn">jn:doc</span><span class="tk-p">(</span><span class="tk-str">'shop'</span><span class="tk-p">,</span><span class="tk-str">'products'</span><span class="tk-p">,</span> <span class="tk-num">1</span><span class="tk-p">)</span></code></pre>
+            <button type="button" class="shell__copy" data-copy="jn:doc(&#x27;shop&#x27;,&#x27;products&#x27;, 1)" aria-label="Copy command 5">copy</button>
+          </div>
+          <pre class="shell__out">(pending real run)</pre>
+        </div>
+        <div class="shell__step" data-rev='{&quot;kind&quot;: &quot;history&quot;, &quot;revs&quot;: [1, 2], &quot;label&quot;: &quot;history of one field&quot;}'>
+          <div class="shell__cmt">(: How did the laptop's price evolve? :)</div>
+          <div class="shell__in">
+            <span class="shell__prompt" aria-hidden="true">sirix &gt;</span>
+            <pre class="shell__cmd"><code><span class="tk-kw">let</span> <span class="tk-var">$price</span> <span class="tk-p">:</span><span class="tk-p">=</span> <span class="tk-fn">jn:doc</span><span class="tk-p">(</span><span class="tk-str">'shop'</span><span class="tk-p">,</span><span class="tk-str">'products'</span><span class="tk-p">)</span><span class="tk-p">[</span><span class="tk-num">0</span><span class="tk-p">]</span><span class="tk-p">.</span>price
+<span class="tk-kw">for</span> <span class="tk-var">$v</span> <span class="tk-kw">in</span> <span class="tk-fn">sdb:item-history</span><span class="tk-p">(</span><span class="tk-var">$price</span><span class="tk-p">)</span>
+<span class="tk-kw">return</span> <span class="tk-p">{</span><span class="tk-str">"rev"</span><span class="tk-p">:</span> <span class="tk-fn">sdb:revision</span><span class="tk-p">(</span><span class="tk-var">$v</span><span class="tk-p">)</span><span class="tk-p">,</span> <span class="tk-str">"price"</span><span class="tk-p">:</span> <span class="tk-var">$v</span><span class="tk-p">}</span></code></pre>
+            <button type="button" class="shell__copy" data-copy="let $price := jn:doc(&#x27;shop&#x27;,&#x27;products&#x27;)[0].price
+for $v in sdb:item-history($price)
+return {&quot;rev&quot;: sdb:revision($v), &quot;price&quot;: $v}" aria-label="Copy command 6">copy</button>
+          </div>
+          <pre class="shell__out">(pending real run)</pre>
+        </div>
+        <div class="shell__step" data-rev='{&quot;kind&quot;: &quot;all&quot;, &quot;label&quot;: &quot;all revisions&quot;}'>
+          <div class="shell__cmt">(: How many products did each revision have? :)</div>
+          <div class="shell__in">
+            <span class="shell__prompt" aria-hidden="true">sirix &gt;</span>
+            <pre class="shell__cmd"><code><span class="tk-kw">for</span> <span class="tk-var">$v</span> <span class="tk-kw">in</span> <span class="tk-fn">jn:all-times</span><span class="tk-p">(</span><span class="tk-fn">jn:doc</span><span class="tk-p">(</span><span class="tk-str">'shop'</span><span class="tk-p">,</span><span class="tk-str">'products'</span><span class="tk-p">)</span><span class="tk-p">)</span>
+<span class="tk-kw">return</span> <span class="tk-p">{</span><span class="tk-str">"rev"</span><span class="tk-p">:</span> <span class="tk-fn">sdb:revision</span><span class="tk-p">(</span><span class="tk-var">$v</span><span class="tk-p">)</span><span class="tk-p">,</span> <span class="tk-str">"products"</span><span class="tk-p">:</span> <span class="tk-fn">count</span><span class="tk-p">(</span><span class="tk-var">$v</span><span class="tk-p">[</span><span class="tk-p">]</span><span class="tk-p">)</span><span class="tk-p">}</span></code></pre>
+            <button type="button" class="shell__copy" data-copy="for $v in jn:all-times(jn:doc(&#x27;shop&#x27;,&#x27;products&#x27;))
+return {&quot;rev&quot;: sdb:revision($v), &quot;products&quot;: count($v[])}" aria-label="Copy command 7">copy</button>
+          </div>
+          <pre class="shell__out">(pending real run)</pre>
+        </div>
+        <div class="shell__step" data-rev='{&quot;kind&quot;: &quot;diff&quot;, &quot;from&quot;: 1, &quot;to&quot;: 4, &quot;label&quot;: &quot;diff revision 1 \u2192 4&quot;}'>
+          <div class="shell__cmt">(: What changed between revision 1 and revision 4? :)</div>
+          <div class="shell__in">
+            <span class="shell__prompt" aria-hidden="true">sirix &gt;</span>
+            <pre class="shell__cmd"><code><span class="tk-fn">jn:diff</span><span class="tk-p">(</span><span class="tk-str">'shop'</span><span class="tk-p">,</span><span class="tk-str">'products'</span><span class="tk-p">,</span> <span class="tk-num">1</span><span class="tk-p">,</span> <span class="tk-num">4</span><span class="tk-p">)</span></code></pre>
+            <button type="button" class="shell__copy" data-copy="jn:diff(&#x27;shop&#x27;,&#x27;products&#x27;, 1, 4)" aria-label="Copy command 8">copy</button>
+          </div>
+          <pre class="shell__out">(pending real run)</pre>
+        </div>
+        </div>
+      </figure>
+      <p class="cap__figcap shell-note">Multi-line queries run on an empty line in <code>sirix-shell</code>. JSON results are re-indented for reading; values are unchanged.</p>
+    </div>
+  </div>
+</section>
+{% endraw %}

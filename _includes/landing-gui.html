@@ -1,0 +1,53 @@
+<!-- ================= SEE IT IN THE BROWSER (web interface) =================
+     Screenshots of the live demo (https://demo.sirix.io). The basic GUI is part of
+     open-source SirixDB; its source repository is not public yet, so it is not linked. -->
+<section class="band band--alt gui-sec" id="gui" aria-labelledby="gui-h">
+  <div class="lp-container">
+    <div class="sec-head reveal">
+      <div class="kicker">See it in the browser</div>
+      <h2 class="h2" id="gui-h">Explore every revision visually.</h2>
+      <p class="sub">The web interface ships with open-source SirixDB: browse documents as trees, step through revision history, compare any two revisions and see the shape of your data.</p>
+    </div>
+    <div class="gui reveal" id="gui-carousel">
+      <div class="gui__tabs" role="tablist" aria-label="Web interface views">
+        <button type="button" class="gui__tab" role="tab" id="gui-t-1" aria-controls="gui-p-1" aria-selected="true">Explorer</button>
+        <button type="button" class="gui__tab" role="tab" id="gui-t-2" aria-controls="gui-p-2" aria-selected="false" tabindex="-1">Time travel</button>
+        <button type="button" class="gui__tab" role="tab" id="gui-t-3" aria-controls="gui-p-3" aria-selected="false" tabindex="-1">Diff</button>
+        <button type="button" class="gui__tab" role="tab" id="gui-t-4" aria-controls="gui-p-4" aria-selected="false" tabindex="-1">Sunburst</button>
+        <button type="button" class="gui__tab" role="tab" id="gui-t-5" aria-controls="gui-p-5" aria-selected="false" tabindex="-1">Treemap</button>
+      </div>
+      <div class="gui__frame">
+        <div class="gui__bar" aria-hidden="true">
+          <span class="gui__dots"><i></i><i></i><i></i></span>
+          <span class="gui__url" id="gui-url">demo.sirix.io/explorer</span>
+        </div>
+        <div class="gui__stage">
+          <figure class="gui__panel" role="tabpanel" id="gui-p-1" aria-labelledby="gui-t-1" data-url="demo.sirix.io/explorer">
+            <img src="/images/gui-explorer-1600.webp" srcset="/images/gui-explorer-800.webp 800w, /images/gui-explorer-1600.webp 1600w" sizes="(max-width: 1020px) 100vw, 980px" width="1600" height="894" loading="lazy" decoding="async" alt="SirixDB web interface: the Explorer showing a movies JSON document as an expandable tree, each node with its stable node key.">
+            <figcaption>Browse any document as a tree &mdash; every object, field and value with its stable node key.</figcaption>
+          </figure>
+          <figure class="gui__panel" role="tabpanel" id="gui-p-2" aria-labelledby="gui-t-2" data-url="demo.sirix.io/history/demo-db/products" hidden>
+            <img src="/images/gui-history-1600.webp" srcset="/images/gui-history-800.webp 800w, /images/gui-history-1600.webp 1600w" sizes="(max-width: 1020px) 100vw, 980px" width="1600" height="894" loading="lazy" decoding="async" alt="SirixDB web interface: revision history of the products resource, seven revisions with time and author, and a time-travel date picker.">
+            <figcaption>Every revision with its time and author &mdash; pick a moment and see the data as it was then.</figcaption>
+          </figure>
+          <figure class="gui__panel" role="tabpanel" id="gui-p-3" aria-labelledby="gui-t-3" data-url="demo.sirix.io/explorer/diff" hidden>
+            <img src="/images/gui-diff-1600.webp" srcset="/images/gui-diff-800.webp 800w, /images/gui-diff-1600.webp 1600w" sizes="(max-width: 1020px) 100vw, 980px" width="1600" height="894" loading="lazy" decoding="async" alt="SirixDB web interface: diff between revision 1 and revision 5 of a movies document, 16 changes with inserts and an update highlighted in place.">
+            <figcaption>Compare two revisions &mdash; inserts, updates and deletes highlighted right in the document.</figcaption>
+          </figure>
+          <figure class="gui__panel" role="tabpanel" id="gui-p-4" aria-labelledby="gui-t-4" data-url="demo.sirix.io/sunburst" hidden>
+            <img src="/images/gui-sunburst-1600.webp" srcset="/images/gui-sunburst-800.webp 800w, /images/gui-sunburst-1600.webp 1600w" sizes="(max-width: 1020px) 100vw, 980px" width="1600" height="894" loading="lazy" decoding="async" alt="SirixDB web interface: sunburst chart of a document's structure with depth and revision controls.">
+            <figcaption>See the shape of a document at any revision; click a ring to zoom into a subtree.</figcaption>
+          </figure>
+          <figure class="gui__panel" role="tabpanel" id="gui-p-5" aria-labelledby="gui-t-5" data-url="demo.sirix.io/treemap" hidden>
+            <img src="/images/gui-treemap-1600.webp" srcset="/images/gui-treemap-800.webp 800w, /images/gui-treemap-1600.webp 1600w" sizes="(max-width: 1020px) 100vw, 980px" width="1600" height="894" loading="lazy" decoding="async" alt="SirixDB web interface: treemap of a document's structure, each rectangle a subtree sized by its content.">
+            <figcaption>Spot large subtrees at a glance and drill down with a click.</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="gui__cta">
+        <a class="lp-btn lp-btn--primary" href="https://demo.sirix.io">Try the live demo</a>
+        <span class="gui__note">Read-only &middot; no sign-up</span>
+      </div>
+    </div>
+  </div>
+</section>

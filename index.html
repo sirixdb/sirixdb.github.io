@@ -1,594 +1,598 @@
 ---
 layout: landing-page
-title: SirixDB - A Bitemporal, Evolutionary Document Store
+title: SirixDB - the immutable, bitemporal time-travel database for JSON and XML
+description: >-
+  Open-source, embeddable database that keeps every revision immutable and
+  queryable: time-travel queries, bitemporal (transaction and valid time),
+  field-level diffs, and safe undo for AI agents.
 ---
-
-<!-- Section: Shell Demo -->
-<section class="section section--alt fade-in">
-  <div class="container">
-    <h2 class="section-heading">See it in action</h2>
-    <p class="section-subheading">Create revisions, modify data, then travel back in time &mdash; all from the interactive JSONiq shell.</p>
-    <div class="terminal">
-      <div class="terminal__header">
-        <span class="terminal__dot terminal__dot--red"></span>
-        <span class="terminal__dot terminal__dot--yellow"></span>
-        <span class="terminal__dot terminal__dot--green"></span>
-        <span class="terminal__title">sirix-shell</span>
+<div class="lp" id="top">
+<!-- ================= HERO ================= -->
+<section class="lp-hero" aria-labelledby="hero-title">
+  <div class="lp-container lp-hero__grid">
+    <div class="lp-hero__text">
+      <div class="kicker lp-hero__kicker">The immutable, bitemporal time-travel database <span class="lp-hero__kicker-sep">·</span> open source</div>
+      <h1 id="hero-title" data-pos-slot="h1">Every change kept. <span class="grad">Every version queryable.</span></h1>
+      <p class="lp-hero__lede">Query any past state of your JSON and XML documents &mdash; as it was recorded, or as it was true &mdash; see exactly which fields changed, and let AI agents edit real data you can always undo. Every change is an immutable revision. Open source and embeddable.</p>
+      <div class="lp-hero__actions">
+        <a class="lp-btn lp-btn--primary" href="#start">Run it in one command</a>
+        <a class="lp-btn lp-btn--ghost" href="https://demo.sirix.io">Try the live demo</a>
       </div>
-      <div class="terminal__body"><pre><span class="t-block"><span class="t-comment">(: Rev 1 &mdash; store initial data :)</span>
-<span class="t-prompt">sirix&gt;</span> <span class="t-fn">jn:store</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>,<span class="t-str">'[
-          {"name":"Laptop", "price":999},
-          {"name":"Phone",  "price":699}
-        ]'</span>)
-</span><span class="t-block">
-<span class="t-comment">(: Rev 2 &mdash; price drop on the laptop :)</span>
-<span class="t-prompt">sirix&gt;</span> <span class="t-kw">let</span> <span class="t-var">$doc</span> <span class="t-op">:=</span> <span class="t-fn">jn:doc</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>)
-       <span class="t-kw">return</span> <span class="t-kw">replace json value of</span> <span class="t-var">$doc</span>[<span class="t-num">0</span>].<span class="t-op">price</span> <span class="t-kw">with</span> <span class="t-num">899</span>
-</span><span class="t-block">
-<span class="t-comment">(: Rev 3 &mdash; add a new product :)</span>
-<span class="t-prompt">sirix&gt;</span> <span class="t-kw">let</span> <span class="t-var">$doc</span> <span class="t-op">:=</span> <span class="t-fn">jn:doc</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>)
-       <span class="t-kw">return</span> <span class="t-kw">append json</span> {<span class="t-str">"name"</span>:<span class="t-str">"Tablet"</span>,<span class="t-str">"price"</span>:<span class="t-num">449</span>} <span class="t-kw">into</span> <span class="t-var">$doc</span>
-</span><span class="t-block">
-<span class="t-comment">(: Rev 4 &mdash; discontinue the phone :)</span>
-<span class="t-prompt">sirix&gt;</span> <span class="t-kw">let</span> <span class="t-var">$doc</span> <span class="t-op">:=</span> <span class="t-fn">jn:doc</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>)
-       <span class="t-kw">return</span> <span class="t-kw">delete json</span> <span class="t-var">$doc</span>[<span class="t-num">1</span>]
-</span><span class="t-block">
-<span class="t-comment">(: Time travel &mdash; what was the original catalog? :)</span>
-<span class="t-prompt">sirix&gt;</span> <span class="t-fn">jn:open</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>, <span class="t-num">1</span>)
-<span class="t-output">=&gt; [{"name":"Laptop","price":999}, {"name":"Phone","price":699}]</span>
-</span><span class="t-block">
-<span class="t-comment">(: Track how the laptop price evolved across revisions :)</span>
-<span class="t-prompt">sirix&gt;</span> <span class="t-kw">let</span> <span class="t-var">$item</span> <span class="t-op">:=</span> <span class="t-fn">sdb:select-item</span>(<span class="t-fn">jn:doc</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>), <span class="t-num">6</span>)
-       <span class="t-kw">for</span> <span class="t-var">$v</span> <span class="t-kw">in</span> <span class="t-fn">sdb:item-history</span>(<span class="t-var">$item</span>)
-       <span class="t-kw">return</span> {<span class="t-str">"rev"</span>: <span class="t-fn">sdb:revision</span>(<span class="t-var">$v</span>), <span class="t-str">"price"</span>: <span class="t-var">$v</span>}
-<span class="t-output">=&gt; {"rev":<span class="t-rev">1</span>, "price":999}
-   {"rev":<span class="t-rev">2</span>, "price":899}</span>
-</span><span class="t-block">
-<span class="t-comment">(: How did the catalog evolve across all revisions? :)</span>
-<span class="t-prompt">sirix&gt;</span> <span class="t-kw">for</span> <span class="t-var">$v</span> <span class="t-kw">in</span> <span class="t-fn">jn:all-times</span>(<span class="t-fn">jn:doc</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>))
-       <span class="t-kw">return</span> {<span class="t-str">"rev"</span>: <span class="t-fn">sdb:revision</span>(<span class="t-var">$v</span>), <span class="t-str">"products"</span>: <span class="t-fn">count</span>(<span class="t-var">$v</span>[])}
-<span class="t-output">=&gt; {"rev":<span class="t-rev">1</span>, "products":2}
-   {"rev":<span class="t-rev">2</span>, "products":2}
-   {"rev":<span class="t-rev">3</span>, "products":3}
-   {"rev":<span class="t-rev">4</span>, "products":2}</span>
-</span><span class="t-block">
-<span class="t-comment">(: What changed between rev 1 and the latest? :)</span>
-<span class="t-prompt">sirix&gt;</span> <span class="t-fn">jn:diff</span>(<span class="t-str">'shop'</span>,<span class="t-str">'products'</span>, <span class="t-num">1</span>, <span class="t-num">4</span>)
-<span class="t-output">=&gt; {"diffs": [
-     {"update": {"path":"/[0]/price", "value":<span class="t-rev">899</span>}},
-     {"insert": {"path":"/[1]", "data":"{\"name\":\"Tablet\"}"}},
-     {"delete": {"path":"/[1]"}}
-   ]}</span></span><span class="t-cursor">&#9608;</span></pre>
-      </div>
+      <ul class="pillars" aria-label="What sets SirixDB apart">
+        <li><a href="#cap-bitemporal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16"/><circle cx="14" cy="10" r="2.5"/><path d="M14 12.5V20M4 10h7.5" stroke-dasharray="2 2"/></svg><b>Bitemporal</b><span>What you knew, and when it was true &mdash; both time axes in one query.</span></a></li>
+        <li><a href="#cap-diff"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v7M8.5 7.5h7M8.5 17h7"/></svg><b>Field-level change tracking</b><span>Every field keeps its identity. Diff any two revisions node by node.</span></a></li>
+        <li><a href="#cap-agents"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9.5 13.5h.01M14.5 13.5h.01"/></svg><b>Safe undo for AI agents</b><span>Agents edit through MCP; inspect, diff and revert every change.</span></a></li>
+        <li><a href="#cap-storage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4M4 16l8 4 8-4"/></svg><b>History you control</b><span>Immutable revisions at the cost of what changed; prune by policy with Enterprise (in dev.).</span></a></li>
+      </ul>
     </div>
+
+    <!-- Hero visual: revision stack -->
+    <div class="lp-hero__visual">
+      <svg class="stack-fig" id="stack" viewBox="0 0 560 470" role="img" aria-labelledby="stack-t stack-d">
+        <title id="stack-t">Five revisions stacked like the layers of the Sirix logo</title>
+        <desc id="stack-d">Revision 1 writes every page of the grid. Each later revision writes only one changed fragment, shown in orange, plus the few index pages on its path to the new revision root, and shares the other pages, shown as dashed outlines. A query then opens revision 2 directly.</desc>
+        <defs>
+          <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(25,95%,55%)"/><stop offset="1" stop-color="hsl(200,85%,60%)"/></linearGradient>
+        </defs>
+        <g id="layers"></g>
+        <g class="q-card" transform="translate(292,14)">
+          <rect width="262" height="66" rx="10"/>
+          <text class="q-text" x="14" y="28" id="stack-q">jn:doc('shop','products', 2)</text>
+          <text class="q-sub" x="14" y="50" id="stack-a">opens revision 2 directly · no replay</text>
+        </g>
+        <path class="connector" id="stack-conn" d=""/>
+      </svg>
+    </div>
+
+
   </div>
 </section>
 
-<!-- Section: Quickstart -->
-<section class="section fade-in">
-  <div class="container">
-    <div class="code-showcase">
-      <h2 class="section-heading">Get running in seconds</h2>
-      <p class="section-subheading">Pull the Docker image and start querying your data with full revision history.</p>
-      <div class="code-block typing-terminal">
-        <div class="code-block__header"><span class="code-block__lang">Bash</span></div>
-        <pre><code><span class="sh-fn">docker</span> run -t -i -p 9443:9443 sirixdb/sirix</code></pre>
-      </div>
-      <div class="section-cta" style="margin-top: 2rem;">
-        <a href="/docs/index.html" class="btn btn--primary">Read the Documentation</a>
-        <a href="https://github.com/sirixdb/sirix" class="btn btn--outline" style="margin-left: 1rem;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          View on GitHub
-        </a>
-      </div>
+{% include landing-shell.html %}
+
+{% include landing-gui.html %}
+
+<!-- ================= PROOF BAND ================= -->
+<section class="proofband" aria-label="Measured">
+  <div class="lp-container">
+    <div class="lp-hero__proof">
+      <div class="proof"><b>~18&nbsp;µs</b><span>to open and read revision 1, 5,000 or 10,000 (warm)</span></div>
+      <div class="proof"><b>~570<small style="font-size:.6em;font-weight:600;color:var(--muted)">&nbsp;commits/s</small></b><span>durable commits, flat at 10,000 revisions deep (small document)</span></div>
+      <div class="proof"><b>0.2&ndash;0.3&nbsp;ms</b><span>node-level diff between two revisions (warm)</span></div>
     </div>
+    <p class="src">Core-API numbers from <a href="https://github.com/sirixdb/sirix/blob/main/docs/BENCHMARKS.md">BENCHMARKS.md</a> (10,000-commit history, one machine, small document) and the <a href="https://github.com/sirixdb/sirix#page-versioning-strategies">README</a>. Time-travel retention elsewhere: <a href="https://docs.cloud.google.com/bigquery/docs/time-travel">BigQuery</a> 7 d, <a href="https://docs.databricks.com/aws/en/delta/history">Delta</a> 7 d by default, <a href="https://docs.snowflake.com/en/user-guide/data-time-travel">Snowflake</a> up to 90 d.</p>
   </div>
 </section>
 
-<!-- Section 1: Benefit Pillars -->
-<section class="section fade-in">
-  <div class="container">
-    <h2 class="section-heading">Why SirixDB?</h2>
-    <p class="section-subheading">Most databases remember only the present. SirixDB remembers everything &mdash; what changed, when it changed, and when you knew about it.</p>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-card__number">01</div>
-        <h3>Bitemporal Versioning</h3>
-        <p>Every revision preserved, every correction tracked. Two time axes &mdash; <em>system time</em> and <em>valid time</em> &mdash; without duplicating data.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-card__number">02</div>
-        <h3>Low-Overhead History</h3>
-        <p>A novel <em>sliding snapshot</em> algorithm eliminates write peaks and storage bloat. Only changed page-fragments are stored per revision.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-card__number">03</div>
-        <h3>JSON &amp; XML Native</h3>
-        <p>First-class document store for semi-structured data with temporal XPath axes and JSONiq for navigating in both space and time.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-card__number">04</div>
-        <h3>No Write-Ahead Log</h3>
-        <p>An UberPage is swapped atomically as the last action of a commit. No WAL, no background compaction &mdash; just efficient, append-only evolution.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-card__number">05</div>
-        <h3>Efficient Change Tracking</h3>
-        <p>Changes are tracked efficiently by our custom storage engine.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-card__number">06</div>
-        <h3>Flash-Drive Optimized</h3>
-        <p>Designed from scratch for modern SSDs. Log-structured, append-only architecture exploits sequential write patterns and zero seek times.</p>
-      </div>
+<!-- ================= PROBLEM ================= -->
+<section class="band band--alt" aria-labelledby="problem-h">
+  <div class="lp-container">
+    <div class="sec-head reveal">
+      <div class="kicker">The problem</div>
+      <h2 class="h2" id="problem-h">You update a record. The old value is gone.</h2>
+      <p class="sub">So teams bolt history on &mdash; and end up running two systems, one for the present and one for the past.</p>
     </div>
+    <div class="problem reveal">
+      <div class="problem__card"><span class="x">History tables &amp; triggers</span><h3>Hand-rolled, row by row</h3><p>Every table gets a shadow table. Querying "as of" means joins over validity columns you maintain yourself.</p></div>
+      <div class="problem__card"><span class="x">Event sourcing</span><h3>The past means replay</h3><p>The log is complete, but reading yesterday's state means rebuilding it from the beginning or maintaining projections.</p></div>
+      <div class="problem__card"><span class="x">Warehouse time travel</span><h3>A recovery window, not a record</h3><p>Snapshots expire after days. Snowflake keeps at most 90, BigQuery 7, Delta 7 by default.</p></div>
+    </div>
+    <p class="src reveal">Retention limits: <a href="https://docs.snowflake.com/en/user-guide/data-time-travel">Snowflake</a>, <a href="https://docs.cloud.google.com/bigquery/docs/time-travel">BigQuery</a>, <a href="https://docs.databricks.com/aws/en/delta/history">Databricks Delta</a>.</p>
   </div>
 </section>
 
-<!-- Section 2: Bitemporal Query Showcase -->
-<section class="section section--alt fade-in">
-  <div class="container">
-    <h2 class="section-heading">Query across time</h2>
-    <p class="section-subheading">Navigate revision history, find corrections, and diff any two snapshots &mdash; all with a single query.</p>
-    <div class="query-showcase" id="query-showcase">
-      <div class="query-showcase__tabs">
-        <button class="query-showcase__tab active">Time Travel</button>
-        <button class="query-showcase__tab">Track Changes</button>
-        <button class="query-showcase__tab">Revision History</button>
-        <button class="query-showcase__tab">Diff</button>
-      </div>
-      <div class="query-showcase__panels">
-        <div class="query-showcase__panel active">
-          <div class="code-block">
-            <div class="code-block__header"><span class="code-block__lang">JSONiq</span></div>
-            <pre><code><span class="sh-comment">(: Open a resource at a specific point in time :)</span>
-<span class="sh-kw">let</span> <span class="sh-var">$doc</span> <span class="sh-op">:=</span> <span class="sh-fn">jn:open</span>(<span class="sh-str">'database'</span>, <span class="sh-str">'resource'</span>,
-                    <span class="sh-fn">xs:dateTime</span>(<span class="sh-str">'2024-01-15T10:30:00Z'</span>))
-<span class="sh-kw">for</span> <span class="sh-var">$user</span> <span class="sh-kw">in</span> <span class="sh-var">$doc</span>.<span class="sh-prop">users</span>[]
-<span class="sh-kw">where</span> <span class="sh-var">$user</span>.<span class="sh-prop">age</span> <span class="sh-op">&gt;</span> <span class="sh-num">25</span>
-<span class="sh-kw">return</span> <span class="sh-var">$user</span></code></pre>
-          </div>
-          <p class="query-showcase__desc">Open any resource at an exact timestamp and query it as it existed at that moment. System time is tracked automatically on every commit.</p>
-        </div>
-        <div class="query-showcase__panel">
-          <div class="code-block">
-            <div class="code-block__header"><span class="code-block__lang">JSONiq</span></div>
-            <pre><code><span class="sh-comment">(: Find items added in this revision :)</span>
-<span class="sh-kw">for</span> <span class="sh-var">$status</span> <span class="sh-kw">in</span> <span class="sh-fn">jn:open</span>(<span class="sh-str">'db'</span>,<span class="sh-str">'feed'</span>).<span class="sh-prop">statuses</span>
-<span class="sh-kw">where</span> <span class="sh-fn">not</span>(<span class="sh-fn">exists</span>(<span class="sh-fn">jn:previous</span>(<span class="sh-var">$status</span>)))
-<span class="sh-kw">return</span> {
-  <span class="sh-str">"revision"</span>: <span class="sh-fn">sdb:revision</span>(<span class="sh-var">$status</span>),
-  <span class="sh-var">$status</span>{<span class="sh-prop">text</span>, <span class="sh-prop">created_at</span>}
-}</code></pre>
-          </div>
-          <p class="query-showcase__desc">Use <code>jn:previous()</code> to detect new items &mdash; nodes that didn't exist in the prior revision. Combine with <code>jn:next()</code>, <code>jn:future()</code>, and <code>jn:past()</code> to navigate freely.</p>
-        </div>
-        <div class="query-showcase__panel">
-          <div class="code-block">
-            <div class="code-block__header"><span class="code-block__lang">JSONiq</span></div>
-            <pre><code><span class="sh-comment">(: Track a node's evolution across all revisions :)</span>
-<span class="sh-kw">let</span> <span class="sh-var">$node</span> <span class="sh-op">:=</span> <span class="sh-fn">sdb:select-item</span>(<span class="sh-fn">jn:doc</span>(<span class="sh-str">'database'</span>,<span class="sh-str">'resource'</span>), <span class="sh-num">1</span>)
-<span class="sh-kw">for</span> <span class="sh-var">$version</span> <span class="sh-kw">in</span> <span class="sh-fn">sdb:item-history</span>(<span class="sh-var">$node</span>)
-<span class="sh-kw">return</span> {
-  <span class="sh-str">"revision"</span>:  <span class="sh-fn">sdb:revision</span>(<span class="sh-var">$version</span>),
-  <span class="sh-str">"timestamp"</span>: <span class="sh-fn">sdb:timestamp</span>(<span class="sh-var">$version</span>),
-  <span class="sh-str">"value"</span>:     <span class="sh-var">$version</span>
-}</code></pre>
-          </div>
-          <p class="query-showcase__desc">Track how a specific node evolves over time. <code>sdb:select-item()</code> finds a node by its stable key; <code>sdb:item-history()</code> returns it from every revision in which it changed.</p>
-        </div>
-        <div class="query-showcase__panel">
-          <div class="code-block">
-            <div class="code-block__header"><span class="code-block__lang">JSONiq</span></div>
-            <pre><code><span class="sh-comment">(: Compute differences between any two revisions :)</span>
-<span class="sh-fn">sdb:diff</span>(<span class="sh-str">'database'</span>, <span class="sh-str">'resource'</span>, <span class="sh-num">1</span>, <span class="sh-num">5</span>)
-
-<span class="sh-comment">(: Returns an XQuery Update statement:
-   insert nodes {"name":"Ada"} into sdb:select-item($doc, 23)
-   replace value of node sdb:select-item($doc, 7) with "updated"
-   delete node sdb:select-item($doc, 14)  :)</span></code></pre>
-          </div>
-          <p class="query-showcase__desc">Get a precise edit script between any two revisions. SirixDB uses stable node IDs and hashes to compute structural diffs efficiently.</p>
-        </div>
-      </div>
+<!-- ================= WHAT MAKES SIRIX DIFFERENT ================= -->
+<section class="band" id="different" aria-labelledby="diff-h">
+  <div class="lp-container">
+    <div class="sec-head reveal">
+      <div class="kicker">What makes Sirix different</div>
+      <h2 class="h2" id="diff-h">History is the data model, not a feature.</h2>
+      <p class="sub">Six properties that, together, no other open-source database offers. Each one is a direct consequence of how Sirix stores revisions: immutably, and sharing everything that did not change.</p>
     </div>
-  </div>
-</section>
 
-<!-- Section 3: Bitemporality Explainer -->
-<section class="section section--alt fade-in">
-  <div class="container">
-    <div class="feature-row">
-      <div class="feature-row__content">
-        <div class="feature-row__number">Bitemporality</div>
-        <h3>What did you know, and when?</h3>
-        <p>A customer address was entered on <strong>March 5</strong>. On <strong>April 10</strong>, you discover it was wrong since <strong>February 1</strong>. SirixDB lets you correct it while preserving what you believed on March 5.</p>
-        <p>Two independent time axes make this possible:</p>
-        <div class="feature-row__icon-grid" style="margin-top: 1rem;">
-          <div class="feature-row__icon-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span><strong>System time</strong> &mdash; when SirixDB recorded it</span>
-          </div>
-          <div class="feature-row__icon-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <span><strong>Valid time</strong> &mdash; when it actually happened</span>
-          </div>
-        </div>
-      </div>
-      <div class="feature-row__visual">
-        <svg viewBox="0 0 560 390" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;" role="img" aria-label="Bitemporality diagram showing two time axes: system time (when recorded) and valid time (when true in the real world)">
-          <!-- Background grid -->
-          <line x1="100" y1="310" x2="100" y2="40" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
-          <line x1="210" y1="310" x2="210" y2="40" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
-          <line x1="350" y1="310" x2="350" y2="40" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
-          <line x1="80" y1="100" x2="510" y2="100" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
-          <line x1="80" y1="190" x2="510" y2="190" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
-          <line x1="80" y1="255" x2="510" y2="255" stroke="#2a2d33" stroke-width="0.5" stroke-dasharray="2 4"/>
-          <!-- System Time axis (horizontal) -->
-          <line x1="80" y1="310" x2="520" y2="310" stroke="#6b7280" stroke-width="1.5"/>
-          <polygon points="520,310 510,305 510,315" fill="#6b7280"/>
-          <text x="300" y="370" text-anchor="middle" fill="#9ca3af" font-size="13" font-family="Inter,sans-serif" font-weight="500">System Time (when recorded)</text>
-          <!-- Valid Time axis (vertical) -->
-          <line x1="80" y1="310" x2="80" y2="30" stroke="#6b7280" stroke-width="1.5"/>
-          <polygon points="80,30 75,40 85,40" fill="#6b7280"/>
-          <text x="18" y="170" text-anchor="middle" fill="#9ca3af" font-size="13" font-family="Inter,sans-serif" font-weight="500" transform="rotate(-90 18 170)">Valid Time (when true)</text>
-          <!-- Date tick marks + labels on System Time axis -->
-          <line x1="210" y1="305" x2="210" y2="315" stroke="#42B6F0" stroke-width="1.5"/>
-          <text x="210" y="332" text-anchor="middle" fill="#42B6F0" font-size="12" font-family="JetBrains Mono,monospace" font-weight="500">Mar 5</text>
-          <line x1="350" y1="305" x2="350" y2="315" stroke="#F47B20" stroke-width="1.5"/>
-          <text x="350" y="332" text-anchor="middle" fill="#F47B20" font-size="12" font-family="JetBrains Mono,monospace" font-weight="500">Apr 10</text>
-          <!-- Date tick marks + labels on Valid Time axis -->
-          <line x1="75" y1="255" x2="85" y2="255" stroke="#9ca3af" stroke-width="1.5"/>
-          <text x="68" y="259" text-anchor="end" fill="#9ca3af" font-size="12" font-family="JetBrains Mono,monospace">Feb 1</text>
-          <line x1="75" y1="190" x2="85" y2="190" stroke="#9ca3af" stroke-width="1.5"/>
-          <text x="68" y="194" text-anchor="end" fill="#9ca3af" font-size="12" font-family="JetBrains Mono,monospace">Mar 5</text>
-          <!-- Original record: entered Mar 5, valid from Mar 5 -->
-          <rect x="190" y="90" width="150" height="68" rx="8" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="2"/>
-          <text x="265" y="120" text-anchor="middle" fill="#42B6F0" font-size="14" font-family="Inter,sans-serif" font-weight="600">Address v1</text>
-          <text x="265" y="143" text-anchor="middle" fill="#8b949e" font-size="11" font-family="Inter,sans-serif">"123 Old St"</text>
-          <!-- Correction: entered Apr 10, valid from Feb 1 -->
-          <rect x="370" y="220" width="160" height="68" rx="8" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="2"/>
-          <text x="450" y="250" text-anchor="middle" fill="#F47B20" font-size="14" font-family="Inter,sans-serif" font-weight="600">Address v2</text>
-          <text x="450" y="273" text-anchor="middle" fill="#8b949e" font-size="11" font-family="Inter,sans-serif">"456 New Ave" &mdash; corrected</text>
-          <!-- Dashed projection lines -->
-          <line x1="210" y1="310" x2="210" y2="190" stroke="#42B6F0" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
-          <line x1="350" y1="310" x2="350" y2="255" stroke="#F47B20" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
-          <line x1="80" y1="190" x2="210" y2="190" stroke="#42B6F0" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
-          <line x1="80" y1="255" x2="350" y2="255" stroke="#F47B20" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
-          <!-- Small dot markers at intersections -->
-          <circle cx="210" cy="190" r="4" fill="#42B6F0" opacity="0.6"/>
-          <circle cx="350" cy="255" r="4" fill="#F47B20" opacity="0.6"/>
+    <figure class="overview reveal" aria-labelledby="ov-cap">
+      <div class="cap__fig">
+        <svg class="evo-fig" id="evo2" viewBox="28 14 626 356" role="img" aria-labelledby="evo2-t evo2-d">
+          <title id="evo2-t">At a glance: evolution of state across four revisions</title>
+          <desc id="evo2-d">Revision 1 writes all five pages. Each edit creates a new revision that writes only its changed page fragments, shown in orange, plus the few index pages on the path up to its new root, marked as an orange tab on each snapshot, and points to the unchanged pages of the previous revision, shown in light blue with dashed pointers.</desc>
+          <defs><marker id="evo2-arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0,0 10,3.5 0,7" style="fill:var(--orange)"/></marker></defs>
+          <g class="evo-g"></g>
         </svg>
+        <figcaption class="cap__figcap" id="ov-cap">At a glance · Every edit is a new snapshot: it writes only what changed, plus the short path of index pages up to its new root (the orange tab), and shares everything else. Everything below follows from this.</figcaption>
       </div>
-    </div>
-  </div>
-</section>
+    </figure>
 
-<!-- Section 3: Web GUI -->
-<section class="section fade-in">
-  <div class="container">
-    <h2 class="section-heading">Explore your data visually</h2>
-    <p class="section-subheading">The SirixDB Web GUI lets you browse databases, run queries, visualize document structure, and travel through revision history &mdash; all from your browser.</p>
-    <div class="gui-showcase" id="gui-showcase">
-      <div class="gui-showcase__tabs">
-        <button class="gui-showcase__tab active" data-slide="0">Dashboard</button>
-        <button class="gui-showcase__tab" data-slide="1">Explorer</button>
-        <button class="gui-showcase__tab" data-slide="2">Sunburst</button>
-        <button class="gui-showcase__tab" data-slide="3">Treemap</button>
-        <button class="gui-showcase__tab" data-slide="4">Diff View</button>
+    <!-- ---------- 1. Time travel / any revision as fast as the latest ---------- -->
+    <article class="cap reveal" id="cap-timetravel">
+      <div class="cap__text">
+        <div class="cap__num">01 · Time travel</div>
+        <h3>Any revision reads like the latest.</h3>
+        <p class="cap__one">Open the past by revision number or timestamp, and query it with the full language &mdash; directly, not by replaying a log.</p>
+        <p class="cap__body">Every commit is an immutable revision with its own root. Opening one is O(1) by number and O(log R) by timestamp; each page read combines at most N fragments, where N is a configurable window, so revision 1 costs the same as revision 10,000.</p>
+        <div class="code"><div class="code__head"><span>JSONiq</span><span>time travel</span></div><pre><span class="c">(: the catalog exactly as it was at revision 1 :)</span>
+<span class="f">jn:doc</span>(<span class="s">'shop'</span>,<span class="s">'products'</span>, <span class="n">1</span>)
+
+<span class="c">(: or as it was at 3 a.m. last Tuesday :)</span>
+<span class="f">jn:open</span>(<span class="s">'shop'</span>,<span class="s">'products'</span>, <span class="f">xs:dateTime</span>(<span class="s">'2026-11-10T03:00:00Z'</span>))</pre></div>
+        <p class="src">Source: <a href="https://github.com/sirixdb/sirix#page-versioning-strategies">README · Page Versioning Strategies</a>, <a href="https://github.com/sirixdb/sirix/blob/main/docs/BENCHMARKS.md">BENCHMARKS.md · Benchmark 2</a></p>
       </div>
-      <div class="gui-showcase__viewport">
-        <div class="gui-showcase__slide active">
-          <img src="/images/gui-dashboard.png" alt="SirixDB Web GUI Dashboard" loading="lazy">
+      <figure class="cap__fig" style="margin:0">
+        <div class="tt" id="tt">
+          <div class="tt__rail">
+            <div class="tt__ticks" role="group" aria-label="Choose a revision">
+              <button type="button" class="tt__tick" data-rev="1" aria-pressed="false"><div class="tt__dot"></div><b>rev 1</b><span>store catalog</span></button>
+              <button type="button" class="tt__tick" data-rev="2" aria-pressed="false"><div class="tt__dot"></div><b>rev 2</b><span>laptop price drop</span></button>
+              <button type="button" class="tt__tick" data-rev="3" aria-pressed="false"><div class="tt__dot"></div><b>rev 3</b><span>add tablet</span></button>
+              <button type="button" class="tt__tick" data-rev="4" aria-pressed="true"><div class="tt__dot"></div><b>rev 4</b><span>remove phone</span></button>
+            </div>
+          </div>
+          <label class="sr-only" for="tt-range">Revision</label>
+          <input class="tt__range" id="tt-range" type="range" min="1" max="4" step="1" value="4">
+          <div class="tt__doc" id="tt-doc" aria-live="polite"></div>
+          <div class="tt__q"><code id="tt-code">jn:doc('shop','products', 4)</code><span class="tt__badge" id="tt-badge">latest revision</span></div>
         </div>
-        <div class="gui-showcase__slide">
-          <img src="/images/gui-explorer.png" alt="SirixDB Web GUI Database Explorer" loading="lazy">
-        </div>
-        <div class="gui-showcase__slide">
-          <img src="/images/gui-sunburst.png" alt="SirixDB Web GUI Sunburst Visualization" loading="lazy">
-        </div>
-        <div class="gui-showcase__slide">
-          <img src="/images/gui-treemap.png" alt="SirixDB Web GUI Treemap" loading="lazy">
-        </div>
-        <div class="gui-showcase__slide">
-          <img src="/images/gui-diff-view.png" alt="SirixDB Web GUI Diff View comparing revisions" loading="lazy">
-        </div>
+        <div class="legend"><span><i style="background:var(--orange)"></i>changed in this revision</span><span><i style="background:var(--blue)"></i>inserted in this revision</span><span><i style="background:var(--red)"></i>deleted in this revision (no longer in the document)</span></div>
+        <figcaption class="cap__figcap">Diagram 1 · Drag or tap a revision. It plays forward on its own, then jumps back &mdash; the old state is answered from its own pages, never reconstructed by replay.</figcaption>
+      </figure>
+    </article>
+
+    <!-- ---------- 2. Storage proportional to change ---------- -->
+    <article class="cap cap--flip reveal" id="cap-storage">
+      <div class="cap__text">
+        <div class="cap__num">02 · Complete history</div>
+        <h3>Keep everything. Pay only for what changed.</h3>
+        <p class="cap__one">A new revision shares every unchanged page with the one before. By default it writes only the changed records, plus their path to the root.</p>
+        <p class="cap__body">Versioning goes <em>below</em> the page: a commit writes a page <em>fragment</em> for each changed data page. Because the page tree is copy-on-write, it also writes new copies of the small index pages on the path from each changed leaf up to a new revision root &mdash; a handful of pages, logarithmic in the data size.</p>
+        <p class="cap__body">What a fragment holds is a per-resource choice of versioning type, trading write cost against read cost:</p>
+        <table class="vt">
+          <caption class="sr-only">Versioning types and what each writes per changed page</caption>
+          <thead><tr><th scope="col">Type</th><th scope="col">A changed page writes</th><th scope="col">Fragments per read</th></tr></thead>
+          <tbody>
+            <tr class="vt--def"><th scope="row">Sliding snapshot <small>default</small></th><td>the changed records, plus any record about to fall out of the N-fragment window (N configurable per resource)</td><td>≤ N</td></tr>
+            <tr><th scope="row">Incremental</th><td>the changed records; a full page every N revisions</td><td>≤ N</td></tr>
+            <tr><th scope="row">Differential</th><td>every record changed since the last full page</td><td>2</td></tr>
+            <tr><th scope="row">Full</th><td>the whole page</td><td>1</td></tr>
+          </tbody>
+        </table>
+        <p class="cap__body">With the default, storage per revision follows the change, not the document, and reads stay bounded without the write spikes of periodic full snapshots.</p>
+        <p class="cap__body">Don't need everything forever? <a href="#enterprise">SirixDB Enterprise</a> adds retention policies &mdash; keep the last N revisions, everything newer than a date, or a chosen set &mdash; and compaction that physically reclaims the space (in development).</p>
+        <div class="code"><div class="code__head"><span>Java</span><span>configure per resource</span></div><pre><span class="f">ResourceConfiguration</span>.<span class="f">newBuilder</span>(<span class="s">"orders"</span>)
+    .<span class="f">versioningApproach</span>(<span class="f">VersioningType</span>.<span class="o">SLIDING_SNAPSHOT</span>) <span class="c">// default</span>
+    .<span class="f">build</span>();</pre></div>
+        <p class="src">Source: <a href="https://github.com/sirixdb/sirix#the-solution">README · The Solution</a>, <a href="https://github.com/sirixdb/sirix#page-versioning-strategies">Page Versioning Strategies</a>, <a href="https://github.com/sirixdb/sirix/blob/main/docs/WHY-SIRIX.md">WHY-SIRIX §3</a></p>
       </div>
-      <div class="gui-showcase__captions">
-        <div class="gui-showcase__caption active">
-          <h4>Dashboard</h4>
-          <p>Overview of your databases, resources, and tracked revisions. Create new databases or jump straight into the query editor.</p>
-        </div>
-        <div class="gui-showcase__caption">
-          <h4>Database Explorer</h4>
-          <p>Navigate JSON and XML document trees with expandable nodes. Each node shows its stable ID, type, and value at a glance.</p>
-        </div>
-        <div class="gui-showcase__caption">
-          <h4>Sunburst Visualization</h4>
-          <p>Hierarchical sunburst chart for exploring document structure. Click to zoom into subtrees, adjust depth and minimum arc size.</p>
-        </div>
-        <div class="gui-showcase__caption">
-          <h4>Treemap View</h4>
-          <p>Space-filling treemap visualization shows document structure at a glance. Hover for details, click to drill into subtrees.</p>
-        </div>
-        <div class="gui-showcase__caption">
-          <h4>Revision Diff</h4>
-          <p>Compare any two revisions side by side. See inserts, updates, and deletes at a glance with Explorer, Tree, and List diff views.</p>
-        </div>
-      </div>
-    </div>
-    <div class="section-cta">
-      <a href="https://github.com/sirixdb/sirixdb-web-gui" class="btn btn--outline">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-        View Web GUI on GitHub
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- Section 4: How It Works (alternating rows) -->
-<section class="section section--alt fade-in">
-  <div class="container">
-    <h2 class="section-heading">How it works</h2>
-    <p class="section-subheading">SirixDB stores data in an append-only, persistent tree structure. Revisions share unchanged pages via copy-on-write &mdash; keeping storage minimal.</p>
-
-    <div class="feature-row">
-      <div class="feature-row__content">
-        <div class="feature-row__number">01. Persistent Data Structure</div>
-        <h3>Lightweight revisions that share unchanged data</h3>
-        <p>Every commit creates an immutable snapshot. New revisions reference unchanged page-fragments from prior versions via copy-on-write pointers &mdash; only modified data is written. This eliminates the need for full copies or expensive compaction.</p>
-      </div>
-      <div class="feature-row__visual">
-        <svg viewBox="0 0 540 220" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:540px;" role="img" aria-label="Persistent data structure: revisions share unchanged pages via copy-on-write">
-          <!-- Legend -->
-          <rect x="20" y="8" width="12" height="12" rx="2" fill="#42B6F0" opacity="0.9"/>
-          <text x="38" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">New page</text>
-          <rect x="110" y="8" width="12" height="12" rx="2" fill="#F47B20" opacity="0.9"/>
-          <text x="128" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">Modified page</text>
-          <line x1="230" y1="14" x2="270" y2="14" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.6"/>
-          <text x="278" y="18" fill="#9ca3af" font-size="10" font-family="Inter,sans-serif">Shared (copy-on-write pointer)</text>
-
-          <!-- Timeline axis -->
-          <line x1="60" y1="175" x2="510" y2="175" stroke="#6b7280" stroke-width="1.5"/>
-          <polygon points="510,175 500,170 500,180" fill="#6b7280"/>
-          <text x="280" y="210" text-anchor="middle" fill="#9ca3af" font-size="12" font-family="Inter,sans-serif" font-weight="500">Time</text>
-
-          <!-- Revision labels -->
-          <line x1="120" y1="170" x2="120" y2="180" stroke="#9ca3af" stroke-width="1.5"/>
-          <text x="120" y="195" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 1</text>
-          <line x1="280" y1="170" x2="280" y2="180" stroke="#9ca3af" stroke-width="1.5"/>
-          <text x="280" y="195" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 2</text>
-          <line x1="440" y1="170" x2="440" y2="180" stroke="#9ca3af" stroke-width="1.5"/>
-          <text x="440" y="195" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 3</text>
-
-          <!-- ======================== Rev 1: All new pages ======================== -->
-          <!-- root (new) -->
-          <rect x="100" y="42" width="40" height="22" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
-          <text x="120" y="57" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">root</text>
-          <line x1="110" y1="64" x2="96" y2="88" stroke="#42B6F0" stroke-width="1.2"/>
-          <line x1="130" y1="64" x2="144" y2="88" stroke="#42B6F0" stroke-width="1.2"/>
-          <!-- A (new) -->
-          <rect x="78" y="90" width="36" height="20" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
-          <text x="96" y="104" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">A</text>
-          <!-- B (new) -->
-          <rect x="126" y="90" width="36" height="20" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
-          <text x="144" y="104" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">B</text>
-          <!-- a1 (new) -->
-          <line x1="96" y1="110" x2="96" y2="130" stroke="#42B6F0" stroke-width="1"/>
-          <rect x="82" y="132" width="28" height="16" rx="2" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
-          <text x="96" y="143" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">a1</text>
-          <!-- b1 (new) -->
-          <line x1="144" y1="110" x2="144" y2="130" stroke="#42B6F0" stroke-width="1"/>
-          <rect x="130" y="132" width="28" height="16" rx="2" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1"/>
-          <text x="144" y="143" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">b1</text>
-          <line x1="120" y1="155" x2="120" y2="175" stroke="#9ca3af" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.15"/>
-
-          <!-- ======================== Rev 2: modify B (b1→b1'), share A ======================== -->
-          <!-- root (new) -->
-          <rect x="260" y="42" width="40" height="22" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
-          <text x="280" y="57" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">root</text>
-          <!-- shared pointer → A (unchanged) -->
-          <line x1="270" y1="64" x2="96" y2="100" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
-          <!-- branch to B' -->
-          <line x1="290" y1="64" x2="304" y2="88" stroke="#42B6F0" stroke-width="1.2"/>
-          <!-- B' (modified) -->
-          <rect x="286" y="90" width="36" height="20" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1.5"/>
-          <text x="304" y="104" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">B'</text>
-          <!-- b1' (modified leaf) -->
-          <line x1="304" y1="110" x2="304" y2="130" stroke="#F47B20" stroke-width="1"/>
-          <rect x="290" y="132" width="28" height="16" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1"/>
-          <text x="304" y="143" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">b1'</text>
-          <line x1="280" y1="155" x2="280" y2="175" stroke="#9ca3af" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.15"/>
-
-          <!-- ======================== Rev 3: modify A (add a2), share B' ======================== -->
-          <!-- root (new) -->
-          <rect x="420" y="42" width="40" height="22" rx="4" fill="rgba(66,182,240,0.25)" stroke="#42B6F0" stroke-width="1.5"/>
-          <text x="440" y="57" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">root</text>
-          <!-- branch to A' -->
-          <line x1="430" y1="64" x2="424" y2="88" stroke="#42B6F0" stroke-width="1.2"/>
-          <!-- shared pointer → B' (unchanged) -->
-          <line x1="450" y1="64" x2="304" y2="100" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
-          <!-- A' (modified — new child added) -->
-          <rect x="406" y="90" width="36" height="20" rx="3" fill="rgba(244,123,32,0.2)" stroke="#F47B20" stroke-width="1.5"/>
-          <text x="424" y="104" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">A'</text>
-          <!-- shared pointer → a1 (unchanged) -->
-          <line x1="418" y1="110" x2="96" y2="140" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
-          <!-- a2 (added leaf) -->
-          <line x1="430" y1="110" x2="440" y2="130" stroke="#F47B20" stroke-width="1"/>
-          <rect x="426" y="132" width="28" height="16" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1"/>
-          <text x="440" y="143" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">a2</text>
-          <line x1="440" y1="155" x2="440" y2="175" stroke="#9ca3af" stroke-width="0.5" stroke-dasharray="2 4" opacity="0.15"/>
+      <figure class="cap__fig" style="margin:0">
+        <svg class="st-fig" id="st" viewBox="0 0 580 384" role="img" aria-labelledby="st-t st-d">
+          <title id="st-t">Three revisions sharing pages</title>
+          <desc id="st-d">Revision 1 writes four full pages. Revision 2 changes one record in page 2 and writes only a small fragment holding that record, plus the index pages on its path to the new revision root; pages 1, 3 and 4 are shared with revision 1. Revision 3 changes one record in page 4 and writes only that fragment; the rest is shared. The bars on the right show bytes written per revision: one large bar, then two tiny ones.</desc>
+          <!-- column headers -->
+          <text class="t-m" x="112" y="22" text-anchor="middle">page 1</text>
+          <text class="t-m" x="192" y="22" text-anchor="middle">page 2</text>
+          <text class="t-m" x="272" y="22" text-anchor="middle">page 3</text>
+          <text class="t-m" x="352" y="22" text-anchor="middle">page 4</text>
+          <text class="t-m" x="490" y="22" text-anchor="middle">bytes written</text>
+          <g id="st-rows"></g>
+          <text class="t" x="0" y="378" id="st-foot">Reading page 2 at rev 3 combines 2 fragments (at most N, configurable)</text>
         </svg>
-      </div>
-    </div>
+        <div class="legend"><span><i style="background:var(--surface-2);border:1px solid var(--border-strong)"></i>page written</span><span><i style="background:var(--orange)"></i>changed record → new fragment</span><span><i style="border:1px dashed var(--border-strong)"></i>shared, not rewritten</span><span><i style="background:var(--orange-wash);border:1px solid var(--orange)"></i>index pages on the leaf-to-root path</span></div>
+        <div class="fig-ctrl"><button type="button" class="chip" data-st="1" aria-pressed="false">rev 1</button><button type="button" class="chip" data-st="2" aria-pressed="false">rev 2</button><button type="button" class="chip" data-st="3" aria-pressed="true">rev 3</button><button type="button" class="play-btn" id="st-play">↻ replay</button></div>
+        <figcaption class="cap__figcap">Diagram 2 · Shown for the default sliding snapshot, simplified: real pages hold many records, and a fragment can also carry records rescued from the edge of the window. The orange stubs above each fragment are the index pages on its leaf-to-root path, rewritten by copy-on-write. The proportion is the point &mdash; one changed record costs a fragment plus that short path, not a copy of the page or the document.</figcaption>
+      </figure>
+    </article>
 
-    <div class="feature-row feature-row--reverse">
-      <div class="feature-row__content">
-        <div class="feature-row__number">02. Persistent Tree</div>
-        <h3>Variable-sized page-fragments in a durable tree</h3>
-        <p>Data, indexes, and revision metadata are stored in a persistent tree structure. Variable-sized page-fragments minimize storage while enabling reconstruction of any revision in linear time. The tree is checksummed for integrity, inspired by ZFS.</p>
+    <!-- ---------- 3. Node-level identity and diff ---------- -->
+    <article class="cap reveal" id="cap-diff">
+      <div class="cap__text">
+        <div class="cap__num">03 · Node-level identity</div>
+        <h3>Every field has an identity. Every diff is exact.</h3>
+        <p class="cap__one">Each JSON object, array, field and value keeps a stable key across revisions, so Sirix can tell you exactly which nodes changed.</p>
+        <p class="cap__body">Diffs compare trees, not text: the result is a list of node-level inserts, updates and deletes. With hashes enabled, unchanged subtrees are skipped. The same identity lets you follow one field through its whole history with <code>jn:all-times</code>, <code>jn:previous</code> and <code>jn:next</code>.</p>
+        <div class="code"><div class="code__head"><span>REST</span><span>diff two revisions</span></div><pre><span class="k">curl</span> <span class="s">"localhost:9443/shop/products/diff?first-revision=1&amp;second-revision=4"</span></pre></div>
+        <p class="src">Source: <a href="https://github.com/sirixdb/sirix#diff-between-revisions">README · Diff</a>, <a href="https://github.com/sirixdb/sirix/blob/main/bundles/sirix-rest-api/src/main/resources/openapi.yaml">OpenAPI · Diff schema</a>, <a href="https://github.com/sirixdb/sirix/blob/main/docs/WHY-SIRIX.md">WHY-SIRIX §2</a></p>
       </div>
-      <div class="feature-row__visual">
-        <div class="feature-row__icon-grid">
-          <div class="feature-row__icon-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>Time Travel</span>
-          </div>
-          <div class="feature-row__icon-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            <span>High Performance</span>
-          </div>
-          <div class="feature-row__icon-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>ACID Compliant</span>
-          </div>
-          <div class="feature-row__icon-item">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <span>XML &amp; JSON</span>
-          </div>
+      <figure class="cap__fig" style="margin:0">
+        <svg class="df-fig" id="df" viewBox="0 0 640 312" role="img" aria-labelledby="df-t df-d">
+          <title id="df-t">Node-level diff between revision 1 and revision 4</title>
+          <desc id="df-d">Two trees side by side. Node 6, the laptop price, exists in both revisions and changes from 999 to 899: an update. The tablet object, node 12, is new in revision 4: an insert. The phone object, node 7, exists only in revision 1: a delete. Dotted lines connect the same node key across revisions.</desc>
+          <text class="hdr" x="4" y="24">rev 1</text><text class="hdr-sub" x="60" y="24">Mon</text>
+          <text class="hdr" x="362" y="24">rev 4</text><text class="hdr-sub" x="418" y="24">Thu</text>
+          <g id="df-g"></g>
+        </svg>
+        <div class="code df-out" aria-live="polite"><div class="code__head"><span>Response (abridged)</span><span>/diff</span></div><pre id="df-out"><span class="op upd">{"update": {"nodeKey": 6,  "type": "number", "value": 899}}</span><span class="op ins">{"insert": {"nodeKey": 12, "type": "jsonFragment", …}}</span><span class="op del">{"delete": {"nodeKey": 7}}</span></pre></div>
+        <div class="fig-ctrl"><button type="button" class="chip" data-df="upd" aria-pressed="false">update</button><button type="button" class="chip" data-df="ins" aria-pressed="false">insert</button><button type="button" class="chip" data-df="del" aria-pressed="false">delete</button><button type="button" class="chip" data-df="all" aria-pressed="true">all</button></div>
+        <figcaption class="cap__figcap">Diagram 3 · Node keys are illustrative; field names follow the REST <code>Diff</code> schema. The dotted lines are the point: node #6 is the <em>same</em> node in both revisions.</figcaption>
+      </figure>
+    </article>
+
+    <!-- ---------- 4. Bitemporal ---------- -->
+    <article class="cap cap--flip reveal" id="cap-bitemporal">
+      <div class="cap__text">
+        <div class="cap__num">04 · Native valid time</div>
+        <h3>What did you know &mdash; and when was it true?</h3>
+        <p class="cap__one">Two time axes: transaction time (when Sirix recorded it, every commit) and valid time (when it was true in the world, from your documents).</p>
+        <p class="cap__body">Alice moves from Berlin to Munich on <strong>Mar 1</strong>, but only tells you on <strong>Mar 10</strong>. You record the move on Mar 10, effective Mar 1. Ask what your records said on Mar 5 and Sirix answers <em>Berlin</em> &mdash; that is what you knew when you mailed her invoice. Ask today and it answers <em>Munich</em> for Mar 5, and still <em>Berlin</em> for Feb 20.</p>
+        <div class="code"><div class="code__head"><span>JSONiq</span><span>both axes at once</span></div><pre><span class="c">(: recorded Mar 5, valid Mar 5 → Berlin :)</span>
+<span class="f">jn:open-bitemporal</span>(<span class="s">'crm'</span>,<span class="s">'customers'</span>,
+  <span class="f">xs:dateTime</span>(<span class="s">'2026-03-05T00:00:00Z'</span>),  <span class="c">(: transaction time :)</span>
+  <span class="f">xs:dateTime</span>(<span class="s">'2026-03-05T00:00:00Z'</span>))  <span class="c">(: valid time       :)</span>
+<span class="c">(: recorded today, valid Mar 5  → Munich :)</span>
+<span class="c">(: recorded today, valid Feb 20 → Berlin :)</span></pre></div>
+        <p class="cap__body" style="font-size:.9rem">Valid time is two fields you name per resource (<code>validFrom</code>/<code>validTo</code>), indexed by a versioned interval index. Recording the move is one ordinary commit: it ends the Berlin record at Mar 1 and adds Munich from Mar 1. Sirix has no <code>FOR PORTION OF</code>-style automatic split yet.</p>
+        <p class="src">Source: <a href="https://github.com/sirixdb/sirix#bitemporal-two-kinds-of-time">README · Bitemporal</a>, <a href="https://github.com/sirixdb/sirix#bitemporal-queries">Bitemporal Queries</a> (half-open validity in <code>jn:open-bitemporal</code>)</p>
+      </div>
+      <figure class="cap__fig" style="margin:0">
+        <svg class="bt-fig" id="bt" viewBox="0 0 640 380" role="img" aria-labelledby="bt-t bt-d">
+          <title id="bt-t">Bitemporal plane: transaction time across, valid time up</title>
+          <desc id="bt-d">Until Mar 10 in transaction time, the database records Alice in Berlin for all valid time: one blue region. From Mar 10 on, after the late-reported move, it records Berlin for valid time before Mar 1, blue, and Munich from Mar 1, orange. A crosshair moves from recorded Mar 5 and valid Mar 5, answer Berlin, to recorded Mar 15 and valid Mar 5, answer Munich, then down to valid Feb 20, answer Berlin.</desc>
+          <g id="bt-grid"></g>
+          <line class="axis" x1="80" y1="320" x2="610" y2="320"/><polygon points="612,320 602,315 602,325" fill="currentColor" style="color:var(--text-2)"/>
+          <line class="axis" x1="80" y1="320" x2="80" y2="24"/><polygon points="80,22 75,32 85,32" fill="currentColor" style="color:var(--text-2)"/>
+          <text class="t" x="345" y="368" text-anchor="middle">transaction time — when Sirix recorded it →</text>
+          <text class="t" x="12" y="150" text-anchor="middle" transform="rotate(-90 12 150)">valid time →</text>
+          <g><title>Revision 1: Berlin for all valid time</title>
+            <rect class="reg1" x="92" y="40" width="338" height="260" rx="6"/>
+            <text class="reg-t" x="235" y="200" text-anchor="middle" style="fill:var(--blue-text)">Berlin</text>
+            <text class="reg-s" x="235" y="222" text-anchor="middle">rev 1 · move not reported yet</text></g>
+          <g><title>Revision 2: Munich from Mar 1</title>
+            <rect class="reg2" x="430" y="40" width="170" height="120" rx="6"/>
+            <text class="reg-t" x="490" y="78" text-anchor="middle" style="fill:var(--orange-text)">Munich</text>
+            <text class="reg-s" x="490" y="100" text-anchor="middle">rev 2 · from Mar 1</text></g>
+          <g><title>Revision 2: Berlin until Mar 1</title>
+            <rect class="reg1" x="430" y="160" width="170" height="140" rx="6"/>
+            <text class="reg-t" x="490" y="214" text-anchor="middle" style="fill:var(--blue-text)">Berlin</text>
+            <text class="reg-s" x="490" y="236" text-anchor="middle">rev 2 · until Mar 1</text></g>
+          <g id="bt-v" transform="translate(280,0)">
+            <line class="xh" x1="0" y1="320" x2="0" y2="40"/>
+            <rect x="-40" y="292" width="80" height="24" rx="5" style="fill:var(--text)"/>
+            <text id="bt-txl" class="xh-l" x="0" y="309" text-anchor="middle">Mar 5</text>
+          </g>
+          <g id="bt-h" transform="translate(0,112)">
+            <line class="xh" x1="80" y1="0" x2="610" y2="0" opacity=".7"/>
+            <rect x="14" y="-12" width="66" height="24" rx="5" style="fill:var(--text)"/>
+            <text id="bt-vl" class="xh-l" x="47" y="5" text-anchor="middle">Mar 5</text>
+          </g>
+          <circle class="xh-dot" id="bt-dot" cx="280" cy="112" r="6"/>
+          <circle id="bt-ring" cx="280" cy="112" r="13" fill="none" stroke="currentColor" style="color:var(--text)" stroke-width="1.2" opacity=".5"/>
+        </svg>
+        <div class="bt-ans" aria-live="polite"><span class="q" id="bt-q">Recorded on Mar 5, valid Mar 5:</span><span class="a blue" id="bt-a">Berlin</span><span class="src" style="margin:0" id="bt-why">rev 1 · the move was not reported yet</span></div>
+        <div class="fig-ctrl"><button type="button" class="chip" data-bt="a" aria-pressed="true">recorded Mar 5 · valid Mar 5</button><button type="button" class="chip" data-bt="b" aria-pressed="false">recorded today · valid Mar 5</button><button type="button" class="chip" data-bt="c" aria-pressed="false">recorded today · valid Feb 20</button></div>
+        <figcaption class="cap__figcap">Diagram 4 · The vertical line is when the database is asked (transaction time); the horizontal line is the date the question is about (valid time). Moving right past Mar 10 changes the answer for dates after Mar 1 only; moving down below Mar 1 brings back Berlin.</figcaption>
+      </figure>
+    </article>
+
+    <!-- ---------- 5. Analytics + embeddable ---------- -->
+    <article class="cap reveal" id="cap-embed">
+      <div class="cap__text">
+        <div class="cap__num">05 · Embeddable, with analytics built in</div>
+        <h3>A library first. A server when you want one.</h3>
+        <p class="cap__one">Add one dependency and you have a versioned database in a directory &mdash; or run the same engine as a REST server, CLI, MCP server for AI agents, or GraalVM native binary.</p>
+        <p class="cap__body">Every index is versioned too: path, value (CAS), name, valid-time and columnar projection indexes all open "as of" any revision. Projection indexes feed SIMD kernels for group-bys and aggregates over a past state &mdash; and fall back to the regular pipeline whenever they can't answer exactly.</p>
+        <div class="code"><div class="code__head"><span>Gradle</span><span>embed</span></div><pre><span class="f">implementation</span>(<span class="s">"io.sirix:sirix-core:1.0.0-beta7"</span>)</pre></div>
+        <p class="src">Source: <a href="https://github.com/sirixdb/sirix#as-an-embedded-library">README · Embedded</a>, <a href="https://github.com/sirixdb/sirix#indexes">Indexes</a>, <a href="https://github.com/sirixdb/sirix#projection-indexes-experimental-analytical">Projection indexes (experimental)</a></p>
+      </div>
+      <figure class="cap__fig" style="margin:0">
+        <svg class="em-fig" viewBox="0 0 640 330" role="img" aria-labelledby="em-t em-d">
+          <title id="em-t">One engine, several ways to run it</title>
+          <desc id="em-d">Inside your JVM process, your code calls sirix-core, which writes append-only files in a directory. The same core also ships as a REST server, a CLI, an MCP server for AI agents and a native binary.</desc>
+          <rect class="box" x="20" y="20" width="330" height="290" rx="14"/>
+          <text class="t-m" x="38" y="46">your JVM process</text>
+          <rect class="box box--blue" x="50" y="66" width="270" height="56" rx="10"/>
+          <text class="t" x="185" y="92" text-anchor="middle">your application</text>
+          <text class="t-s" x="185" y="110" text-anchor="middle">Java · Kotlin</text>
+          <path class="arrow" d="M185 124 V150" marker-end="url(#ah)"/>
+          <rect class="box box--hot" x="50" y="154" width="270" height="56" rx="10"/>
+          <text class="t" x="185" y="180" text-anchor="middle">sirix-core</text>
+          <text class="t-s" x="185" y="198" text-anchor="middle">versioned store · JSONiq · indexes</text>
+          <path class="arrow" d="M185 212 V238" marker-end="url(#ah)"/>
+          <rect class="box" x="70" y="242" width="230" height="48" rx="10"/>
+          <text class="t-m" x="185" y="263" text-anchor="middle">/data/mydb/</text>
+          <text class="t-s" x="185" y="280" text-anchor="middle">append-only files</text>
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="currentColor" style="color:var(--text-2)"/></marker></defs>
+          <text class="t-m" x="390" y="46">or run the same core as</text>
+          <g>
+            <rect class="box" x="390" y="62" width="230" height="44" rx="10"/><text class="t" x="406" y="89">REST server</text><text class="t-s" x="604" y="89" text-anchor="end">Docker · fat JAR</text>
+            <rect class="box" x="390" y="116" width="230" height="44" rx="10"/><text class="t" x="406" y="143">CLI &amp; JSONiq shell</text><text class="t-s" x="604" y="143" text-anchor="end">sirix-cli</text>
+            <rect class="box" x="390" y="170" width="230" height="44" rx="10"/><text class="t" x="406" y="197">MCP server</text><text class="t-s" x="604" y="197" text-anchor="end">for AI agents</text>
+            <rect class="box" x="390" y="224" width="230" height="44" rx="10"/><text class="t" x="406" y="251">Native binary</text><text class="t-s" x="604" y="251" text-anchor="end">GraalVM</text>
+          </g>
+          <path class="arrow" d="M352 165 C370 165 372 130 386 110" opacity=".5"/>
+        </svg>
+        <figcaption class="cap__figcap">Single process, no sidecar. Single writer per resource with snapshot-isolated readers.</figcaption>
+      </figure>
+    </article>
+
+    <!-- ---------- 6. Immutable revisions, safe undo for AI agents ---------- -->
+    <article class="cap cap--flip reveal" id="cap-agents">
+      <div class="cap__text">
+        <div class="cap__num">06 · Immutable revisions · AI agents</div>
+        <h3>Let AI agents edit real data &mdash; and undo them.</h3>
+        <p class="cap__one">Every revision is immutable. An agent's edit is just a new revision you can inspect, diff and revert &mdash; and the bad state stays in history as evidence.</p>
+        <p class="cap__body">The built-in MCP server lets agents (Claude, Cursor or any MCP client) read any revision, inspect structural diffs and optionally revert. It is read-only by default, with access control, output sanitization and an audit log. A revert appends a new revision that restores the whole resource, guarded by the head you expect: if someone committed in between, it returns 409 and changes nothing.</p>
+        <div class="code"><div class="code__head"><span>Shell</span><span>register with your MCP client</span></div><pre><span class="c"># read-only by default</span>
+<span class="k">sirix-mcp</span> --database-path /data/sirix
+<span class="c"># allow edits (and reverts)</span>
+<span class="k">sirix-mcp</span> --database-path /data/sirix --read-write</pre></div>
+        <p class="src">Source: <a href="https://github.com/sirixdb/sirix#using-the-mcp-server-for-ai-agents">README · MCP server</a>, <a href="https://github.com/sirixdb/sirix/blob/main/docs/AGENT_QUICKSTART.md">AGENT_QUICKSTART</a>, <a href="https://github.com/sirixdb/sirix/blob/main/docs/QUICKSTART.md">QUICKSTART · revert</a></p>
+      </div>
+      <figure class="cap__fig" style="margin:0">
+        <svg class="ag-fig" id="ag" viewBox="0 0 660 250" role="img" aria-labelledby="ag-t ag-d">
+          <title id="ag-t">An agent edit, inspected and reverted</title>
+          <desc id="ag-d">Revision 41 is the current state. An agent edits through the MCP server, which creates revision 42 and leaves revision 41 untouched. A structural diff from 41 to 42 shows one update, one insert and one delete. A revert to 41 is appended as revision 43 with the content of revision 41, while revision 42 stays in history.</desc>
+          <defs><marker id="ag-ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" style="fill:var(--text-2)"/></marker>
+          <marker id="ag-aho" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" style="fill:var(--orange)"/></marker></defs>
+          <g id="ag-g"></g>
+        </svg>
+        <div class="ag-cap" id="ag-cap" aria-live="polite"></div>
+        <figcaption class="cap__figcap">Diagram 6 · Nothing is overwritten at any step: the agent's revision 42 remains readable and diffable after the revert.</figcaption>
+      </figure>
+    </article>
+  </div>
+</section>
+
+<!-- ================= WHAT YOU CAN DO ================= -->
+<section class="band band--alt" id="examples" aria-labelledby="ex-h">
+  <div class="lp-container">
+    <div class="sec-head reveal">
+      <div class="kicker">What you can do</div>
+      <h2 class="h2" id="ex-h">Ask questions about the past in one line.</h2>
+      <p class="sub">JSONiq with temporal functions, a REST API, and the same operations from Java or the CLI. Every example below uses functions documented in the Sirix README.</p>
+    </div>
+    <div class="tabs reveal">
+      <div class="tablist" role="tablist" aria-label="Examples">
+        <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true"><b>Read the past</b><span>by revision or timestamp</span></button>
+        <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1"><b>Follow one field</b><span>its whole history</span></button>
+        <button class="tab" role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1"><b>Diff revisions</b><span>node-level changes</span></button>
+        <button class="tab" role="tab" id="t4" aria-controls="p4" aria-selected="false" tabindex="-1"><b>Bitemporal query</b><span>known when × true when</span></button>
+        <button class="tab" role="tab" id="t5" aria-controls="p5" aria-selected="false" tabindex="-1"><b>Undo a change</b><span>revert, keep the trail</span></button>
+        <button class="tab" role="tab" id="t6" aria-controls="p6" aria-selected="false" tabindex="-1"><b>Analytics on history</b><span>projection indexes</span></button>
+      </div>
+      <div>
+        <div class="tabpanel" role="tabpanel" id="p1" aria-labelledby="t1">
+          <p>Read a resource as it was &mdash; over REST, or inside any query.</p>
+          <div class="code"><div class="code__head"><span>REST</span></div><pre><span class="k">curl</span> <span class="s">'localhost:9443/mydb/products?revision=1'</span>
+<span class="c"># -> [{"id":1,"name":"keyboard","price":49.9},{"id":2,"name":"mouse","price":19.9}]</span></pre></div>
+          <div class="code"><div class="code__head"><span>JSONiq</span></div><pre><span class="f">count</span>(<span class="f">jn:doc</span>(<span class="s">'mydb'</span>,<span class="s">'products'</span>, <span class="n">1</span>)[])   <span class="c">(: -> 2 :)</span>
+<span class="f">count</span>(<span class="f">jn:doc</span>(<span class="s">'mydb'</span>,<span class="s">'products'</span>)[])      <span class="c">(: -> 3, the latest :)</span></pre></div>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p2" aria-labelledby="t2" hidden>
+          <p>Because each node keeps its identity, you can walk one field through every revision without touching the rest of the document.</p>
+          <div class="code"><div class="code__head"><span>JSONiq</span></div><pre><span class="k">for</span> <span class="o">$v</span> <span class="k">in</span> <span class="f">jn:all-times</span>(<span class="f">jn:doc</span>(<span class="s">'mydb'</span>,<span class="s">'myresource'</span>).users[<span class="n">0</span>])
+<span class="k">return</span> {<span class="s">"rev"</span>: <span class="f">sdb:revision</span>(<span class="o">$v</span>), <span class="s">"data"</span>: <span class="o">$v</span>}</pre></div>
+          <p style="margin-top:12px;font-size:14px">Also: <code>jn:previous</code>, <code>jn:next</code>, <code>jn:first</code>, <code>jn:last</code>, <code>jn:past</code>, <code>jn:future</code>, plus <code>sdb:timestamp</code> and commit authors and messages.</p>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p3" aria-labelledby="t3" hidden>
+          <p>A structured diff between any two revisions, from a query or over REST.</p>
+          <div class="code"><div class="code__head"><span>JSONiq</span></div><pre><span class="f">jn:diff</span>(<span class="s">'mydb'</span>,<span class="s">'myresource'</span>, <span class="n">1</span>, <span class="n">5</span>)</pre></div>
+          <div class="code"><div class="code__head"><span>REST · real output from the quickstart</span></div><pre><span class="k">curl</span> <span class="s">'localhost:9443/mydb/products/diff?first-revision=1&amp;second-revision=2'</span>
+{<span class="s">"database"</span>:<span class="s">"mydb"</span>,<span class="s">"resource"</span>:<span class="s">"products"</span>,<span class="s">"old-revision"</span>:<span class="n">1</span>,<span class="s">"new-revision"</span>:<span class="n">2</span>,
+ <span class="s">"diffs"</span>:[{<span class="s">"insert"</span>:{<span class="s">"nodeKey"</span>:<span class="n">10</span>,<span class="s">"insertPositionNodeKey"</span>:<span class="n">6</span>,
+           <span class="s">"insertPosition"</span>:<span class="s">"asRightSibling"</span>,<span class="s">"path"</span>:<span class="s">"/[2]"</span>,<span class="s">"type"</span>:<span class="s">"jsonFragment"</span>}}]}</pre></div>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p4" aria-labelledby="t4" hidden>
+          <p>Name the valid-time fields once per resource; the JSONiq and REST store layers create the interval index for you.</p>
+          <div class="code"><div class="code__head"><span>JSONiq</span></div><pre><span class="c">(: valid on July 15, per the latest knowledge :)</span>
+<span class="f">jn:valid-at</span>(<span class="s">'mydb'</span>,<span class="s">'myresource'</span>, <span class="f">xs:dateTime</span>(<span class="s">'2024-07-15T12:00:00Z'</span>))
+
+<span class="c">(: known on Jan 20 AND valid on July 15 :)</span>
+<span class="f">jn:open-bitemporal</span>(<span class="s">'mydb'</span>,<span class="s">'myresource'</span>,
+    <span class="f">xs:dateTime</span>(<span class="s">'2024-01-20T10:00:00Z'</span>),
+    <span class="f">xs:dateTime</span>(<span class="s">'2024-07-15T12:00:00Z'</span>))</pre></div>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p5" aria-labelledby="t5" hidden>
+          <p>Revert appends a new revision that restores an old state &mdash; the bad edit stays in history, inspectable. A stale <code>expectedHead</code> returns 409 and changes nothing, which makes it safe for agents.</p>
+          <div class="code"><div class="code__head"><span>REST</span></div><pre><span class="k">curl</span> -X POST localhost:9443/mydb/products/revert \
+  -H <span class="s">'Content-Type: application/json'</span> \
+  -d <span class="s">'{"targetRevision":1,"expectedHead":2,"message":"Undo agent product edit"}'</span>
+<span class="c"># -> {"revision":3,"previousHead":2}</span></pre></div>
+          <p style="margin-top:12px;font-size:14px">The MCP server exposes time-travel reads, structural diffs and revert to AI agents. It is read-only by default, with access control and an audit log.</p>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="p6" aria-labelledby="t6" hidden>
+          <p>Declare a columnar projection over a record set; plain JSONiq group-bys and aggregates route through it automatically, at any revision.</p>
+          <div class="code"><div class="code__head"><span>JSONiq · experimental</span></div><pre><span class="k">let</span> <span class="o">$doc</span> := <span class="f">jn:doc</span>(<span class="s">'mydb'</span>, <span class="s">'sales.jn'</span>)
+<span class="k">let</span> <span class="o">$idx</span> := <span class="f">jn:create-projection-index</span>(<span class="o">$doc</span>, <span class="s">'/[]'</span>,
+    (<span class="s">'/[]/age'</span>, <span class="s">'/[]/active'</span>, <span class="s">'/[]/dept'</span>, <span class="s">'/[]/city'</span>),
+    (<span class="s">'long'</span>, <span class="s">'boolean'</span>, <span class="s">'string'</span>, <span class="s">'string'</span>))
+<span class="k">return</span> {<span class="s">"revision"</span>: <span class="f">sdb:commit</span>(<span class="o">$doc</span>)}</pre></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Section 5: Code Example -->
-<section class="section fade-in">
-  <div class="container">
-    <div class="code-showcase">
-      <h2 class="section-heading">Time-travel queries with JSONiq</h2>
-      <p class="section-subheading">Open a database at a specific point in time and query across revisions. Find data that was added, modified, or corrected &mdash; all in a single query.</p>
-      <div class="code-block">
-        <div class="code-block__header"><span class="code-block__lang">JSONiq</span></div>
-        <pre><code><span class="sh-kw">let</span> <span class="sh-var">$doc</span> <span class="sh-op">:=</span> <span class="sh-fn">jn:open</span>(<span class="sh-str">'database'</span>,<span class="sh-str">'resource'</span>, <span class="sh-fn">xs:dateTime</span>(<span class="sh-str">'2019-04-13T16:24:27Z'</span>))
-<span class="sh-kw">let</span> <span class="sh-var">$statuses</span> <span class="sh-op">:=</span> <span class="sh-var">$doc</span>.<span class="sh-prop">statuses</span>
-<span class="sh-kw">let</span> <span class="sh-var">$foundStatus</span> <span class="sh-op">:=</span> <span class="sh-kw">for</span> <span class="sh-var">$status</span> <span class="sh-kw">in</span> <span class="sh-var">$statuses</span>
-  <span class="sh-kw">let</span> <span class="sh-var">$dateTimeCreated</span> <span class="sh-op">:=</span> <span class="sh-fn">xs:dateTime</span>(<span class="sh-var">$status</span>.<span class="sh-prop">created_at</span>)
-  <span class="sh-kw">where</span> <span class="sh-var">$dateTimeCreated</span> <span class="sh-op">&gt;</span> <span class="sh-fn">xs:dateTime</span>(<span class="sh-str">"2018-02-01T00:00:00"</span>)
-        <span class="sh-kw">and</span> <span class="sh-fn">not</span>(<span class="sh-fn">exists</span>(<span class="sh-fn">jn:previous</span>(<span class="sh-var">$status</span>)))
-  <span class="sh-kw">order by</span> <span class="sh-var">$dateTimeCreated</span>
-  <span class="sh-kw">return</span> <span class="sh-var">$status</span>
-<span class="sh-kw">return</span> {<span class="sh-str">"revision"</span>: <span class="sh-fn">sdb:revision</span>(<span class="sh-var">$foundStatus</span>), <span class="sh-var">$foundStatus</span>{<span class="sh-prop">text</span>}}</code></pre>
-      </div>
-      <p class="code-showcase__caption">This query opens a resource at a specific revision timestamp and finds statuses created after Feb 1, 2018 that did not exist in the previous revision. The <code>jn:previous()</code> function navigates the revision history; <code>sdb:revision()</code> returns the revision number.</p>
+<!-- ================= MEASURED ================= -->
+<section class="band" id="measured" aria-labelledby="m-h">
+  <div class="lp-container">
+    <div class="sec-head reveal">
+      <div class="kicker">Measured, not claimed</div>
+      <h2 class="h2" id="m-h">History depth doesn't slow it down.</h2>
+      <p class="sub">Numbers from Sirix's own published benchmarks, with their methodology and their losses. Single machine, so treat them as shape, not as a promise for your workload.</p>
+    </div>
+    <div class="facts reveal">
+      <div class="fact"><b>~18 <small>µs</small></b><p>Open and read revision 1, 5,000 or 10,000 of a 10,000-revision resource &mdash; flat across the history.</p><p class="src"><a href="https://github.com/sirixdb/sirix/blob/main/docs/BENCHMARKS.md">BENCHMARKS · Bench 2</a></p></div>
+      <div class="fact"><b>0.18 <small>ms</small></b><p>Session open at 10,000 revisions, flat (was 4.64 ms and linear before the fix).</p><p class="src"><a href="https://github.com/sirixdb/sirix/blob/main/docs/BENCHMARKS.md">BENCHMARKS · post-fix</a></p></div>
+      <div class="fact"><b>~570 <small>commits/s</small></b><p>Durable single-field commits, flat at 10,000 revisions deep. Tiny document, core API.</p><p class="src"><a href="https://github.com/sirixdb/sirix/blob/main/docs/BENCHMARKS.md">BENCHMARKS · post-fix</a></p></div>
+      <div class="fact"><b>18,361 <small>req/s</small></b><p>REST reads at 16 concurrent clients on a 1,901-revision resource; p99 1.84 ms.</p><p class="src"><a href="https://github.com/sirixdb/sirix/blob/main/docs/BENCHMARKS.md">BENCHMARKS · REST re-run</a></p></div>
+      <div class="fact fact--wide"><b>15&ndash;37 s → 1.4&ndash;3.2 <small>s</small></b><p>Group-bys, sums, averages and count-distinct over 1M records: interpreted pipeline vs vectorized SIMD execution, cold. Results verified byte-identical.</p><p class="src"><a href="https://github.com/sirixdb/sirix/blob/main/docs/WHY-SIRIX.md">WHY-SIRIX §5</a></p></div>
+      <div class="fact fact--wide"><b>3 of 9</b><p>Analytical query shapes where the native binary is ahead of DuckDB 1.5.2 at 100M records; the rest within 1.1&ndash;4.5×.</p><p class="src"><a href="https://github.com/sirixdb/sirix/blob/main/docs/COMPARISON_DUCKDB.md">COMPARISON_DUCKDB</a></p></div>
+    </div>
+    <div class="losses reveal">
+      <h3>Where it loses, today</h3>
+      <ul>
+        <li>Storage footprint and peak memory are larger than comparable engines; Postgres plus a history table wins small-document ingest and storage.</li>
+        <li>Single node, single writer per resource; no replication yet.</li>
+        <li>No SQL &mdash; JSONiq/XQuery only. Still 1.0.0-beta.</li>
+      </ul>
+      <p class="src">See <a href="https://github.com/sirixdb/sirix/blob/main/docs/KNOWN_LIMITATIONS.md">KNOWN_LIMITATIONS.md</a> and <a href="https://github.com/sirixdb/sirix/blob/main/docs/WHY-SIRIX.md">WHY-SIRIX · where Sirix is the wrong choice</a>. The PostgreSQL comparison is <a href="https://github.com/sirixdb/sirix/blob/main/docs/COMPARISON_POSTGRES.md">withdrawn as unsound</a> and quoted nowhere on this page.</p>
     </div>
   </div>
 </section>
 
-<!-- Section 7: APIs -->
-<section class="section fade-in">
-  <div class="container">
-    <h2 class="section-heading">Powerful APIs</h2>
-    <p class="section-subheading">Multiple ways to interact with your temporal data.</p>
-    <div class="api-grid">
-      <a href="/docs/rest-api.html" class="api-card">
-        <div class="api-card__illustration">
-          <svg viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="60" y="50" width="60" height="80" rx="8" stroke="#F47B20" stroke-width="1.5" fill="rgba(244,123,32,0.06)"/>
-            <rect x="170" y="30" width="60" height="120" rx="8" stroke="#42B6F0" stroke-width="1.5" fill="rgba(66,182,240,0.06)"/>
-            <rect x="280" y="50" width="60" height="80" rx="8" stroke="#F47B20" stroke-width="1.5" fill="rgba(244,123,32,0.06)"/>
-            <line x1="120" y1="90" x2="170" y2="90" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 4"/>
-            <line x1="230" y1="90" x2="280" y2="90" stroke="#6b7280" stroke-width="1" stroke-dasharray="4 4"/>
-            <circle cx="90" cy="75" r="4" fill="#F47B20"/>
-            <circle cx="90" cy="90" r="4" fill="#F47B20"/>
-            <circle cx="90" cy="105" r="4" fill="#F47B20"/>
-            <circle cx="200" cy="60" r="5" fill="#42B6F0"/>
-            <circle cx="200" cy="80" r="5" fill="#42B6F0"/>
-            <circle cx="200" cy="100" r="5" fill="#42B6F0"/>
-            <circle cx="200" cy="120" r="5" fill="#42B6F0"/>
-            <circle cx="310" cy="75" r="4" fill="#F47B20"/>
-            <circle cx="310" cy="90" r="4" fill="#F47B20"/>
-            <circle cx="310" cy="105" r="4" fill="#F47B20"/>
-            <text x="200" y="170" text-anchor="middle" fill="#6b7280" font-size="10" font-family="Inter,sans-serif">GET / POST / PUT / DELETE</text>
-          </svg>
-        </div>
-        <div class="api-card__content">
-          <h3>REST API</h3>
-          <p>Asynchronous, non-blocking RESTful API built with Vert.x, Kotlin coroutines, and Keycloak for authentication.</p>
-        </div>
-      </a>
-      <a href="/docs/jsoniq-api.html" class="api-card">
-        <div class="api-card__illustration">
-          <svg viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <text x="80" y="55" fill="#F47B20" font-size="28" font-family="JetBrains Mono,monospace" font-weight="600">{</text>
-            <text x="110" y="75" fill="#42B6F0" font-size="12" font-family="JetBrains Mono,monospace">let $doc :=</text>
-            <text x="110" y="95" fill="#9ca3af" font-size="12" font-family="JetBrains Mono,monospace">jn:open(</text>
-            <text x="110" y="115" fill="#e8e6e3" font-size="12" font-family="JetBrains Mono,monospace">'db','res')</text>
-            <text x="110" y="140" fill="#42B6F0" font-size="12" font-family="JetBrains Mono,monospace">return $doc</text>
-            <text x="310" y="140" fill="#F47B20" font-size="28" font-family="JetBrains Mono,monospace" font-weight="600">}</text>
-            <rect x="250" y="40" width="110" height="30" rx="6" stroke="#42B6F0" stroke-width="1" fill="rgba(66,182,240,0.06)"/>
-            <text x="305" y="60" text-anchor="middle" fill="#42B6F0" font-size="11" font-family="Inter,sans-serif">XPath axes</text>
-            <rect x="250" y="80" width="110" height="30" rx="6" stroke="#F47B20" stroke-width="1" fill="rgba(244,123,32,0.06)"/>
-            <text x="305" y="100" text-anchor="middle" fill="#F47B20" font-size="11" font-family="Inter,sans-serif">Time travel</text>
-          </svg>
-        </div>
-        <div class="api-card__content">
-          <h3>XQuery / JSONiq</h3>
-          <p>Extensions to the Brackit XQuery processor with temporal XPath axes and functions for navigating in both space and time.</p>
-        </div>
-      </a>
-      <a href="/docs/transactional-cursor-api.html" class="api-card">
-        <div class="api-card__illustration">
-          <svg viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="200" cy="50" r="18" stroke="#F47B20" stroke-width="1.5" fill="rgba(244,123,32,0.08)"/>
-            <circle cx="120" cy="110" r="14" stroke="#42B6F0" stroke-width="1.5" fill="rgba(66,182,240,0.06)"/>
-            <circle cx="200" cy="130" r="14" stroke="#42B6F0" stroke-width="1.5" fill="rgba(66,182,240,0.06)"/>
-            <circle cx="280" cy="110" r="14" stroke="#42B6F0" stroke-width="1.5" fill="rgba(66,182,240,0.06)"/>
-            <line x1="190" y1="66" x2="128" y2="98" stroke="#6b7280" stroke-width="1"/>
-            <line x1="200" y1="68" x2="200" y2="116" stroke="#6b7280" stroke-width="1"/>
-            <line x1="210" y1="66" x2="272" y2="98" stroke="#6b7280" stroke-width="1"/>
-            <circle cx="200" cy="50" r="5" fill="#F47B20"/>
-            <circle cx="120" cy="110" r="4" fill="#42B6F0"/>
-            <circle cx="200" cy="130" r="4" fill="#42B6F0"/>
-            <circle cx="280" cy="110" r="4" fill="#42B6F0"/>
-            <text x="200" y="170" text-anchor="middle" fill="#6b7280" font-size="10" font-family="Inter,sans-serif">traverse &middot; filter &middot; navigate</text>
-          </svg>
-        </div>
-        <div class="api-card__content">
-          <h3>Transactional Cursor API</h3>
-          <p>Low-level, cursor-based API with standard and temporal XPath axes, filters, and powerful traversal capabilities.</p>
-        </div>
-      </a>
-      <a href="/docs/index.html" class="api-card">
-        <div class="api-card__illustration">
-          <svg viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="50" y="30" width="120" height="120" rx="8" stroke="#42B6F0" stroke-width="1.5" fill="rgba(66,182,240,0.04)"/>
-            <rect x="230" y="30" width="120" height="120" rx="8" stroke="#F47B20" stroke-width="1.5" fill="rgba(244,123,32,0.04)"/>
-            <rect x="70" y="50" width="80" height="10" rx="3" fill="rgba(66,182,240,0.2)"/>
-            <rect x="70" y="70" width="60" height="10" rx="3" fill="rgba(66,182,240,0.2)"/>
-            <rect x="70" y="90" width="70" height="10" rx="3" fill="rgba(66,182,240,0.15)"/>
-            <rect x="70" y="110" width="50" height="10" rx="3" fill="rgba(66,182,240,0.15)"/>
-            <rect x="250" y="50" width="80" height="10" rx="3" fill="rgba(244,123,32,0.2)"/>
-            <rect x="250" y="70" width="60" height="10" rx="3" fill="rgba(244,123,32,0.2)"/>
-            <rect x="250" y="90" width="70" height="10" rx="3" fill="rgba(244,123,32,0.25)"/>
-            <rect x="250" y="110" width="50" height="10" rx="3" fill="rgba(244,123,32,0.15)"/>
-            <path d="M185 70 L215 70" stroke="#F47B20" stroke-width="2" stroke-linecap="round"/>
-            <path d="M185 90 L215 90" stroke="#42B6F0" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="200" cy="80" r="10" stroke="#6b7280" stroke-width="1" fill="none"/>
-            <path d="M196 80 L200 84 L204 76" stroke="#F47B20" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <text x="110" y="168" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="Inter,sans-serif">Rev N</text>
-            <text x="290" y="168" text-anchor="middle" fill="#F47B20" font-size="10" font-family="Inter,sans-serif">Rev N+1</text>
-          </svg>
-        </div>
-        <div class="api-card__content">
-          <h3>Change Tracking API</h3>
-          <p>Detect and query changes between any two revisions efficiently using stable node IDs and secure hashes stored in the page tree.</p>
-        </div>
-      </a>
+<!-- ================= COMPARISON ================= -->
+<section class="band band--alt" id="compare" aria-labelledby="c-h">
+  <div class="lp-container">
+    <div class="sec-head reveal">
+      <div class="kicker">Honest comparison</div>
+      <h2 class="h2" id="c-h">What Sirix does that the alternatives don't &mdash; and the reverse.</h2>
+      <p class="sub">Checked against each project's own documentation in November 2026. Rows marked “Sirix behind” are real gaps.</p>
     </div>
-    <div class="section-cta">
-      <a href="/docs/index.html" class="btn btn--outline">View All Documentation</a>
+    <div class="tbl-wrap reveal">
+      <table class="cmp">
+        <caption class="sr-only">Capability comparison of SirixDB, XTDB 2, Datomic, Dolt, PostgreSQL 18/19 and lakehouse table formats, with sources</caption>
+        <thead>
+          <tr><th scope="col">Capability</th><th scope="col" class="sirix">SirixDB</th><th scope="col">XTDB 2</th><th scope="col">Datomic</th><th scope="col">Dolt</th><th scope="col">PostgreSQL 18/19</th><th scope="col">Iceberg / Delta</th><th scope="col">Sources</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Transaction-time history</th>
+            <td class="sirix"><span class="yes">Yes</span>, every commit, unbounded</td><td><span class="yes">Yes</span>, unbounded</td><td><span class="yes">Yes</span>, unbounded</td><td><span class="yes">Yes</span>, explicit commits</td><td><span class="no">No</span> system time; triggers + history table</td><td><span class="part">Snapshots</span>, expire after 5 d / 7 d by default</td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix#core-properties">Sirix</a><a href="https://www.xtdb.com/blog/launching-xtdb-v2">XTDB</a><a href="https://docs.datomic.com/reference/filters.html">Datomic</a><a href="https://www.dolthub.com/docs/sql-reference/version-control/querying-history">Dolt</a><a href="https://www.postgresql.org/docs/19/ddl-temporal-tables.html">PG</a><a href="https://iceberg.apache.org/docs/latest/maintenance/">Iceberg</a><a href="https://docs.databricks.com/aws/en/delta/history">Delta</a></td></tr>
+          <tr><th scope="row">Native valid time</th>
+            <td class="sirix"><span class="yes">Yes</span>, configured paths + versioned interval index</td><td><span class="yes">Yes</span>, every table</td><td><span class="no">No</span></td><td><span class="no">No</span> (“uni-temporal”)</td><td><span class="part">Constraints only</span>; <code>FOR PORTION OF</code> reverted</td><td><span class="no">No</span></td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix#bitemporal-queries">Sirix</a><a href="https://www.xtdb.com/blog/launching-xtdb-v2">XTDB</a><a href="https://docs.datomic.com/reference/filters.html">Datomic</a><a href="https://dolthub.com/blog/2023-08-07-temporal-database/">Dolt</a><a href="https://git.postgresql.org/cgit/postgresql.git/commit/?h=REL_19_STABLE&amp;id=a9d2f7282407a32280c72cd99e243d62033de57b">PG</a><a href="https://iceberg.apache.org/spec/">Iceberg</a></td></tr>
+          <tr><th scope="row">Identity &amp; diff granularity</th>
+            <td class="sirix"><span class="yes">Node</span> &mdash; every field and value inside the JSON</td><td>Row / document</td><td>Datom (fact)</td><td>Cell; 3-way merge</td><td>Row</td><td>File / snapshot</td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix#diff-between-revisions">Sirix</a><a href="https://www.xtdb.com/blog/launching-xtdb-v2">XTDB</a><a href="https://docs.datomic.com/reference/filters.html">Datomic</a><a href="https://www.dolthub.com/blog/2020-07-15-three-way-merge">Dolt</a><a href="https://github.com/xocolatl/periods">PG ext.</a><a href="https://docs.lakefs.io/concepts/internals/">lake</a></td></tr>
+          <tr><th scope="row">Storage per revision</th>
+            <td class="sirix">Changed records + their path to the root (page fragments)</td><td>New row versions</td><td>New facts</td><td>Changed Prolly-tree chunks</td><td>Full old row copied to history</td><td>Rewritten data files</td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix#the-solution">Sirix</a><a href="https://github.com/xtdb/xtdb/releases/tag/v2.2.0">XTDB</a><a href="https://www.dolthub.com/blog/2020-07-15-three-way-merge">Dolt</a><a href="https://github.com/xocolatl/periods">PG ext.</a><a href="https://docs.databricks.com/aws/en/delta/history">Delta</a></td></tr>
+          <tr><th scope="row">Embeddable in your process</th>
+            <td class="sirix"><span class="yes">Yes</span> (JVM library) + REST</td><td><span class="part">Possible</span>, server-first</td><td><span class="part">Peer library</span> + transactor</td><td>Binary or server</td><td><span class="no">No</span></td><td>Format, read by engines</td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix#as-an-embedded-library">Sirix</a><a href="https://github.com/xtdb/xtdb/releases/tag/v2.2.0">XTDB</a><a href="https://docs.datomic.com/analytics/analytics-configuring.html">Datomic</a></td></tr>
+          <tr><th scope="row">Licence</th>
+            <td class="sirix">BSD-3</td><td>MPL-2.0</td><td>Free binaries, closed source</td><td>Apache-2.0</td><td>PostgreSQL</td><td>Apache-2.0</td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix/blob/main/LICENSE">Sirix</a><a href="https://xtdb.com/support/production">XTDB</a><a href="https://blog.datomic.com/2023/04/datomic-is-free.html">Datomic</a></td></tr>
+          <tr class="loss"><th scope="row">SQL access</th>
+            <td class="sirix"><span class="no">No</span> &mdash; JSONiq / XQuery</td><td><span class="yes">Yes</span>, pgwire</td><td>Datalog; SQL via add-on</td><td><span class="yes">Yes</span>, MySQL / Postgres</td><td><span class="yes">Yes</span></td><td><span class="yes">Yes</span>, via engines</td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix#time-travel-queries">Sirix</a><a href="https://github.com/xtdb/xtdb/releases/tag/v2.1.0">XTDB</a><a href="https://docs.datomic.com/analytics/analytics-configuring.html">Datomic</a></td></tr>
+          <tr class="loss"><th scope="row">Erasure (GDPR)</th>
+            <td class="sirix"><span class="no">No</span> prune / erase command yet<br><small style="font-weight:500;color:var(--muted)">Enterprise (in dev.): prune whole revisions + compaction</small></td><td><span class="yes">Yes</span>, <code>ERASE</code></td><td><span class="part">Excision</span> (Pro)</td><td>Squash only</td><td><span class="yes">Yes</span>, delete history rows</td><td><span class="yes">Yes</span>, expire snapshots</td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix/blob/main/docs/KNOWN_LIMITATIONS.md">Sirix</a><a href="https://docs.xtdb.com/reference/main/sql/txs">XTDB</a><a href="https://docs.datomic.com/operation/excision.html">Datomic</a><a href="http://www.dolthub.com/blog/2026-06-18-dolt-disk-space/">Dolt</a></td></tr>
+          <tr class="loss"><th scope="row">Branch &amp; merge</th>
+            <td class="sirix"><span class="no">No</span> &mdash; linear history + revert</td><td><span class="no">No</span></td><td><span class="no">No</span></td><td><span class="yes">Yes</span></td><td><span class="no">No</span></td><td><span class="part">Iceberg branches</span></td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix/blob/main/docs/QUICKSTART.md">Sirix</a><a href="https://www.dolthub.com/blog/2020-07-15-three-way-merge">Dolt</a><a href="https://iceberg.apache.org/docs/latest/branching/">Iceberg</a></td></tr>
+          <tr class="loss"><th scope="row">Scale-out / replicas</th>
+            <td class="sirix"><span class="no">Single node</span><br><small style="font-weight:500;color:var(--muted)">Enterprise (in dev.): S3 + Kafka read replicas</small></td><td>One writer + read secondaries</td><td>Transactor + peers</td><td>Replication</td><td>Replication</td><td>Object storage</td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix/blob/main/docs/WHY-SIRIX.md">Sirix</a><a href="https://github.com/xtdb/xtdb/releases/tag/v2.2.0">XTDB</a><a href="https://jepsen.io/analyses/datomic-pro-1.0.7075">Datomic</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tbl-note">Scroll sideways on small screens. Each “Sources” link opens the project's own documentation or release notes.</p>
+  </div>
+</section>
+
+<!-- ================= ENTERPRISE (open core) ================= -->
+<section class="band band--alt" id="enterprise" aria-labelledby="e-h">
+  <div class="lp-container ent">
+    <div class="reveal">
+      <div class="kicker">Open core</div>
+      <h2 class="h2" id="e-h">Embedded today. Retention and scale-out when you need them.</h2>
+      <p class="sub">The open-source engine is single-node by design. SirixDB Enterprise, a commercial edition in development, adds what the comparison above says is missing, using storage providers that plug into the same engine and on-disk model.</p>
+      <ul class="ent__list">
+        <li><b>Retention policies and compaction<span class="ent__badge">in development</span></b><span>Decide how long history lives: keep the last N revisions, everything newer than a date, or a chosen set. Compaction then physically reclaims the space of pruned revisions; each keeps its number and timestamp as a tombstone, and opening it is refused.</span></li>
+        <li><b>Web console<span class="ent__badge">in development</span></b><span>A dashboard across your databases plus audit reports: a cross-resource activity timeline with author filtering, and compliance exports of the audit trail.</span></li>
+        <li><b>Object storage (S3 and compatibles)<span class="ent__badge">in development</span></b><span>Each commit becomes an immutable segment object plus a small manifest, read through an in-memory page cache. Immutable revisions are a natural fit for object storage.</span></li>
+        <li><b>Read replicas over Kafka<span class="ent__badge">in development</span></b><span>A leader publishes one small event per commit; followers reload the leader's manifest from shared storage and serve the same revisions. Still one writer per resource.</span></li>
+        
+      </ul>
+      <div class="lp-hero__actions" style="margin-top:24px"><a class="lp-btn lp-btn--ghost" href="/contact.html">Talk to us about Enterprise</a></div>
+    </div>
+    <figure class="cap__fig reveal" style="margin:0">
+      <svg class="rp-fig" id="rp" viewBox="0 0 600 360" role="img" aria-labelledby="rp-t rp-d">
+        <title id="rp-t">Leader and follower replication through S3 and Kafka</title>
+        <desc id="rp-d">The leader commits a revision and uploads an immutable segment and the manifest to a shared S3 bucket. It then publishes a small commit event to a Kafka topic. The follower consumes the event in order, reloads the manifest from S3, and serves the new revision.</desc>
+        <rect class="box" x="10" y="40" width="170" height="92" rx="12"/>
+        <text class="t" x="95" y="74" text-anchor="middle">Leader</text>
+        <text class="t-s" x="95" y="96" text-anchor="middle">one writer</text>
+        <rect class="box" x="420" y="40" width="170" height="92" rx="12"/>
+        <text class="t" x="505" y="74" text-anchor="middle">Follower</text>
+        <text class="t-s" x="505" y="96" text-anchor="middle">read replica</text>
+        <rect class="box box--s3" x="160" y="238" width="280" height="96" rx="12"/>
+        <text class="t" x="300" y="266" text-anchor="middle">Shared S3 bucket</text>
+        <text class="t-m" x="300" y="292" text-anchor="middle">segments/segment-&lt;id&gt;.dat</text>
+        <text class="t-m" x="300" y="314" text-anchor="middle">manifest (latest revision)</text>
+        <rect class="box box--k" x="215" y="60" width="170" height="52" rx="12"/>
+        <text class="t" x="300" y="84" text-anchor="middle">Kafka topic</text>
+        <text class="t-m" x="300" y="102" text-anchor="middle">1 event / commit</text>
+        <path class="lnk" d="M95 134 V200 Q95 220 115 220 H200 Q220 220 220 238"/>
+        <path class="lnk" d="M182 86 H213"/>
+        <path class="lnk" d="M387 86 H418"/>
+        <path class="lnk" d="M505 134 V200 Q505 220 485 220 H400 Q380 220 380 238"/>
+        <g class="tok" id="rp-1"><rect class="seg" x="132" y="206" width="22" height="16" rx="3"/></g>
+        <g class="tok" id="rp-2"><circle class="evt" cx="198" cy="86" r="8"/></g>
+        <g class="tok" id="rp-3"><circle class="evt" cx="402" cy="86" r="8"/></g>
+        <g class="tok" id="rp-4"><rect class="seg" x="446" y="206" width="22" height="16" rx="3"/></g>
+        <text class="t-m" x="95" y="122" text-anchor="middle" id="rp-rev-l" style="fill:var(--blue-text)">rev 41</text>
+        <text class="t-m" x="505" y="122" text-anchor="middle" id="rp-rev-f" style="fill:var(--blue-text)">rev 41</text>
+      </svg>
+      <div class="rp-cap" id="rp-cap" aria-live="polite">steady state: leader and follower both at rev 41</div>
+      <figcaption class="cap__figcap">Enterprise, in development · Kafka carries notifications only; the page data lives once, in object storage. Followers apply events in order and idempotently.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= USE CASES ================= -->
+<section class="band" id="uses" aria-labelledby="u-h">
+  <div class="lp-container">
+    <div class="sec-head reveal">
+      <div class="kicker">Who needs this</div>
+      <h2 class="h2" id="u-h">When "what did it say then?" is a requirement.</h2>
+      <p class="sub">The requirement is often written into regulation. Sirix gives you the mechanism; it does not certify compliance.</p>
+    </div>
+    <div class="uses reveal">
+      <div class="use"><h3>Regulated record-keeping</h3><p class="need">Broker-dealer rules accept a system that <q>permits the recreation of an original record if it is modified or deleted</q>; MiFID II wants <q>the contents of the records prior to such corrections</q>.</p><p class="how"><b>Sirix</b>every revision kept and openable by time.</p><p class="src"><a href="https://www.sec.gov/investment/amendments-electronic-recordkeeping-requirements-broker-dealers">SEC 17a-4</a> · <a href="https://www.legislation.gov.uk/eur/2017/565/article/72/2020-01-31">MiFID II Art. 72</a></p></div>
+      <div class="use"><h3>Insurance &amp; effective-dated policies</h3><p class="need">Policies change retroactively; out-of-sequence endorsements must not destroy what was believed when a claim was priced.</p><p class="how"><b>Sirix</b>valid time + transaction time in one query.</p><p class="src"><a href="https://docs.guidewire.com/cloud/pc/202511/cloudapibf/cloudAPI/topics/124-PCsupport/00-out-of-sequence-conflicts/c_out-of-sequence-conflicts.html">Guidewire: out-of-sequence</a></p></div>
+      <div class="use"><h3>Trading data &amp; backtests</h3><p class="need">Corrections arrive days later. Restated data leaks the future into backtests unless you can read the uncorrected past.</p><p class="how"><b>Sirix</b><code>jn:open-bitemporal</code> as of the decision time.</p><p class="src"><a href="https://sql.docs.sol.onetick.com/corrections_and_time_travel.html">OneTick</a> · <a href="https://github.com/goldmansachs/reladomo">Reladomo</a></p></div>
+      <div class="use"><h3>Healthcare &amp; life-science records</h3><p class="need">FDA Part 11: changes <q>shall not obscure previously recorded information</q>. Records are JSON documents (FHIR) with optional server-side versioning.</p><p class="how"><b>Sirix</b>document-shaped history, node-level diffs.</p><p class="src"><a href="https://www.law.cornell.edu/cfr/text/21/11.10">21 CFR 11.10</a> · <a href="https://hl7.org/fhir/R4/http.html">FHIR R4</a></p></div>
+      <div class="use"><h3>AI agents that edit real data</h3><p class="need">Agents need to change things safely: inspect what they did, diff it, roll it back &mdash; with an audit trail.</p><p class="how"><b>Sirix</b>MCP server, structural diff, guarded revert.</p><p class="src"><a href="https://github.com/sirixdb/sirix#using-the-mcp-server-for-ai-agents">Sirix MCP</a> · <a href="https://docs.langchain.com/oss/langgraph/use-time-travel">LangGraph time travel</a></p></div>
+      <div class="use"><h3>ML features &amp; AI-Act lineage</h3><p class="need">Point-in-time joins need "when it happened" and "when we recorded it" to keep backfills out of training data.</p><p class="how"><b>Sirix</b>as-of reads of any feature document.</p><p class="src"><a href="https://docs.feast.dev/getting-started/concepts/point-in-time-joins">Feast</a> · <a href="https://artificialintelligenceact.eu/article/12/">EU AI Act Art. 12</a></p></div>
+      <div class="use"><h3>Config, content &amp; catalogs</h3><p class="need">CMS history is a paid tier with days of retention; config mistakes need "what changed, and when?"</p><p class="how"><b>Sirix</b>unbounded history, field-level history queries.</p><p class="src"><a href="https://www.sanity.io/docs/user-guides/history-experience">Sanity</a> · <a href="https://www.notion.com/pricing">Notion</a></p></div>
+      <div class="use"><h3>Debugging production state</h3><p class="need">Bisect <em>data</em> the way you bisect code: what did the state tree look like when the bug fired?</p><p class="how"><b>Sirix</b>open by timestamp, diff neighbours.</p><p class="src"><a href="https://github.com/sirixdb/sirix/blob/main/docs/WHY-SIRIX.md">WHY-SIRIX · use cases</a></p></div>
+      <div class="use"><h3>Event-sourced systems</h3><p class="need">Keep the log, but query <em>state</em> at any point without replay or hand-built projections.</p><p class="how"><b>Sirix</b>each event a commit; any state one open away.</p><p class="src"><a href="https://martinfowler.com/eaaDev/EventSourcing.html">Fowler</a> · <a href="https://chriskiehl.com/article/event-sourcing-is-hard">Kiehl</a></p></div>
     </div>
   </div>
 </section>
-<!-- Section 8: CTA -->
-<section class="cta fade-in">
-  <div class="container">
-    <h2>Your data has a story.<br>SirixDB remembers every chapter.</h2>
-    <p>Get started with the documentation or contribute on GitHub.</p>
-    <div class="cta__actions">
-      <a href="/docs/index.html" class="btn btn--primary btn--lg">Get Started</a>
-      <a href="https://github.com/sirixdb/sirix" class="btn btn--ghost btn--lg">Fork on GitHub</a>
+
+<!-- ================= GETTING STARTED ================= -->
+<section class="band band--alt" id="start" aria-labelledby="s-h">
+  <div class="lp-container">
+    <div class="sec-head reveal">
+      <div class="kicker">Getting started</div>
+      <h2 class="h2" id="s-h">From zero to time travel in three commands.</h2>
+      <p class="sub">A disposable local server with authentication off, for evaluation on Linux x86-64. Production setup with OAuth2 is in the operations guide.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><h3>Start the server</h3><p>Pinned image, loopback only, data removed on exit.</p>
+        <div class="code"><div class="code__head"><span>Shell</span></div><pre><span class="k">docker</span> run --rm --name sirix-first-run -p 127.0.0.1:9443:9443 \
+  -e SIRIX_AUTH_MODE=none \
+  sirixdb/sirix@sha256:76cb3ec3f8c1efa2d62b526962ff5fed1f7b3f7436bb34db4685abc7320ad33a</pre></div></div>
+      <div class="step"><h3>Write revision 1</h3><p>Any JSON document becomes a versioned resource.</p>
+        <div class="code"><div class="code__head"><span>Shell</span></div><pre><span class="k">curl</span> -X PUT localhost:9443/first-run/message \
+  -H <span class="s">'Content-Type: application/json'</span> \
+  -d <span class="s">'{"message":"hello"}'</span></pre></div></div>
+      <div class="step"><h3>Change it, then go back</h3><p>An update query commits revision 2; revision 1 stays readable.</p>
+        <div class="code"><div class="code__head"><span>Shell</span></div><pre><span class="k">curl</span> -X POST localhost:9443/ \
+  -H <span class="s">'Content-Type: application/json'</span> -d <span class="s">"{\"query\":\"replace json value of jn:doc('first-run','message').message with 'hi'\"}"</span>
+<span class="k">curl</span> <span class="s">'localhost:9443/first-run/message?revision=1'</span>
+<span class="c"># -> {"message":"hello"}</span></pre></div></div>
+    </div>
+    <div class="alt-paths reveal">
+      <div class="alt"><h4>Embed it</h4><p><code>io.sirix:sirix-core:1.0.0-beta7</code> on JDK 25. A runnable example commits two revisions and reads the first back.</p></div>
+      <div class="alt"><h4>CLI &amp; JSONiq shell</h4><p><code>sirix-cli</code> and <code>sirix-shell</code>, as JARs or instant-start native binaries.</p></div>
+      <div class="alt"><h4>Live demo</h4><p>Browse revisions, run queries and see structured diffs at <a href="https://demo.sirix.io">demo.sirix.io</a>.</p></div>
     </div>
   </div>
 </section>
+
+<!-- ================= CTA ================= -->
+<section class="lp-cta" aria-labelledby="cta-h">
+  <div class="lp-container">
+    <h2 class="reveal" id="cta-h">Your data has a history.<br><span style="color:var(--orange-text)">Make it queryable.</span></h2>
+    <p class="reveal">Open source under BSD-3. Built in the open; feedback from real use is exactly what we're looking for.</p>
+    <div class="lp-hero__actions reveal">
+      <a class="lp-btn lp-btn--primary" href="/docs/getting-started.html">Read the docs</a>
+      <a class="lp-btn lp-btn--ghost" href="https://github.com/sirixdb/sirix">Star on GitHub</a>
+      <a class="lp-btn lp-btn--ghost" href="https://discord.gg/yC33wVpv7t">Join Discord</a>
+    </div>
+    <p class="trust reveal"><span>1,200+ GitHub stars</span><span>59,000+ Docker pulls</span><span>23 contributors</span><span>BSD-3 licensed</span></p>
+  </div>
+</section>
+</div>
