@@ -88,7 +88,7 @@ const explainer = await page.eval(() => {
 assert(explainer, 'Landing page has the explainer video');
 assert(explainer.controls && explainer.preload === 'none' && !explainer.autoplay && explainer.inline, 'Explainer video has controls, no autoplay, preload none and plays inline');
 assert(explainer.poster && explainer.source === 'video/mp4', 'Explainer video has a poster and an MP4 source');
-assert(explainer.track && explainer.track.kind === 'captions' && explainer.track.lang === 'en' && explainer.track.isDefault, 'Explainer captions track is English and on by default');
+assert(explainer.track && explainer.track.kind === 'captions' && explainer.track.lang === 'en' && !explainer.track.isDefault, 'Explainer captions track is English and off by default');
 assert(explainer.fits && explainer.ratio === 1.78, 'Explainer video keeps 16:9 inside the viewport without horizontal scrolling');
 assert(explainer.focusable, 'Explainer video is reachable by keyboard');
 assert(!explainer.fetchedMedia, 'Explainer video does not download before play');
