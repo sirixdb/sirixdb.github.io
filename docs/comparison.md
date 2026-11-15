@@ -12,19 +12,7 @@ Several databases support temporal or versioned data. This page provides an hone
 
 ## SirixDB vs XTDB
 
-[XTDB](https://xtdb.com) (formerly Crux) is a bitemporal database built in Clojure. Both SirixDB and XTDB track system time and valid time, but their architectures differ significantly.
-
-|  | SirixDB | XTDB |
-|---|---|---|
-| **Language** | Java / Kotlin | Clojure (JVM) |
-| **Data model** | Document trees (JSON, XML) | Entities / tuples |
-| **Query language** | JSONiq, XQuery, temporal XPath axes | SQL (v2), Datalog (v1) |
-| **Storage** | Append-only copy-on-write tree with sliding snapshots | Pluggable backends (RocksDB, etc.), columnar in v2 |
-| **Write-Ahead Log** | Not needed — UberPage swap is atomic | Traditional WAL |
-| **Diffing** | Built-in: compare any two revisions | Not built-in |
-| **Visualization** | Web GUI with sunburst, treemap, explorer | No built-in GUI |
-| **License** | BSD-3-Clause | MPL-2.0 |
-| **Cloud offering** | Planned | Available |
+For XTDB 2 capabilities and trade-offs, see the [sourced comparison on the landing page](/#compare).
 
 ### When to choose SirixDB
 
@@ -43,7 +31,7 @@ Several databases support temporal or versioned data. This page provides an hone
 
 ## SirixDB vs Event Sourcing
 
-Event sourcing stores every state change as an immutable event. While SirixDB shares the "never delete" philosophy, it offers key advantages:
+Event sourcing stores every state change as an immutable event. SirixDB stores revision states directly, with these differences:
 
 - **Efficient reconstruction**: SirixDB can reconstruct any revision in logarithmic time via its page tree, rather than replaying all events
 - **Structural queries**: Query across the document structure at any point in time, not just replay events sequentially
@@ -75,15 +63,6 @@ Git-like version control for data (DVC, lakeFS, Dolt) is increasingly popular. S
 - You need **branching and merging** workflows
 - Your data is tabular (SQL) or file-based
 - Team collaboration with pull-request-style review is important
-
-## SirixDB vs Traditional Databases with Temporal Extensions
-
-PostgreSQL (with temporal tables), Oracle Flashback, and SQL Server temporal tables add time-travel to relational databases. Compared to SirixDB:
-
-- **Native vs bolted-on**: SirixDB was designed from the ground up for temporal data. Relational temporal extensions add history tables on top of existing architectures, which can lead to storage bloat and query complexity
-- **Document vs relational**: SirixDB natively stores semi-structured data without schema. Relational temporal tables require fixed schemas
-- **Storage model**: SirixDB's copy-on-write tree shares unchanged data across revisions automatically. Temporal tables typically duplicate entire rows on every change
-- **Valid time**: Most relational temporal extensions support only system time. Bitemporal support (both system and valid time) requires complex schema design. SirixDB supports both natively
 
 ## Roadmap
 

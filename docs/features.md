@@ -3,7 +3,7 @@ layout: documentation
 doctitle: Features
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/features.md)
+[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/features.md)
 
 ### Features in a nutshell
 - Currently native XML and JSON storage (other data types might follow).
@@ -14,7 +14,7 @@ doctitle: Features
 - Transactional, versioned, typed user-defined index-structures, which are automatically updated once a transaction commits.
 - Through XPath-axis extensions we support the navigation not only in space but also in time (future::, past::, first::, last::…). Furthermore, we provide several temporal XQuery functions due to our integral versioning approach. Temporal navigation for JSON resources is done via built-in XQuery functions.
 - An in-memory path summary, which is persisted during a transaction commit and always kept up-to-date.
-- Configurable versioning at the database level (full, incremental, differential, and a novel sliding snapshot algorithm that balances read and writes without introducing write-peaks, which are usually generated during intermediate full dumps, which are usually written to).
+- Per-resource versioning strategies; see [Sliding Snapshot Versioning](/docs/architecture.html#sliding-snapshot-versioning) for the supported strategies and read/write trade-offs.
 - Log-structured sequential writes and random reads due to transactional copy-on-write (COW) semantics. This offers nice benefits as no locking for concurrent reading transactions and it takes full advantage of flash disks while avoiding their weaknesses.
 - Complete isolation of currently N read-transactions and a single write-transaction per resource.
 - The page structure is heavily inspired by ZFS and therefore also forms a tree. We’ll implement a similar merkle-tree and store hashes of each page in parent-pointers for integrity checks.

@@ -14,7 +14,7 @@ bundle exec jekyll serve
 
 - Jekyll 4.0 (static site generator)
 - Vanilla CSS with custom properties (no preprocessor)
-- Vanilla JavaScript (~100 lines, no dependencies)
+- Vanilla JavaScript (no dependencies)
 - Google Fonts (Inter, JetBrains Mono)
 
 ## License

@@ -13,7 +13,7 @@ usage. For API documentation, see [REST API](/docs/rest-api.html) and
 [JSONiq API](/docs/jsoniq-api.html); for storage-format internals, see
 [Architecture](/docs/architecture.html).
 
-> **Status.** Sirix is currently at `1.0.0-alpha5`. The wire format is on
+> **Status.** See the [SirixDB README](https://github.com/sirixdb/sirix) for current release status. The wire format is on
 > `BinaryEncodingVersion.V0`; bumps are stamped into the page header and rejected
 > on read with a clear "version not known" error. There is **no migration tool
 > yet** — when V1 is introduced, a one-shot upgrader will ship alongside.

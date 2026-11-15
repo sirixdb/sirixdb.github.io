@@ -201,14 +201,7 @@ jn:diff('shop', 'products', 1, 4)
 
 ### Bitemporal Queries
 
-For resources configured with valid-time support, query along two time axes — system time (when recorded) and valid time (when true in the real world):
-
-```xquery
-(: What did we know on March 5 about data valid on February 1? :)
-jn:open-bitemporal('customers', 'addresses',
-  xs:dateTime('2024-02-01T00:00:00Z'),
-  xs:dateTime('2024-03-05T00:00:00Z'))
-```
+For valid-time configuration requirements, argument order, and an example combining transaction and valid time, see [Bitemporal Queries in the function reference](/docs/jsoniq-functions.html#bitemporal-queries).
 
 ## Node Metadata
 

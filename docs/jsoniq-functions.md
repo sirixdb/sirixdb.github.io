@@ -80,16 +80,18 @@ Query along two time axes: *system time* (when SirixDB recorded it) and *valid t
 | Function | Signature | Description |
 |----------|-----------|-------------|
 | `jn:valid-at` | `($coll, $res, $validTime)` | Returns records where the valid-time interval contains `$validTime`. |
-| `jn:open-bitemporal` | `($coll, $res, $validTime, $transactionTime)` | Opens a resource at a specific transaction time, then filters by valid time. |
+| `jn:open-bitemporal` | `($coll, $res, $transactionTime, $validTime)` | Opens a resource at a specific transaction time, then filters by valid time. |
 | `sdb:valid-from` | `($item)` | Returns the `validFrom` timestamp of a node (empty if not configured). |
 | `sdb:valid-to` | `($item)` | Returns the `validTo` timestamp of a node (empty if not configured). |
 
 ```xquery
 (: What did we know on March 5 about data valid on February 1? :)
 jn:open-bitemporal('customers', 'addresses',
-  xs:dateTime('2024-02-01T00:00:00Z'),
-  xs:dateTime('2024-03-05T00:00:00Z'))
+  xs:dateTime('2024-03-05T00:00:00Z'),
+  xs:dateTime('2024-02-01T00:00:00Z'))
 ```
+
+The argument order follows the [OpenBitemporal implementation](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-query/src/main/java/io/sirix/query/function/jn/temporal/OpenBitemporal.java).
 
 ## Diffing
 
