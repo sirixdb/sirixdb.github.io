@@ -511,7 +511,7 @@
 .lp .gui__dots i { width: 10px; height: 10px; border-radius: 50%; background: #3a3b40; }
 .lp .gui__url { flex: 1; max-width: 460px; margin: 0 auto; text-align: center; font: 500 12px var(--font-mono); color: var(--muted); background: rgba(255,255,255,.04); border-radius: 7px; padding: 4px 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lp .gui__stage { position: relative; aspect-ratio: 1600 / 894; background: #0f1012; }
-.lp .gui__panel { margin: 0; }
+.lp .gui__panel, .lp .gui__fig { margin: 0; }
 .lp .gui__panel[hidden] { display: none; }
 .lp .gui__panel img { width: 100%; height: auto; aspect-ratio: 1600 / 894; display: block; }
 .lp .gui__panel.is-in img { animation: guiIn .45s var(--ease) both; }
