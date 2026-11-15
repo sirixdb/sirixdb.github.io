@@ -15,7 +15,8 @@ if home.exists():
 home.mkdir()
 env = dict(os.environ, TERM='xterm-256color', COLORTERM='truecolor'); env.pop('NO_COLOR', None)
 (out / 'logback.xml').write_text("<configuration><root level='OFF'/></configuration>")
-cmd = [os.environ.get('JAVA', 'java')  # JDK 25, '--enable-preview', '--add-modules=jdk.incubator.vector', '--enable-native-access=ALL-UNNAMED', '-Xmx768m', f'-Dlogback.configurationFile={out}/logback.xml', f'-Duser.home={home}', f'-DdbLocation={home}', '-cp', cp, 'io.sirix.query.Main']
+# JDK 25
+cmd = [os.environ.get('JAVA', 'java'), '--enable-preview', '--add-modules=jdk.incubator.vector', '--enable-native-access=ALL-UNNAMED', '-Xmx768m', f'-Dlogback.configurationFile={out}/logback.xml', f'-Duser.home={home}', f'-DdbLocation={home}', '-cp', cp, 'io.sirix.query.Main']
 p = subprocess.Popen(cmd, stdin=slave, stdout=slave, stderr=slave, env=env, start_new_session=True)
 os.close(slave)
 start = time.monotonic(); events = []; raw = bytearray(); position = 0

@@ -39,4 +39,3 @@ run(["ffmpeg", "-y", "-hide_banner", "-i", work / "music-bed.wav", "-i", work / 
      f"[0:a]volume={level}dB[m];[m][1:a]sidechaincompress=threshold=0.02:ratio=6:attack=40:release=450:makeup=1,apad,atrim=0:{total}[d]",   # the compressor can drop the last frames; keep the film's exact length
      "-map", "[d]", "-ar", SR, "-c:a", "pcm_s16le", assets / "music-ducked.wav"])
 print(f"music-ducked.wav: {total:.2f} s, ducked under {len(clips)} voice clips")
-
