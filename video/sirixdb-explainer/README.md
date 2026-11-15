@@ -19,7 +19,7 @@ scenes show a real `sirix-shell` session.
 
 ```bash
 cd video/sirixdb-explainer
-./render.sh          # out/sirixdb-60s.mp4, .srt, poster.png and editor stems in out/stems/
+./render.sh          # captioned MP4, site-clean MP4, SRT, poster and editor stems in out/
 ./render.sh --quick  # draft-quality MP4 only
 ```
 
@@ -47,6 +47,6 @@ is ever wanted.
 | `audio/takes/` | the raw voice takes, one per line |
 | `audio/music.m4a` | the music bed |
 | `capture/` | the real sirix-shell sessions behind scenes 3-4 and the scripts that recorded them |
-| `build/` | the generator that produced the first version (optional; refuses to overwrite `video/`) |
+| `build/ansi.py` | converts captured shell output into coloured HTML |
 
 Full how-to: [`EDITING.md`](EDITING.md).

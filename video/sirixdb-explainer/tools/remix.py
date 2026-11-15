@@ -20,7 +20,7 @@ work = PROJECT / "audio" / "work"; work.mkdir(parents=True, exist_ok=True)
 # voice on the film clock
 inputs, filt = [], []
 for n, c in enumerate(clips):
-    trim = ["-ss", str(c["media_start"])] + (["-t", str(c["duration"])] if c["duration"] else [])
+    trim = ["-ss", str(c["media_start"])] + (["-t", str(c["duration"])] if c["duration"] is not None else [])
     inputs += trim + ["-i", str(c["src"])]
     filt.append(f"[{n}:a]aresample={SR},volume={c['volume']},adelay={int(round(c['start'] * 1000))}:all=1[d{n}]")
 filt.append("".join(f"[d{n}]" for n in range(len(clips))) + f"amix=inputs={len(clips)}:normalize=0,apad,atrim=0:{total}[v]")

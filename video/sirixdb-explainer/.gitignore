@@ -7,7 +7,6 @@ video/assets/music-ducked.wav
 video/.hyperframes/
 video/.thumbnails/
 video/.waveform-cache/
-video.bak-*/
 .render-clean/
 node_modules/
 __pycache__/

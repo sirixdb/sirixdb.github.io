@@ -1,4 +1,4 @@
-"""Drive a real sirix-shell session in a pty (same method as capture/capture.py) and save what it prints.
+"""Drive a real sirix-shell session in a pty and save what it prints.
 Usage: capture2.py <out_dir> <queries.json>   queries: list of {"q": "...", "sleep": seconds_after, "stamp": name}
 A query may contain {T}: replaced by the UTC second chosen 1.5 s after the query stamped "rev1" returned."""
 import os, pty, select, subprocess, time, json, pathlib, re, struct, fcntl, termios, sys, datetime

@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "npx --yes hyperframes@0.9.42 preview",
     "check": "npx --yes hyperframes@0.9.42 check",
-    "render": "npx --yes hyperframes@0.9.42 render",
-    "publish": "npx --yes hyperframes@0.9.42 publish"
+    "render": "npx --yes hyperframes@0.9.42 render"
   }
 }

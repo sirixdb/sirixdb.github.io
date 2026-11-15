@@ -103,19 +103,40 @@ def voice_clips(video):
         cid = _attr(tag, "id", "")
         if not re.fullmatch(r"vo-\d+", cid) or _attr(tag, "data-hidden") is not None:
             continue
-        clips.append(dict(id=cid, beat=int(cid[3:]), src=pathlib.Path(video) / _attr(tag, "src"),
+        clip = dict(id=cid, beat=int(cid[3:]), src=pathlib.Path(video) / _attr(tag, "src"),
                           start=float(_attr(tag, "data-start", "0")),
                           media_start=float(_attr(tag, "data-media-start", "0")),
                           duration=float(_attr(tag, "data-duration")) if _attr(tag, "data-duration") else None,
-                          volume=float(_attr(tag, "data-volume", "1"))))
+                          volume=float(_attr(tag, "data-volume", "1")))
+        if clip["duration"] is None or clip["duration"] > 0:
+            clips.append(clip)
     return sorted(clips, key=lambda c: c["start"])
 
 
-def align(clip, text, clip_start, media_start=0.0, beat=0):
-    """Estimate word times: spread the known words over the clip's speech by character weight."""
-    _, regs = speech_regions(clip)
-    regs = [(max(x, media_start) - media_start, y - media_start) for x, y in regs if y > media_start]
+def caption_track(video):
+    """The caption composition and its placement on the film timeline."""
+    video = pathlib.Path(video)
+    html = (video / "index.html").read_text()
+    tag = next(tag for tag in re.findall(r"<div\b[^>]*>", html)
+               if _attr(tag, "id") == "cap")
+    return dict(src=video / _attr(tag, "data-composition-src"),
+                start=float(_attr(tag, "data-start", "0")),
+                media_start=float(_attr(tag, "data-media-start", "0")),
+                duration=float(_attr(tag, "data-duration")),
+                hidden=_attr(tag, "data-hidden") is not None)
+
+
+def clip_cues(rows, start, end):
+    return [(max(a, start), min(b, end), text) for a, b, text in rows
+            if min(b, end) > max(a, start)]
+
+
+def align(clip, text, clip_start, media_start=0.0, beat=0, duration=None):
+    """Estimate words on the full source, then intersect with the audible clip window."""
+    source_duration, regs = speech_regions(clip)
     ws = text.split()
+    if not regs or not ws:
+        return []
     wt = [len(re.sub(r"[^\w]", "", w)) + 1.5 for w in ws]
     k = sum(y - x for x, y in regs) / sum(wt)
     def at(s):
@@ -123,8 +144,12 @@ def align(clip, text, clip_start, media_start=0.0, beat=0):
             if s <= (y - x): return x + s
             s -= (y - x)
         return regs[-1][1]
+    end = min(source_duration, media_start + duration) if duration is not None else source_duration
     out, acc = [], 0.0
     for w, q in zip(ws, wt):
         st = at(acc + 0.01); acc += q * k; en = at(acc - 0.01)
-        out.append({"text": w, "start": round(clip_start + st, 3), "end": round(clip_start + en, 3), "beat": beat})
+        st, en = max(st, media_start), min(en, end)
+        if en > st:
+            out.append({"text": w, "start": round(clip_start + st - media_start, 3),
+                        "end": round(clip_start + en - media_start, 3), "beat": beat})
     return out

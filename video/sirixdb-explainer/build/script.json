@@ -1,5 +1,5 @@
 {
- "_doc": "Script, voice, music and pacing. 'text' = caption words for the beat; 'tts' = what the voice model reads ('Sirix-DB' so the name is spoken as one word; 'by-temporal' so bitemporal is pronounced right). Used by gen_voice.sh, gen_music.sh, tools/*.py and the optional regenerator build/regenerate.sh. Changing text/tts only takes effect after ./gen_voice.sh N (costs credits).",
+ "_doc": "Script, voice, music and pacing. 'text' = caption words for the beat; 'tts' = what the voice model reads ('Sirix-DB' so the name is spoken as one word; 'by-temporal' so bitemporal is pronounced right). Used by gen_voice.sh, gen_music.sh, tools/*.py. Changing text/tts only takes effect after ./gen_voice.sh N (costs credits).",
  "voice": {
   "model": "seed_audio",
   "voice_name": "Marcus",

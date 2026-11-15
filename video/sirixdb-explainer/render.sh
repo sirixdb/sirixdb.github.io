@@ -27,5 +27,6 @@ sed -E -i 's/(<div( [^>]*)? id="cap" )/\1data-hidden="true" /' "$CLEAN/index.htm
 "${RUN[@]}" ffmpeg -y -loglevel error -i "$OUT/stems/.clean.mp4" -an -c:v copy "$OUT/stems/picture-clean.mp4"
 rm -rf "$CLEAN" "$OUT/stems/.clean.mp4"
 "${RUN[@]}" python3 "$HERE/tools/remix.py" --stems "$OUT/stems"
+"${RUN[@]}" ffmpeg -y -loglevel error -i "$OUT/stems/picture-clean.mp4" -i "$OUT/stems/mix.wav" -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 192k -movflags +faststart -shortest "$OUT/sirixdb-site.mp4"
 cp "$OUT/sirixdb-60s.srt" "$OUT/stems/"
 echo "done: $OUT"

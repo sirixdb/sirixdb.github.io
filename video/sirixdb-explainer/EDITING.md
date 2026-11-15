@@ -2,8 +2,8 @@
 
 The film is a [HyperFrames](https://hyperframes.heygen.com) 0.9.42 project: HTML + GSAP scenes,
 rendered frame by frame. **`video/` is the source of truth.** Open it in the HyperFrames Studio
-desktop app, change anything, and `./render.sh` renders exactly what Studio shows. Nothing
-regenerates or overwrites `video/` unless you explicitly ask for it (see "Regenerating" at the end).
+desktop app, change anything, and `./render.sh` renders exactly what Studio shows. Scene and
+timeline edits stay in `video/`; the helpers only update audio and captions.
 
 This folder lives in the website repository at `video/sirixdb-explainer/` (Jekyll does not publish
 it; the rendered film is in `assets/video/`). Every edit can be diffed and undone with git:
@@ -52,7 +52,7 @@ words (for example `C.storage`); they are plain numbers you can change.
 - **Timing of an element:** drag its keyframes in Studio, or change the number in its `tl...` line.
 - **Scene length:** drag the scene's edges on the timeline, or change `data-start`/`data-duration` of `<div id="s3" ...>` in `index.html`.
 - **Voice clips:** move or trim `vo-1` ... `vo-8` on the audio track. `render.sh` re-ducks the music to wherever they end up.
-- **Captions:** edit the text in `compositions/cap.html`. After moving voice clips, run `python3 tools/captions.py` to re-time every caption to the voice (it keeps a `cap.html.bak-<time>` copy).
+- **Captions:** edit the text in `compositions/cap.html`. After moving or trimming voice clips, run `python3 tools/captions.py` to re-time captions to the audible clip windows and current caption-track placement (it keeps a `cap.html.bak-<time>` copy).
 - **Music level:** `"level_db"` under `"music"` in `build/script.json` (default -15; it is read by `tools/remix.py`).
 
 ## Re-render (free)
@@ -65,6 +65,9 @@ words (for example `C.storage`); they are plain numbers you can change.
 `render.sh` renders `video/` as it is. Before rendering it rebuilds `assets/music-ducked.wav` for
 the current voice positions and film length (`tools/remix.py`). It also derives the SRT from
 `compositions/cap.html` (`tools/srt.py`), so the subtitles always match the burned-in captions.
+
+`out/sirixdb-site.mp4` combines the clean picture with voice and ducked music. Use it with the
+separate WebVTT track on sirix.io; `out/sirixdb-60s.mp4` has burned-in captions for other destinations.
 
 Stems in `out/stems/`, for a normal video editor:
 - `picture-clean.mp4`: picture, no captions, no audio
@@ -140,8 +143,7 @@ not typed-in text: `python3 capture/capture2.py <out-dir> capture/demo2-queries.
 shell with the queries in that file (it needs a built sirix checkout's classpath). The coloured
 lines in `s3.html`/`s4.html` were generated from it with `build/ansi.py`; scene 4's shell starts
 where scene 3's ends (same rows, same scroll position), so change both together. Keep them as they
-are unless you re-capture. The first capture (`capture/demo.ansi`, `capture/capture.py`) is what
-`build/build.py` still reads.
+are unless you re-capture.
 
 Notes from the capture: revision 3 adds the Tablet and deletes the Phone in one commit
 (`return (append json ... into $doc, delete json $doc[1])`), so the diff of revisions 1 and 3
@@ -151,28 +153,12 @@ the first shown query so its prompt reads `sirix shop/products@3>`. The `shop/pr
 is what `jn:open-bitemporal` needs; the commit timestamp in the queries is the real second between
 revision 1 and revision 2 of that run.
 
-## Regenerating from build/ (optional, replaces video/)
-
-`build/` holds the generator that first produced `video/`:
-- `script.json`: script, voice, music, pacing;
-- `build.py`: scenes, palette;
-- `audio.py`: voice placement.
-
-Use it only to start over from the script, for example after re-voicing every line with very different lengths:
-
-```bash
-build/regenerate.sh --regenerate   # backs video/ up to video.bak-<time>/, then rebuilds it
-```
-
-Without `--regenerate` it refuses, and `build/build.py` itself refuses to write into an existing
-project. Commit your Studio edits first (`git commit`) so nothing is lost.
-
 ## Publishing a new cut on sirix.io
 
 After `./render.sh`, copy the outputs the landing page uses (run from the repository root):
 
 ```bash
-cp video/sirixdb-explainer/out/sirixdb-60s.mp4 assets/video/sirixdb-explainer.mp4   # keep it under ~15 MB
+cp video/sirixdb-explainer/out/sirixdb-site.mp4 assets/video/sirixdb-explainer.mp4   # keep it under ~15 MB
 ffmpeg -y -i video/sirixdb-explainer/out/poster.png -q:v 3 assets/video/sirixdb-explainer-poster.jpg
 ffmpeg -y -i video/sirixdb-explainer/out/sirixdb-60s.srt assets/video/sirixdb-explainer.en.vtt
 ```
