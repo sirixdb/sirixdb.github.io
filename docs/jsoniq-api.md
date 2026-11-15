@@ -8,41 +8,18 @@ title: SirixDB - JSONiq API
 
 SirixDB uses [JSONiq](https://www.jsoniq.org/) — the JSON query language — as its primary API for storing, querying, and updating JSON data. JSONiq extends XQuery with native JSON support, making it ideal for working with SirixDB's temporal document store.
 
-For a complete list of all available functions, see the [Function Reference](/docs/jsoniq-functions.html).
+For commonly used functions and their signatures, see the [Function Reference](/docs/jsoniq-functions.html).
 
 ## Setup
 
-Add the SirixDB query module to your project.
-
-**Maven:**
-
-```xml
-<dependency>
-  <groupId>io.sirix</groupId>
-  <artifactId>sirix-query</artifactId>
-  <version>0.10.1-SNAPSHOT</version>
-</dependency>
-```
-
-**Gradle:**
-
-```gradle
-dependencies {
-  implementation 'io.sirix:sirix-query:0.10.1-SNAPSHOT'
-}
-```
-
-For snapshot versions, add the Sonatype snapshot repository:
-
-```xml
-<repository>
-  <id>central-snapshots</id>
-  <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-  <snapshots><enabled>true</enabled></snapshots>
-</repository>
-```
-
-**Requires Java 25 and the provided Gradle wrapper.**
+The query layer uses the `io.sirix:sirix-query` artifact. Follow the
+[embedded-library setup](https://github.com/sirixdb/sirix#as-an-embedded-library)
+for published Maven/Gradle coordinates, keeping module versions aligned.
+For source-build requirements and JVM launch options, see
+[Operations](/docs/operations.html#1-supported-environment). The source
+[Gradle properties](https://github.com/sirixdb/sirix/blob/main/gradle.properties)
+and [build configuration](https://github.com/sirixdb/sirix/blob/main/build.gradle)
+define the current source version and snapshot repositories.
 
 ## Running Queries from Java
 
@@ -66,14 +43,14 @@ try (final var store = BasicJsonDBStore.newBuilder().build();
 
 ## Storing Data
 
-Use `jn:store` to create a database and store JSON data. The database is created automatically if it doesn't exist.
+Use `jn:store` to create a database and store JSON data. Both `jn:store` and `jn:load` replace an existing database by default. Pass `false()` as the fourth argument to add a resource while preserving existing resources and revisions; this also creates the database if it does not exist.
 
 ```xquery
 (: Store a JSON array as a named resource :)
 jn:store('shop', 'products', '[{"name":"Laptop","price":999},{"name":"Phone","price":699}]')
 
 (: Store from a file :)
-jn:load('shop', 'inventory', '/path/to/data.json')
+jn:load('shop', 'inventory', '/path/to/data.json', false())
 
 (: Add another resource to an existing database :)
 jn:store('shop', 'customers', '[{"name":"Alice"}]', false())
@@ -113,7 +90,7 @@ return {
 
 ## Updating Data
 
-SirixDB supports all JSONiq update expressions. Each update automatically creates a new revision.
+SirixDB supports JSONiq update expressions. The default `SirixQueryContext` commit strategy publishes pending updates after successful query evaluation; explicit commit mode requires the caller to commit.
 
 ```xquery
 (: Replace a value :)
@@ -141,19 +118,40 @@ let $arr := jn:doc('shop', 'products')
 return insert json {"name":"Monitor","price":349} into $arr at position 1
 ```
 
-You can also commit with a message or rollback changes:
+With an explicit commit strategy, finish evaluating the update before committing
+with a message. Use two separate evaluations with the same context and store:
 
-```xquery
-let $doc := jn:doc('shop', 'products')
-return (
-  replace json value of $doc[0].price with 799,
-  sdb:commit($doc, "Summer sale pricing")
-)
+```java
+try (final var store = BasicJsonDBStore.newBuilder().build();
+     final var ctx = SirixQueryContext.createWithJsonStoreAndCommitStrategy(
+         store, SirixQueryContext.CommitStrategy.EXPLICIT);
+     final var chain = SirixCompileChain.createWithJsonStore(store)) {
+
+  new Query(chain,
+      "let $doc := jn:doc('shop', 'products') "
+      + "return replace json value of $doc[0].price with 799")
+      .evaluate(ctx);
+  ctx.getUpdateList().list().clear();
+
+  try (final var writer = store.lookup("shop").getDatabase()
+      .beginResourceSession("products").getNodeTrx().orElseThrow()) {
+    new Query(chain,
+        "sdb:commit(jn:doc('shop', 'products'), 'Summer sale pricing')")
+        .evaluate(ctx);
+  }
+}
 ```
+
+The example assumes `shop/products` already exists. JSONiq queues update
+expressions until evaluation finishes, while `sdb:commit` commits immediately.
+Putting both in one query commits before the replacement is applied.
+In explicit mode, clear the already-applied update list before the next
+evaluation to prevent replay. The inner try-with-resources closes the existing
+writer after the named commit, so store shutdown cannot commit it again.
 
 ## Temporal Queries
 
-SirixDB's key feature is temporal querying — every update creates an immutable revision, and you can navigate the full history.
+Temporal queries navigate retained revision history. See [Updating Data](#updating-data) for when pending updates are committed.
 
 ### Navigating Revisions
 
@@ -232,7 +230,7 @@ return jn:create-cas-index($doc, 'xs:decimal', '/[]/price')
 (: Query the index for prices between 0 and 500 :)
 let $doc := jn:doc('shop', 'products')
 let $idx := jn:find-cas-index($doc, 'xs:decimal', '/[]/price')
-return jn:scan-cas-index-range($doc, $idx, 0, 500, true(), true(), 'xs:decimal')
+return jn:scan-cas-index-range($doc, $idx, 0, 500, true(), true(), '/[]/price')
 
 (: Create a name index on specific fields :)
 let $doc := jn:doc('shop', 'products')
@@ -243,7 +241,7 @@ let $doc := jn:doc('shop', 'products')
 return jn:create-path-index($doc)
 ```
 
-See the [Function Reference](/docs/jsoniq-functions.html#indexes) for the complete index API.
+See the [Function Reference](/docs/jsoniq-functions.html#indexes) for index function signatures and examples.
 
 ## JSONiq Language Basics
 

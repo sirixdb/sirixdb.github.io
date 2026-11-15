@@ -6,38 +6,27 @@ title: SirixDB - Architecture
 
 [Edit this page on GitHub](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/architecture.md)
 
-What if your database never forgot anything, and you could query any point in its history as fast as querying the present — without storage exploding?
+SirixDB versions JSON and XML trees. Commits create revisions whose unchanged
+pages are shared with earlier revisions through copy-on-write storage.
+Application-supplied valid-time paths add a second time axis to transaction-time
+history; see [Bitemporal Queries](/docs/jsoniq-functions.html#bitemporal-queries).
 
-SirixDB is a **bitemporal node store** that makes version control a first-class citizen of the storage engine. Every commit creates an immutable snapshot. Every revision is queryable. And unlike naive approaches that copy everything (git-style) or maintain expensive logs (event sourcing), SirixDB achieves this through **structural sharing** and a novel **sliding snapshot** versioning algorithm.
-
-| Feature | What it means | Why it matters |
-|---------|---------------|----------------|
-| **Bitemporal** | Transaction time and application-supplied valid time | Query what was recorded and when it was true |
-| **Append-Only** | No in-place updates | No WAL needed, crash-safe by design |
-| **Copy-on-Write** | Modified pages copied, unchanged shared | O(Δ) storage per revision |
-| **Structural Sharing** | Unchanged subtrees reference existing pages | Billion-node docs with small revisions |
-| **Log-Structured** | Sequential writes only | SSD-friendly, no random write I/O |
+The implementation is in the [SirixDB source](https://github.com/sirixdb/sirix).
+Storage and query costs depend on the data, versioning strategy, cache state and
+workload; this page describes the design rather than a performance guarantee.
 
 ## Node-Based Document Model
 
-Unlike document databases that store JSON as opaque blobs, SirixDB decomposes each document into a tree of fine-grained **nodes**. Each node has a stable 64-bit `nodeKey` that never changes across revisions. Nodes are linked via parent, child, and sibling pointers, enabling O(1) navigation in any direction.
+SirixDB decomposes each document into a tree of fine-grained **nodes**. Each node has a stable 64-bit `nodeKey` that never changes across revisions. Nodes are linked via parent, child, and sibling pointers, enabling direct structural navigation; resolving a pointer can require storage reads.
 
 Field names are stored once in an in-memory dictionary and referenced by 32-bit keys, saving space when the same field appears thousands of times.
 
 ### Why Node Storage Matters
 
-Most document databases (MongoDB, CouchDB) treat a document as an opaque blob: store it, retrieve it, replace it. SirixDB understands the *structure* of your data — and that changes everything.
-
-| Aspect | Document Store | SirixDB Node Store |
-|--------|----------------|-------------------|
-| **Size limits** | 16 MB (MongoDB), 1 MB (DynamoDB) | **Unlimited** — nodes stored independently |
-| **Update granularity** | Replace entire document | Version record-page fragments and the ancestor path |
-| **Query efficiency** | Load doc, filter in app | Navigate directly to target nodes |
-| **Memory footprint** | Entire doc in memory | Stream nodes, never load full tree |
-| **Versioning granularity** | "Document changed" | "These specific nodes changed" |
-| **Diff precision** | "Something's different" | Exact path to every modified node |
-
-This means: a 100 GB JSON dataset? Store it as one logical resource — no sharding. Change one field in a deeply nested object? SirixDB versions the affected record pages and copies the ancestor path; fragment contents depend on the [versioning strategy](#sliding-snapshot-versioning). Need the history of a specific field across 1,000 commits? That's a fast index lookup, not a full-document diff.
+Nodes can be selected by key, traversed with cursors and compared across revisions.
+Updates version affected record-page fragments and their ancestor pages rather
+than requiring the application to maintain a full copy of every document.
+See [transactional cursor examples](/docs/transactional-cursor-api.html).
 
 <svg viewBox="0 0 720 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="JSON document decomposed into a tree of nodes with stable node keys">
   <!-- Title -->
@@ -59,58 +48,40 @@ This means: a 100 GB JSON dataset? Store it as one logical resource — no shard
   <text x="360" y="119" text-anchor="middle" fill="#42B6F0" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">OBJECT</text>
   <text x="399" y="119" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=1</text>
 
-  <!-- Left branch: "name" key -->
+  <!-- Named fields fuse the name and value kind in current Sirix main. -->
   <line x1="345" y1="128" x2="220" y2="165" stroke="#42B6F0" stroke-width="1"/>
-  <rect x="170" y="165" width="100" height="24" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
-  <text x="220" y="181" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">OBJ_KEY "name"</text>
-  <text x="275" y="181" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=2</text>
+  <rect x="130" y="165" width="180" height="32" rx="4" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="220" y="178" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">OBJECT_NAMED_STRING</text>
+  <text x="220" y="190" text-anchor="middle" fill="#e8e6e3" font-size="8" font-family="JetBrains Mono,monospace">name: "Alice" · key=2</text>
 
-  <!-- "Alice" value -->
-  <line x1="220" y1="189" x2="220" y2="215" stroke="#10b981" stroke-width="1"/>
-  <rect x="175" y="218" width="90" height="22" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
-  <text x="220" y="233" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">STR "Alice"</text>
-  <text x="270" y="233" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=3</text>
+  <line x1="375" y1="128" x2="480" y2="165" stroke="#42B6F0" stroke-width="1"/>
+  <rect x="390" y="165" width="180" height="32" rx="4" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
+  <text x="480" y="178" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">OBJECT_NAMED_ARRAY</text>
+  <text x="480" y="190" text-anchor="middle" fill="#e8e6e3" font-size="8" font-family="JetBrains Mono,monospace">scores: […] · key=3</text>
 
-  <!-- Right branch: "scores" key -->
-  <line x1="375" y1="128" x2="500" y2="165" stroke="#42B6F0" stroke-width="1"/>
-  <rect x="445" y="165" width="110" height="24" rx="3" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1.2"/>
-  <text x="500" y="181" text-anchor="middle" fill="#F47B20" font-size="8" font-family="JetBrains Mono,monospace">OBJ_KEY "scores"</text>
-  <text x="560" y="181" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=4</text>
+  <line x1="465" y1="197" x2="430" y2="245" stroke="#10b981" stroke-width="1"/>
+  <rect x="385" y="245" width="90" height="26" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
+  <text x="430" y="262" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">95 · key=4</text>
 
-  <!-- Array node -->
-  <line x1="500" y1="189" x2="500" y2="215" stroke="#42B6F0" stroke-width="1"/>
-  <rect x="465" y="218" width="70" height="22" rx="3" fill="rgba(66,182,240,0.15)" stroke="#42B6F0" stroke-width="1.2"/>
-  <text x="500" y="233" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">ARRAY</text>
-  <text x="540" y="233" text-anchor="start" fill="#6b7280" font-size="8" font-family="JetBrains Mono,monospace">key=5</text>
-
-  <!-- Array values -->
-  <line x1="487" y1="240" x2="455" y2="265" stroke="#10b981" stroke-width="1"/>
-  <rect x="425" y="265" width="60" height="20" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
-  <text x="455" y="279" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">NUM 95</text>
-  <text x="420" y="279" text-anchor="end" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=6</text>
-
-  <line x1="513" y1="240" x2="545" y2="265" stroke="#10b981" stroke-width="1"/>
-  <rect x="515" y="265" width="60" height="20" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
-  <text x="545" y="279" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">NUM 87</text>
-  <text x="580" y="279" text-anchor="start" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">key=7</text>
-
-  <!-- Sibling link between array items -->
-  <line x1="485" y1="275" x2="515" y2="275" stroke="#10b981" stroke-width="1"/>
+  <line x1="495" y1="197" x2="535" y2="245" stroke="#10b981" stroke-width="1"/>
+  <rect x="490" y="245" width="90" height="26" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
+  <text x="535" y="262" text-anchor="middle" fill="#10b981" font-size="8" font-family="JetBrains Mono,monospace">87 · key=5</text>
+  <line x1="475" y1="258" x2="490" y2="258" stroke="#10b981" stroke-width="1"/>
 
   <!-- Legend -->
   <rect x="600" y="105" width="10" height="10" rx="2" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1"/>
   <text x="616" y="114" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Structure node</text>
   <rect x="600" y="123" width="10" height="10" rx="2" fill="rgba(244,123,32,0.15)" stroke="#F47B20" stroke-width="1"/>
-  <text x="616" y="132" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Object key</text>
+  <text x="616" y="132" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Named field</text>
   <rect x="600" y="141" width="10" height="10" rx="2" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1"/>
   <text x="616" y="150" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">Value node</text>
 </svg>
 
-Each node type maps directly to a JSON construct: `OBJECT`, `ARRAY`, `OBJECT_KEY`, `STRING_VALUE`, `NUMBER_VALUE`, `BOOLEAN_VALUE`, and `NULL_VALUE`. Navigation between nodes is O(1) via stored pointers — no scanning required.
+Current Sirix main uses `OBJECT` and `ARRAY` roots, scalar value kinds for array items, and fused `OBJECT_NAMED_*` kinds for object fields. A named array/object field directly owns its children; separate `OBJECT_KEY` nodes are a legacy encoding. See the [NodeKind definitions](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/main/java/io/sirix/node/NodeKind.java). Navigation follows stored pointers between nodes.
 
 ## Why Bitemporal Storage?
 
-Traditional databases force painful workarounds for temporal queries — audit tables, change data capture pipelines, backup diffs. SirixDB eliminates all of that.
+SirixDB retains committed resource revisions and exposes them through temporal queries.
 
 ### Query any point in history
 
@@ -121,7 +92,7 @@ let $catalog := jn:open('shop', 'products', xs:dateTime('2024-01-15T15:23:47Z'))
 return $catalog.products[?$$.sku eq "SKU-12345"].price
 ```
 
-One query. Exact answer. No audit infrastructure required — the database remembers everything.
+The query reads the stored revision selected for that timestamp. Applications remain responsible for capturing source data and valid-time values correctly.
 
 ### Structured diffs between any two points in time
 
@@ -133,13 +104,13 @@ let $incident := jn:open('configs', 'production', xs:dateTime('2024-01-15T02:00:
 return jn:diff('configs', 'production', sdb:revision($midnight), sdb:revision($incident))
 ```
 
-Returns a structured JSON diff showing exactly what was inserted, deleted, updated, and moved — with node-level precision.
+Returns a structured JSON diff showing exactly what was inserted, deleted, updated, and replaced — with node-level precision.
 
-### No History Table Performance Tax
+### Revision-Scoped Indexes
 
-The "standard" approach to temporal data — history tables with `valid_from` and `valid_to` timestamps — comes with hidden costs: every index grows 3x (includes timestamps), every query needs timestamp range filters, updates require two writes (insert new + update old), and joining two temporal tables means intersecting validity intervals.
-
-SirixDB sidesteps all of this. Indexes are **scoped to a revision** — query revision 42 and you get revision 42's index, no filtering. Finding the right revision for a timestamp is a single O(log R) binary search, amortized across an entire session.
+Secondary indexes are versioned with their resource. A read transaction selects
+a revision before using its data and indexes. Timestamp selection resolves a
+stored revision; it does not reconstruct missing source data or infer valid time.
 
 ## Copy-on-Write with Path Copying
 
@@ -239,11 +210,11 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
 
 A commit writes fragments for affected record pages plus new index pages on their ancestor paths to the revision root. Fragment contents and reconstruction costs depend on the [versioning strategy](#sliding-snapshot-versioning).
 
-Physically, each resource is stored in two append-only logical devices (files). **LD₁** stores page content (IndirectPages, RecordPages, NamePages) followed by a RevisionRootPage at the end of each revision's data. **LD₂** stores the UberPage — a sequence of timestamp + offset pairs, one per revision, pointing to the corresponding RRP in LD₁.
+Physically, each resource is stored in two append-only logical devices (files). **LD₁** stores page content (IndirectPages, RecordPages, NamePages) followed by a RevisionRootPage at the end of each revision's data. **LD₂** stores revision metadata, including timestamps and offsets pointing to the corresponding RRP in LD₁. The layout below is schematic; the [FileChannelWriter](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/main/java/io/sirix/io/filechannel/FileChannelWriter.java) defines the current format and durability barriers.
 
-<img src="/images/sirix-on-device-layout.svg" alt="Logical Device Layout: LD₂ stores UberPage with timestamp and offset pairs pointing to each revision's RevisionRootPage in LD₁. Each revision appends only modified page fragments (copy-on-write)." style="width:100%;max-width:1180px;">
+<img src="/images/sirix-on-device-layout.svg" alt="Logical Device Layout: LD₂ stores revision metadata with timestamp and offset pairs pointing to each revision's RevisionRootPage in LD₁. Each revision appends only modified page fragments (copy-on-write)." style="width:100%;max-width:1180px;">
 
-The `UberPage` is always written last as an atomic operation. Even if a crash occurs mid-commit, the previous valid state is preserved. Checksums are stored in parent page references (borrowed from ZFS), so corruption is detected immediately on read. Because the store is append-only and the UberPage commit is atomic, **no write-ahead log (WAL) is needed** — the on-disk state is always consistent.
+The commit protocol writes data before publishing the revision through the UberPage. Page references carry content hashes. SirixDB uses shadow paging rather than a separate redo WAL; durability depends on the commit protocol and storage barriers. See the [async commit design](https://github.com/sirixdb/sirix/blob/main/docs/ASYNC_COMMIT_DESIGN.md) for publication and failure semantics.
 
 ## Page Structure
 
@@ -319,7 +290,7 @@ Each resource is organized as a trie of pages. The `RevisionRootPage` is the ent
   <text x="755" y="236" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="Inter,sans-serif">CAS indexes</text>
 </svg>
 
-**UberPage** — The root entry point. Written last during a commit as an atomic operation. Contains a reference to the IndirectPage tree that addresses all revisions.
+**UberPage** — The root entry point. Published after the revision data is written. Contains a reference to the IndirectPage tree that addresses all revisions.
 
 **IndirectPages** — Fan-out nodes (512 references each) that form the trie structure. Borrowed from ZFS, they store checksums in parent references for data integrity. Unused slots are tracked with a bitset for compact storage.
 
@@ -420,17 +391,17 @@ SirixDB doesn't just copy entire pages on every change. It versions `RecordPages
 
 The sliding snapshot uses a window of size N, configurable per resource; see the [`revisionsToRestore` configuration](/docs/transactional-cursor-api.html#create-an-xml-database-and-resource). Changed records are always written. Records older than N revisions that haven't been written are carried forward. This guarantees that at most N page fragments need to be read to reconstruct any page — regardless of total revision count.
 
-For details, see Marc Kramis's thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695).
+For details, see Marc Kramis's thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](https://kops.uni-konstanz.de/handle/123456789/27695).
 
 ## Transaction Model
 
-SirixDB uses a **single-writer, multiple-reader (SWMR)** concurrency model per resource. At most one write transaction can be active on a resource at any time, while an unlimited number of concurrent read transactions can proceed without locks.
+SirixDB uses a **single-writer, multiple-reader (SWMR)** concurrency model per resource. At most one write transaction can be active on a resource at any time, while multiple read-only transactions can remain open on committed revisions.
 
-Read transactions are bound to a specific revision and see an **immutable snapshot** — they never observe uncommitted changes and never block writers. This is true snapshot isolation without the overhead of MVCC bookkeeping at query time.
+Read transactions are bound to a specific revision and see an **immutable snapshot** — they never observe uncommitted changes and never block writers. Close transactions when finished so their resources can be released.
 
-Uncommitted changes are held in an in-memory **transaction intent log (TIL)**. On commit, changes are written sequentially to the append-only log and the new UberPage is flushed atomically. On abort, the in-memory state is simply discarded — nothing was written to disk.
+Uncommitted changes are held in an in-memory **transaction intent log (TIL)**. A commit writes changed pages and publishes a new revision. Rollback discards the uncommitted logical state; spill or pre-flush work may already have written unreachable bytes.
 
-Because each resource is an independent log-structured store, write transactions on different resources proceed in parallel with no coordination.
+Because each resource is an independent log-structured store, different resources can have independent writers, while sharing process memory and I/O resources.
 
 ### Auto-commit and the asynchronous pre-flush
 
@@ -449,96 +420,67 @@ A third mode, `AfterCommitState.KEEP_OPEN_ASYNC_COMMIT`, is the middle ground be
 
 ## Secondary Indexes
 
-SirixDB supports three types of user-defined secondary indexes, all stored in the same versioned trie structure as the data. Indexes are part of the transaction and version with the data — the index at revision 42 always matches the data at revision 42.
+Name, path and CAS document indexes are integrated into the resource’s versioned page structure. These indexes are part of the transaction and version with the data — the index at revision 42 always matches the data at revision 42. See [Features](/docs/features.html) for other index APIs and their limits.
 
 ### Path Summary
 
-Every resource maintains a compact **path summary** — a tree of all unique paths in the document. Each unique path gets a **path class reference (PCR)**, a stable integer ID. Nodes in the main data tree reference their PCR, enabling efficient path-based lookups.
+With path-summary building enabled, a resource maintains a compact **path summary** — a tree of all unique paths in the document. Each unique path gets a **path class reference (PCR)**, a stable integer ID. Nodes in the main data tree reference their PCR, enabling efficient path-based lookups.
 
 <svg viewBox="0 0 720 396" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Path Summary maps unique paths to path class references, connecting data tree nodes to index entries">
   <text x="360" y="16" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Path Summary and Index Architecture</text>
 
-  <!-- === Left side: JSON Data Tree === -->
   <text x="160" y="36" text-anchor="middle" fill="#42B6F0" font-size="11" font-family="Inter,sans-serif" font-weight="600">Data Tree</text>
-
-  <!-- DocumentRootNode (virtual) — dashed border -->
   <rect x="95" y="44" width="130" height="20" rx="3" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="1" stroke-dasharray="4 2"/>
   <text x="160" y="58" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">DocumentRootNode</text>
   <line x1="160" y1="64" x2="160" y2="75" stroke="#42B6F0" stroke-width="0.8"/>
-
-  <!-- Root object -->
   <rect x="130" y="77" width="60" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
   <text x="160" y="92" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">OBJECT</text>
 
-  <!-- "users" key -->
   <line x1="160" y1="99" x2="100" y2="117" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="62" y="119" width="76" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="100" y="133" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">KEY "users"</text>
+  <rect x="40" y="119" width="120" height="28" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="100" y="131" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">OBJECT_NAMED_ARRAY</text>
+  <text x="100" y="142" text-anchor="middle" fill="#e8e6e3" font-size="7" font-family="JetBrains Mono,monospace">users: […]</text>
 
-  <!-- "config" key -->
-  <line x1="160" y1="99" x2="220" y2="117" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="182" y="119" width="76" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="220" y="133" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">KEY "config"</text>
+  <line x1="160" y1="99" x2="240" y2="117" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="178" y="119" width="124" height="28" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="240" y="131" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">OBJECT_NAMED_OBJECT</text>
+  <text x="240" y="142" text-anchor="middle" fill="#e8e6e3" font-size="7" font-family="JetBrains Mono,monospace">config: {}</text>
 
-  <!-- Array under users -->
-  <line x1="100" y1="139" x2="100" y2="154" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="74" y="156" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="100" y="169" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">ARRAY</text>
-
-  <!-- User objects -->
-  <line x1="85" y1="174" x2="50" y2="192" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="115" y1="174" x2="150" y2="192" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="85" y1="147" x2="50" y2="192" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="115" y1="147" x2="150" y2="192" stroke="#42B6F0" stroke-width="0.8"/>
   <rect x="24" y="192" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
   <text x="50" y="205" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">OBJ</text>
   <rect x="124" y="192" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
   <text x="150" y="205" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">OBJ</text>
 
-  <!-- Left OBJ fields: "name" and "age" -->
   <line x1="38" y1="210" x2="30" y2="226" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="10" y="226" width="40" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="30" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"name"</text>
-  <line x1="30" y1="242" x2="30" y2="256" stroke="#10b981" stroke-width="0.6"/>
-  <rect x="6" y="256" width="48" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
-  <text x="30" y="266" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">"Alice"</text>
+  <rect x="6" y="226" width="50" height="30" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="31" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">name:</text>
+  <text x="31" y="249" text-anchor="middle" fill="#e8e6e3" font-size="6" font-family="JetBrains Mono,monospace">"Alice"</text>
+  <line x1="62" y1="210" x2="78" y2="226" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="62" y="226" width="32" height="30" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="78" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">age:</text>
+  <text x="78" y="249" text-anchor="middle" fill="#e8e6e3" font-size="6" font-family="JetBrains Mono,monospace">28</text>
 
-  <line x1="62" y1="210" x2="70" y2="226" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="52" y="226" width="36" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="70" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"age"</text>
-  <line x1="70" y1="242" x2="70" y2="256" stroke="#10b981" stroke-width="0.6"/>
-  <rect x="56" y="256" width="28" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
-  <text x="70" y="266" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">28</text>
+  <line x1="138" y1="210" x2="134" y2="226" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="110" y="226" width="48" height="30" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="134" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">name:</text>
+  <text x="134" y="249" text-anchor="middle" fill="#e8e6e3" font-size="6" font-family="JetBrains Mono,monospace">"Bob"</text>
+  <line x1="162" y1="210" x2="180" y2="226" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="164" y="226" width="32" height="30" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="180" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">age:</text>
+  <text x="180" y="249" text-anchor="middle" fill="#e8e6e3" font-size="6" font-family="JetBrains Mono,monospace">35</text>
 
-  <!-- Right OBJ fields: "name" and "age" -->
-  <line x1="138" y1="210" x2="130" y2="226" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="110" y="226" width="40" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="130" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"name"</text>
-  <line x1="130" y1="242" x2="130" y2="256" stroke="#10b981" stroke-width="0.6"/>
-  <rect x="108" y="256" width="44" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
-  <text x="130" y="266" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">"Bob"</text>
-
-  <line x1="162" y1="210" x2="170" y2="226" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="152" y="226" width="36" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="170" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"age"</text>
-  <line x1="170" y1="242" x2="170" y2="256" stroke="#10b981" stroke-width="0.6"/>
-  <rect x="158" y="256" width="24" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
-  <text x="170" y="266" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">35</text>
-
-  <!-- nodeKey labels (preorder traversal: k0..k14) -->
   <text x="93" y="56" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k0</text>
   <text x="128" y="90" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k1</text>
-  <text x="60" y="131" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k2</text>
-  <text x="72" y="167" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k3</text>
-  <text x="22" y="203" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k4</text>
-  <text x="8" y="237" text-anchor="end" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k5</text>
-  <text x="30" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k6</text>
-  <text x="90" y="237" text-anchor="start" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k7</text>
-  <text x="70" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k8</text>
-  <text x="178" y="203" text-anchor="start" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k9</text>
-  <text x="108" y="237" text-anchor="end" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k10</text>
-  <text x="130" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k11</text>
-  <text x="190" y="237" text-anchor="start" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k12</text>
-  <text x="170" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k13</text>
-  <text x="180" y="131" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k14</text>
+  <text x="38" y="131" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k2</text>
+  <text x="22" y="203" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k3</text>
+  <text x="31" y="268" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k4</text>
+  <text x="78" y="268" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k5</text>
+  <text x="178" y="203" text-anchor="start" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k6</text>
+  <text x="134" y="268" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k7</text>
+  <text x="180" y="268" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k8</text>
+  <text x="304" y="131" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k9</text>
 
   <!-- === Right side: Path Summary === -->
   <text x="540" y="36" text-anchor="middle" fill="#a78bfa" font-size="11" font-family="Inter,sans-serif" font-weight="600">Path Summary</text>
@@ -578,23 +520,14 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
   <text x="520" y="240" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">age</text>
   <text x="566" y="240" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=4</text>
 
-  <!-- PCR dashed connections from data tree to path summary -->
-  <!-- DocumentRootNode → DocumentRootNode -->
   <line x1="225" y1="54" x2="475" y2="54" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
-  <!-- KEY "users" → users -->
-  <path d="M 138,129 Q 286,97 434,129" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
-  <!-- KEY "config" → config -->
-  <path d="M 258,129 Q 406,167 554,129" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
-  <!-- ARRAY → [] -->
-  <line x1="126" y1="165" x2="440" y2="165" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
-  <!-- Left "name" → name (gentle arc above keys) -->
-  <path d="M 30,226 Q 210,208 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
-  <!-- Right "name" → name (gentle arc above keys) -->
-  <path d="M 130,226 Q 260,210 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
-  <!-- Left "age" → age (higher arc, bypasses PS name box) -->
-  <path d="M 70,226 C 280,186 484,210 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
-  <!-- Right "age" → age (higher arc, bypasses PS name box) -->
-  <path d="M 170,226 C 330,190 484,210 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
+  <path d="M 160,129 Q 297,97 434,129" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <path d="M 302,129 Q 428,167 554,129" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <path d="M 160,142 Q 300,180 440,165" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <path d="M 31,226 Q 210,208 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <path d="M 134,226 Q 260,210 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <path d="M 78,226 C 280,186 484,210 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
+  <path d="M 180,226 C 330,190 484,210 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
 
   <!-- Index section below -->
   <line x1="40" y1="294" x2="680" y2="294" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
@@ -603,18 +536,24 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
   <!-- Name Index -->
   <rect x="40" y="330" width="190" height="38" rx="5" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1"/>
   <text x="135" y="344" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="600">Name Index</text>
-  <text x="135" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">hash("name") → {key5,key10}</text>
+  <text x="135" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">hash("name") → {key4,key7}</text>
 
   <!-- Path Index -->
   <rect x="260" y="330" width="200" height="38" rx="5" fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1"/>
   <text x="360" y="344" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="Inter,sans-serif" font-weight="600">Path Index</text>
-  <text x="360" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">PCR=3 → {key5, key10}</text>
+  <text x="360" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">PCR=3 → {key4, key7}</text>
 
   <!-- CAS Index -->
   <rect x="490" y="330" width="200" height="38" rx="5" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="1"/>
   <text x="590" y="344" text-anchor="middle" fill="#10b981" font-size="9" font-family="Inter,sans-serif" font-weight="600">CAS Index</text>
-  <text x="590" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">(PCR=4, 28) → {key8}</text>
+  <text x="590" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">(PCR=4, 28) → {key5}</text>
 </svg>
+
+The data tree uses one node per named field: `name` fields are
+`OBJECT_NAMED_STRING` nodes and `age` fields are `OBJECT_NAMED_NUMBER` nodes.
+The fused `users` array owns the two user objects directly. Its path summary
+retains both the field-name step and the array step (`/users/[]`). Index entries
+point to the fused field nodes shown above.
 
 ### Index Types
 
@@ -624,13 +563,13 @@ Every resource maintains a compact **path summary** — a tree of all unique pat
 | **Path** | PCR → node keys | Find all nodes at path `/users/[]/name` |
 | **CAS** | (PCR + typed value) → node keys | Find all users where `age > 30` on path `/users/[]/age` |
 
-CAS (content-and-structure) indexes are the most selective — they index both the path and the typed value, enabling efficient range queries. All indexes are stored in Height Optimized Tries (HOT) within the same versioned page structure.
+CAS (content-and-structure) indexes combine paths with typed values and support range queries. These three document index types are stored in Height Optimized Tries (HOT) within the same versioned page structure.
 
 For the JSONiq API to create and query indexes, see the [Function Reference](/docs/jsoniq-functions.html#indexes).
 
 ## Further Reading
 
-- [Evolutionary Tree-Structured Storage](http://kops.uni-konstanz.de/handle/123456789/27695) — Marc Kramis's thesis describing the sliding snapshot algorithm
+- [Evolutionary Tree-Structured Storage](https://kops.uni-konstanz.de/handle/123456789/27695) — Marc Kramis's thesis describing the sliding snapshot algorithm
 - [Flexible Secure Cloud Storage](https://kops.uni-konstanz.de/server/api/core/bitstreams/7dc033e4-a4ef-47ce-b1d5-6f4580191070/content) — Sebastian Graf's PhD dissertation on the trie-based page structure and formal verification of the sliding snapshot algorithm
 - [HOT: A Height Optimized Trie Index](https://dl.acm.org/doi/10.1145/3183713.3196896) — the trie structure used for SirixDB's secondary indexes
 - [SirixDB on GitHub](https://github.com/sirixdb/sirix) — source code and detailed `docs/ARCHITECTURE.md`

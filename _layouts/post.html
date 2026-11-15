@@ -1,7 +1,8 @@
 ---
 layout: default
 ---
-<article class="post container container--narrow">
+<div class="container container--narrow">
+<article class="post">
   <header class="post__header">
     <h1 class="post__title">{{ page.title }}</h1>
     <time class="post__meta" datetime="{{ page.date | date_to_xmlschema }}">
@@ -11,7 +12,7 @@ layout: default
   <div class="post__content">
     {{ content }}
   </div>
-  <nav class="post__nav">
+  <nav class="post__nav" aria-label="Adjacent posts">
     {% if page.previous %}
       <a href="{{ page.previous.url }}" class="post__nav-link">&larr; {{ page.previous.title }}</a>
     {% endif %}
@@ -20,3 +21,4 @@ layout: default
     {% endif %}
   </nav>
 </article>
+</div>

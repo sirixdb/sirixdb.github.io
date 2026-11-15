@@ -6,39 +6,30 @@ title: SirixDB - Python SDK API
 
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/python-sdk.md)
 
-### Introduction
+## Introduction
 
-The python SDK for provides a simple, intuitive API for accessing the SirixDB REST-API. It can be used both with synchronous code, or with asynchronous code.
+The Python SDK provides a simple, intuitive API for accessing the SirixDB REST-API. It can be used both with synchronous code, or with asynchronous code.
 
-This document is a tutorial for using the python SDK (henceforth: pysirix), including setting up SirixDB locally using docker.
+This document is a tutorial for using the Python SDK (henceforth: pysirix), including setting up SirixDB locally using docker.
 
-This document concentrates on JSON data, but much of it valid with XML data as well.
+This document concentrates on JSON data, but much of it is valid with XML data as well.
 
 The API docs can be found [here](https://pysirix.readthedocs.io/).
 
-### Setting up SirixDB locally
+## Setting up SirixDB locally
 
-Unfortunately, this is currently a bit messy, but still rather straightforward.
+Use the current [REST quickstart](/docs/getting-started.html#rest-api) to start
+SirixDB and Keycloak. The bundled Compose configuration serves local HTTP on
+`http://localhost:9443`. Configure TLS and credentials for remote deployments.
 
-There are several resources required to run SirixDB, and they can all be found [here](https://github.com/sirixdb/sirix-python-client/tree/master/tests/resources).
+The [Python client source](https://github.com/sirixdb/sirix-python-client)
+defines its own release API. Check compatibility with your server version:
+current client helpers still use `withMetadata` and `lastTopLevelNodeKey`, while
+current Sirix main expects `withMetaData` and `startNodeKey`. Use the
+[REST reference](/docs/rest-api.html#get-resource) for metadata and pagination
+until the client and server contracts are aligned.
 
-SirixDB depends on keycloak for authentication, so we first need to run (in the directory in which you have the above resources):
-
-```bash
-docker-compose up -d keycloak
-```
-
-It can take about a minute for keycloak to be ready for connections. If you like, you can use the `wait.sh` script in the above mentioned resources folder to wait until keycloak is ready. The docker-compose file runs a script from the resources folder to initialize keycloak with a user "admin" with the password "admin".
-
-Once keycloak is ready, run:
-
-```bash
-docker-compose up -d server
-```
-
-The Sirix database is now ready for use.
-
-### Getting started with `pysirix`
+## Getting started with `pysirix`
 
 First, let's install `pysirix`:
 
@@ -46,7 +37,7 @@ First, let's install `pysirix`:
 pip install pysirix
 ```
 
-`pysirix` uses the [`httpx`](https://www.python-httpx.org/) library, and the low level `resource` interface is actually a this wrapper around `httpx` and pysirix requires you to initialize the httpx client directly:
+`pysirix` uses the [`httpx`](https://www.python-httpx.org/) library, and the low level `resource` interface is actually a thin wrapper around `httpx` and pysirix requires you to initialize the httpx client directly:
 
 If you use https
 
@@ -55,7 +46,7 @@ If you use https
 >>> import pysirix
 >>> import httpx
 
->>> client = httpx.Client(base_url="https://localhost:9443", verify=<path/to/cert.pem/in/resources/folder>)
+>>> client = httpx.Client(base_url="https://localhost:9443", verify="/path/to/cert.pem")
 >>> sirix = pysirix.sirix_sync("admin", "admin", client)
 ```
 Else use this
@@ -86,13 +77,13 @@ Should you want to use the asynchronous version of pysirix, you can run the REPL
 >>> import pysirix
 >>> import httpx
 
->>> client = httpx.AsyncClient(base_url="https://localhost:9443", verify=<path/to/cert.pem/in/resources/folder>)
+>>> client = httpx.AsyncClient(base_url="http://localhost:9443")
 >>> sirix = await pysirix.sirix_async("admin", "admin", client)
 ```
 
 In async mode, any method that will do a network request must be awaited, while any method that returns a pysirix object should not be awaited (excepting the `sirix_async` function). The rest of this tutorial will use async mode, to make it obvious which methods are doing network requests, and which are not.
 
-### Creating databases and resources
+## Creating databases and resources
 
 ```python
 >>> from pysirix import DBType
@@ -117,7 +108,7 @@ Generally, however, it is unnecessary to explicitly create a database, as it wil
 
 The create method needs some data with which to instantiate the resource, so we have passed in an array. Alternatively, you could pass in a dictionary, or stringified JSON.
 
-Alternatively, if you were creating an XML resource, you would pass in an instance of `xml.etree.ElementTree.Element`, or strigified XML.
+Alternatively, if you were creating an XML resource, you would pass in an instance of `xml.etree.ElementTree.Element`, or stringified XML.
 
 The array we passed in is empty, but this is arbitrary. We could, for example, do the following:
 
@@ -158,9 +149,9 @@ If we aren't interested in the resources, and want only the database names and t
 [{'name': 'test-json-database', 'type': 'json'}]
 ```
 
-### Manipulating resources
+## Manipulating resources
 
-#### Read resource data
+### Read resource data
 
 Let us now read the resource from the SirixDB server:
 
@@ -182,7 +173,7 @@ Let's read some particular nodes:
 
 There are more parameters that can be passed to `resource.read()`, and we will come back to them later.
 
-#### Updating resource data
+### Updating resource data
 
 Let us update some data:
 
@@ -200,7 +191,7 @@ Now, there are actually more parameters needed for an update, but the rest of th
 '[{},{},"blah",{"a key":5}]'
 ```
 
-The Insert class is an `Enum` with the following options:
+The `Insert` enum exposes these options. Current JSON updates support `CHILD`, `LEFT` and `RIGHT`; `REPLACE` is an XML mode. To replace JSON values, use a JSONiq update query:
 
 ```python
 class Insert(enum.Enum):
@@ -223,19 +214,15 @@ Let's insert a more complex object:
 '[{"hey":"test"},{},{},"blah",{"a key":5}]'
 ```
 
-#### Reading metadata
+### Reading metadata
 
-To read metadata, we can call the ``read_with_metadata()`` method, which takes the same parameters as read(). Let's call it for the initial state of the resource:
+The current server exposes node metadata through the case-sensitive
+`withMetaData` query parameter. See [node selection and serialization](/docs/rest-api.html#node-selection-and-serialization)
+for the available modes. The Python client's `read_with_metadata()` helper
+currently uses a different spelling; check your installed client version before
+using it with current Sirix main.
 
-```python
->>> resource.read_with_metadata(None, revision=1)
-{'metadata': {'nodeKey': 1, 'hash': 208557195544488990616803682550450165186, 'type': 'ARRAY', 'descendantCount': 4, 'childCount': 2}, 'value': [{'metadata': {'nodeKey': 2, 'hash': 288368958454372192948750575366137138081, 'type': 'STRING_VALUE'}, 'value': 'blah'}, {'metadata': {'nodeKey': 3, 'hash': 180526408181230893715743363206931647349, 'type': 'OBJECT', 'descendantCount': 2, 'childCount': 1}, 'value': [{'key': 'a key', 'metadata': {'nodeKey': 4, 'hash': 126324580879345353515887406488057081359, 'type': 'OBJECT_KEY', 'descendantCount': 1}, 'value': {'metadata': {'nodeKey': 5, 'hash': 1390911141598899303029604730715488514, 'type': 'OBJECT_NUMBER_VALUE'}, 'value': 5}}]}]}
-```
-
-The structure of the metadata returned is of type ``MetaNode``, and is a bit complex. See the API docs for details. If you are using python 3.8+, then you can use ``MetaNode`` as a type hint in your code.
-
-
-#### The history of the resource
+### The history of the resource
 
 We can get a list of the commits/revisions of this resource with the ``history()`` method:
 
@@ -246,28 +233,28 @@ We can get a list of the commits/revisions of this resource with the ``history()
 
 Commits are ordered from most recent to least recent.
 
-#### Differentials
+### Differentials
 
-We can obtain the differences between revisions as follows:
+We can obtain the differences between revisions as follows (node keys depend on the server encoding and the preceding operations):
 
 ```python
 >>> await resource.diff(3,4)
-[{'insert': {'nodeKey': 8, 'insertPositionNodeKey': 1, 'insertPosition': 'asFirstChild', 'deweyID': '1.3.2.2.2.3', 'depth': 2, 'type': 'jsonFragment', 'data': '{"hey":"test"}'}}]
+[{'insert': {'nodeKey': 7, 'insertPositionNodeKey': 1, 'insertPosition': 'asFirstChild', 'deweyID': '1.3.2.2.2.3', 'depth': 2, 'type': 'jsonFragment', 'data': '{"hey":"test"}'}}]
 ```
 
-#### Deleting a node
+### Deleting a node
 
 Finally, we can delete a node:
 
 ```python
->>> await resource.delete(8, None)
+>>> await resource.delete(7, None)
 >>> await resource.read(None)
 [{}, {}, 'blah', {'a key': 5}]
 ```
 
 The first argument to ``delete()`` is the nodeKey, and the second is the etag. If the etag is ``None``, ``pysirix`` will retrieve it and provide it under the hood.
 
-We can also delete the entire resource by specifying ``None`` as both arguments:
+Deleting an entire resource removes its revision history too. We can do this by specifying ``None`` as both arguments:
 
 ```python
 >>> await resource.delete(None, None)
@@ -275,7 +262,7 @@ We can also delete the entire resource by specifying ``None`` as both arguments:
 False
 ```
 
-### Using the JsonStore abstraction
+## Using the JsonStore abstraction
 
 `pysirix` provides a convenient interface for storing records in SirixDB.
 
@@ -304,23 +291,23 @@ We can query for matching records using `find_all()`:
 >>> await json_store.find_all({"key1": "foo"})
 {'rest': [{'key1': 'foo', 'key2': 'bar', 'nodeKey': 2}]}
 >>> await json_store.find_all({"key1": "bar"})
-{'rest': [{'key1': 'bar', 'key2': 'foo', 'nodeKey': 12}, {'key1': 'bar', 'key2': 'foo', 'nodeKey': 7}]}
+{'rest': [{'key1': 'bar', 'key2': 'foo', 'nodeKey': 8}, {'key1': 'bar', 'key2': 'foo', 'nodeKey': 5}]}
 ```
 
-By default, `pysirix` also includes the nodeKey of the record root, you can control this behavior by passing `node_key=False` to `find_all()`.
+By default, `pysirix` also includes the nodeKey of the record root; you can control this behavior by passing `node_key=False` to `find_all()`. In a fresh resource with current Sirix main, the array has key 1 and each inserted record uses three nodes: an object and two fused named-string fields. The record roots therefore receive keys 2, 5, and 8; inserting at the front returns them in reverse insertion order.
 
 It is also possible to project record results, so only certain fields are returned from matching records:
 
 ```python
 >>> await json_store.find_all({"key1": "bar"}, ["key2"])
-{'rest': [{'key2': 'foo', 'nodeKey': 12}, {'key2': 'foo', 'nodeKey': 7}]}
+{'rest': [{'key2': 'foo', 'nodeKey': 8}, {'key2': 'foo', 'nodeKey': 5}]}
 ```
 
 We can also choose which revision we query, using the `revision` parameter:
 
 ```python
 >>> await json_store.find_all({"key1": "bar"}, revision=3)
-{'rest': [{'key1': 'bar', 'key2': 'foo', 'nodeKey': 7}]}
+{'rest': [{'key1': 'bar', 'key2': 'foo', 'nodeKey': 5}]}
 ```
 
 There is only one result, as only one matching record existed in revision 3.

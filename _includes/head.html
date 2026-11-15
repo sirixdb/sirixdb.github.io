@@ -1,9 +1,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+  <title>{{ page.title | default: page.doctitle | default: site.title | escape }}</title>
   {%- assign page_description = page.description | default: site.description | strip_newlines | strip -%}
   <meta name="description" content="{{ page_description | escape }}">
+  <meta name="color-scheme" content="dark">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title | escape }}" href="{{ "/feed.xml" | absolute_url }}">
   <meta name="keywords" content="Database, Temporal, Evolutionary, JSON, XML, Versioning, Time Travel">
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
   <link rel="canonical" href="https://sirix.io{{ page.url | replace:'index.html','' | prepend: site.baseurl }}">
@@ -20,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/main.css?v=4">
+  <link rel="stylesheet" href="/css/main.css?v=9">
   {%- if page.layout == 'landing-page' %}
   <link rel="stylesheet" href="/css/landing.css?v=1">
   {%- endif %}

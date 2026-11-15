@@ -8,14 +8,14 @@ title: SirixDB - Real-World Use Cases for Bitemporal Data
 
 ## Why Bitemporality Matters
 
-Most databases track one version of the truth: the current state. When you update a row, the old value is gone. Some databases add a single timeline (system versioning), but real-world data has **two independent timelines**:
+Temporal applications often need **two independent timelines**:
 
 - **Transaction time**: When was this fact recorded in the database?
 - **Valid time**: When was this fact true in the real world?
 
-These two timelines diverge constantly. A price correction recorded today might apply retroactively to last month. A medical diagnosis entered on Tuesday might be backdated to the previous week. Without bitemporality, you are forced to choose which timeline to preserve — and the one you discard is inevitably the one someone needs.
+These two timelines diverge constantly. A price correction recorded today might apply retroactively to last month. A medical diagnosis entered on Tuesday might be backdated to the previous week. Preserving both timelines lets an application distinguish a correction from the time the corrected fact applies.
 
-SirixDB tracks both timelines natively. This makes an entire class of applications not just possible, but straightforward. Below are concrete use cases that are **difficult or impractical** to build on conventional databases, but become natural with SirixDB.
+SirixDB records transaction time at commit. Applications supply valid time and configure valid-time paths for [bitemporal queries](/docs/jsoniq-functions.html#bitemporal-queries). The examples below illustrate where that distinction is useful.
 
 <svg viewBox="-70 -5 930 290" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Two timelines diverge: transaction time records when facts were stored, valid time records when they were true in the real world">
   <!-- Title -->
@@ -74,7 +74,7 @@ SirixDB tracks both timelines natively. This makes an entire class of applicatio
 
 Financial institutions must answer questions like: *"What did we know about this customer's risk exposure on March 1st, as understood on March 15th — versus after a correction was applied on March 20th?"*
 
-With SirixDB, this is a single bitemporal query. Without it, teams build shadow audit tables, change-data-capture pipelines, and custom versioning layers — fragile infrastructure that is expensive to maintain and inevitably incomplete.
+With valid-time paths configured, a bitemporal query selects the stored facts at both coordinates.
 
 <svg viewBox="0 0 960 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Bitemporal coordinate grid showing how a query selects a specific point in two-dimensional temporal space">
   <!-- Title -->
@@ -160,13 +160,13 @@ Sanctions lists change frequently, sometimes retroactively. A person added to a 
 - *"Given what our system knew on date X, were we compliant?"*
 - *"Given what we know now, were we ever exposed?"*
 
-Two different temporal axes. Two different answers. Both legally required. Without bitemporality, teams maintain parallel versions of screening results manually — and auditors ask why they don't match.
+These are different questions; applications can preserve the input facts and query each timeline separately.
 
 ### What-If / As-Of Scenario Analysis
 
 Portfolio managers need to re-run valuation models against historical market data: *"If I re-run my model using the market data we had last Tuesday — not today's corrected data — what would the P&L be?"*
 
-This requires freezing both valid time (the market state) and transaction time (what was recorded when). SirixDB lets you open a read transaction at any (transaction-time, valid-time) coordinate pair. Without bitemporality, you would need to snapshot entire datasets at every point in time.
+This requires freezing both valid time (the market state) and transaction time (what was recorded when). SirixDB lets you open a read transaction at any (transaction-time, valid-time) coordinate pair. The application still supplies the model and the valid-time information.
 
 ### Pricing & Rate History for Billing Disputes
 
@@ -175,7 +175,7 @@ A customer disputes a charge from three months ago. The price has since changed,
 1. What rate was in effect for the customer's usage period (valid time)
 2. What your system believed the rate to be when it generated the invoice (transaction time)
 
-Without bitemporality, billing teams maintain manual "rate history" tables that are never quite accurate when disputes arise.
+Recording both times preserves the distinction between an original rate and a later correction.
 
 ---
 
@@ -185,13 +185,13 @@ Without bitemporality, billing teams maintain manual "rate history" tables that 
 
 A patient's lab result arrives on Tuesday but is corrected on Thursday. A doctor made a treatment decision on Wednesday based on the Tuesday value. Was the decision reasonable given what was known at the time?
 
-Malpractice cases hinge on exactly this distinction. Without bitemporality, the corrected value overwrites the original and the Wednesday decision looks inexplicable in retrospect. SirixDB preserves both: the original result (transaction time: Tuesday) and the correction (transaction time: Thursday, valid time: Tuesday), making the full clinical picture queryable.
+SirixDB can retain both: the original result (transaction time: Tuesday) and the correction (transaction time: Thursday, valid time: Tuesday), making the full clinical picture queryable.
 
 ### Retroactive Corrections in Medical Records
 
-Medical records involve constant corrections: updated diagnoses, reclassified procedures, amended prescriptions. Each correction has a "when it was true" (valid time) and "when we recorded it" (transaction time). Regulations like HIPAA require that the original record remain accessible even after correction.
+Medical records involve constant corrections: updated diagnoses, reclassified procedures, amended prescriptions. Each correction has a "when it was true" (valid time) and "when we recorded it" (transaction time). The application defines its retention and access requirements.
 
-SirixDB's append-only storage guarantees that no data is ever overwritten. Every version is a first-class citizen, queryable by both time axes.
+SirixDB retains committed revisions while the resource exists. Transaction time is recorded at commit; valid-time queries additionally require application-supplied values and configuration.
 
 ---
 
@@ -201,7 +201,7 @@ SirixDB's append-only storage guarantees that no data is ever overwritten. Every
 
 Courts require point-in-time reconstruction: *"Show me the exact state of this contract record as our system understood it on June 3rd, 2024."*
 
-With SirixDB, this is a single temporal read transaction. Without it, legal teams scramble through backup tapes, database logs, and change-data-capture streams — a process that can take weeks and still produce incomplete results.
+A temporal read transaction can retrieve the retained resource revision. Access control, evidence handling and retention policy remain application responsibilities.
 
 ### Anti-Fraud Detection
 
@@ -218,7 +218,7 @@ where sdb:timestamp($rev) gt sdb:valid-from($r)
 return $r
 ```
 
-On a mutable database, this kind of temporal anomaly detection requires triggers, shadow tables, and append-only audit logs that are trivially bypassed by anyone with write access. SirixDB's append-only architecture makes tampering structurally impossible.
+Revision history supports auditing; it is not a tamper-proof security boundary. Administrators can delete resources or modify storage files, so protect access and retain independent backups.
 
 ---
 
@@ -228,7 +228,7 @@ On a mutable database, this kind of temporal anomaly detection requires triggers
 
 When a contaminated batch is discovered, regulators ask: *"Where was this ingredient at every point in time, and when did each participant record receipt or shipment?"*
 
-A supplier might backdate a shipment record after the fact. Bitemporality distinguishes the actual chain of custody from the chain of paperwork — critical for pinpointing liability. Without it, you are trusting that nobody quietly edited a row, and you have no way to verify.
+A supplier might backdate a shipment record after the fact. Bitemporality distinguishes the actual chain of custody from the chain of paperwork — critical for pinpointing liability. Capturing source identifiers and recording corrections explicitly helps preserve provenance.
 
 ### Digital Twin Calibration
 
@@ -237,7 +237,7 @@ Industrial IoT digital twins are continuously calibrated against sensor data. Wh
 - What the twin predicted based on raw readings (transaction time: when readings were first recorded)
 - What it would have predicted with corrected readings (valid time: when the readings apply, but with updated calibration)
 
-This is essentially replaying history along both timelines simultaneously — impractical without native bitemporal support.
+This is essentially replaying history along both timelines simultaneously with both timelines available to the query.
 
 ---
 
@@ -247,19 +247,19 @@ This is essentially replaying history along both timelines simultaneously — im
 
 When a downstream ML model suddenly degrades, you need to answer: *"Did the source data change? When? Was it a correction or new data?"*
 
-Bitemporality lets you diff any two (valid-time, transaction-time) coordinates to pinpoint exactly what shifted and when it was recorded. Without it, you are reduced to comparing periodic snapshots — if you even kept them.
+Bitemporality lets you diff any two (valid-time, transaction-time) coordinates to pinpoint exactly what shifted and when it was recorded. Results depend on the source records and time information the application captured.
 
 ### Reproducible Scientific Data Analysis
 
 A researcher publishes results in June based on a dataset that gets corrected in August. Peer reviewers need to reproduce the June analysis against the exact data the researcher had — not the corrected version.
 
-SirixDB gives you `AS OF transaction-time June` — the dataset as it existed when the researcher queried it. Without bitemporality, you rely on manually versioned file exports and hope nothing slipped through between revisions.
+SirixDB gives you `AS OF transaction-time June` — the dataset as it existed when the researcher queried it. Retain the selected revision and the analysis code together for reproducibility.
 
-### Slowly Changing Dimensions — Done Right
+### Slowly Changing Dimensions
 
-Data warehouses have SCD Type 1/2/3/4/6 as increasingly desperate workarounds to track dimension history. Each type trades off between complexity, storage, and query capability. Bitemporality makes all of them unnecessary — you query at the temporal coordinates you care about.
+Bitemporal resource history can support applications that need both recorded time and effective time for dimension records. Choose a representation that fits the surrounding analytics system.
 
-No surrogate keys. No effective-date columns. No complex merge logic. No choosing between "overwrite" and "add a row."
+Valid-time fields and their configuration are still supplied by the application.
 
 ---
 
@@ -267,13 +267,13 @@ No surrogate keys. No effective-date columns. No complex merge logic. No choosin
 
 ### Collaborative Document Editing with Full History
 
-Think version control for structured data. *"Who changed this field, when, and what was it before?"* becomes a temporal query. Building this on a conventional database means implementing your own version chain, conflict resolution, and diff engine — essentially reimplementing what SirixDB provides natively through its [built-in diffing](/docs/rest-api.html) and revision history.
+Think version control for structured data. *"Who changed this field, when, and what was it before?"* becomes a temporal query. SirixDB provides [built-in diffing](/docs/rest-api.html) and revision history.
 
 ### Configuration Drift & Incident Root Cause
 
 *"The production outage started at 14:00. What was the configuration state at that time? Was a config change pushed at 13:55 that we didn't learn about until the post-mortem?"*
 
-Bitemporality naturally captures both when a config was effective (valid time) and when it was recorded in the config management system (transaction time). CMDB tools try to bolt this on with change logs, but they are disconnected from the actual state and always incomplete.
+Bitemporality naturally captures both when a config was effective (valid time) and when it was recorded in the config management system (transaction time). Capture both times explicitly when recording configuration changes.
 
 ---
 
@@ -281,7 +281,7 @@ Bitemporality naturally captures both when a config was effective (valid time) a
 
 Websites, government filings, and corporate disclosures change — sometimes silently. Investigative journalists track *"What did this company's filing say on March 1st?"* versus *"When did we first capture that version?"*
 
-The Wayback Machine does this for HTML blobs. SirixDB does it for **structured, queryable data** — with the ability to diff any two snapshots, navigate the document tree at any point in time, and query across the full revision history.
+SirixDB retains **structured, queryable data** — with the ability to diff any two snapshots, navigate the document tree at any point in time, and query across the full revision history.
 
 ---
 
@@ -291,9 +291,9 @@ Every use case above shares a single insight: **reality is messy, corrections ar
 
 Any system that overwrites state destroys information that turns out to be critical the moment someone asks *"but what did we think was true last week?"*
 
-Traditional workarounds — audit tables, CDC pipelines, event logs, periodic snapshots, manual versioning — attempt to recreate what a bitemporal database provides natively. They are expensive to build, expensive to maintain, and inevitably incomplete.
+Audit tables, CDC pipelines, event logs and snapshots can also preserve history. SirixDB offers versioned document storage as another approach.
 
-<svg viewBox="0 0 860 340" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Comparison: traditional databases need fragile workarounds while SirixDB provides native bitemporal storage">
+<svg viewBox="0 0 860 340" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Application-managed history compared with SirixDB revision storage and application-supplied valid time">
   <!-- Title -->
   <text x="430" y="22" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Traditional Workarounds vs Native Bitemporality</text>
 
@@ -331,7 +331,7 @@ Traditional workarounds — audit tables, CDC pipelines, event logs, periodic sn
   <line x1="295" y1="175" x2="205" y2="212" stroke="#6b7280" stroke-width="0.8" opacity="0.4"/>
 
   <!-- Label -->
-  <text x="210" y="278" text-anchor="middle" fill="#7f1d1d" font-size="10" font-family="Inter,sans-serif" font-weight="500" opacity="0.8">Fragile · Expensive · Incomplete</text>
+  <text x="210" y="278" text-anchor="middle" fill="#7f1d1d" font-size="10" font-family="Inter,sans-serif" font-weight="500" opacity="0.8">Application-managed history</text>
 
   <!-- === Right: SirixDB === -->
   <text x="645" y="55" text-anchor="middle" fill="#e8e6e3" font-size="11" font-family="Inter,sans-serif" font-weight="600">SirixDB</text>
@@ -355,8 +355,8 @@ Traditional workarounds — audit tables, CDC pipelines, event logs, periodic sn
   <text x="645" y="260" text-anchor="middle" fill="#42B6F0" font-size="10" font-family="Inter,sans-serif" font-weight="500">Native · Queryable · Immutable</text>
 </svg>
 
-SirixDB makes these questions cheap to ask and impossible to get wrong. Every revision is a first-class citizen, queryable as fast as the latest, with both time axes preserved from the moment data is written.
+SirixDB makes retained revisions queryable. Query latency depends on the workload, cache state and selected versioning strategy; valid-time correctness depends on application-supplied values.
 
 ---
 
-*Ready to try it? See the [Getting Started guide](/docs/index.html) or explore the [REST API](/docs/rest-api.html). Questions? Join the [community forum](https://sirix.discourse.group) or the [Discord](https://discord.gg/yC33wVpv7t).*
+*Ready to try it? See the [Getting Started guide](/docs/getting-started.html) or explore the [REST API](/docs/rest-api.html). Questions? Join the [community forum](https://sirix.discourse.group) or the [Discord](https://discord.gg/yC33wVpv7t).*

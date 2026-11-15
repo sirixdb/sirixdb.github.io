@@ -1,28 +1,32 @@
 ---
 layout: documentation
 doctitle: Features
+title: SirixDB - Features
 ---
 
-[Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/features.md)
+[Edit document on GitHub](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/features.md)
 
-### Features in a nutshell
-- Currently native XML and JSON storage (other data types might follow).
-- No write-ahead log needed, always consistent on the flash drive as the UberPage is the main entry point to the storage and written last to a new location.
-- No background compaction process or gradual merging/compaction is needed as in LSM-trees.
-- Natural multi-version concurrency control (MVCC), each read-only transaction operates on one revision/snapshot, only one read/write transaction can co-exist. We only need a lock for the single writer (in the future we might apply optimistic concurrency control On the database level)
-- Rollback to a past revision of a document/resource is supported, which encourages doing experiments or to solve human- or application errors.
-- Transactional, versioned, typed user-defined index-structures, which are automatically updated once a transaction commits.
-- Through XPath-axis extensions we support the navigation not only in space but also in time (future::, past::, first::, last::…). Furthermore, we provide several temporal XQuery functions due to our integral versioning approach. Temporal navigation for JSON resources is done via built-in XQuery functions.
-- An in-memory path summary, which is persisted during a transaction commit and always kept up-to-date.
-- Per-resource versioning strategies; see [Sliding Snapshot Versioning](/docs/architecture.html#sliding-snapshot-versioning) for the supported strategies and read/write trade-offs.
-- Log-structured sequential writes and random reads due to transactional copy-on-write (COW) semantics. This offers nice benefits as no locking for concurrent reading transactions and it takes full advantage of flash disks while avoiding their weaknesses.
-- Complete isolation of currently N read-transactions and a single write-transaction per resource.
-- The page structure is heavily inspired by ZFS and therefore also forms a tree. We’ll implement a similar merkle-tree and store hashes of each page in parent-pointers for integrity checks.
-- Support of XQuery and XQuery Update due to a slightly modified version of brackit(.org).
-- Moves for the XML layer are additionally supported.
-- Automatic path-rewriting of descendant-axis to child-axis if appropriate.
-- Import of differences between two XML-documents, that is after the first version of an XML-document is imported an algorithm tries to update the Sirix resource with a minimum of operations to change the first version into the new version.
-- A fast ID-based diff-algorithm which can determine differences between any two versions of a resource stored in Sirix optionally taking hashes of a node into account.
-- The number of children of a node, the number of descendants, a hash as well as an ORDPATH / DeweyID label which is compressed on disk to efficiently determine document order as well as to support other nice properties of hierarchical node labels is optionally stored with each node. Currently, the number of children is always stored and the number of descendants is stored if hashing is enabled.
-- Flexible backend.
-- Optional encryption and/or compression of each page on disk.
+## Features in a nutshell
+
+These capabilities describe the current source build. Check the
+[release status and roadmap](https://github.com/sirixdb/sirix/blob/main/ROADMAP.md)
+when choosing a published version.
+
+- **Native JSON and XML:** tree storage with stable node keys for following the same node across revisions.
+- **Revision history and diffs:** copy-on-write snapshots, structural revision diffs and reverting a resource into a new revision. Committed history remains readable until the resource or database is deleted. See [Architecture](/docs/architecture.html).
+- **Bitemporal queries:** combine transaction time (committed revisions) with application-supplied valid time. Valid-time paths and indexes must be configured; see [Bitemporal Queries](/docs/jsoniq-functions.html#bitemporal-queries).
+- **Snapshot transactions:** multiple readers and one writer per resource, with [synchronous and asynchronous commit modes](/docs/architecture.html#auto-commit-and-the-asynchronous-pre-flush).
+- **Versioned document indexes:** name, path and content-and-structure (CAS) indexes, plus a configurable persisted path summary. See the [index functions](/docs/jsoniq-functions.html#indexes).
+- **Experimental columnar analytics:** versioned projection indexes extract declared fields into column-oriented pages. Eligible JSONiq aggregates, filtered counts and grouped queries use the vectorized SIMD execution path; unsupported query shapes use the regular pipeline. REST routing has an allowlist gate. See the [projection guide](https://github.com/sirixdb/sirix/blob/main/docs/PROJECTION_INDEXES.md) for current limits.
+- **Vector search through the core Java API:** versioned HNSW indexes support approximate nearest-neighbor search. Applications insert vectors explicitly through the [VectorIndex API](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/main/java/io/sirix/index/vector/VectorIndex.java).
+- **JSONiq and XQuery:** Brackit integration with [temporal JSONiq functions](/docs/jsoniq-functions.html) and XML temporal XPath axes. Start with the [query API](/docs/jsoniq-api.html).
+- **Embedded Java access:** use the engine in-process, including the [transactional cursor API](/docs/transactional-cursor-api.html) and [DOM-like XML API](/docs/dom-alike-api.html).
+- **REST access:** manage JSON/XML resources, query revisions and update data through the [Vert.x REST API](/docs/rest-api.html).
+- **Browser GUI and shell:** explore the hosted [web GUI demo](https://demo.sirix.io), or use the interactive `sirix-shell` JSONiq/XQuery REPL described in the [source quick start](https://github.com/sirixdb/sirix#quick-start).
+- **Off-heap memory and cache budgets:** page storage, engine I/O and scratch working memory share a configurable process-wide allocator. Cache limits include byte budgets and entry caps; see [Operations](/docs/operations.html#4-cache-budgets).
+- **Storage options:** full, incremental, differential and [sliding snapshot versioning](/docs/architecture.html#sliding-snapshot-versioning), optional DeweyIDs and subtree hashes, and configurable page byte-handler pipelines. Subtree hashes support change detection, not cryptographic tamper evidence.
+- **XML revision import:** subtree moves and FMSE-based import of successive XML revisions.
+- **Planned, not shipped:** distributed sharding/replication and full-text indexing remain [roadmap work](https://github.com/sirixdb/sirix/blob/main/ROADMAP.md).
+
+See [Getting Started](/docs/getting-started.html) for a working setup and
+[Operations](/docs/operations.html) for deployment requirements and limitations.

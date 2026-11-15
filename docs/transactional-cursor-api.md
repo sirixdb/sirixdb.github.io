@@ -8,54 +8,11 @@ title: SirixDB - Transactional cursor-based API
 
 ## Maven artifacts
 
-First, you have to get the dependency on our SirixDB core project. At this stage of development please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
-
-```xml
-<repository>
-  <id>central-snapshots</id>
-  <name>Sonatype Central Snapshots</name>
-  <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-  <releases>
-    <enabled>false</enabled>
-  </releases>
-  <snapshots>
-    <enabled>true</enabled>
-  </snapshots>
-</repository>
-```
-
-Or for Gradle:
-```gradle
-apply plugin: 'java'
-apply plugin: 'maven'
-
-repositories {
-    maven {
-          url "https://central.sonatype.com/repository/maven-snapshots/"
-    }
-}
-```
-
-Currently, the following SNAPSHOT-artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
-
-Core project:
-
-```xml
-<dependency>
-  <groupId>io.sirix</groupId>
-  <artifactId>sirix-core</artifactId>
-  <version>0.10.1-SNAPSHOT</version>
-</dependency>
-```
-
-To add the dependency in Gradle:
-```gradle
-dependencies {
-  compile 'io.sirix:sirix-core:0.10.1-SNAPSHOT'
-}
-```
-
-**You have to use Java 25 and the provided Gradle wrapper**
+The cursor API uses the `io.sirix:sirix-core` artifact. Follow the
+[embedded-library setup](https://github.com/sirixdb/sirix#as-an-embedded-library)
+for published Maven/Gradle coordinates, keeping module versions aligned.
+For source-build requirements and JVM launch options, see
+[Operations](/docs/operations.html#1-supported-environment).
 
 ## Article Describing the JSON Transactional Cursor API
 You can find an article about this API regarding only JSON stuff on [Baeldung](https://www.baeldung.com/sirix).
@@ -192,7 +149,7 @@ try (final var database = Databases.openXmlDatabase(databaseFile)) {
        // a cursor for navigation through moveToX-methods).
        final var wtx = session.beginNodeTrx();
        final var fis = new FileInputStream(pathToXmlFile.toFile())) {
-       
+
        // Import an XML document.
        wtx.insertSubtreeAsFirstChild(XmlShredder.createFileReader(fis));
 
@@ -234,10 +191,10 @@ try (final var database = Databases.openJsonDatabase(databaseFile)) {
        // Open only write transaction on the resource (transaction provides
        // a cursor for navigation through moveToX-methods).
        final var wtx = session.beginNodeTrx();
-       final var fis = new FileInputStream(pathToJsonFile.toFile())) {
-       
+       final var reader = JsonShredder.createFileReader(pathToJsonFile)) {
+
        // Import a JSON-document.
-       wtx.insertSubtreeAsFirstChild(JsonShredder.createFileReader(fis));
+       wtx.insertSubtreeAsFirstChild(reader);
 
        // Commit and persist the changes.
        wtx.commit();
@@ -256,7 +213,7 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
      final var session = database.beginResourceSession("resource");
      // Now open a read-only transaction again.
      final var rtx = session.beginNodeReadOnlyTrx()) {
-    
+
   // Use the descendant axis to iterate over all structural descendant nodes
   // (each node with the exception of namespace- and attribute-nodes) in
   // pre-order (depth-first).
@@ -274,18 +231,16 @@ try (final var database = Databases.openXmlDatabase(databaseFile);
         }
 
         // In order to process attribute-nodes we could do the following and
-        // log the full qualified name of each node. 
+        // log the full qualified name of each node.
         for (int i = 0, attrCount = rtx.getAttributeCount(); i < attrCount; i++) {
           rtx.moveToAttribute(i);
           LOGGER.info("Attribute name:" + rtx.getName());
           LOGGER.info("Attribute value:" + rtx.getValue());
           rtx.moveToParent();
         }
-        break;
-        
         LOGGER.info(rtx.getDescendantCount());
         LOGGER.info(rtx.getChildCount());
-        /* 
+        /*
          * Hash of a node, build bottom up for all nodes (depends on descendant
          * hashes, however only ancestor nodes are updated during a normal
          * edit-operation. During bulk inserts with insertSubtree(...) the hashes
@@ -323,14 +278,22 @@ try (final var database = Databases.openJsonDatabase(databaseFile);
      final var session = database.beginResourceSession("resource");
      // Now open a read-only transaction again on the most recent revision.
      final var rtx = session.beginNodeReadOnlyTrx()) {
-    
+
   // Use the descendant axis to iterate over all descendant nodes in pre-order
   // (depth-first).
   new DescendantAxis(rtx, IncludeSelf.YES).forEach((unused) -> {
     // The transaction-cursor is moved to each structural node
     // (all nodes, except for namespace- and attributes in preorder).
     switch (rtx.getKind()) {
-      case OBJECT_KEY:
+      case OBJECT_NAMED_STRING:
+      case OBJECT_NAMED_NUMBER:
+      case OBJECT_NAMED_BOOLEAN:
+      case OBJECT_NAMED_NULL:
+        LOGGER.info(rtx.getName());
+        LOGGER.info(rtx.getValue());
+        break;
+      case OBJECT_NAMED_OBJECT:
+      case OBJECT_NAMED_ARRAY:
         LOGGER.info(rtx.getName());
         break;
       case STRING_VALUE:
@@ -370,7 +333,7 @@ Another visitor-interface exists for JSON nodes (only difference are the node-ty
 ```java
 /**
  * Do something when visiting a {@link ImmutableElement}.
- * 
+ *
  * @param node the {@link ImmutableElement}
  */
 VisitResult visit(ImmutableElement node);
@@ -381,8 +344,8 @@ The only implementation of the `VisitResult` interface is the following enum:
 
 ```java
 /**
- * The result type of an {@link XdmNodeVisitor} implementation.
- * 
+ * The result type of an {@link XmlNodeVisitor} implementation.
+ *
  * @author Johannes Lichtenberger, University of Konstanz
  */
 public enum VisitResultType implements VisitResult {
@@ -412,7 +375,7 @@ final var axis = VisitorDescendantAxis.newBuilder(rtx)
                                       .includeSelf()
                                       .visitor(new MyVisitor())
                                       .build();
-     
+
 while (axis.hasNext()) axis.next();
 ```
 
@@ -428,12 +391,12 @@ SirixDB provides all possible XPath axes for both traversing XML as well as JSON
 SirixDB provides several filters, which you can plug in through a `FilterAxis`. The following code, for instance, traverses all children of an element node (provided that the transaction currently points to an element node) and filters for nodes with the local name "a" in an XML resource.
 
 ```java
-new FilterAxis<XdmNodeReadOnlyTrx>(new ChildAxis(rtx), new XmlNameFilter(rtx, "a"))
+new FilterAxis<XmlNodeReadOnlyTrx>(new ChildAxis(rtx), new XmlNameFilter(rtx, "a"))
 ```
 
-Regarding JSON resources it's as simple as changing the generics argument from `XdmNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx` to change the transaction argument type as well as changing the `XmlNameFilter` to `JsonNameFilter`.
+Regarding JSON resources it's as simple as changing the generics argument from `XmlNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx` to change the transaction argument type as well as changing the `XmlNameFilter` to `JsonNameFilter`.
 
-The following code traverses all children of an object node and filters for object key nodes with the key "a" as in `{"a":1, "b": "foo"}`.
+The following code traverses all children of an object node and filters for named object fields with the name "a" as in `{"a":1, "b": "foo"}`.
 
 ```java
 new FilterAxis<JsonNodeReadOnlyTrx>(new ChildAxis(rtx), new JsonNameFilter(rtx, "a"))
@@ -441,22 +404,22 @@ new FilterAxis<JsonNodeReadOnlyTrx>(new ChildAxis(rtx), new JsonNameFilter(rtx, 
 
 The `FilterAxis` optionally takes more than one filter. The filter either is an `XmlNameFilter`, to filter for names as for instance in elements and attributes, a value filter to filter text nodes or a node kind filter (`AttributeFilter`, `NamespaceFilter`, `CommentFilter`, `DocumentRootNodeFilter`, `ElementFilter`, `TextFilter` or `PIFilter` to filter processing instruction nodes).
 
-In JSON object records have names and can be filtered with a `JsonNameFiler`. Available node kind filters are `ObjectFilter`,`ObjectRecordFilter`, `ArrayFilter`, `StringValueFilter`, `NumberValueFilter`, `BooleanValueFilter` and `NullValueFilter`.
+In JSON object records have names and can be filtered with a `JsonNameFilter`. Available node kind filters are `ObjectFilter`,`ObjectRecordFilter`, `ArrayFilter`, `StringValueFilter`, `NumberValueFilter`, `BooleanValueFilter` and `NullValueFilter`.
 
 Another example for using the  `FilterAxis` can also be used as follows for XML resources:
 
 ```java
 // Filter by name (first argument is the axis, next arguments are filters
-// (which implement org.sirix.axis.filter.Filter).
+// (which implement io.sirix.api.Filter).
 final var axis = new VisitorDescendantAxis.Builder(rtx).includeSelf().visitor(myVisitor).build();
 final var filter = new XmlNameFilter(rtx, "foobar");
 
-for (final var filterAxis = new FilterAxis<XdmNodeReadOnlyTrx>(axis, filter); filterAxis.hasNext();) {
+for (final var filterAxis = new FilterAxis<XmlNodeReadOnlyTrx>(axis, filter); filterAxis.hasNext();) {
   filterAxis.next();
 }
 ```
 
-and for JSON-resources it's again simply changing the generics argument from `XdmNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx` as well as `XmlNameFilter` to `JsonNameFilter`.
+and for JSON-resources it's again simply changing the generics argument from `XmlNodeReadOnlyTrx` to `JsonNodeReadOnlyTrx` as well as `XmlNameFilter` to `JsonNameFilter`.
 
 Alternatively you can simply stream over your axis without using the `FilterAxis` at all and filter by a predicate. `rtx` is a `NodeReadOnlyTrx` in the following example:
 
@@ -464,8 +427,8 @@ Alternatively you can simply stream over your axis without using the `FilterAxis
 final var axis = new PostOrderAxis(rtx);
 final var axisStream = StreamSupport.stream(axis.spliterator(), false);
 
-axisStream.filter((unusedNodeKey) -> new XmlNameFilter(rtx, "a"))
-          .forEach((unusedNodeKey) -> /* Do something with the transactional cursor */);
+axisStream.filter(new XmlNameFilter(rtx, "a"))
+          .forEach((unusedNodeKey) -> { /* Process the transactional cursor. */ });
 ```
 ### Nested Axis
 
@@ -489,7 +452,7 @@ You can use the `PostOrderAxis` in the following way:
 
 ```java
 // A postorder-axis which iterates in postorder through a (sub)tree.
-final var axis = new PostOrderAxis<XdmNodeReadOnlyTrx>(rtx); 
+final var axis = new PostOrderAxis<XmlNodeReadOnlyTrx>(rtx);
 while (axis.hasNext()) {
   // Unique node identifier (nodeKey) however not needed here.
   final long nodeKey = axis.next();
@@ -508,7 +471,7 @@ or more elegantly:
 // Iterate and use a visitor implementation to describe the behavior for the individual
 // node types.
 final var visitor = new MyVisitor(rtx);
-final var axis = new PostOrderAxis<XdmNodeReadOnlyTrx>(rtx); 
+final var axis = new PostOrderAxis<XmlNodeReadOnlyTrx>(rtx);
 while (axis.hasNext()) {
   axis.next();
   rtx.acceptVisitor(visitor);
@@ -546,7 +509,7 @@ final var axis = new NestedAxis(
                 new NameFilter(thirdRtx, "location"))));
 ```
 
-Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision). SirixDB also provides a `ConcurrentUnionAxis`, a `ConcurrentExceptAxis` and a `ConcurrentIntersectAxis`. The transactional cursors can be of both types, `XdmNodeReadOnlyTrx` and `JsonNodeReadOnlyTrx`.
+Note and beware of the different transactional cursors as constructor parameters (all opened on the same revision). SirixDB also provides a `ConcurrentUnionAxis`, a `ConcurrentExceptAxis` and a `ConcurrentIntersectAxis`. The transactional cursors can be of both types, `XmlNodeReadOnlyTrx` and `JsonNodeReadOnlyTrx`.
 
 ### Predicate Axis
 In order to test for a predicate for instance to select all element nodes in an XML resource which have a child element with name "foo" we can use:
@@ -583,9 +546,10 @@ You can then navigate the cursor to a specific node, either via axis and filters
 SirixDB provides several navigational methods. After the resource is opened the cursor sits at a document root node, the only node which is present after bootstrapping a resource. You are then able to navigate to its first child which is the XML root element via `moveToFirstChild`. Similar, you can use the method `moveToRightSibling` to move the transactional cursor to the right sibling or to the left sibling via `moveToLeftSibling`. Furthermore, many more methods to navigate through the tree are available. For instance `moveToLastChild` or `moveToAttribute`/`moveToAttributeByName`/`moveToNamespace` if the cursor points to an element node. For JSON resources the moveTo-methods for attributes and namespaces are not available. Furthermore, SirixDB allows to move to the next node in preorder (`moveToNext`) or to the previous node in preorder (`moveToPrevious`). Or for instance to the next node on the XPath `following::`-axis. A simple example is this:
 
 ```java
-// A fluent call would be if you know a node has a right sibling and
-// there's a first child of the right sibling.
-rtx.moveToRightSibling().trx().moveToFirstChild().trx();
+// Movement methods return boolean; check each move before continuing.
+if (rtx.moveToRightSibling() && rtx.moveToFirstChild()) {
+  // The cursor now points to that sibling's first child.
+}
 
 // Can be tested before.
 if (rtx.hasRightSibling()) {
@@ -593,7 +557,7 @@ if (rtx.hasRightSibling()) {
 }
 
 // Or test afterwards.
-if (rtx.moveToRightSibling().hasMoved()) {
+if (rtx.moveToRightSibling()) {
   // Do something.
 }
 
@@ -607,16 +571,12 @@ rtx.moveToPrevious();
 rtx.moveToNext();
 ```
 
-The API is fluent:
+Movement is checked separately from mutation:
 
 ```java
-// trx() returns the transaction cursor currently used. However in this case the caller
-// must be sure that a right sibling of the node denoted by node-key 15 and his right
-// sibling and the right sibling's first child exists.
-wtx.moveTo(15).trx()
-   .moveToRightSibling().trx()
-   .moveToFirstChild().trx()
-   .insertCommentAsFirstChild("foo");
+if (wtx.moveTo(15) && wtx.moveToRightSibling() && wtx.moveToFirstChild()) {
+  wtx.insertCommentAsFirstChild("foo");
+}
 ```
 
 ## Open and Modify a Resource in a Database
@@ -684,27 +644,27 @@ Updating methods can also be chained:
 
 ```java
 // Assertion: wtx is located at element node.
-wtx.insertAttribute(new QNm("foo"), "bar", Move.PARENT)
+wtx.insertAttribute(new QNm("foo"), "bar", Movement.TOPARENT)
    .insertElementAsRightSibling(new QNm("baz"));
 ```
 
-You can insert new object records via `insertObjectRecordAsFirstChild` and `insertObjectRecordAsRightSibling` in JSON resources. Similar methods exist for all node types. Object records are composed of two nodes: An object key node and an object value node.
+You can insert new object records via `insertObjectRecordAsFirstChild` and `insertObjectRecordAsRightSibling` in JSON resources. Similar methods exist for all node types. Current Sirix main fuses each object field’s name and value kind into one `OBJECT_NAMED_*` node; it does not store a separate key node followed by a value child.
 
 SirixDB checks for consistency and as such it throws an unchecked `SirixUsageException` if a method call is not permitted on a specific node type.
 
-Object records, that is key/value pairs, for instance, can only be inserted as a first child if the cursor is located on an object node. In the following we'll insert both an object key node as well as one of the other node types as the value with the insertObjectRecordAsX methods.
+Object records, that is key/value pairs, for instance, can only be inserted as a first child if the cursor is located on an object node. The `insertObjectRecordAsX` methods insert the named field and leave the cursor on it.
 
 You can also chain the update methods – for this example, wtx is located on an object node:
 
 ```java
-wtx.insertObjectRecordAsFirstChild("foo", new StringValue("bar"))
-   .moveToParent().trx()
-   .insertObjectRecordAsRightSibling("baz", new NullValue());
+wtx.insertObjectRecordAsFirstChild("foo", new StringValue("bar"));
+wtx.insertObjectRecordAsRightSibling("baz", new NullValue());
 ```
 
-First, the transaction inserts an object key node with the name "foo" as the first child of an object node. Then, a `StringValueNode` is created as the first child of the newly created object key node.
-
-The cursor is moved to the value node after the method call. Thus, you first have to move the cursor to the object key node, the parent again. Then, you're able to insert the next object key node and its child, a `NullValueNode` as a right sibling.
+The first call inserts a named string field. The second inserts a named null
+field as its right sibling. No move to a separate key node is required. See
+[`JsonNodeTrxImpl`](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/main/java/io/sirix/access/trx/node/json/JsonNodeTrxImpl.java)
+for the current fused-field insertion behavior.
 
 ### Bulk Update Operations
 
@@ -729,7 +689,7 @@ To copy a subtree of the node the read-transaction (`rtx`) is located at as a ne
 wtx.copySubtreeAsRightSibling(rtx);
 ```
 
-SirixDB always applies changes in-memory and then flushes them sequentially to a disk or the flash drive during a transaction commit. The only exception is if the in-memory cache has to evict some entries into a file due to memory constraints. We can either commit() or rollback() the transaction. Note, that you can reuse the transaction after a commit() or rollback() method call.
+SirixDB buffers changes in a transaction intent log. Spill and asynchronous pre-flush can write pages before a revision is published; see the [transaction model](/docs/architecture.html#transaction-model). We can either commit() or rollback() the transaction. Note, that you can reuse the transaction after a commit() or rollback() method call.
 
 ### Starting a Read-Write Transaction
 
@@ -737,11 +697,18 @@ SirixDB provides several possibilities to start a read-write transaction in the 
 
 ```java
 // Auto-commit every 30 seconds.
-session.beginNodeTrx(TimeUnit.SECONDS, 30);
+try (var wtx = session.beginNodeTrx(TimeUnit.SECONDS, 30)) {
+  // Apply updates, then commit any remaining changes explicitly.
+  wtx.commit();
+}
 // Auto-commit after every 1000th modification.
-session.beginNodeTrx(1000);
-// Auto-commit every 30 seconds and every 1000th modification.
-session.beginNodeTrx(1000, TimeUnit.SECONDS, 30);
+try (var wtx = session.beginNodeTrx(1000)) {
+  wtx.commit();
+}
+// Auto-commit after 30 seconds or 1000 modifications, whichever occurs first.
+try (var wtx = session.beginNodeTrx(1000, TimeUnit.SECONDS, 30)) {
+  wtx.commit();
+}
 ```
 
 Each synchronous auto-commit is a **real commit**: it creates a revision with
@@ -758,12 +725,15 @@ auto-commit but deliberately is **not a commit**:
 ```java
 // Pre-flush leaf pages in the background after every 262,144th modification;
 // an actual revision is only created when you call commit().
-session.beginNodeTrx(262_144, AfterCommitState.KEEP_OPEN_ASYNC_FLUSH);
+try (var wtx = session.beginNodeTrx(262_144, AfterCommitState.KEEP_OPEN_ASYNC_FLUSH)) {
+  // Import or update data here.
+  wtx.commit(); // Publish the final revision.
+}
 ```
 
 When the threshold is reached, the transaction's in-memory intent log takes an
 O(1) snapshot and a **background thread** writes the snapshot's leaf pages to
-the data file, while your thread keeps inserting without waiting for I/O. No
+the data file, while your thread can continue inserting; bounded queues may apply backpressure. No
 revision is created, no commit record is written, and none of the pre-flushed
 data becomes visible to readers — if the process crashes before your next real
 `commit()`, the pre-flushed bytes are unreachable and simply ignored, exactly
@@ -779,8 +749,7 @@ file, a deliberate write-amplification trade-off on write-hot pages).
 
 Notes:
 
-- `KEEP_OPEN_ASYNC_FLUSH` currently requires the default `FILE_CHANNEL` storage
-  backend.
+- `KEEP_OPEN_ASYNC_FLUSH` supports `FILE_CHANNEL` and `MEMORY_MAPPED`, with count-based auto-commit.
 - Durability semantics are unchanged: only `commit()` (or a synchronous
   auto-commit) makes data durable *and visible*. The pre-flush is purely a
   latency optimization for the eventual commit.
@@ -807,14 +776,17 @@ the next batch builds on the pending revision while the previous one hardens,
 and the writer only stalls if the storage device falls behind. On a crash you
 lose at most the in-flight batch plus your current working set.
 
-Like the pre-flush mode, this requires the default `FILE_CHANNEL` backend and
+Unlike the pre-flush mode, this requires `FILE_CHANNEL` (not `MEMORY_MAPPED`) and
 count-based (not timed) auto-commit.
 
 Furthermore, you're able to start a read-write transaction and then revert to a former revision:
 
 ```java
 // Open a read/write transaction on the most recent revision, then revert to revision two and commit as a new revision.
-session.beginNodeTrx().revertTo(2).commit()
+try (var wtx = session.beginNodeTrx()) {
+  wtx.revertTo(2);
+  wtx.commit();
+}
 ```
 
 ## Open Specific Revisions
@@ -823,12 +795,16 @@ Once you've committed more than one revision you can open it either by specifyin
 
 ```java
 // To open a transactional read-only cursor on revision two.
-final var rtx = session.beginNodeReadOnlyTrx(2)
+try (var rtx = session.beginNodeReadOnlyTrx(2)) {
+  // Read revision 2.
+}
 
 // Or by a timestamp:
 final var dateTime = LocalDateTime.of(2019, Month.JUNE, 15, 13, 39);
 final var instant = dateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant();
-final var rtx = session.beginNodeReadOnlyTrx(instant)
+try (var rtx = session.beginNodeReadOnlyTrx(instant)) {
+  // Read the selected historical revision.
+}
 ```
 
 ## Serialize a Resource in a Database
@@ -862,7 +838,7 @@ final var serializer = XmlSerializer.newBuilder(session, out, 1, 2, 3)
                                     .emitIds()
                                     .prettyPrint()
                                     .build();
-serialize.call()
+serializer.call();
 ```
 
 In order to serialize all stored revisions with the internal node keys and pretty printed:
@@ -873,7 +849,7 @@ final var serializer = XmlSerializer.newBuilder(session, out, -1)
                                     .emitIds()
                                     .prettyPrint()
                                     .build();
-serialize.call()
+serializer.call();
 ```
 
 ### Serialize to JSON

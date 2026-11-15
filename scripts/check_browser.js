@@ -1,0 +1,75 @@
+// Run at desktop and 390px against a locally served Jekyll build:
+// chrome-devtools-axi run < scripts/check_browser.js
+// The preview server must listen on 127.0.0.1:4188.
+function assert(condition, message) {
+  if (!condition) throw new Error(message);
+}
+await page.open('http://127.0.0.1:4188/docs/index.html');
+assert(await page.eval(() => document.querySelector('.docs-nav [aria-current="page"]')?.getAttribute('href') === '/docs/index.html'), 'Introduction is marked as the current documentation page');
+await page.open('http://127.0.0.1:4188/docs/getting-started.html');
+await page.eval(async () => { await document.fonts.ready; return true; });
+const headerLayout = await page.eval(() => {
+  const table = document.querySelector('.docs-content table');
+  const shortHeaders = [...table.querySelectorAll('th')].filter(cell => /^\S{1,10}$/.test(cell.textContent.trim()));
+  return {fits: document.documentElement.scrollWidth <= innerWidth && table.getBoundingClientRect().right <= innerWidth,
+    headers: shortHeaders.map(cell => {
+      const range = document.createRange();
+      range.selectNodeContents(cell);
+      return {text: cell.textContent.trim(), lines: range.getClientRects().length};
+    })};
+});
+assert(headerLayout.fits, 'Getting Started table fits without horizontal page scrolling');
+assert(headerLayout.headers.some(header => header.text === 'Time'), 'Time header is present');
+assert(headerLayout.headers.every(header => header.lines === 1), 'Short table headers never break mid-word');
+await page.open('http://127.0.0.1:4188/docs/architecture.html');
+const mobile = await page.eval(() => innerWidth <= 768);
+if (mobile) {
+  assert(await page.eval(() => !document.querySelector('#site-nav').getClientRects().length), 'Closed mobile navigation must be hidden');
+  assert(await page.eval(() => !document.querySelector('.docs-navigation').open), 'Mobile documentation index starts compact');
+  await page.click('.docs-nav__toggle');
+  assert(await page.eval(() => document.querySelector('.docs-navigation').open), 'Documentation index expands');
+  await page.click('.docs-nav__toggle');
+  await page.click('#menu-toggle');
+  assert(await page.eval(() => document.querySelector('#menu-toggle').getAttribute('aria-expanded') === 'true'), 'Menu button exposes open state');
+  await page.press('Escape');
+  assert(await page.eval(() => document.activeElement.id === 'menu-toggle' && !document.querySelector('#site-nav').getClientRects().length), 'Escape closes menu and restores focus');
+}
+await page.eval(() => document.querySelector('.skip-link').focus());
+await page.press('Enter');
+assert(await page.eval(() => document.activeElement.id === 'main-content'), 'Skip link focuses main content');
+await page.open('http://127.0.0.1:4188/docs/transactional-cursor-api.html');
+assert(await page.eval(() => !!document.querySelector('.diagram-frame svg [id]')), 'Source diagram has inline IDs');
+await page.eval(() => document.querySelector('.diagram-frame:has(svg [id]) .diagram-frame__expand').focus());
+await page.press('Enter');
+assert(await page.eval(() => document.querySelector('.svg-lightbox.is-open')?.contains(document.activeElement)), 'Keyboard opens diagram and focuses dialog');
+assert(await page.eval(() => !!document.querySelector('.svg-lightbox.is-open .svg-lightbox__content [id]')), 'Expanded clone has inline IDs');
+assert(await page.eval(() => {
+  const ids = [...document.querySelectorAll('[id]')].map(el => el.id);
+  return ids.length === new Set(ids).size;
+}), 'Mounted diagram clone keeps document IDs unique');
+await page.press('Tab');
+assert(await page.eval(() => document.querySelector('.svg-lightbox').contains(document.activeElement)), 'Dialog retains keyboard focus');
+await page.press('Escape');
+assert(await page.eval(() => document.activeElement.matches('.diagram-frame__expand') && !document.querySelector('.svg-lightbox.is-open')), 'Closing diagram restores trigger focus');
+await page.open('http://127.0.0.1:4188/contact.html');
+// Deliberately make third-party services unavailable; this test cannot send mail.
+const fallback = await page.eval(() => {
+  window.emailjs = undefined;
+  window.grecaptcha = undefined;
+  const submitted = document.querySelector('#contact-form').dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
+  return {prevented: !submitted, status: document.querySelector('#form-status').textContent};
+});
+assert(fallback.prevented && fallback.status.includes('email link above'), 'Blocked contact services give an accessible fallback without submitting');
+assert(await page.eval(() => !!document.querySelector('a[href^="mailto:"]')), 'Contact fallback has a usable email link');
+await page.open('http://127.0.0.1:4188/blog.html');
+assert(await page.eval(() => !document.querySelector('.blog-card') && document.querySelector('.blog-empty')?.textContent.includes('The first post arrives with SirixDB 1.0')), 'Blog shows the future-release empty state without placeholder posts');
+assert(await page.eval(() => !!document.querySelector('.site-footer a[href="/blog.html"]')), 'Blog navigation remains available');
+const emptyFeed = await page.eval(async () => {
+  const response = await fetch('/feed.xml');
+  const feed = new DOMParser().parseFromString(await response.text(), 'application/xml');
+  return {ok: response.ok, valid: !feed.querySelector('parsererror'), items: feed.querySelectorAll('item').length,
+    home: feed.querySelector('channel > link')?.textContent,
+    self: feed.getElementsByTagNameNS('http://www.w3.org/2005/Atom', 'link')[0]?.getAttribute('href')};
+});
+assert(emptyFeed.ok && emptyFeed.valid && emptyFeed.items === 0 && emptyFeed.home === 'https://sirix.io/' && emptyFeed.self === 'https://sirix.io/feed.xml', 'RSS remains valid and absolute with zero posts');
+console.log(JSON.stringify({viewport: mobile ? 'phone' : 'desktop', navigation: 'pass', skipLink: 'pass', diagram: 'pass', blockedContact: 'pass', shortHeaders: 'pass', emptyBlog: 'pass', emptyFeed: 'pass'}));
