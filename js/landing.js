@@ -27,7 +27,8 @@
   Loop.prototype.tick = function () { this.onStep(this.steps[this.i % this.steps.length]); this.i++; };
   Loop.prototype.start = function () {
     var self = this; this.stop();
-    if (still() || this.userStopped || !this.visible) { if (still()) this.onStep(this.finalStep); return; }
+    if (this.userStopped) return;
+    if (still() || !this.visible) { if (still()) this.onStep(this.finalStep); return; }
     this.tick();
     this.timer = setInterval(function () { self.tick(); }, this.interval);
   };
@@ -344,11 +345,11 @@
       var from = { x: cur.x, y: cur.y }, to = P[k], t0 = null, DUR = 1500;
       chips.forEach(function (c) { c.setAttribute('aria-pressed', String(c.dataset.bt === k)); });
       if (anim) cancelAnimationFrame(anim);
-      if (still() || (from.x === to.x && from.y === to.y)) { cur = { x: to.x, y: to.y }; render(to.x, to.y); return; }
+      if (still() || (from.x === to.x && from.y === to.y)) { anim = null; cur = { x: to.x, y: to.y }; render(to.x, to.y); ans.setAttribute('aria-busy', 'false'); return; }
       ans.setAttribute('aria-busy', 'true');
       function frame(ts) {
         if (t0 === null) t0 = ts;
-        var p = Math.min(1, (ts - t0) / DUR), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+        var p = still() ? 1 : Math.min(1, (ts - t0) / DUR), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
         cur = { x: from.x + (to.x - from.x) * e, y: from.y + (to.y - from.y) * e }; render(cur.x, cur.y);
         if (p < 1) anim = requestAnimationFrame(frame); else { anim = null; ans.setAttribute('aria-busy', 'false'); }
       }
@@ -357,6 +358,20 @@
     var loop = new Loop(svg, ['a', 'b', 'c'], 3200, moveTo, 'b');
     chips.forEach(function (c) { c.addEventListener('click', function () { loop.halt(); moveTo(c.dataset.bt); }); });
     render(cur.x, cur.y);
+    io.observe(svg);
+  })();
+
+  (function () {
+    var svg = document.querySelector('.em-fig'), cap = document.getElementById('em-cap');
+    if (!svg) return;
+    var stages = svg.querySelectorAll('.em-step');
+    var captions = ['your application submits a query', 'sirix-core evaluates it with versioned indexes', 'read the selected snapshot from the same directory', 'query any revision through the same core'];
+    function show(n) {
+      stages.forEach(function (stage, i) { stage.classList.toggle('is-on', n === 3 || i === n); });
+      cap.textContent = captions[n];
+    }
+    new Loop(svg, [0, 1, 2, 3, 3], 1500, show, 3);
+    show(3);
     io.observe(svg);
   })();
 
@@ -586,6 +601,7 @@
   });
 
   revs(restState);
+  reduce.addEventListener && reduce.addEventListener('change', function () { if (reduce.matches) showAll(); });
   if (reduce.matches || !('IntersectionObserver' in window)) return;
   var seen = false;
   new IntersectionObserver(function (entries, obs) {
@@ -620,6 +636,7 @@
     if (reduce.matches || paused || !visible) return;
     timer = setInterval(function () { select(cur + 1); }, 5000);
   }
+  reduce.addEventListener && reduce.addEventListener('change', start);
   tabs.forEach(function (t, i) {
     t.addEventListener('click', function () { paused = true; stop(); select(i); });
     t.addEventListener('keydown', function (e) {

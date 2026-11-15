@@ -273,6 +273,10 @@
 .lp .em-fig .t-s { font: 500 11.5px var(--font-sans); fill: var(--text-2); }
 .lp .em-fig .t-m { font: 500 11.5px var(--font-mono); fill: var(--muted); }
 .lp .em-fig .arrow { stroke: var(--text-2); stroke-width: 1.4; fill: none; }
+.lp .em-fig .em-step .box { transition: fill .4s, stroke .4s; }
+.lp .em-fig .em-step.is-on .box { fill: var(--orange-wash); stroke: var(--orange); }
+.lp .em-fig .em-step.is-on .arrow { stroke: var(--orange); }
+.lp .em-cap { font: 500 13px var(--font-mono); color: var(--text); margin-top: 10px; min-height: 2.6em; }
 .lp .ag-fig .box { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1.4; }
 .lp .ag-fig .box--agent { fill: var(--orange-wash); stroke: var(--orange); }
 .lp .ag-fig .box--diff { fill: var(--code-bg); stroke: var(--border-strong); }

@@ -60,7 +60,7 @@ description: >-
       <div class="proof"><b>~570<small style="font-size:.6em;font-weight:600;color:var(--muted)">&nbsp;commits/s</small></b><span>durable commits, flat at 10,000 revisions deep (small document)</span></div>
       <div class="proof"><b>0.2&ndash;0.3&nbsp;ms</b><span>node-level diff between two revisions (warm)</span></div>
     </div>
-    <p class="src">Core-API numbers from <a href="https://github.com/sirixdb/sirix/blob/main/docs/BENCHMARKS.md">BENCHMARKS.md</a> (10,000-commit history, one machine, small document) and the <a href="https://github.com/sirixdb/sirix#page-versioning-strategies">README</a>. Time-travel retention elsewhere: <a href="https://docs.cloud.google.com/bigquery/docs/time-travel">BigQuery</a> 7 d, <a href="https://docs.databricks.com/aws/en/delta/history">Delta</a> 7 d by default, <a href="https://docs.snowflake.com/en/user-guide/data-time-travel">Snowflake</a> up to 90 d.</p>
+    <p class="src">Core-API numbers from <a href="https://github.com/sirixdb/sirix/blob/main/docs/BENCHMARKS.md">BENCHMARKS.md</a> (10,000-commit history, one machine, small document) and the <a href="https://github.com/sirixdb/sirix#page-versioning-strategies">README</a>. Time-travel retention elsewhere: <a href="https://docs.cloud.google.com/bigquery/docs/time-travel">BigQuery</a> 7 d, <a href="https://docs.snowflake.com/en/user-guide/data-time-travel">Snowflake</a> up to 90 d. Lakehouse history depends on configurable retention and cleanup: <a href="https://iceberg.apache.org/docs/latest/maintenance/">Iceberg snapshot expiration</a> and <a href="https://docs.databricks.com/aws/en/tables/history#configure-data-retention-for-time-travel-queries">Delta log cleanup and VACUUM</a>; defaults vary.</p>
   </div>
 </section>
 
@@ -75,7 +75,7 @@ description: >-
     <div class="problem reveal">
       <div class="problem__card"><span class="x">History tables &amp; triggers</span><h3>Hand-rolled, row by row</h3><p>Every table gets a shadow table. Querying "as of" means joins over validity columns you maintain yourself.</p></div>
       <div class="problem__card"><span class="x">Event sourcing</span><h3>The past means replay</h3><p>The log is complete, but reading yesterday's state means rebuilding it from the beginning or maintaining projections.</p></div>
-      <div class="problem__card"><span class="x">Warehouse time travel</span><h3>A recovery window, not a record</h3><p>Snapshots expire after days. Snowflake keeps at most 90, BigQuery 7, Delta 7 by default.</p></div>
+      <div class="problem__card"><span class="x">Warehouse time travel</span><h3>Know your retention policy</h3><p>Warehouse recovery windows are limited. Lakehouse history lasts until cleanup removes old snapshots, logs or data files; retention is configurable and defaults vary.</p><p class="src"><a href="https://iceberg.apache.org/docs/latest/maintenance/">Iceberg maintenance</a> · <a href="https://docs.databricks.com/aws/en/tables/history#configure-data-retention-for-time-travel-queries">Delta retention</a></p></div>
     </div>
     <p class="src reveal">Retention limits: <a href="https://docs.snowflake.com/en/user-guide/data-time-travel">Snowflake</a>, <a href="https://docs.cloud.google.com/bigquery/docs/time-travel">BigQuery</a>, <a href="https://docs.databricks.com/aws/en/delta/history">Databricks Delta</a>.</p>
   </div>
@@ -276,17 +276,23 @@ description: >-
           <desc id="em-d">Inside your JVM process, your code calls sirix-core, which writes append-only files in a directory. The same core also ships as a REST server, a CLI, an MCP server for AI agents and a native binary.</desc>
           <rect class="box" x="20" y="20" width="330" height="290" rx="14"/>
           <text class="t-m" x="38" y="46">your JVM process</text>
-          <rect class="box box--blue" x="50" y="66" width="270" height="56" rx="10"/>
-          <text class="t" x="185" y="92" text-anchor="middle">your application</text>
-          <text class="t-s" x="185" y="110" text-anchor="middle">Java · Kotlin</text>
-          <path class="arrow" d="M185 124 V150" marker-end="url(#ah)"/>
-          <rect class="box box--hot" x="50" y="154" width="270" height="56" rx="10"/>
-          <text class="t" x="185" y="180" text-anchor="middle">sirix-core</text>
-          <text class="t-s" x="185" y="198" text-anchor="middle">versioned store · JSONiq · indexes</text>
-          <path class="arrow" d="M185 212 V238" marker-end="url(#ah)"/>
-          <rect class="box" x="70" y="242" width="230" height="48" rx="10"/>
-          <text class="t-m" x="185" y="263" text-anchor="middle">/data/mydb/</text>
-          <text class="t-s" x="185" y="280" text-anchor="middle">append-only files</text>
+          <g class="em-step">
+            <rect class="box box--blue" x="50" y="66" width="270" height="56" rx="10"/>
+            <text class="t" x="185" y="92" text-anchor="middle">your application</text>
+            <text class="t-s" x="185" y="110" text-anchor="middle">Java · Kotlin</text>
+            <path class="arrow" d="M185 124 V150" marker-end="url(#ah)"/>
+          </g>
+          <g class="em-step">
+            <rect class="box box--hot" x="50" y="154" width="270" height="56" rx="10"/>
+            <text class="t" x="185" y="180" text-anchor="middle">sirix-core</text>
+            <text class="t-s" x="185" y="198" text-anchor="middle">versioned store · JSONiq · indexes</text>
+            <path class="arrow" d="M185 212 V238" marker-end="url(#ah)"/>
+          </g>
+          <g class="em-step">
+            <rect class="box" x="70" y="242" width="230" height="48" rx="10"/>
+            <text class="t-m" x="185" y="263" text-anchor="middle">/data/mydb/</text>
+            <text class="t-s" x="185" y="280" text-anchor="middle">append-only files</text>
+          </g>
           <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="currentColor" style="color:var(--text-2)"/></marker></defs>
           <text class="t-m" x="390" y="46">or run the same core as</text>
           <g>
@@ -297,6 +303,7 @@ description: >-
           </g>
           <path class="arrow" d="M352 165 C370 165 372 130 386 110" opacity=".5"/>
         </svg>
+        <p class="em-cap" id="em-cap">query any revision through the same core</p>
         <figcaption class="cap__figcap">Single process, no sidecar. Single writer per resource with snapshot-isolated readers.</figcaption>
       </figure>
     </article>
@@ -418,7 +425,7 @@ description: >-
     <div class="losses reveal">
       <h3>Where it loses, today</h3>
       <ul>
-        <li>Storage footprint and peak memory are larger than comparable engines; Postgres plus a history table wins small-document ingest and storage.</li>
+        <li>Storage footprint and peak memory are larger than comparable engines.</li>
         <li>Single node, single writer per resource; no replication yet.</li>
         <li>No SQL &mdash; JSONiq/XQuery only. Still 1.0.0-beta.</li>
       </ul>
@@ -443,8 +450,8 @@ description: >-
         </thead>
         <tbody>
           <tr><th scope="row">Transaction-time history</th>
-            <td class="sirix"><span class="yes">Yes</span>, every commit, unbounded</td><td><span class="yes">Yes</span>, unbounded</td><td><span class="yes">Yes</span>, unbounded</td><td><span class="yes">Yes</span>, explicit commits</td><td><span class="no">No</span> system time; triggers + history table</td><td><span class="part">Snapshots</span>, expire after 5 d / 7 d by default</td>
-            <td class="refs"><a href="https://github.com/sirixdb/sirix#core-properties">Sirix</a><a href="https://www.xtdb.com/blog/launching-xtdb-v2">XTDB</a><a href="https://docs.datomic.com/reference/filters.html">Datomic</a><a href="https://www.dolthub.com/docs/sql-reference/version-control/querying-history">Dolt</a><a href="https://www.postgresql.org/docs/19/ddl-temporal-tables.html">PG</a><a href="https://iceberg.apache.org/docs/latest/maintenance/">Iceberg</a><a href="https://docs.databricks.com/aws/en/delta/history">Delta</a></td></tr>
+            <td class="sirix"><span class="yes">Yes</span>, every commit, unbounded</td><td><span class="yes">Yes</span>, unbounded</td><td><span class="yes">Yes</span>, unbounded</td><td><span class="yes">Yes</span>, explicit commits</td><td><span class="no">No</span> system time; triggers + history table</td><td><span class="part">Snapshots</span>, until cleanup removes required snapshots, logs or files; configurable retention, defaults vary</td>
+            <td class="refs"><a href="https://github.com/sirixdb/sirix#core-properties">Sirix</a><a href="https://www.xtdb.com/blog/launching-xtdb-v2">XTDB</a><a href="https://docs.datomic.com/reference/filters.html">Datomic</a><a href="https://www.dolthub.com/docs/sql-reference/version-control/querying-history">Dolt</a><a href="https://www.postgresql.org/docs/19/ddl-temporal-tables.html">PG</a><a href="https://iceberg.apache.org/docs/latest/maintenance/">Iceberg</a><a href="https://docs.databricks.com/aws/en/tables/history#configure-data-retention-for-time-travel-queries">Delta</a></td></tr>
           <tr><th scope="row">Native valid time</th>
             <td class="sirix"><span class="yes">Yes</span>, configured paths + versioned interval index</td><td><span class="yes">Yes</span>, every table</td><td><span class="no">No</span></td><td><span class="no">No</span> (“uni-temporal”)</td><td><span class="part">Constraints only</span>; <code>FOR PORTION OF</code> reverted</td><td><span class="no">No</span></td>
             <td class="refs"><a href="https://github.com/sirixdb/sirix#bitemporal-queries">Sirix</a><a href="https://www.xtdb.com/blog/launching-xtdb-v2">XTDB</a><a href="https://docs.datomic.com/reference/filters.html">Datomic</a><a href="https://dolthub.com/blog/2023-08-07-temporal-database/">Dolt</a><a href="https://git.postgresql.org/cgit/postgresql.git/commit/?h=REL_19_STABLE&amp;id=a9d2f7282407a32280c72cd99e243d62033de57b">PG</a><a href="https://iceberg.apache.org/spec/">Iceberg</a></td></tr>
