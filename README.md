@@ -33,6 +33,7 @@ bundle install
 bundle exec jekyll build
 python3 -m unittest discover -s tests -v
 python3 scripts/check_site.py _site
+node --check js/main.js
 # Network-dependent audit; rate limits and bot challenges remain unresolved:
 python3 scripts/check_site.py _site --external
 ```

@@ -180,7 +180,7 @@ substitute for a backup after storage loss or resource deletion.
 | Concurrency | One writer per resource, multiple read-only transactions |
 | Time | Commit revisions plus application-configured valid time |
 | Record versioning | `FULL`, `INCREMENTAL`, `DIFFERENTIAL`, `SLIDING_SNAPSHOT` |
-| Secondary indexes | Name, path and CAS; HOT is their storage structure, not a fourth query index type |
+| Document indexes | Name, path and CAS; HOT is their storage structure, not a fourth query index type. See [Features](/docs/features.html) for other index APIs. |
 | Query languages | Brackit JSONiq and XQuery |
 
 Codec block sizes are not document-size limits. Test large imports with your

@@ -185,35 +185,14 @@ Commit or rollback changes within a write transaction.
 | `sdb:commit` | `($node, $message, $dateTime)` | Commit with a message and a custom timestamp. |
 | `sdb:rollback` | `($node)` | Discard all uncommitted changes. Returns the aborted revision number. |
 
-To commit a JSONiq update with a message, use `CommitStrategy.EXPLICIT` and
-evaluate the update and commit separately using the same context and store.
-After the update evaluation, clear its already-applied update list before
-evaluating another query. Close the existing writer after the named commit:
-
-```java
-new Query(chain,
-    "let $doc := jn:doc('shop', 'products') "
-    + "return replace json value of $doc[0].price with 799")
-    .evaluate(ctx);
-ctx.getUpdateList().list().clear();
-
-try (final var writer = store.lookup("shop").getDatabase()
-    .beginResourceSession("products").getNodeTrx().orElseThrow()) {
-  new Query(chain,
-      "sdb:commit(jn:doc('shop', 'products'), 'Summer sale pricing')")
-      .evaluate(ctx);
-}
-```
-
-Update expressions are queued until evaluation finishes; `sdb:commit` commits
-immediately, so it must not share the update's query. See the
-[Java example in the API guide](/docs/jsoniq-api.html#updating-data) for explicit
-context setup. Clearing the applied list prevents replay during the commit
-evaluation; closing the writer prevents an extra commit during store shutdown.
+For committing a JSONiq update with a message, follow the
+[explicit-commit example in the API guide](/docs/jsoniq-api.html#updating-data),
+including its update-list and writer cleanup.
 
 ## Indexes
 
-Create and query indexes for faster lookups. Three index types are supported: **name** (field names), **path** (document paths), and **CAS** (content-and-structure, for typed value queries).
+The functions below create and query **name**, **path** and **CAS** document
+indexes. See [Features](/docs/features.html) for other index APIs and their limits.
 
 ### Create Indexes
 

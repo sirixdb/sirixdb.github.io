@@ -420,7 +420,7 @@ A third mode, `AfterCommitState.KEEP_OPEN_ASYNC_COMMIT`, is the middle ground be
 
 ## Secondary Indexes
 
-SirixDB supports three types of user-defined secondary indexes, all integrated into the resource’s versioned page structure. Indexes are part of the transaction and version with the data — the index at revision 42 always matches the data at revision 42.
+Name, path and CAS document indexes are integrated into the resource’s versioned page structure. These indexes are part of the transaction and version with the data — the index at revision 42 always matches the data at revision 42. See [Features](/docs/features.html) for other index APIs and their limits.
 
 ### Path Summary
 
@@ -563,7 +563,7 @@ point to the fused field nodes shown above.
 | **Path** | PCR → node keys | Find all nodes at path `/users/[]/name` |
 | **CAS** | (PCR + typed value) → node keys | Find all users where `age > 30` on path `/users/[]/age` |
 
-CAS (content-and-structure) indexes combine paths with typed values and support range queries. All indexes are stored in Height Optimized Tries (HOT) within the same versioned page structure.
+CAS (content-and-structure) indexes combine paths with typed values and support range queries. These three document index types are stored in Height Optimized Tries (HOT) within the same versioned page structure.
 
 For the JSONiq API to create and query indexes, see the [Function Reference](/docs/jsoniq-functions.html#indexes).
 
