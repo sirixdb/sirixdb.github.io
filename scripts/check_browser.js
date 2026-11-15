@@ -6,6 +6,21 @@ function assert(condition, message) {
 }
 await page.open('http://127.0.0.1:4188/docs/index.html');
 assert(await page.eval(() => document.querySelector('.docs-nav [aria-current="page"]')?.getAttribute('href') === '/docs/index.html'), 'Introduction is marked as the current documentation page');
+await page.open('http://127.0.0.1:4188/docs/getting-started.html');
+await page.eval(async () => { await document.fonts.ready; return true; });
+const headerLayout = await page.eval(() => {
+  const table = document.querySelector('.docs-content table');
+  const shortHeaders = [...table.querySelectorAll('th')].filter(cell => /^\S{1,10}$/.test(cell.textContent.trim()));
+  return {fits: document.documentElement.scrollWidth <= innerWidth && table.getBoundingClientRect().right <= innerWidth,
+    headers: shortHeaders.map(cell => {
+      const range = document.createRange();
+      range.selectNodeContents(cell);
+      return {text: cell.textContent.trim(), lines: range.getClientRects().length};
+    })};
+});
+assert(headerLayout.fits, 'Getting Started table fits without horizontal page scrolling');
+assert(headerLayout.headers.some(header => header.text === 'Time'), 'Time header is present');
+assert(headerLayout.headers.every(header => header.lines === 1), 'Short table headers never break mid-word');
 await page.open('http://127.0.0.1:4188/docs/architecture.html');
 const mobile = await page.eval(() => innerWidth <= 768);
 if (mobile) {
@@ -46,4 +61,15 @@ const fallback = await page.eval(() => {
 });
 assert(fallback.prevented && fallback.status.includes('email link above'), 'Blocked contact services give an accessible fallback without submitting');
 assert(await page.eval(() => !!document.querySelector('a[href^="mailto:"]')), 'Contact fallback has a usable email link');
-console.log(JSON.stringify({viewport: mobile ? 'phone' : 'desktop', navigation: 'pass', skipLink: 'pass', diagram: 'pass', blockedContact: 'pass'}));
+await page.open('http://127.0.0.1:4188/blog.html');
+assert(await page.eval(() => !document.querySelector('.blog-card') && document.querySelector('.blog-empty')?.textContent.includes('The first post arrives with SirixDB 1.0')), 'Blog shows the future-release empty state without placeholder posts');
+assert(await page.eval(() => !!document.querySelector('.site-footer a[href="/blog.html"]')), 'Blog navigation remains available');
+const emptyFeed = await page.eval(async () => {
+  const response = await fetch('/feed.xml');
+  const feed = new DOMParser().parseFromString(await response.text(), 'application/xml');
+  return {ok: response.ok, valid: !feed.querySelector('parsererror'), items: feed.querySelectorAll('item').length,
+    home: feed.querySelector('channel > link')?.textContent,
+    self: feed.getElementsByTagNameNS('http://www.w3.org/2005/Atom', 'link')[0]?.getAttribute('href')};
+});
+assert(emptyFeed.ok && emptyFeed.valid && emptyFeed.items === 0 && emptyFeed.home === 'https://sirix.io/' && emptyFeed.self === 'https://sirix.io/feed.xml', 'RSS remains valid and absolute with zero posts');
+console.log(JSON.stringify({viewport: mobile ? 'phone' : 'desktop', navigation: 'pass', skipLink: 'pass', diagram: 'pass', blockedContact: 'pass', shortHeaders: 'pass', emptyBlog: 'pass', emptyFeed: 'pass'}));

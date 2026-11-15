@@ -75,6 +75,17 @@ class SiteMutationTests(unittest.TestCase):
                 else:
                     element.text = original
 
+    def test_valid_empty_feed(self):
+        # RSS permits an empty channel; removing template posts must not break it.
+        feed = '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>' \
+               '<title>SirixDB</title><description>Project updates</description>' \
+               '<link>https://sirix.io/</link>' \
+               '<atom:link href="https://sirix.io/feed.xml" rel="self" type="application/rss+xml"/>' \
+               '</channel></rss>'
+        (self.root / 'feed.xml').write_text(feed)
+        self.assertEqual([], checker.check_site(self.root)['errors'])
+        self.assertEqual([], ET.fromstring(feed).findall('.//item'))
+
     def test_missing_css_asset(self):
         (self.root / 'main.css').write_text('body { background: url(missing.png); }')
         self.assertTrue(any('missing target' in error for error in checker.check_site(self.root)['errors']))

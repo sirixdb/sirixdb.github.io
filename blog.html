@@ -16,6 +16,16 @@ title: Blog - SirixDB
       <div class="blog-card__excerpt">{{ post.excerpt | strip_html | truncatewords: 45 }}</div>
       <a href="{{ post.url }}" class="blog-card__link" aria-label="Read {{ post.title | escape }}">Read more &rarr;</a>
     </article>
+    {% else %}
+    <section class="blog-empty" aria-labelledby="blog-empty-title">
+      <p class="blog-empty__label">Coming soon</p>
+      <h2 id="blog-empty-title">The first post arrives with SirixDB 1.0</h2>
+      <p>Until then, explore the documentation or follow the project on GitHub.</p>
+      <div class="blog-empty__actions">
+        <a href="/docs/getting-started.html" class="btn btn--primary">Get started &rarr;</a>
+        <a href="https://github.com/sirixdb/sirix" class="btn btn--secondary">Follow on GitHub</a>
+      </div>
+    </section>
     {% endfor %}
   </div>
 </div>
