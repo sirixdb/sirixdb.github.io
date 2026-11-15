@@ -129,28 +129,67 @@ tl.set("#cap-g2", {opacity: 0, visibility: "hidden"}, 6);
         self.assertTrue(any(samples[2 * rate:3 * rate]))
         self.assertFalse(any(samples[3 * rate:]))
 
-    def test_site_mux_keeps_clean_frames_and_adds_audio(self):
-        script = PROJECT / 'render.sh'
-        out = self.project / 'out'
-        (out / 'stems').mkdir(parents=True)
-        picture = out / 'stems/picture-clean.mp4'
+    def render_fixture(self, sound, name='renderer-output.mp4', color='black'):
+        renderer_output = self.project / name
         subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'lavfi', '-i',
-                        'color=c=black:s=64x64:r=30:d=1', '-an', '-c:v', 'libx264', str(picture)], check=True)
-        shutil.copy(self.audio, out / 'stems/mix.wav')
-        command = next(line for line in script.read_text().splitlines() if '-map 0:v:0 -map 1:a:0' in line)
-        subprocess.run(['bash', '-c', 'RUN=(); ' + command], check=True,
-                       env=dict(os.environ, OUT=str(out)))
+                        f'color=c={color}:s=64x64:r=30:d=1', '-f', 'lavfi', '-i', sound,
+                        '-t', '1', '-c:v', 'libx264', '-c:a', 'aac', str(renderer_output)], check=True)
+        return renderer_output
+
+    def render_script(self, renderer_output, quick=False):
+        shutil.copy(PROJECT / 'render.sh', self.project / 'render.sh')
+        captioned = self.render_fixture('sine=frequency=660:sample_rate=48000',
+                                        name='captioned-render.mp4', color='orange')
+        bin_dir = self.project / 'bin'
+        bin_dir.mkdir()
+        renderer = bin_dir / 'npx'
+        renderer.write_text(f'''#!{sys.executable}
+import os, pathlib, shutil, sys
+from html.parser import HTMLParser
+class CaptionState(HTMLParser):
+    hidden = False
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if attrs.get("id") == "cap":
+            self.hidden = "data-hidden" in attrs
+state = CaptionState()
+state.feed(pathlib.Path("index.html").read_text())
+source = os.environ["RENDERER_OUTPUT" if state.hidden else "CAPTIONED_OUTPUT"]
+shutil.copyfile(source, sys.argv[sys.argv.index("-o") + 1])
+''')
+        renderer.chmod(0o755)
+        wrapper = bin_dir / 'unused-wrapper'
+        wrapper.write_text('#!/bin/sh\nexit 79\n')
+        wrapper.chmod(0o755)
+        self.index(self.clip(length=1), total=1, length=1)
+        result = subprocess.run(['bash', self.project / 'render.sh', *(['--quick'] if quick else [])],
+                                capture_output=True, text=True,
+                                env=dict(os.environ, PATH=str(bin_dir) + os.pathsep + os.environ['PATH'],
+                                         RENDERER_OUTPUT=str(renderer_output), CAPTIONED_OUTPUT=str(captioned),
+                                         HEAVY=str(wrapper)))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        return self.project / 'out'
+
+    def test_site_export_preserves_silent_renderer_audio(self):
+        renderer_output = self.render_fixture('anullsrc=r=48000:cl=stereo')
+        out = self.render_script(renderer_output)
+        self.assertEqual((out / 'sirixdb-site.mp4').read_bytes(), renderer_output.read_bytes())
+        self.assertFalse((self.project / '.render-clean').exists())
         streams = json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-show_streams',
-                                                      '-of', 'json', str(out / 'sirixdb-site.mp4')]))['streams']
-        self.assertEqual([s['codec_type'] for s in streams], ['video', 'audio'])
-        self.assertAlmostEqual(float(streams[0]['duration']), 1, places=2)
-        def frames(path):
-            return subprocess.check_output(['ffmpeg', '-v', 'error', '-i', str(path),
-                                            '-map', '0:v', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'])
-        self.assertEqual(frames(picture), frames(out / 'sirixdb-site.mp4'))
-        audio = subprocess.check_output(['ffmpeg', '-v', 'error', '-i', str(out / 'sirixdb-site.mp4'),
-                                         '-map', '0:a', '-f', 's16le', '-'])
-        self.assertTrue(any(audio))
+                                                      '-of', 'json', str(out / 'stems/picture-clean.mp4')]))['streams']
+        self.assertEqual([s['codec_type'] for s in streams], ['video'])
+
+    def test_site_export_preserves_audible_renderer_audio(self):
+        renderer_output = self.render_fixture('sine=frequency=440:sample_rate=48000')
+        out = self.render_script(renderer_output)
+        self.assertEqual((out / 'sirixdb-site.mp4').read_bytes(), renderer_output.read_bytes())
+
+    def test_quick_render_still_exports_a_draft(self):
+        renderer_output = self.render_fixture('sine=frequency=440:sample_rate=48000')
+        out = self.render_script(renderer_output, quick=True)
+        self.assertEqual((out / 'sirixdb-60s-draft.mp4').read_bytes(),
+                         (self.project / 'captioned-render.mp4').read_bytes())
+        self.assertFalse((out / 'sirixdb-site.mp4').exists())
 
 
 if __name__ == '__main__':

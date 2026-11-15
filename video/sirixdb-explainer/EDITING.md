@@ -66,8 +66,8 @@ words (for example `C.storage`); they are plain numbers you can change.
 the current voice positions and film length (`tools/remix.py`). It also derives the SRT from
 `compositions/cap.html` (`tools/srt.py`), so the subtitles always match the burned-in captions.
 
-`out/sirixdb-site.mp4` combines the clean picture with voice and ducked music. Use it with the
-separate WebVTT track on sirix.io; `out/sirixdb-60s.mp4` has burned-in captions for other destinations.
+`out/sirixdb-site.mp4` is the clean HyperFrames render, preserving the audio as edited in Studio.
+Use it with the separate WebVTT track on sirix.io; `out/sirixdb-60s.mp4` has burned-in captions for other destinations.
 
 Stems in `out/stems/`, for a normal video editor:
 - `picture-clean.mp4`: picture, no captions, no audio
@@ -163,6 +163,5 @@ ffmpeg -y -i video/sirixdb-explainer/out/poster.png -q:v 3 assets/video/sirixdb-
 ffmpeg -y -i video/sirixdb-explainer/out/sirixdb-60s.srt assets/video/sirixdb-explainer.en.vtt
 ```
 
-On this laptop the heavy steps can run through a CPU limiter: `HEAVY=/path/to/limiter ./render.sh`.
 Re-capturing the shell (`capture/capture2.py`) needs `SIRIX_CLASSPATH_DIR` (a directory with the
 `classpath.txt` of a built sirix-query checkout) and `JAVA` (JDK 25).
