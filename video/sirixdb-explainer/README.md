@@ -19,7 +19,7 @@ scenes show a real `sirix-shell` session.
 
 ```bash
 cd video/sirixdb-explainer
-./render.sh          # captioned MP4, site-clean MP4, SRT, poster and editor stems in out/
+./render.sh          # captioned MP4, site-clean MP4, SRT and poster in out/
 ./render.sh --quick  # draft-quality MP4 only
 ```
 

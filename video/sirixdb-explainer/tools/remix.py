@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 """Rebuild the music track so it ducks under the voice clips where they sit now.
 
-Usage: tools/remix.py [--stems DIR]
+Usage: tools/remix.py
 Reads video/index.html (voice clips vo-1..vo-N, possibly moved/trimmed in Studio) and the music
 source audio/music.m4a; writes video/assets/music-ducked.wav (fitted to the film's length,
 faded out under the end card). Free: local ffmpeg only.
-With --stems DIR also writes vo-full.wav, music-bed.wav (not ducked) and mix.wav there.
 """
-import sys, pathlib, shutil
+import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from common import PROJECT, CFG, SR, run, root_duration, voice_clips
 
 video = PROJECT / "video"; assets = video / "assets"
-stems = pathlib.Path(sys.argv[sys.argv.index("--stems") + 1]) if "--stems" in sys.argv else None
 total = root_duration(video)
 clips = voice_clips(video)
 work = PROJECT / "audio" / "work"; work.mkdir(parents=True, exist_ok=True)
@@ -23,7 +21,11 @@ for n, c in enumerate(clips):
     trim = ["-ss", str(c["media_start"])] + (["-t", str(c["duration"])] if c["duration"] is not None else [])
     inputs += trim + ["-i", str(c["src"])]
     filt.append(f"[{n}:a]aresample={SR},volume={c['volume']},adelay={int(round(c['start'] * 1000))}:all=1[d{n}]")
-filt.append("".join(f"[d{n}]" for n in range(len(clips))) + f"amix=inputs={len(clips)}:normalize=0,apad,atrim=0:{total}[v]")
+if clips:
+    filt.append("".join(f"[d{n}]" for n in range(len(clips))) + f"amix=inputs={len(clips)}:normalize=0,apad,atrim=0:{total}[v]")
+else:
+    inputs = ["-f", "lavfi", "-i", f"anullsrc=r={SR}:cl=mono"]
+    filt = [f"[0:a]atrim=0:{total}[v]"]
 run(["ffmpeg", "-y", "-hide_banner", *inputs, "-filter_complex", ";".join(filt), "-map", "[v]", "-ar", SR, "-ac", 1, "-c:a", "pcm_s16le", work / "vo-full.wav"])
 
 # music fitted to the film: skip the source's silent lead-in, fade in, fade out under the end card
@@ -38,12 +40,3 @@ run(["ffmpeg", "-y", "-hide_banner", "-i", work / "music-bed.wav", "-i", work / 
      "-map", "[d]", "-ar", SR, "-c:a", "pcm_s16le", assets / "music-ducked.wav"])
 print(f"music-ducked.wav: {total:.2f} s, ducked under {len(clips)} voice clips")
 
-if stems:
-    stems.mkdir(parents=True, exist_ok=True)
-    shutil.copy(work / "vo-full.wav", stems / "vo-full.wav")
-    shutil.copy(work / "music-bed.wav", stems / "music-bed.wav")
-    run(["ffmpeg", "-y", "-hide_banner", "-i", work / "vo-full.wav", "-i", assets / "music-ducked.wav", "-filter_complex",
-         "[0:a]pan=stereo|c0=c0|c1=c0[v];[v][1:a]amix=inputs=2:normalize=0:duration=longest[x]",
-         "-map", "[x]", "-c:a", "pcm_s16le", stems / "mix.wav"])
-    for c in clips:
-        shutil.copy(c["src"], stems / c["src"].name)

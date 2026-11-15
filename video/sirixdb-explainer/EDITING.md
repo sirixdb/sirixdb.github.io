@@ -58,7 +58,7 @@ words (for example `C.storage`); they are plain numbers you can change.
 ## Re-render (free)
 
 ```bash
-./render.sh            # out/sirixdb-60s.mp4, sirixdb-60s.srt, poster.png and out/stems/ (about 10 min)
+./render.sh            # out/sirixdb-60s.mp4, sirixdb-site.mp4, sirixdb-60s.srt and poster.png (about 10 min)
 ./render.sh --quick    # draft-quality MP4 only
 ```
 
@@ -68,15 +68,6 @@ the current voice positions and film length (`tools/remix.py`). It also derives 
 
 `out/sirixdb-site.mp4` is the clean HyperFrames render, preserving the audio as edited in Studio.
 Use it with the separate WebVTT track on sirix.io; `out/sirixdb-60s.mp4` has burned-in captions for other destinations.
-
-Stems in `out/stems/`, for a normal video editor:
-- `picture-clean.mp4`: picture, no captions, no audio
-- `picture-with-captions.mp4`: picture with captions, no audio
-- `vo-scene-1..8.wav`: the voice clips
-- `vo-full.wav`: the whole voice track on the film's clock
-- `music-bed.wav`: music, not ducked
-- `mix.wav`: voice + ducked music
-- `sirixdb-60s.srt`: subtitles
 
 ## Pace (free)
 

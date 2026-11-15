@@ -119,7 +119,7 @@ tl.set("#cap-g2", {opacity: 0, visibility: "hidden"}, 6);
         self.index(hidden='data-hidden="true"')
         self.assertEqual(self.cli('srt.py').strip(), '')
 
-    def test_audio_stem_uses_the_same_trim_windows(self):
+    def test_voice_mix_uses_the_same_trim_windows(self):
         self.index(self.clip(length=0) + self.clip(2, start=2, offset=1.5, length=1))
         self.cli('remix.py')
         with wave.open(str(self.project / 'audio/work/vo-full.wav'), 'rb') as wav:
@@ -129,6 +129,29 @@ tl.set("#cap-g2", {opacity: 0, visibility: "hidden"}, 6);
         self.assertTrue(any(samples[2 * rate:3 * rate]))
         self.assertFalse(any(samples[3 * rate:]))
 
+    def test_empty_narration_produces_silence_and_unducked_music(self):
+        self.index(self.clip(), total=1.25)
+        self.cli('remix.py')
+        for clips in ['', self.clip(extra='data-hidden="true"'), self.clip(length=0)]:
+            with self.subTest(clips=clips):
+                self.index(clips, total=1.25)
+                self.cli('remix.py')
+                with wave.open(str(self.project / 'audio/work/vo-full.wav'), 'rb') as wav:
+                    self.assertEqual(wav.getnchannels(), 1)
+                    self.assertEqual(wav.getframerate(), 48000)
+                    self.assertEqual(wav.getnframes(), 60000)
+                    self.assertFalse(any(wav.readframes(wav.getnframes())))
+                with wave.open(str(self.project / 'audio/work/music-bed.wav'), 'rb') as wav:
+                    bed = array.array('h', wav.readframes(wav.getnframes()))
+                with wave.open(str(self.video / 'assets/music-ducked.wav'), 'rb') as wav:
+                    self.assertEqual(wav.getnchannels(), 2)
+                    self.assertEqual(wav.getnframes(), 60000)
+                    music = array.array('h', wav.readframes(wav.getnframes()))
+                self.assertTrue(any(music))
+                self.assertEqual(len(bed), len(music))
+                self.assertLessEqual(max(abs(actual - round(raw * 10 ** (-15 / 20)))
+                                         for actual, raw in zip(music, bed)), 1)
+
     def render_fixture(self, sound, name='renderer-output.mp4', color='black'):
         renderer_output = self.project / name
         subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'lavfi', '-i',
@@ -136,7 +159,7 @@ tl.set("#cap-g2", {opacity: 0, visibility: "hidden"}, 6);
                         '-t', '1', '-c:v', 'libx264', '-c:a', 'aac', str(renderer_output)], check=True)
         return renderer_output
 
-    def render_script(self, renderer_output, quick=False):
+    def render_script(self, renderer_output, quick=False, narration=True):
         shutil.copy(PROJECT / 'render.sh', self.project / 'render.sh')
         captioned = self.render_fixture('sine=frequency=660:sample_rate=48000',
                                         name='captioned-render.mp4', color='orange')
@@ -161,7 +184,7 @@ shutil.copyfile(source, sys.argv[sys.argv.index("-o") + 1])
         wrapper = bin_dir / 'unused-wrapper'
         wrapper.write_text('#!/bin/sh\nexit 79\n')
         wrapper.chmod(0o755)
-        self.index(self.clip(length=1), total=1, length=1)
+        self.index(self.clip(length=1) if narration else "", total=1, length=1)
         result = subprocess.run(['bash', self.project / 'render.sh', *(['--quick'] if quick else [])],
                                 capture_output=True, text=True,
                                 env=dict(os.environ, PATH=str(bin_dir) + os.pathsep + os.environ['PATH'],
@@ -172,12 +195,10 @@ shutil.copyfile(source, sys.argv[sys.argv.index("-o") + 1])
 
     def test_site_export_preserves_silent_renderer_audio(self):
         renderer_output = self.render_fixture('anullsrc=r=48000:cl=stereo')
-        out = self.render_script(renderer_output)
+        out = self.render_script(renderer_output, narration=False)
         self.assertEqual((out / 'sirixdb-site.mp4').read_bytes(), renderer_output.read_bytes())
         self.assertFalse((self.project / '.render-clean').exists())
-        streams = json.loads(subprocess.check_output(['ffprobe', '-v', 'error', '-show_streams',
-                                                      '-of', 'json', str(out / 'stems/picture-clean.mp4')]))['streams']
-        self.assertEqual([s['codec_type'] for s in streams], ['video'])
+        self.assertFalse((out / 'stems').exists())
 
     def test_site_export_preserves_audible_renderer_audio(self):
         renderer_output = self.render_fixture('sine=frequency=440:sample_rate=48000')
@@ -186,7 +207,7 @@ shutil.copyfile(source, sys.argv[sys.argv.index("-o") + 1])
 
     def test_quick_render_still_exports_a_draft(self):
         renderer_output = self.render_fixture('sine=frequency=440:sample_rate=48000')
-        out = self.render_script(renderer_output, quick=True)
+        out = self.render_script(renderer_output, quick=True, narration=False)
         self.assertEqual((out / 'sirixdb-60s-draft.mp4').read_bytes(),
                          (self.project / 'captioned-render.mp4').read_bytes())
         self.assertFalse((out / 'sirixdb-site.mp4').exists())
