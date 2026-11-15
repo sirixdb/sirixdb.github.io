@@ -49,9 +49,11 @@ and its Maven launch command together.
 
 Budget for both Java heap and off-heap page memory, plus query intermediates and
 native libraries. `-Xmx` limits the heap; it is not the process's total memory
-limit. `DatabaseConfiguration.setMaxSegmentAllocationSize(...)` configures the
-allocator budget when a database is created. The allocator and caches are shared
-within the process, so the first initialization matters.
+limit. `DatabaseConfiguration.setMaxSegmentAllocationSize(...)` records a database's
+allocator request; `sirix.allocator.maxSize` supplies the startup default. The
+process-wide allocator's first initialization fixes the effective allowance,
+subject to physical headroom. Opening another database with a different persisted
+request does not resize it.
 
 Start with the [Dockerfile's runtime settings](https://github.com/sirixdb/sirix/blob/main/Dockerfile)
 and [Compose resource limits](https://github.com/sirixdb/sirix/blob/main/docker-compose.yml)
@@ -66,13 +68,18 @@ collector flags from an older JDK launch command.
 
 The current initialization in
 [`Databases`](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/main/java/io/sirix/access/Databases.java)
-computes cache limits from the allocator budget:
+computes record-cache limits from the effective process allocator allowance,
+while metadata caches use entry caps. Transient I/O, serialization, commit/import
+buffers and grouped-query working memory share the allocator budget with pages.
+The [derived-memory contract](https://github.com/sirixdb/sirix/blob/main/docs/DERIVED_QUERY_CACHES.md)
+describes query execution grants and the separate retained heap-cache envelope.
+An allocator allowance is not a total process-memory limit.
 
 | Cache | Default | Override |
 |---|---|---|
 | Record pages | 50% of budget | `sirix.cache.recordPage` (bytes) |
 | Record-page fragments | 18.75% of budget | `sirix.cache.recordPageFragment` (bytes) |
-| Metadata pages | 6.25% of budget, minimum 100 MiB | `sirix.cache.page` (bytes) |
+| Metadata pages | 50,000 entries | `sirix.cache.page.max.entries` (positive entry count) |
 | Revision roots | 20,000 entries | `sirix.cache.revisionRoot.max.entries` (positive entry count) |
 | Names | 500 entries | Fixed in initialization |
 | Path summaries | 20 entries | Fixed in initialization |
@@ -83,13 +90,21 @@ memory for the caches and the rest of the workload:
 ```text
 -Dsirix.cache.recordPage=1073741824
 -Dsirix.cache.recordPageFragment=402653184
--Dsirix.cache.page=134217728
+-Dsirix.cache.page.max.entries=50000
 -Dsirix.cache.revisionRoot.max.entries=20000
 ```
 
-Inspect the byte counts in startup logs and the metrics below. Some source
-comments and log suffixes still describe older percentages; the initialization
-code, rather than those suffixes, determines the configured sizes.
+Set these properties before database or global-cache initialization. The allocator
+startup default is `16G`, configured with `sirix.allocator.maxSize`; cache byte
+caps accept positive byte counts or binary K/KB, M/MB and G/GB suffixes. Invalid,
+nonpositive or overflowing values fail rather than silently restoring defaults.
+Entry caps require positive decimal integers. `sirix.allocator` may be unset or
+`frame`; the removed `pool` and `windowspool` options fail at first use.
+
+The deprecated `sirix.cache.page` property estimates one metadata entry per
+1,000 bytes; it does not bound retained heap bytes. The explicit
+`sirix.cache.page.max.entries` cap takes precedence over that estimate. Inspect
+startup logs and the metrics below to confirm the effective configuration.
 
 ## 5. Native libraries
 
