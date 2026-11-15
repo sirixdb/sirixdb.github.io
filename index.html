@@ -172,7 +172,7 @@ description: >-
           <text class="t-m" x="352" y="22" text-anchor="middle">page 4</text>
           <text class="t-m" x="490" y="22" text-anchor="middle">bytes written</text>
           <g id="st-rows"></g>
-          <text class="t" x="0" y="378" id="st-foot">Reading page 2 at rev 3 combines 2 fragments (at most N, configurable)</text>
+          <text class="t" x="0" y="378" id="st-foot">Page 2 at rev 3: 2 fragments (at most N, configurable)</text>
         </svg>
         <div class="legend"><span><i style="background:var(--surface-2);border:1px solid var(--border-strong)"></i>page written</span><span><i style="background:var(--orange)"></i>changed record → new fragment</span><span><i style="border:1px dashed var(--border-strong)"></i>shared, not rewritten</span><span><i style="background:var(--orange-wash);border:1px solid var(--orange)"></i>index pages on the leaf-to-root path</span></div>
         <div class="fig-ctrl"><button type="button" class="chip" data-st="1" aria-pressed="false">rev 1</button><button type="button" class="chip" data-st="2" aria-pressed="false">rev 2</button><button type="button" class="chip" data-st="3" aria-pressed="true">rev 3</button><button type="button" class="play-btn" id="st-play">↻ replay</button></div>
@@ -500,7 +500,7 @@ description: >-
         <li><b>Web console<span class="ent__badge">in development</span></b><span>A dashboard across your databases plus audit reports: a cross-resource activity timeline with author filtering, and compliance exports of the audit trail.</span></li>
         <li><b>Object storage (S3 and compatibles)<span class="ent__badge">in development</span></b><span>Each commit becomes an immutable segment object plus a small manifest, read through an in-memory page cache. Immutable revisions are a natural fit for object storage.</span></li>
         <li><b>Read replicas over Kafka<span class="ent__badge">in development</span></b><span>A leader publishes one small event per commit; followers reload the leader's manifest from shared storage and serve the same revisions. Still one writer per resource.</span></li>
-        
+
       </ul>
       <div class="lp-hero__actions" style="margin-top:24px"><a class="lp-btn lp-btn--ghost" href="/contact.html">Talk to us about Enterprise</a></div>
     </div>

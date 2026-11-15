@@ -14,7 +14,7 @@ Get SirixDB running and query temporal data in minutes. Pick the path that fits 
 | [Embedded Java Library](#embedded-java-library) | ~10 min | JVM applications, maximum performance, full control |
 | [CLI Tools](#cli-tools) | ~10 min | Ad-hoc queries, scripting, interactive JSONiq |
 
-**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) for the REST API path, [JDK 24+](https://jdk.java.net/) for the last two.
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) for the REST API path; for the embedded and CLI paths, see the [supported JVM and required launch flags](/docs/operations.html).
 
 ---
 
@@ -129,121 +129,9 @@ For the full endpoint reference, see [REST API](/docs/rest-api.html).
 
 Use SirixDB directly inside your JVM application for maximum performance and fine-grained control.
 
-### Add the dependency
+Follow the [embedded-library setup in the SirixDB README](https://github.com/sirixdb/sirix#as-an-embedded-library) for current Maven and Gradle coordinates and the command to run the example. It distinguishes the published library from source builds.
 
-**Gradle (Kotlin DSL):**
-
-```kotlin
-repositories {
-    mavenCentral()
-    maven("https://oss.sonatype.org/content/repositories/snapshots/")
-}
-
-dependencies {
-    implementation("io.sirix:sirix-core:0.11.1-SNAPSHOT")
-}
-```
-
-**Maven:**
-
-```xml
-<repositories>
-  <repository>
-    <id>sonatype-snapshots</id>
-    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-    <snapshots><enabled>true</enabled></snapshots>
-  </repository>
-</repositories>
-
-<dependencies>
-  <dependency>
-    <groupId>io.sirix</groupId>
-    <artifactId>sirix-core</artifactId>
-    <version>0.11.1-SNAPSHOT</version>
-  </dependency>
-</dependencies>
-```
-
-### Complete example
-
-```java
-import io.sirix.access.DatabaseConfiguration;
-import io.sirix.access.Databases;
-import io.sirix.access.ResourceConfiguration;
-import io.sirix.api.JsonNodeReadOnlyTrx;
-import io.sirix.api.JsonNodeTrx;
-import io.sirix.api.json.JsonResourceSession;
-import io.sirix.service.json.serialize.JsonSerializer;
-import io.sirix.service.json.shredder.JsonShredder;
-
-import java.io.StringWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-public class SirixQuickStart {
-    public static void main(String[] args) throws Exception {
-        final var dbPath = Path.of(System.getProperty("java.io.tmpdir"), "sirix-getting-started");
-
-        // Clean up from previous runs
-        if (Files.exists(dbPath)) {
-            Databases.removeDatabase(dbPath);
-        }
-
-        // 1. Create a database and resource
-        Databases.createJsonDatabase(new DatabaseConfiguration(dbPath));
-
-        try (final var database = Databases.openJsonDatabase(dbPath)) {
-            database.createResource(ResourceConfiguration.newBuilder("products").build());
-
-            // 2. Insert JSON data (revision 1)
-            try (final var session = database.beginResourceSession("products");
-                 final var wtx = session.beginNodeTrx()) {
-
-                wtx.insertSubtreeAsFirstChild(JsonShredder.createStringReader("""
-                    [
-                      {"name": "Laptop", "price": 999},
-                      {"name": "Phone",  "price": 699}
-                    ]
-                    """));
-                wtx.commit();
-
-                // 3. Update data (revision 2) — add a product
-                wtx.moveTo(1); // move to the array node
-                wtx.insertSubtreeAsFirstChild(JsonShredder.createStringReader(
-                    """
-                    {"name": "Monitor", "price": 349}
-                    """));
-                wtx.commit();
-            }
-
-            // 4. Read a specific revision
-            try (final var session = database.beginResourceSession("products");
-                 final var rtx = session.beginNodeReadOnlyTrx(1)) {
-                // rtx is now positioned at revision 1
-                final var writer = new StringWriter();
-                final var serializer = new JsonSerializer.Builder(session, writer)
-                    .startNodeKey(rtx.getNodeKey())
-                    .revisions(new int[]{1})
-                    .build();
-                serializer.call();
-                System.out.println("Revision 1: " + writer);
-            }
-
-            // 5. Read the latest revision
-            try (final var session = database.beginResourceSession("products");
-                 final var rtx = session.beginNodeReadOnlyTrx()) {
-                final var writer = new StringWriter();
-                final var serializer = new JsonSerializer.Builder(session, writer).build();
-                serializer.call();
-                System.out.println("Latest:     " + writer);
-            }
-        }
-
-        // Clean up
-        Databases.removeDatabase(dbPath);
-    }
-}
-```
+The [standalone embedded example](https://github.com/sirixdb/sirix/tree/main/docs/examples/embedded) creates an isolated temporary database, commits two revisions, and reads the original value back. Use its source and Maven configuration together.
 
 **Key concepts:**
 

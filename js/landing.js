@@ -1,6 +1,6 @@
 /* SirixDB landing page: animated diagrams and tabs for index.html.
-   Plain JS, no dependencies. Animations run only while visible and never
-   auto-play under prefers-reduced-motion; every diagram has manual controls. */
+   Plain JS, no dependencies. Diagram loops run only while visible; animations
+   never auto-play under prefers-reduced-motion. */
 (function () {
   'use strict';
   var lp = document.querySelector('.lp');

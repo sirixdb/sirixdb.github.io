@@ -12,7 +12,7 @@ SirixDB is a **bitemporal node store** that makes version control a first-class 
 
 | Feature | What it means | Why it matters |
 |---------|---------------|----------------|
-| **Bitemporal** | Every revision preserved | Git-like history for your data |
+| **Bitemporal** | Transaction time and application-supplied valid time | Query what was recorded and when it was true |
 | **Append-Only** | No in-place updates | No WAL needed, crash-safe by design |
 | **Copy-on-Write** | Modified pages copied, unchanged shared | O(Δ) storage per revision |
 | **Structural Sharing** | Unchanged subtrees reference existing pages | Billion-node docs with small revisions |
@@ -31,13 +31,13 @@ Most document databases (MongoDB, CouchDB) treat a document as an opaque blob: s
 | Aspect | Document Store | SirixDB Node Store |
 |--------|----------------|-------------------|
 | **Size limits** | 16 MB (MongoDB), 1 MB (DynamoDB) | **Unlimited** — nodes stored independently |
-| **Update granularity** | Replace entire document | Write only changed nodes |
+| **Update granularity** | Replace entire document | Version record-page fragments and the ancestor path |
 | **Query efficiency** | Load doc, filter in app | Navigate directly to target nodes |
 | **Memory footprint** | Entire doc in memory | Stream nodes, never load full tree |
 | **Versioning granularity** | "Document changed" | "These specific nodes changed" |
 | **Diff precision** | "Something's different" | Exact path to every modified node |
 
-This means: a 100 GB JSON dataset? Store it as one logical resource — no sharding. Change one field in a deeply nested object? SirixDB writes just that node plus the modified path. Need the history of a specific field across 1,000 commits? That's a fast index lookup, not a full-document diff.
+This means: a 100 GB JSON dataset? Store it as one logical resource — no sharding. Change one field in a deeply nested object? SirixDB versions the affected record pages and copies the ancestor path; fragment contents depend on the [versioning strategy](#sliding-snapshot-versioning). Need the history of a specific field across 1,000 commits? That's a fast index lookup, not a full-document diff.
 
 <svg viewBox="0 0 720 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="JSON document decomposed into a tree of nodes with stable node keys">
   <!-- Title -->
@@ -237,7 +237,7 @@ When a transaction modifies data, SirixDB doesn't rewrite existing pages. Instea
   <text x="580" y="230" text-anchor="middle" fill="#9ca3af" font-size="11" font-family="JetBrains Mono,monospace" font-weight="500">Rev 3</text>
 </svg>
 
-This means a revision that modifies a single record only writes the modified page plus its ancestor path — typically 3-4 pages. A 10 GB database with 1,000 revisions and 0.1% change each requires roughly 20 GB total, not 10 TB.
+A commit writes fragments for affected record pages plus new index pages on their ancestor paths to the revision root. Fragment contents and reconstruction costs depend on the [versioning strategy](#sliding-snapshot-versioning).
 
 Physically, each resource is stored in two append-only logical devices (files). **LD₁** stores page content (IndirectPages, RecordPages, NamePages) followed by a RevisionRootPage at the end of each revision's data. **LD₂** stores the UberPage — a sequence of timestamp + offset pairs, one per revision, pointing to the corresponding RRP in LD₁.
 
@@ -414,11 +414,11 @@ SirixDB doesn't just copy entire pages on every change. It versions `RecordPages
 | Strategy | Reads to reconstruct | Write cost per revision | Write spikes? |
 |----------|---------------------|------------------------|---------------|
 | **Full** | 1 page | Entire page (all records) | No |
-| **Incremental** | All since last full dump | Only changed records | Yes (periodic full dump) |
+| **Incremental** | At most N fragments since last full dump | Changed records; a full page every N revisions | Yes (periodic full dump) |
 | **Differential** | 2 pages (full + diff) | All changes since last full dump | Yes (growing deltas + full dump) |
 | **Sliding Snapshot** | At most N fragments | Changed + expired records | **No** |
 
-The sliding snapshot uses a window of size N (typically 3-5). Changed records are always written. Records older than N revisions that haven't been written are carried forward. This guarantees that at most N page fragments need to be read to reconstruct any page — regardless of total revision count.
+The sliding snapshot uses a window of size N, configurable per resource; see the [`revisionsToRestore` configuration](/docs/transactional-cursor-api.html#create-an-xml-database-and-resource). Changed records are always written. Records older than N revisions that haven't been written are carried forward. This guarantees that at most N page fragments need to be read to reconstruct any page — regardless of total revision count.
 
 For details, see Marc Kramis's thesis: [Evolutionary Tree-Structured Storage: Concepts, Interfaces, and Applications](http://kops.uni-konstanz.de/handle/123456789/27695).
 
