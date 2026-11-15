@@ -293,7 +293,7 @@ Any system that overwrites state destroys information that turns out to be criti
 
 Audit tables, CDC pipelines, event logs and snapshots can also preserve history. SirixDB offers versioned document storage as another approach.
 
-<svg viewBox="0 0 860 340" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Comparison: traditional databases need fragile workarounds while SirixDB provides native bitemporal storage">
+<svg viewBox="0 0 860 340" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Application-managed history compared with SirixDB revision storage and application-supplied valid time">
   <!-- Title -->
   <text x="430" y="22" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Traditional Workarounds vs Native Bitemporality</text>
 

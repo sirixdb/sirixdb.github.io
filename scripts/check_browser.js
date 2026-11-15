@@ -4,6 +4,8 @@
 function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
+await page.open('http://127.0.0.1:4188/docs/index.html');
+assert(await page.eval(() => document.querySelector('.docs-nav [aria-current="page"]')?.getAttribute('href') === '/docs/index.html'), 'Introduction is marked as the current documentation page');
 await page.open('http://127.0.0.1:4188/docs/architecture.html');
 const mobile = await page.eval(() => innerWidth <= 768);
 if (mobile) {

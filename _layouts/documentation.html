@@ -11,7 +11,7 @@
           <p class="docs-nav__title">Documentation</p>
           <ul class="docs-nav__list">
             <li><a href="/docs/getting-started.html" {% if page.url == '/docs/getting-started.html' %}class="active" aria-current="page"{% endif %}>Getting Started</a></li>
-            <li><a href="/docs/index.html" {% if page.url == '/docs/index.html' %}class="active" aria-current="page"{% endif %}>Introduction</a></li>
+            <li><a href="/docs/index.html" {% if page.url == '/docs/' or page.url == '/docs/index.html' %}class="active" aria-current="page"{% endif %}>Introduction</a></li>
             <li><a href="/docs/features.html" {% if page.url == '/docs/features.html' %}class="active" aria-current="page"{% endif %}>Features</a></li>
             <li><a href="/docs/architecture.html" {% if page.url == '/docs/architecture.html' %}class="active" aria-current="page"{% endif %}>Architecture</a></li>
             <li><a href="/docs/comparison.html" {% if page.url == '/docs/comparison.html' %}class="active" aria-current="page"{% endif %}>Comparison</a></li>

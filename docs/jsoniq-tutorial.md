@@ -7,7 +7,8 @@ title: SirixDB - Using the Java CLI via JSONiq queries
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/jsoniq-tutorial.md)
 
 ## Setup a Shell
-Use JDK 25 and build the query module's distribution from a SirixDB checkout:
+Follow the [source-build prerequisites](/docs/operations.html#1-supported-environment)
+and build the query module's distribution from a SirixDB checkout:
 
 ```bash
 ./gradlew :sirix-query:installDist
@@ -18,10 +19,9 @@ The generated launcher includes the module's JVM arguments. On Windows use the
 corresponding `sirix-query.bat` launcher. The `-iq` option starts interactive query
 input; enter a blank line after each query to evaluate it.
 
-For source-build prerequisites, see [Operations](/docs/operations.html).
-
 ## Import of data
-[Download and unpack](/files/json.tar.gz) a zipped directory with two simple JSON files, an `object.json` and an `array.json` file into the same directory as the JAR and the shell-script.
+[Download and unpack](/files/json.tar.gz) the archive containing `object.json` and
+`array.json`. Use their extracted paths in the import queries below.
 
 The array JSON file is as simple as:
 

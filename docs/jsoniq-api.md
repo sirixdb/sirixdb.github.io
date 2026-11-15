@@ -8,20 +8,18 @@ title: SirixDB - JSONiq API
 
 SirixDB uses [JSONiq](https://www.jsoniq.org/) — the JSON query language — as its primary API for storing, querying, and updating JSON data. JSONiq extends XQuery with native JSON support, making it ideal for working with SirixDB's temporal document store.
 
-For a complete list of all available functions, see the [Function Reference](/docs/jsoniq-functions.html).
+For commonly used functions and their signatures, see the [Function Reference](/docs/jsoniq-functions.html).
 
 ## Setup
 
-Use **JDK 25** for current SirixDB source builds. Follow the
+The query layer uses the `io.sirix:sirix-query` artifact. Follow the
 [embedded-library setup](https://github.com/sirixdb/sirix#as-an-embedded-library)
-for published Maven/Gradle coordinates and the required JVM flags. The query
-layer uses the `io.sirix:sirix-query` artifact; the cursor API uses
-`io.sirix:sirix-core`. Keep module versions aligned. For the current source
-version and snapshot repositories, use the repository's
+for published Maven/Gradle coordinates, keeping module versions aligned.
+For source-build requirements and JVM launch options, see
+[Operations](/docs/operations.html#1-supported-environment). The source
 [Gradle properties](https://github.com/sirixdb/sirix/blob/main/gradle.properties)
-and [build configuration](https://github.com/sirixdb/sirix/blob/main/build.gradle).
-Source builds use the provided Gradle wrapper; published artifacts can be
-consumed from Maven or Gradle applications.
+and [build configuration](https://github.com/sirixdb/sirix/blob/main/build.gradle)
+define the current source version and snapshot repositories.
 
 ## Running Queries from Java
 

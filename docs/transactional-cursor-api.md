@@ -8,16 +8,11 @@ title: SirixDB - Transactional cursor-based API
 
 ## Maven artifacts
 
-Use **JDK 25** for current SirixDB source builds. Follow the
+The cursor API uses the `io.sirix:sirix-core` artifact. Follow the
 [embedded-library setup](https://github.com/sirixdb/sirix#as-an-embedded-library)
-for published Maven/Gradle coordinates and the required JVM flags. The query
-layer uses the `io.sirix:sirix-query` artifact; the cursor API uses
-`io.sirix:sirix-core`. Keep module versions aligned. For the current source
-version and snapshot repositories, use the repository's
-[Gradle properties](https://github.com/sirixdb/sirix/blob/main/gradle.properties)
-and [build configuration](https://github.com/sirixdb/sirix/blob/main/build.gradle).
-Source builds use the provided Gradle wrapper; published artifacts can be
-consumed from Maven or Gradle applications.
+for published Maven/Gradle coordinates, keeping module versions aligned.
+For source-build requirements and JVM launch options, see
+[Operations](/docs/operations.html#1-supported-environment).
 
 ## Article Describing the JSON Transactional Cursor API
 You can find an article about this API regarding only JSON stuff on [Baeldung](https://www.baeldung.com/sirix).

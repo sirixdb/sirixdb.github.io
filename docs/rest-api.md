@@ -460,7 +460,7 @@ For XML resources, SirixDB provides custom XPath axes with the same semantics:
 
 `all-time::` `first::` `last::` `future::` `future-or-self::` `past::` `past-or-self::` `previous::` `previous-or-self::` `next::` `next-or-self::`
 
-See the [JSONiq Function Reference](/docs/jsoniq-functions.html) for the full list of temporal and inspection functions.
+See the [JSONiq Function Reference](/docs/jsoniq-functions.html) for commonly used temporal and inspection functions.
 
 ---
 
@@ -495,25 +495,5 @@ Roles can be scoped to a specific database by prefixing: `shop-create`, `shop-vi
 
 ## Quick Setup
 
-```bash
-# Start SirixDB + Keycloak
-git clone https://github.com/sirixdb/sirix.git
-cd sirix
-docker compose up -d
-
-# Get a token
-TOKEN=$(curl -s -X POST http://localhost:9443/token \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin"}' | jq -r .access_token)
-
-# Store a JSON document
-curl -X PUT "http://localhost:9443/shop/products?hashType=ROLLING" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '[{"name":"Laptop","price":999},{"name":"Phone","price":699}]'
-
-# Query it
-curl "http://localhost:9443/shop/products" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Accept: application/json"
-```
+Follow the [REST quickstart](/docs/getting-started.html#rest-api) to start SirixDB
+and Keycloak, obtain a token, store a resource and query its revisions.
