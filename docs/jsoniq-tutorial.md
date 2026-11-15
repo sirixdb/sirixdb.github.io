@@ -193,19 +193,19 @@ return [
 ]
 ```
 
-Result is:
+The update payloads include these fields (path and DeweyID metadata omitted):
 
 ```json
-[{"diffRev1toRev2":[{"update":{"nodeKey":2,"deweyID":"1.17.17","depth":2,"name":"bar"}}]},{"diffRev2toRev3":[{"replace":{"oldNodeKey":3,"newNodeKey":4,"deweyID":"1.17.17.0","depth":2,"type":"boolean","data":false}}]}]
+[{"diffRev1toRev2":[{"update":{"nodeKey":2,"name":"bar"}}]},{"diffRev2toRev3":[{"update":{"nodeKey":2,"type":"boolean","value":false}}]}]
 ```
 Each node is assigned a unique, monotonically increasing 64Bit `nodeKey` (`ID`), which never changes and is not reassigned once the node has been removed.
-In our example we first updated the field name in revision 2 to `"bar"`. We then replace the value, the node with `nodeKey` 3 and `true` with a new node getting `nodeKey` 4 assigned having the value `false`.
+The field name and boolean value share one `OBJECT_NAMED_BOOLEAN` node with `nodeKey` 2. Revision 2 renames that node to `"bar"`; revision 3 updates its value from `true` to `false`. Both updates preserve the node key, so its history remains continuous.
 
 ## Adding a database/resource from a specific URL
-We can also add resources from a specific URL (as in this [Twitter](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/test/resources/json/twitter.json) example):
+Pass `false()` as the fourth argument to preserve the existing database and its revision history when adding a resource from a URL (as in this [Twitter](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/test/resources/json/twitter.json) example):
 
 ```xquery
-jn:load('mycol','mydoc.jn','https://raw.githubusercontent.com/sirixdb/sirix/main/bundles/sirix-core/src/test/resources/json/twitter.json')
+jn:load('mycol','mydoc.jn','https://raw.githubusercontent.com/sirixdb/sirix/main/bundles/sirix-core/src/test/resources/json/twitter.json', false())
 ```
 
 ## Indexing

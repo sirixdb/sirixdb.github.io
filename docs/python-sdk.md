@@ -291,23 +291,23 @@ We can query for matching records using `find_all()`:
 >>> await json_store.find_all({"key1": "foo"})
 {'rest': [{'key1': 'foo', 'key2': 'bar', 'nodeKey': 2}]}
 >>> await json_store.find_all({"key1": "bar"})
-{'rest': [{'key1': 'bar', 'key2': 'foo', 'nodeKey': 12}, {'key1': 'bar', 'key2': 'foo', 'nodeKey': 7}]}
+{'rest': [{'key1': 'bar', 'key2': 'foo', 'nodeKey': 8}, {'key1': 'bar', 'key2': 'foo', 'nodeKey': 5}]}
 ```
 
-By default, `pysirix` also includes the nodeKey of the record root, you can control this behavior by passing `node_key=False` to `find_all()`.
+By default, `pysirix` also includes the nodeKey of the record root; you can control this behavior by passing `node_key=False` to `find_all()`. In a fresh resource with current Sirix main, the array has key 1 and each inserted record uses three nodes: an object and two fused named-string fields. The record roots therefore receive keys 2, 5, and 8; inserting at the front returns them in reverse insertion order.
 
 It is also possible to project record results, so only certain fields are returned from matching records:
 
 ```python
 >>> await json_store.find_all({"key1": "bar"}, ["key2"])
-{'rest': [{'key2': 'foo', 'nodeKey': 12}, {'key2': 'foo', 'nodeKey': 7}]}
+{'rest': [{'key2': 'foo', 'nodeKey': 8}, {'key2': 'foo', 'nodeKey': 5}]}
 ```
 
 We can also choose which revision we query, using the `revision` parameter:
 
 ```python
 >>> await json_store.find_all({"key1": "bar"}, revision=3)
-{'rest': [{'key1': 'bar', 'key2': 'foo', 'nodeKey': 7}]}
+{'rest': [{'key1': 'bar', 'key2': 'foo', 'nodeKey': 5}]}
 ```
 
 There is only one result, as only one matching record existed in revision 3.

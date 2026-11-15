@@ -3,6 +3,7 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 
 SPEC = importlib.util.spec_from_file_location('check_site', Path(__file__).resolve().parents[1] / 'scripts/check_site.py')
 checker = importlib.util.module_from_spec(SPEC)
@@ -44,9 +45,35 @@ class SiteMutationTests(unittest.TestCase):
     def test_missing_srcset_image(self):
         self.assert_mutation_killed('src="image.svg"', 'src="image.svg" srcset="missing.svg 2x"', 'missing target')
 
-    def test_relative_feed_url(self):
-        (self.root / 'feed.xml').write_text('<rss><channel><link>/</link></channel></rss>')
-        self.assertTrue(any('absolute HTTPS' in error for error in checker.check_site(self.root)['errors']))
+    def test_relative_feed_urls(self):
+        feed = ET.fromstring('<rss xmlns:atom="http://www.w3.org/2005/Atom"><channel>'
+                             '<link>https://sirix.io/</link>'
+                             '<atom:link href="https://sirix.io/feed.xml" rel="self"/>'
+                             '<item><link>https://sirix.io/post.html</link>'
+                             '<guid>https://sirix.io/post.html</guid></item></channel></rss>')
+        path = self.root / 'feed.xml'
+        path.write_text(ET.tostring(feed, encoding='unicode'))
+        self.assertEqual([], checker.check_site(self.root)['errors'])
+        for selector, attribute, error in (
+            ('.//channel/link', None, 'link/guid'),
+            ('.//item/link', None, 'link/guid'),
+            ('.//guid', None, 'link/guid'),
+            ('.//{http://www.w3.org/2005/Atom}link', 'href', 'self link'),
+        ):
+            with self.subTest(selector=selector):
+                element = feed.find(selector)
+                original = element.get(attribute) if attribute else element.text
+                if attribute:
+                    element.set(attribute, '/')
+                else:
+                    element.text = '/'
+                path.write_text(ET.tostring(feed, encoding='unicode'))
+                self.assertEqual([f'feed.xml: {error} must be an absolute HTTPS URL'],
+                                 checker.check_site(self.root)['errors'])
+                if attribute:
+                    element.set(attribute, original)
+                else:
+                    element.text = original
 
     def test_missing_css_asset(self):
         (self.root / 'main.css').write_text('body { background: url(missing.png); }')

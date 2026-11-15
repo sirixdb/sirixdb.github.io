@@ -20,17 +20,20 @@ if (mobile) {
 await page.eval(() => document.querySelector('.skip-link').focus());
 await page.press('Enter');
 assert(await page.eval(() => document.activeElement.id === 'main-content'), 'Skip link focuses main content');
-await page.eval(() => document.querySelector('.diagram-frame__expand').focus());
+await page.open('http://127.0.0.1:4188/docs/transactional-cursor-api.html');
+assert(await page.eval(() => !!document.querySelector('.diagram-frame svg [id]')), 'Source diagram has inline IDs');
+await page.eval(() => document.querySelector('.diagram-frame:has(svg [id]) .diagram-frame__expand').focus());
 await page.press('Enter');
 assert(await page.eval(() => document.querySelector('.svg-lightbox.is-open')?.contains(document.activeElement)), 'Keyboard opens diagram and focuses dialog');
+assert(await page.eval(() => !!document.querySelector('.svg-lightbox.is-open .svg-lightbox__content [id]')), 'Expanded clone has inline IDs');
+assert(await page.eval(() => {
+  const ids = [...document.querySelectorAll('[id]')].map(el => el.id);
+  return ids.length === new Set(ids).size;
+}), 'Mounted diagram clone keeps document IDs unique');
 await page.press('Tab');
 assert(await page.eval(() => document.querySelector('.svg-lightbox').contains(document.activeElement)), 'Dialog retains keyboard focus');
 await page.press('Escape');
 assert(await page.eval(() => document.activeElement.matches('.diagram-frame__expand') && !document.querySelector('.svg-lightbox.is-open')), 'Closing diagram restores trigger focus');
-assert(await page.eval(() => {
-  const ids = [...document.querySelectorAll('[id]')].map(el => el.id);
-  return ids.length === new Set(ids).size;
-}), 'Diagram use leaves unique IDs');
 await page.open('http://127.0.0.1:4188/contact.html');
 // Deliberately make third-party services unavailable; this test cannot send mail.
 const fallback = await page.eval(() => {

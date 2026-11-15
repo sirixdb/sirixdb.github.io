@@ -45,14 +45,14 @@ try (final var store = BasicJsonDBStore.newBuilder().build();
 
 ## Storing Data
 
-Use `jn:store` to create a database and store JSON data. The database is created automatically if it doesn't exist.
+Use `jn:store` to create a database and store JSON data. Both `jn:store` and `jn:load` replace an existing database by default. Pass `false()` as the fourth argument to add a resource while preserving existing resources and revisions; this also creates the database if it does not exist.
 
 ```xquery
 (: Store a JSON array as a named resource :)
 jn:store('shop', 'products', '[{"name":"Laptop","price":999},{"name":"Phone","price":699}]')
 
 (: Store from a file :)
-jn:load('shop', 'inventory', '/path/to/data.json')
+jn:load('shop', 'inventory', '/path/to/data.json', false())
 
 (: Add another resource to an existing database :)
 jn:store('shop', 'customers', '[{"name":"Alice"}]', false())

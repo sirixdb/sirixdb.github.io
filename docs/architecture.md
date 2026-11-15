@@ -429,87 +429,58 @@ With path-summary building enabled, a resource maintains a compact **path summar
 <svg viewBox="0 0 720 396" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1180px;" role="img" aria-label="Path Summary maps unique paths to path class references, connecting data tree nodes to index entries">
   <text x="360" y="16" text-anchor="middle" fill="#e8e6e3" font-size="13" font-family="Inter,sans-serif" font-weight="600">Path Summary and Index Architecture</text>
 
-  <!-- === Left side: JSON Data Tree === -->
   <text x="160" y="36" text-anchor="middle" fill="#42B6F0" font-size="11" font-family="Inter,sans-serif" font-weight="600">Data Tree</text>
-
-  <!-- DocumentRootNode (virtual) — dashed border -->
   <rect x="95" y="44" width="130" height="20" rx="3" fill="rgba(66,182,240,0.08)" stroke="#42B6F0" stroke-width="1" stroke-dasharray="4 2"/>
   <text x="160" y="58" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">DocumentRootNode</text>
   <line x1="160" y1="64" x2="160" y2="75" stroke="#42B6F0" stroke-width="0.8"/>
-
-  <!-- Root object -->
   <rect x="130" y="77" width="60" height="22" rx="3" fill="rgba(66,182,240,0.2)" stroke="#42B6F0" stroke-width="1.2"/>
   <text x="160" y="92" text-anchor="middle" fill="#42B6F0" font-size="8" font-family="JetBrains Mono,monospace">OBJECT</text>
 
-  <!-- "users" key -->
   <line x1="160" y1="99" x2="100" y2="117" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="62" y="119" width="76" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="100" y="133" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">KEY "users"</text>
+  <rect x="40" y="119" width="120" height="28" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="100" y="131" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">OBJECT_NAMED_ARRAY</text>
+  <text x="100" y="142" text-anchor="middle" fill="#e8e6e3" font-size="7" font-family="JetBrains Mono,monospace">users: […]</text>
 
-  <!-- "config" key -->
-  <line x1="160" y1="99" x2="220" y2="117" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="182" y="119" width="76" height="20" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
-  <text x="220" y="133" text-anchor="middle" fill="#F47B20" font-size="7" font-family="JetBrains Mono,monospace">KEY "config"</text>
+  <line x1="160" y1="99" x2="240" y2="117" stroke="#42B6F0" stroke-width="0.8"/>
+  <rect x="178" y="119" width="124" height="28" rx="3" fill="rgba(244,123,32,0.12)" stroke="#F47B20" stroke-width="1"/>
+  <text x="240" y="131" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">OBJECT_NAMED_OBJECT</text>
+  <text x="240" y="142" text-anchor="middle" fill="#e8e6e3" font-size="7" font-family="JetBrains Mono,monospace">config: {}</text>
 
-  <!-- Array under users -->
-  <line x1="100" y1="139" x2="100" y2="154" stroke="#42B6F0" stroke-width="0.8"/>
-  <rect x="74" y="156" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
-  <text x="100" y="169" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">ARRAY</text>
-
-  <!-- User objects -->
-  <line x1="85" y1="174" x2="50" y2="192" stroke="#42B6F0" stroke-width="0.8"/>
-  <line x1="115" y1="174" x2="150" y2="192" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="85" y1="147" x2="50" y2="192" stroke="#42B6F0" stroke-width="0.8"/>
+  <line x1="115" y1="147" x2="150" y2="192" stroke="#42B6F0" stroke-width="0.8"/>
   <rect x="24" y="192" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
   <text x="50" y="205" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">OBJ</text>
   <rect x="124" y="192" width="52" height="18" rx="3" fill="rgba(66,182,240,0.12)" stroke="#42B6F0" stroke-width="0.8"/>
   <text x="150" y="205" text-anchor="middle" fill="#42B6F0" font-size="7" font-family="JetBrains Mono,monospace">OBJ</text>
 
-  <!-- Left OBJ fields: "name" and "age" -->
   <line x1="38" y1="210" x2="30" y2="226" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="10" y="226" width="40" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="30" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"name"</text>
-  <line x1="30" y1="242" x2="30" y2="256" stroke="#10b981" stroke-width="0.6"/>
-  <rect x="6" y="256" width="48" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
-  <text x="30" y="266" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">"Alice"</text>
+  <rect x="6" y="226" width="50" height="30" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="31" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">name:</text>
+  <text x="31" y="249" text-anchor="middle" fill="#e8e6e3" font-size="6" font-family="JetBrains Mono,monospace">"Alice"</text>
+  <line x1="62" y1="210" x2="78" y2="226" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="62" y="226" width="32" height="30" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="78" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">age:</text>
+  <text x="78" y="249" text-anchor="middle" fill="#e8e6e3" font-size="6" font-family="JetBrains Mono,monospace">28</text>
 
-  <line x1="62" y1="210" x2="70" y2="226" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="52" y="226" width="36" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="70" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"age"</text>
-  <line x1="70" y1="242" x2="70" y2="256" stroke="#10b981" stroke-width="0.6"/>
-  <rect x="56" y="256" width="28" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
-  <text x="70" y="266" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">28</text>
+  <line x1="138" y1="210" x2="134" y2="226" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="110" y="226" width="48" height="30" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="134" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">name:</text>
+  <text x="134" y="249" text-anchor="middle" fill="#e8e6e3" font-size="6" font-family="JetBrains Mono,monospace">"Bob"</text>
+  <line x1="162" y1="210" x2="180" y2="226" stroke="#F47B20" stroke-width="0.6"/>
+  <rect x="164" y="226" width="32" height="30" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
+  <text x="180" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">age:</text>
+  <text x="180" y="249" text-anchor="middle" fill="#e8e6e3" font-size="6" font-family="JetBrains Mono,monospace">35</text>
 
-  <!-- Right OBJ fields: "name" and "age" -->
-  <line x1="138" y1="210" x2="130" y2="226" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="110" y="226" width="40" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="130" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"name"</text>
-  <line x1="130" y1="242" x2="130" y2="256" stroke="#10b981" stroke-width="0.6"/>
-  <rect x="108" y="256" width="44" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
-  <text x="130" y="266" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">"Bob"</text>
-
-  <line x1="162" y1="210" x2="170" y2="226" stroke="#F47B20" stroke-width="0.6"/>
-  <rect x="152" y="226" width="36" height="16" rx="2" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="0.6"/>
-  <text x="170" y="237" text-anchor="middle" fill="#F47B20" font-size="6" font-family="JetBrains Mono,monospace">"age"</text>
-  <line x1="170" y1="242" x2="170" y2="256" stroke="#10b981" stroke-width="0.6"/>
-  <rect x="158" y="256" width="24" height="14" rx="2" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="0.6"/>
-  <text x="170" y="266" text-anchor="middle" fill="#10b981" font-size="6" font-family="JetBrains Mono,monospace">35</text>
-
-  <!-- nodeKey labels (preorder traversal: k0..k14) -->
   <text x="93" y="56" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k0</text>
   <text x="128" y="90" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k1</text>
-  <text x="60" y="131" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k2</text>
-  <text x="72" y="167" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k3</text>
-  <text x="22" y="203" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k4</text>
-  <text x="8" y="237" text-anchor="end" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k5</text>
-  <text x="30" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k6</text>
-  <text x="90" y="237" text-anchor="start" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k7</text>
-  <text x="70" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k8</text>
-  <text x="178" y="203" text-anchor="start" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k9</text>
-  <text x="108" y="237" text-anchor="end" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k10</text>
-  <text x="130" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k11</text>
-  <text x="190" y="237" text-anchor="start" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k12</text>
-  <text x="170" y="276" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k13</text>
-  <text x="180" y="131" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k14</text>
+  <text x="38" y="131" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k2</text>
+  <text x="22" y="203" text-anchor="end" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k3</text>
+  <text x="31" y="268" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k4</text>
+  <text x="78" y="268" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k5</text>
+  <text x="178" y="203" text-anchor="start" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k6</text>
+  <text x="134" y="268" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k7</text>
+  <text x="180" y="268" text-anchor="middle" fill="#6b7280" font-size="5" font-family="JetBrains Mono,monospace">k8</text>
+  <text x="304" y="131" fill="#6b7280" font-size="5.5" font-family="JetBrains Mono,monospace">k9</text>
 
   <!-- === Right side: Path Summary === -->
   <text x="540" y="36" text-anchor="middle" fill="#a78bfa" font-size="11" font-family="Inter,sans-serif" font-weight="600">Path Summary</text>
@@ -549,23 +520,14 @@ With path-summary building enabled, a resource maintains a compact **path summar
   <text x="520" y="240" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="JetBrains Mono,monospace">age</text>
   <text x="566" y="240" fill="#6b7280" font-size="7" font-family="JetBrains Mono,monospace">PCR=4</text>
 
-  <!-- PCR dashed connections from data tree to path summary -->
-  <!-- DocumentRootNode → DocumentRootNode -->
   <line x1="225" y1="54" x2="475" y2="54" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
-  <!-- KEY "users" → users -->
-  <path d="M 138,129 Q 286,97 434,129" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
-  <!-- KEY "config" → config -->
-  <path d="M 258,129 Q 406,167 554,129" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
-  <!-- ARRAY → [] -->
-  <line x1="126" y1="165" x2="440" y2="165" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4"/>
-  <!-- Left "name" → name (gentle arc above keys) -->
-  <path d="M 30,226 Q 210,208 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
-  <!-- Right "name" → name (gentle arc above keys) -->
-  <path d="M 130,226 Q 260,210 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
-  <!-- Left "age" → age (higher arc, bypasses PS name box) -->
-  <path d="M 70,226 C 280,186 484,210 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
-  <!-- Right "age" → age (higher arc, bypasses PS name box) -->
-  <path d="M 170,226 C 330,190 484,210 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
+  <path d="M 160,129 Q 297,97 434,129" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <path d="M 302,129 Q 428,167 554,129" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <path d="M 160,142 Q 300,180 440,165" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <path d="M 31,226 Q 210,208 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <path d="M 134,226 Q 260,210 384,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.4" fill="none"/>
+  <path d="M 78,226 C 280,186 484,210 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
+  <path d="M 180,226 C 330,190 484,210 484,236" stroke="#9ca3af" stroke-width="0.6" stroke-dasharray="4 3" opacity="0.35" fill="none"/>
 
   <!-- Index section below -->
   <line x1="40" y1="294" x2="680" y2="294" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
@@ -574,18 +536,24 @@ With path-summary building enabled, a resource maintains a compact **path summar
   <!-- Name Index -->
   <rect x="40" y="330" width="190" height="38" rx="5" fill="rgba(244,123,32,0.08)" stroke="#F47B20" stroke-width="1"/>
   <text x="135" y="344" text-anchor="middle" fill="#F47B20" font-size="9" font-family="Inter,sans-serif" font-weight="600">Name Index</text>
-  <text x="135" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">hash("name") → {key5,key10}</text>
+  <text x="135" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">hash("name") → {key4,key7}</text>
 
   <!-- Path Index -->
   <rect x="260" y="330" width="200" height="38" rx="5" fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1"/>
   <text x="360" y="344" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="Inter,sans-serif" font-weight="600">Path Index</text>
-  <text x="360" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">PCR=3 → {key5, key10}</text>
+  <text x="360" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">PCR=3 → {key4, key7}</text>
 
   <!-- CAS Index -->
   <rect x="490" y="330" width="200" height="38" rx="5" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="1"/>
   <text x="590" y="344" text-anchor="middle" fill="#10b981" font-size="9" font-family="Inter,sans-serif" font-weight="600">CAS Index</text>
-  <text x="590" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">(PCR=4, 28) → {key8}</text>
+  <text x="590" y="360" text-anchor="middle" fill="#9ca3af" font-size="8" font-family="JetBrains Mono,monospace">(PCR=4, 28) → {key5}</text>
 </svg>
+
+The data tree uses one node per named field: `name` fields are
+`OBJECT_NAMED_STRING` nodes and `age` fields are `OBJECT_NAMED_NUMBER` nodes.
+The fused `users` array owns the two user objects directly. Its path summary
+retains both the field-name step and the array step (`/users/[]`). Index entries
+point to the fused field nodes shown above.
 
 ### Index Types
 

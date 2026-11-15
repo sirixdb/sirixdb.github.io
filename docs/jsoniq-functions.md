@@ -14,9 +14,10 @@ Store, open, and manage JSON databases and resources.
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
-| `jn:store` | `($coll, $res, $data)` | Store JSON data in a collection. Creates the collection if it does not exist. |
-| `jn:store` | `($coll, $res, $data, $create-new)` | Store JSON data; when `$create-new` is `true`, always create a new collection. |
-| `jn:load` | `($coll, $res, $uris)` | Load JSON from one or more file URIs into a collection. |
+| `jn:store` | `($coll, $res, $data)` | Create a collection and store JSON data, replacing any existing collection and its history. |
+| `jn:store` | `($coll, $res, $data, $create-new)` | When `$create-new` is `false`, add a resource without replacing the collection; otherwise replace the collection and its history. Creates the collection if absent. |
+| `jn:load` | `($coll, $res, $uris)` | Create a collection from one or more URIs, replacing any existing collection and its history. |
+| `jn:load` | `($coll, $res, $uris, $create-new)` | Pass `false()` to add resources while preserving the collection and its history. Creates the collection if absent. |
 | `jn:doc` | `($coll, $res)` | Open a resource at the most recent revision. |
 | `jn:doc` | `($coll, $res, $rev)` | Open a resource at a specific revision number. |
 | `jn:open` | `($coll, $res, $dateTime)` | Open a resource at a point in time (closest revision). |
