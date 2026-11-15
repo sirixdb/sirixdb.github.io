@@ -24,7 +24,7 @@ Data audits are about how specific records have changed. Time Travel queries can
 For all of the use cases we mentioned earlier: We can revert to a specific time when everything was in a known good state and commit the revision again. Or we might select a particular record, correct the error and commit a new revision.
 
 ## SirixDB
-SirixDB stores versioned JSON/XML nodes and shares unchanged pages between revisions. Currently, we provide several APIs which are layered. A very low-level page-API, which handles the storage and retrieval of records on a per page-fragment level.  A transactional cursor-based API to store and navigate through records (currently XML and JSON nodes) on top. A DOM-alike node layer for simple in-memory processing of these nodes, which Brackit, a sophisticated XQuery processor, uses. And last but not least, a RESTful asynchronous HTTP-API. SirixDB provides
+SirixDB stores versioned JSON/XML nodes and shares unchanged pages between revisions. Currently, we provide several APIs which are layered. A very low-level page-API, which handles the storage and retrieval of records on a per page-fragment level.  A transactional cursor-based API to store and navigate through records (currently XML and JSON nodes) on top. A [DOM-alike node layer](/docs/dom-alike-api.html#working-with-nodes), which Brackit, a sophisticated XQuery processor, uses. And last but not least, a RESTful asynchronous HTTP-API. SirixDB provides
 
 1. The current revision of the resource or any subset thereof
 2. The full revision history of the resource or any subset thereof
@@ -42,7 +42,7 @@ You may find a quick overview of the [main features](/docs/features.html) useful
 We provide several APIs to interact with SirixDB.
 
 1. The [transactional cursor API](/docs/transactional-cursor-api.html) is a powerful low-level API.
-2. On top of this API, we built a [Brackit.io](https://github.com/sirixdb/brackit) binding to provide the ability to use SirixDB with a more [DOM-alike API](/docs/dom-alike-api.html) with in-memory nodes and an [JSONiq API](/docs/jsoniq-api.html).
+2. On top of this API, we built a [Brackit.io](https://github.com/sirixdb/brackit) binding for the [DOM-alike API](/docs/dom-alike-api.html) and [JSONiq API](/docs/jsoniq-api.html).
 3. We provide a powerful, asynchronous, non-blocking [RESTful-API](/docs/rest-api.html) to interact with a SirixDB HTTP server. Authorization is done via Keycloak.
 
 ### Publications

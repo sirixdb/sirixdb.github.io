@@ -229,7 +229,7 @@ curl --get "http://localhost:9443/shop/products" \
 
 ### `HEAD /:database/:resource` {#head-resource}
 
-Get the ETag (rolling hash) of a node. Use this before `POST` or `DELETE` operations.
+Read a node's hash for the [concurrency-control workflow](#overview).
 
 **Role:** `view`
 
@@ -242,7 +242,7 @@ Get the ETag (rolling hash) of a node. Use this before `POST` or `DELETE` operat
 
 | Header | Description |
 |---|---|
-| `ETag` | Rolling hash of the node (required for updates) |
+| `ETag` | Node hash; see [concurrency control](#overview) for precondition requirements |
 
 ### `POST /:database/:resource` {#update-resource}
 

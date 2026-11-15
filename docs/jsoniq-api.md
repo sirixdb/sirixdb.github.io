@@ -130,7 +130,7 @@ return (
 
 ## Temporal Queries
 
-SirixDB's key feature is temporal querying — every update creates an immutable revision, and you can navigate the full history.
+Temporal queries navigate retained revision history. See [Updating Data](#updating-data) for when pending updates are committed.
 
 ### Navigating Revisions
 
@@ -220,7 +220,7 @@ let $doc := jn:doc('shop', 'products')
 return jn:create-path-index($doc)
 ```
 
-See the [Function Reference](/docs/jsoniq-functions.html#indexes) for the complete index API.
+See the [Function Reference](/docs/jsoniq-functions.html#indexes) for index function signatures and examples.
 
 ## JSONiq Language Basics
 

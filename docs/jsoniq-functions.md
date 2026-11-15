@@ -235,7 +235,7 @@ return jn:scan-cas-index-range($doc, $idx, 0, 500, true(), true(), '/[]/price')
 
 ## JSONiq Update Expressions
 
-In addition to the functions above, SirixDB supports standard JSONiq update expressions. Each update automatically creates a new revision.
+In addition to the functions above, SirixDB supports standard JSONiq update expressions. See [Updating Data in the API guide](/docs/jsoniq-api.html#updating-data) for commit-strategy behavior.
 
 | Expression | Example |
 |------------|---------|
@@ -250,7 +250,7 @@ In addition to the functions above, SirixDB supports standard JSONiq update expr
 let $doc := jn:doc('shop', 'products')
 return replace json value of $doc[0].price with 899
 
-(: The update created revision 2; query the previous state :)
+(: After committing the update, query the previous state :)
 jn:doc('shop', 'products', 1)[0].price
 (: => 999 :)
 ```
