@@ -104,6 +104,7 @@
   /* ---------- Hero A: revision stack ---------- */
   (function () {
     var g = document.getElementById('layers');
+    if (!g) return;
     // Each slab is an isometric rhombus: left vertex L, axis U to the top vertex, axis V to the bottom vertex.
     // Tiles are cells of a COLS x ROWS grid in slab coordinates (a along U, b along V), so they share the slab's perspective.
     var N = 5, cx = 210, baseY = 412, gap = 70, w = 170, h = 44;
@@ -160,6 +161,7 @@
       4: [['[', ''], ['  {"name": "Laptop", "price": 899},', ''], ['  {"name": "Phone",  "price": 699},', 'gone', 'deleted in rev 4'], ['  {"name": "Tablet", "price": 449}', ''], [']', '']]
     };
     var box = document.getElementById('tt'), doc = document.getElementById('tt-doc'), code = document.getElementById('tt-code'), badge = document.getElementById('tt-badge'), range = document.getElementById('tt-range');
+    if (!box) return;
     var ticks = box.querySelectorAll('.tt__tick');
     function render(rev, jumped) {
       doc.innerHTML = '';
@@ -185,6 +187,7 @@
   /* ---------- Diagram 2: storage proportional to change ---------- */
   (function () {
     var svg = document.getElementById('st'), rowsG = document.getElementById('st-rows'), foot = document.getElementById('st-foot');
+    if (!svg) return;
     var cols = [112, 192, 272, 352], W = 66, H = 62;
     // rows: for each revision, per page: 'full' | 'frag' | 'shared'
     var spec = [
@@ -247,6 +250,7 @@
   /* ---------- Diagram 3: node-level diff ---------- */
   (function () {
     var svg = document.getElementById('df'), g = document.getElementById('df-g'), out = document.getElementById('df-out');
+    if (!svg) return;
     function node(x, y, w, label, key, cls, id) {
       var n = el('g', { 'class': 'node ' + (cls || ''), id: id }, g);
       el('title', {}, n, label + ' (node ' + key + ')');
@@ -298,6 +302,7 @@
   /* ---------- Diagram 4: bitemporal ---------- */
   (function () {
     var svg = document.getElementById('bt'), grid = document.getElementById('bt-grid');
+    if (!svg) return;
     // Transaction time: Mar 1 at x=160, 30 px/day (Mar 10 = 430, today = Mar 15 = 580).
     // Valid time: Mar 1 at y=160, 12 px/day upwards (Mar 5 = 112, Feb 20 = 268).
     var X0 = 160, PX_DAY = 30, Y0 = 160, PY_DAY = 12, MOVE_RECORDED = 9 /* Mar 10 */, TODAY = 14 /* Mar 15 */;
@@ -358,6 +363,7 @@
   /* ---------- Enterprise: replication ---------- */
   (function () {
     var svg = document.getElementById('rp'), cap = document.getElementById('rp-cap');
+    if (!svg) return;
     var revL = document.getElementById('rp-rev-l'), revF = document.getElementById('rp-rev-f');
     var toks = [1, 2, 3, 4].map(function (i) { return document.getElementById('rp-' + i); });
     var S = [
@@ -380,6 +386,7 @@
   /* ---------- Diagram 6: agents ---------- */
   (function () {
     var svg = document.getElementById('ag'), g = document.getElementById('ag-g'), cap = document.getElementById('ag-cap');
+    if (!svg) return;
     function rev(x, label, sub, chg, id) {
       var r = el('g', { 'class': 'step', id: id }, g);
       el('title', {}, r, label + ' ' + sub);
@@ -426,7 +433,8 @@
 
   /* ---------- tabs ---------- */
   (function () {
-    var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tabs [role="tab"]'));
+    if (!tabs.length) return;
     function select(t) {
       tabs.forEach(function (x) {
         var on = x === t;
