@@ -1,0 +1,60 @@
+{
+  "audio": "assets/vo-scene-1.wav",
+  "language": "en",
+  "words": [
+    {
+      "text": "You",
+      "start": 0.08,
+      "end": 0.18,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "update",
+      "start": 0.24,
+      "end": 0.62,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "a",
+      "start": 0.66,
+      "end": 0.74,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "record.",
+      "start": 0.78,
+      "end": 1.2,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "The",
+      "start": 2.14,
+      "end": 2.24,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "old",
+      "start": 2.3,
+      "end": 2.48,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "value",
+      "start": 2.56,
+      "end": 2.84,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "is",
+      "start": 2.9,
+      "end": 3,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "gone",
+      "start": 3.04,
+      "end": 3.3,
+      "speaker": "speaker_0"
+    }
+  ]
+}

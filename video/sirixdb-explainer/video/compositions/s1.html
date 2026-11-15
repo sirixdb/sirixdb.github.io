@@ -1,0 +1,62 @@
+<template>
+  <style>
+#root { position: absolute; inset: 0; font-family: 'Inter', sans-serif; color: #ecebe8; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.kicker { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #F7924A; }
+.h1 { font-size: 76px; font-weight: 800; letter-spacing: -.035em; line-height: 1.06; }
+.h2 { font-size: 58px; font-weight: 800; letter-spacing: -.03em; line-height: 1.08; }
+.grad { background: linear-gradient(100deg, #F47B20 10%, #42B6F0 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sub { font-size: 28px; color: #a8afba; line-height: 1.4; }
+.panel { background: #17181b; border: 1px solid rgba(255,255,255,.12); border-radius: 14px; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); }
+.chip { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 28px; padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,255,255,.18); color: #a8afba; background: #17181b; }
+.a-k { color: #42B6F0; } .a-o { color: #F47B20; } .a-s { color: #98C379; } .a-d { color: #8b93a1; }
+
+#s1-brand { position: absolute; left: 0; top: 60px; width: 1920px; display: flex; align-items: center; justify-content: center; gap: 16px; }
+#s1-logo { width: 64px; height: 64px; }
+#s1-word { font-size: 46px; font-weight: 800; letter-spacing: -.04em; margin-right: 22px; }
+#s1-pills { display: flex; gap: 12px; }
+#s1-pills .chip { font-size: 24px; color: #ecebe8; padding: 6px 16px; }
+#s1-wrap { position: absolute; left: 0; top: 90px; width: 1920px; height: 860px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px; }
+#s1-card { font-size: 66px; line-height: 1.45; padding: 44px 64px; min-width: 820px; }
+#s1-card .ind { padding-left: 1.2em; }
+#s1-slot { position: relative; display: inline-block; width: 3ch; height: 1.2em; vertical-align: top; }
+#s1-old, #s1-new { position: absolute; left: 0; top: 0; white-space: nowrap; }
+#s1-old span { display: inline-block; }
+#s1-strike { position: absolute; left: -4px; top: 52%; height: 6px; width: calc(100% + 8px); background: #f87171; border-radius: 3px; transform-origin: left center; }
+#s1-note { font-size: 28px; color: #f2a3a3; }
+</style>
+  <div data-hf-id="hf-3pu3" id="root" data-composition-id="s1" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-nzm9" id="s1-brand"><svg data-hf-id="hf-qo2n" id="s1-logo" viewBox="0 0 100 100" fill="none"><defs data-hf-id="hf-mh0t"><linearGradient data-hf-id="hf-6o4x" id="s1-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop data-hf-id="hf-lscp" offset="0%" stop-color="hsl(25,95%,55%)"/><stop data-hf-id="hf-imyk" offset="100%" stop-color="hsl(200,85%,60%)"/></linearGradient></defs><ellipse data-hf-id="hf-nenr" cx="50" cy="25" rx="35" ry="12" fill="url(#s1-g)" opacity="0.3"/><ellipse data-hf-id="hf-ydbq" cx="50" cy="40" rx="35" ry="12" fill="url(#s1-g)" opacity="0.5"/><ellipse data-hf-id="hf-zsv6" cx="50" cy="55" rx="35" ry="12" fill="url(#s1-g)" opacity="0.7"/><ellipse data-hf-id="hf-b4yk" cx="50" cy="70" rx="35" ry="12" fill="url(#s1-g)"/><path data-hf-id="hf-8svk" d="M50 25 L50 70" stroke="url(#s1-g)" stroke-width="2" opacity="0.5"/><path data-hf-id="hf-crl7" d="M30 30 L30 75" stroke="url(#s1-g)" stroke-width="1.5" opacity="0.3"/><path data-hf-id="hf-aogr" d="M70 30 L70 75" stroke="url(#s1-g)" stroke-width="1.5" opacity="0.3"/></svg><div data-hf-id="hf-ynyn" id="s1-word">SirixDB</div><div data-hf-id="hf-faei" id="s1-pills"><span data-hf-id="hf-hz5c" class="chip" id="s1-p1">append-only</span><span data-hf-id="hf-iq67" class="chip" id="s1-p2">bitemporal</span><span data-hf-id="hf-bhym" class="chip" id="s1-p3">open source</span><span data-hf-id="hf-fcu9" class="chip" id="s1-p4">embeddable</span></div></div>
+    <div data-hf-id="hf-n612" id="s1-wrap">
+      <div data-hf-id="hf-v46b" id="s1-kick" class="kicker">update in place</div>
+      <div data-hf-id="hf-vn6o" id="s1-card" class="panel mono">
+        <div data-hf-id="hf-aept">{</div>
+        <div data-hf-id="hf-r8in" class="ind"><span data-hf-id="hf-rb7r" class="a-k">"name"</span>: <span data-hf-id="hf-19ji" class="a-s">"Laptop"</span>,</div>
+        <div data-hf-id="hf-1qer" class="ind"><span data-hf-id="hf-ljvt" class="a-k">"price"</span>: <span data-hf-id="hf-i41r" id="s1-slot"><span data-hf-id="hf-ngjs" id="s1-old" class="a-o"><span data-hf-id="hf-gx7h" id="s1-d1">9</span><span data-hf-id="hf-6f5g" id="s1-d2">9</span><span data-hf-id="hf-0onz" id="s1-d3">9</span><span data-hf-id="hf-yxrl" id="s1-strike"></span></span><span data-hf-id="hf-plsx" id="s1-new" class="a-o">899</span></span></div>
+        <div data-hf-id="hf-9m3r">}</div>
+      </div>
+      <div data-hf-id="hf-r35d" id="s1-note" class="mono">previous value: overwritten &middot; no history</div>
+    </div>
+  </div>
+  <script>
+    const C = {"update": 0.84, "record": 1.38, "old": 2.92, "gone": 3.66, "end": 5.23};
+    const D = 5.23;
+    const tl = gsap.timeline({ paused: true });
+    gsap.set("#s1-new", {opacity: 0, y: -70});
+    gsap.set("#s1-strike", {scaleX: 0});
+    gsap.set("#s1-note", {opacity: 0});
+    tl.to("#s1-old", {y: 64, duration: 0.45, ease: "power3.out"}, C.record - 0.1);
+    tl.to("#s1-new", {opacity: 1, y: 0, duration: 0.45, ease: "expo.out"}, C.record - 0.1);
+    tl.to("#s1-strike", {scaleX: 1, duration: 0.3, ease: "power2.out"}, C.old);
+    tl.to("#s1-old", {color: "#f87171", duration: 0.2}, C.old);
+    tl.to("#s1-d1", {x: -60, y: 90, rotation: -24, opacity: 0, filter: "blur(10px)", duration: 0.9, ease: "power2.in"}, C.gone + 0.04);
+    tl.to("#s1-d2", {x: 10, y: 130, rotation: 14, opacity: 0, filter: "blur(10px)", duration: 0.9, ease: "power2.in"}, C.gone + 0.08);
+    tl.to("#s1-d3", {x: 70, y: 80, rotation: 30, opacity: 0, filter: "blur(10px)", duration: 0.9, ease: "power2.in"}, C.gone + 0.12);
+    tl.to("#s1-strike", {opacity: 0, duration: 0.4}, C.gone + 0.1);
+    tl.fromTo("#s1-note", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out"}, C.old + 0.1);
+    tl.to(["#s1-brand", "#s1-kick", "#s1-note"], {opacity: 0, filter: "blur(8px)", duration: 0.25, ease: "power3.in"}, D - 0.55);
+    tl.to("#s1-card", {scale: 0.32, x: 370, y: -150, opacity: 0, filter: "blur(4px)", duration: 0.55, ease: "power3.in"}, D - 0.6);
+
+    window.__timelines["s1"] = tl;
+  </script>
+</template>

@@ -72,4 +72,24 @@ const emptyFeed = await page.eval(async () => {
     self: feed.getElementsByTagNameNS('http://www.w3.org/2005/Atom', 'link')[0]?.getAttribute('href')};
 });
 assert(emptyFeed.ok && emptyFeed.valid && emptyFeed.items === 0 && emptyFeed.home === 'https://sirix.io/' && emptyFeed.self === 'https://sirix.io/feed.xml', 'RSS remains valid and absolute with zero posts');
-console.log(JSON.stringify({viewport: mobile ? 'phone' : 'desktop', navigation: 'pass', skipLink: 'pass', diagram: 'pass', blockedContact: 'pass', shortHeaders: 'pass', emptyBlog: 'pass', emptyFeed: 'pass'}));
+await page.open('http://127.0.0.1:4188/');
+const explainer = await page.eval(() => {
+  const video = document.querySelector('#watch video');
+  if (!video) return null;
+  const track = video.querySelector('track');
+  const box = video.getBoundingClientRect();
+  return {controls: video.controls, preload: video.getAttribute('preload'), autoplay: video.autoplay, inline: video.playsInline,
+    poster: !!video.poster, source: video.querySelector('source')?.getAttribute('type'),
+    track: track && {kind: track.kind, lang: track.srclang, isDefault: track.default},
+    fits: box.left >= 0 && box.right <= innerWidth && document.documentElement.scrollWidth <= innerWidth,
+    ratio: Math.round(box.width / box.height * 100) / 100, focusable: video.tabIndex >= 0,
+    fetchedMedia: performance.getEntriesByType('resource').some(entry => /\.mp4($|\?)/.test(entry.name))};
+});
+assert(explainer, 'Landing page has the explainer video');
+assert(explainer.controls && explainer.preload === 'none' && !explainer.autoplay && explainer.inline, 'Explainer video has controls, no autoplay, preload none and plays inline');
+assert(explainer.poster && explainer.source === 'video/mp4', 'Explainer video has a poster and an MP4 source');
+assert(explainer.track && explainer.track.kind === 'captions' && explainer.track.lang === 'en' && explainer.track.isDefault, 'Explainer captions track is English and on by default');
+assert(explainer.fits && explainer.ratio === 1.78, 'Explainer video keeps 16:9 inside the viewport without horizontal scrolling');
+assert(explainer.focusable, 'Explainer video is reachable by keyboard');
+assert(!explainer.fetchedMedia, 'Explainer video does not download before play');
+console.log(JSON.stringify({viewport: mobile ? 'phone' : 'desktop', navigation: 'pass', skipLink: 'pass', diagram: 'pass', blockedContact: 'pass', shortHeaders: 'pass', emptyBlog: 'pass', emptyFeed: 'pass', explainerVideo: 'pass'}));

@@ -1,0 +1,90 @@
+{
+  "audio": "assets/vo-scene-6.wav",
+  "language": "en",
+  "words": [
+    {
+      "text": "Its",
+      "start": 0.06,
+      "end": 0.3,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "indexes",
+      "start": 0.36,
+      "end": 1.04,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "are",
+      "start": 1.08,
+      "end": 1.22,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "versioned",
+      "start": 1.24,
+      "end": 1.66,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "too,",
+      "start": 1.88,
+      "end": 2.08,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "including",
+      "start": 2.56,
+      "end": 2.94,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "columnar",
+      "start": 3.04,
+      "end": 3.5,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "projections",
+      "start": 3.58,
+      "end": 4.26,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "for",
+      "start": 4.66,
+      "end": 4.74,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "fast",
+      "start": 4.82,
+      "end": 5.18,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "analytics",
+      "start": 5.3,
+      "end": 5.96,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "on",
+      "start": 6.08,
+      "end": 6.2,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "any",
+      "start": 6.26,
+      "end": 6.46,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "revision",
+      "start": 6.5,
+      "end": 6.96,
+      "speaker": "speaker_0"
+    }
+  ]
+}

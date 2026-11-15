@@ -28,3 +28,4 @@ exclude:
   - scripts
   - tests
   - __pycache__
+  - video   # editable source of the explainer video (see video/sirixdb-explainer/README.md)

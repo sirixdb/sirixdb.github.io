@@ -1,0 +1,132 @@
+{
+  "audio": "assets/vo-scene-8.wav",
+  "language": "en",
+  "words": [
+    {
+      "text": "CRXDB.",
+      "start": 0.12,
+      "end": 0.92,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "Every",
+      "start": 1.94,
+      "end": 2.14,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "version",
+      "start": 2.22,
+      "end": 2.6,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "of",
+      "start": 2.64,
+      "end": 2.72,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "your",
+      "start": 2.76,
+      "end": 2.84,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "data",
+      "start": 2.88,
+      "end": 3.24,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "kept",
+      "start": 3.74,
+      "end": 4.1,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "and",
+      "start": 4.26,
+      "end": 4.34,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "queryable",
+      "start": 4.42,
+      "end": 5,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "as",
+      "start": 5.36,
+      "end": 5.48,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "fast",
+      "start": 5.52,
+      "end": 5.86,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "as",
+      "start": 5.92,
+      "end": 6.02,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "the",
+      "start": 6.06,
+      "end": 6.14,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "present.",
+      "start": 6.16,
+      "end": 6.62,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "Append",
+      "start": 7.6,
+      "end": 8,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "only,",
+      "start": 8.1,
+      "end": 8.42,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "bitemporal,",
+      "start": 8.9,
+      "end": 9.7,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "embeddable,",
+      "start": 10.4,
+      "end": 10.98,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "and",
+      "start": 11.48,
+      "end": 11.56,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "open",
+      "start": 11.66,
+      "end": 11.94,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "source",
+      "start": 12.02,
+      "end": 12.38,
+      "speaker": "speaker_0"
+    }
+  ]
+}

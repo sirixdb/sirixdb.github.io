@@ -1,0 +1,59 @@
+<template>
+  <style>
+#root { position: absolute; inset: 0; font-family: 'Inter', sans-serif; color: #ecebe8; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.kicker { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #F7924A; }
+.h1 { font-size: 76px; font-weight: 800; letter-spacing: -.035em; line-height: 1.06; }
+.h2 { font-size: 58px; font-weight: 800; letter-spacing: -.03em; line-height: 1.08; }
+.grad { background: linear-gradient(100deg, #F47B20 10%, #42B6F0 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sub { font-size: 28px; color: #a8afba; line-height: 1.4; }
+.panel { background: #17181b; border: 1px solid rgba(255,255,255,.12); border-radius: 14px; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); }
+.chip { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 28px; padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,255,255,.18); color: #a8afba; background: #17181b; }
+.a-k { color: #42B6F0; } .a-o { color: #F47B20; } .a-s { color: #98C379; } .a-d { color: #8b93a1; }
+
+#s8-wrap { position: absolute; left: 0; top: 0; width: 1920px; height: 900px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#s8-lock { display: flex; align-items: center; gap: 34px; }
+#s8-logo { width: 190px; height: 190px; }
+#s8-word { font-size: 132px; font-weight: 800; letter-spacing: -.04em; }
+#s8-tag { margin-top: 40px; text-align: center; font-size: 54px; font-weight: 800; letter-spacing: -.03em; line-height: 1.15; }
+#s8-pills { margin-top: 34px; display: flex; gap: 14px; }
+#s8-pills .chip { font-size: 26px; color: #ecebe8; }
+#s8-links { margin-top: 38px; font-size: 30px; color: #a8afba; }
+#s8-links b { color: #6CC6F3; font-weight: 500; }
+</style>
+  <div data-hf-id="hf-rq2o" id="root" data-composition-id="s8" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-9ipd" id="s8-wrap">
+      <div data-hf-id="hf-8y3g" id="s8-lock"><svg data-hf-id="hf-qjdo" id="s8-logo" viewBox="0 0 100 100" fill="none">
+  <defs data-hf-id="hf-mh0t"><linearGradient data-hf-id="hf-5tzg" id="s8-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop data-hf-id="hf-lscp" offset="0%" stop-color="hsl(25,95%,55%)"/><stop data-hf-id="hf-imyk" offset="100%" stop-color="hsl(200,85%,60%)"/></linearGradient></defs>
+  <ellipse data-hf-id="hf-tb19" id="s8-e4" cx="50" cy="25" rx="35" ry="12" fill="url(#s8-g)" opacity="0.3"/>
+  <ellipse data-hf-id="hf-tv1d" id="s8-e3" cx="50" cy="40" rx="35" ry="12" fill="url(#s8-g)" opacity="0.5"/>
+  <ellipse data-hf-id="hf-xogk" id="s8-e2" cx="50" cy="55" rx="35" ry="12" fill="url(#s8-g)" opacity="0.7"/>
+  <ellipse data-hf-id="hf-sx5z" id="s8-e1" cx="50" cy="70" rx="35" ry="12" fill="url(#s8-g)"/>
+  <g data-hf-id="hf-xfiw" id="s8-lines"><path data-hf-id="hf-v8n9" d="M50 25 L50 70" stroke="url(#s8-g)" stroke-width="2" opacity="0.5"/><path data-hf-id="hf-hq8q" d="M30 30 L30 75" stroke="url(#s8-g)" stroke-width="1.5" opacity="0.3"/><path data-hf-id="hf-ttfu" d="M70 30 L70 75" stroke="url(#s8-g)" stroke-width="1.5" opacity="0.3"/></g>
+</svg><div data-hf-id="hf-6496" id="s8-word">SirixDB</div></div>
+      <div data-hf-id="hf-2k0r" id="s8-tag"><div data-hf-id="hf-cqg0" id="s8-t1">Every version of your data, kept and queryable</div><div data-hf-id="hf-b8j6" id="s8-t2" class="grad">as fast as the present.</div></div>
+      <div data-hf-id="hf-sc4r" id="s8-pills"><span data-hf-id="hf-1vku" class="chip" id="s8-p0">append-only</span><span data-hf-id="hf-37sv" class="chip" id="s8-p1">bitemporal</span><span data-hf-id="hf-fkrx" class="chip" id="s8-p3">embeddable</span><span data-hf-id="hf-mpt8" class="chip" id="s8-p2">open source</span></div>
+      <div data-hf-id="hf-etf5" id="s8-links" class="mono"><b data-hf-id="hf-3wur">github.com/sirixdb/sirix</b> &nbsp;&middot;&nbsp; <b data-hf-id="hf-zwbe">sirix.io</b> &nbsp;&middot;&nbsp; BSD-3-Clause</div>
+    </div>
+  </div>
+  <script>
+    const C = {"sirix": 0.56, "every": 2.49, "fast": 5.91, "present": 6.71, "append": 8.15, "bitemporal": 9.45, "embeddable": 10.95, "open": 12.21, "end": 16.08};
+    const D = 16.08;
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s8-e1", {y: 26, opacity: 0}, {y: 0, opacity: 1, duration: 0.5, ease: "expo.out"}, 0.05);
+    tl.fromTo("#s8-e2", {y: 26, opacity: 0}, {y: 0, opacity: 0.7, duration: 0.5, ease: "expo.out"}, 0.17);
+    tl.fromTo("#s8-e3", {y: 26, opacity: 0}, {y: 0, opacity: 0.5, duration: 0.5, ease: "expo.out"}, 0.29);
+    tl.fromTo("#s8-e4", {y: 26, opacity: 0}, {y: 0, opacity: 0.3, duration: 0.5, ease: "expo.out"}, 0.41);
+    tl.fromTo("#s8-lines", {opacity: 0}, {opacity: 1, duration: 0.4}, 0.55);
+    tl.fromTo("#s8-word", {clipPath: "inset(0 100% 0 0)", x: -20}, {clipPath: "inset(0 0% 0 0)", x: 0, duration: 0.6, ease: "expo.out"}, C.sirix + 0.05);
+    tl.fromTo("#s8-t1", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out"}, C.every - 0.05);
+    tl.fromTo("#s8-t2", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out"}, C.fast - 0.05);
+    tl.fromTo("#s8-p0", {opacity: 0, scale: .85}, {opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)"}, C.append - 0.05);
+    tl.fromTo("#s8-p1", {opacity: 0, scale: .85}, {opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)"}, C.bitemporal - 0.05);
+    tl.fromTo("#s8-p2", {opacity: 0, scale: .85}, {opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)"}, C.open - 0.05);
+    tl.fromTo("#s8-p3", {opacity: 0, scale: .85}, {opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)"}, C.embeddable - 0.05);
+    tl.fromTo("#s8-links", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out"}, C.open + 0.6);
+
+    window.__timelines["s8"] = tl;
+  </script>
+</template>

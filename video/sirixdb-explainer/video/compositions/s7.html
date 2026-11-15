@@ -1,0 +1,50 @@
+<template>
+  <style>
+#root { position: absolute; inset: 0; font-family: 'Inter', sans-serif; color: #ecebe8; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.kicker { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #F7924A; }
+.h1 { font-size: 76px; font-weight: 800; letter-spacing: -.035em; line-height: 1.06; }
+.h2 { font-size: 58px; font-weight: 800; letter-spacing: -.03em; line-height: 1.08; }
+.grad { background: linear-gradient(100deg, #F47B20 10%, #42B6F0 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sub { font-size: 28px; color: #a8afba; line-height: 1.4; }
+.panel { background: #17181b; border: 1px solid rgba(255,255,255,.12); border-radius: 14px; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); }
+.chip { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 28px; padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,255,255,.18); color: #a8afba; background: #17181b; }
+.a-k { color: #42B6F0; } .a-o { color: #F47B20; } .a-s { color: #98C379; } .a-d { color: #8b93a1; }
+
+#s7-top { position: absolute; left: 120px; top: 110px; }
+#s7-top .kicker { margin-bottom: 18px; }
+#s7-grid { position: absolute; left: 120px; top: 330px; width: 1680px; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+.s7-tile { height: 262px; padding: 30px 34px; position: relative; }
+.s7-tile .n { font-size: 40px; font-weight: 800; letter-spacing: -.02em; }
+.s7-tile .d { font-size: 27px; color: #a8afba; margin-top: 4px; }
+.s7-tile .code { position: absolute; left: 34px; right: 30px; bottom: 26px; font-size: 24px; line-height: 1.4; padding: 12px 18px; background: #0b0c0e; border-radius: 8px; border: 1px solid rgba(255,255,255,.09); white-space: nowrap; overflow: hidden; color: #ecebe8; }
+</style>
+  <div data-hf-id="hf-6yl5" id="root" data-composition-id="s7" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-3pa5" id="s7-top"><div data-hf-id="hf-1xq3" id="s7-kick" class="kicker">open source &middot; BSD-3-Clause</div><div data-hf-id="hf-4trz" id="s7-h" class="h2">One engine. <span data-hf-id="hf-e1ws" class="grad">Four ways in.</span></div></div>
+    <div data-hf-id="hf-2p4c" id="s7-grid">
+      <div data-hf-id="hf-oy3n" class="s7-tile panel" id="s7-t1"><div data-hf-id="hf-idxb" class="n">Embedded library</div><div data-hf-id="hf-f6oi" class="d">Java &middot; Maven or Gradle</div><div data-hf-id="hf-oq1f" class="code mono"><span data-hf-id="hf-gbfo" class="a-k">implementation</span>(<span data-hf-id="hf-p1a3" class="a-s">"io.sirix:sirix-core:1.0.0-beta7"</span>)</div></div>
+      <div data-hf-id="hf-ga7s" class="s7-tile panel" id="s7-t2"><div data-hf-id="hf-rxtz" class="n">REST server</div><div data-hf-id="hf-k02x" class="d">HTTP &middot; JSON</div><div data-hf-id="hf-m90n" class="code mono"><span data-hf-id="hf-rq0q" class="a-k">GET</span> /shop/products/diff<br data-hf-id="hf-x5px">&nbsp;&nbsp;?first-revision=<span data-hf-id="hf-ax9d" class="a-o">1</span>&amp;second-revision=<span data-hf-id="hf-bpvf" class="a-o">3</span></div></div>
+      <div data-hf-id="hf-h1vl" class="s7-tile panel" id="s7-t3"><div data-hf-id="hf-uu44" class="n">Interactive shell</div><div data-hf-id="hf-jx0n" class="d">JSONiq / XQuery</div><div data-hf-id="hf-4sc7" class="code mono"><span data-hf-id="hf-du2p" class="a-o">sirix&gt;</span> <span data-hf-id="hf-rkqb" class="a-k">jn:diff</span>(<span data-hf-id="hf-e3so" class="a-s">'shop'</span>,<span data-hf-id="hf-loxw" class="a-s">'products'</span>,<span data-hf-id="hf-mv3p" class="a-o">1</span>,<span data-hf-id="hf-riij" class="a-o">3</span>)</div></div>
+      <div data-hf-id="hf-66dy" class="s7-tile panel" id="s7-t4"><div data-hf-id="hf-g1r2" class="n">MCP server for AI agents</div><div data-hf-id="hf-kukf" class="d">read-only by default &middot; audit log</div><div data-hf-id="hf-6cy0" class="code mono">time-travel reads &middot; structural diffs &middot; revert</div></div>
+    </div>
+  </div>
+  <script>
+    const C = {"embed": 0.56, "library": 1.97, "rest": 3.55, "shell": 5.37, "agents": 7.48, "mcp": 9.33, "end": 10.95};
+    const D = 10.95;
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s7-kick", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out"}, 0.0);
+    tl.fromTo("#s7-h", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out"}, C.embed - 0.05);
+    gsap.set(".s7-tile", {opacity: 0.0});
+    tl.fromTo("#s7-t1", {opacity: 0, y: 26, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.55, ease: "expo.out"}, C.library - 0.15);
+    tl.fromTo("#s7-t1", {borderColor: "rgba(244,123,32,.8)"}, {borderColor: "rgba(255,255,255,.12)", duration: 1.2, ease: "power2.out"}, C.library - 0.15 + 0.3);
+    tl.fromTo("#s7-t2", {opacity: 0, y: 26, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.55, ease: "expo.out"}, C.rest - 0.15);
+    tl.fromTo("#s7-t2", {borderColor: "rgba(244,123,32,.8)"}, {borderColor: "rgba(255,255,255,.12)", duration: 1.2, ease: "power2.out"}, C.rest - 0.15 + 0.3);
+    tl.fromTo("#s7-t3", {opacity: 0, y: 26, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.55, ease: "expo.out"}, C.shell - 0.15);
+    tl.fromTo("#s7-t3", {borderColor: "rgba(244,123,32,.8)"}, {borderColor: "rgba(255,255,255,.12)", duration: 1.2, ease: "power2.out"}, C.shell - 0.15 + 0.3);
+    tl.fromTo("#s7-t4", {opacity: 0, y: 26, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.55, ease: "expo.out"}, C.agents - 0.1);
+    tl.fromTo("#s7-t4", {borderColor: "rgba(244,123,32,.8)"}, {borderColor: "rgba(255,255,255,.12)", duration: 1.2, ease: "power2.out"}, C.agents - 0.1 + 0.3);
+    tl.to(["#s7-top", "#s7-grid"], {opacity: 0, y: -20, filter: "blur(8px)", duration: 0.3, ease: "power3.in"}, D - 0.35);
+
+    window.__timelines["s7"] = tl;
+  </script>
+</template>

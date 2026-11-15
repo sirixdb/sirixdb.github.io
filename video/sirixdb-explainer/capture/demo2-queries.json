@@ -1,0 +1,38 @@
+[
+ {
+  "q": "jn:store('shop','products','[{\"name\":\"Laptop\",\"price\":999},{\"name\":\"Phone\",\"price\":699}]')"
+ },
+ {
+  "q": "jn:store('shop','prices','[{\"item\":\"Laptop\",\"price\":999,\"validFrom\":\"2026-01-01T00:00:00Z\",\"validTo\":\"2026-07-01T00:00:00Z\"},{\"item\":\"Laptop\",\"price\":899,\"validFrom\":\"2026-07-01T00:00:00Z\",\"validTo\":\"2027-01-01T00:00:00Z\"}]',false(),{\"validFromPath\":\"validFrom\",\"validToPath\":\"validTo\"})",
+  "stamp": "rev1",
+  "sleep": 3
+ },
+ {
+  "q": "let $doc := jn:doc('shop','products')\nreturn replace json value of $doc[0].price with 899",
+  "sleep": 1
+ },
+ {
+  "q": "let $doc := jn:doc('shop','products')\nreturn (append json {\"name\":\"Tablet\",\"price\":449} into $doc, delete json $doc[1])"
+ },
+ {
+  "q": "jn:doc('shop','products')"
+ },
+ {
+  "q": "jn:doc('shop','products',1)"
+ },
+ {
+  "q": "jn:open('shop','products',\n  xs:dateTime('{T}'))[0].price"
+ },
+ {
+  "q": "jn:open-bitemporal('shop','prices',\n  xs:dateTime('{T}'),\n  xs:dateTime('2026-03-01T00:00:00Z'))"
+ },
+ {
+  "q": "let $laptop := jn:doc('shop','products')[0]\nreturn {\"now\": $laptop.price, \"first\": jn:first($laptop).price}"
+ },
+ {
+  "q": "for $v in jn:all-times(jn:doc('shop','products')[0])\nreturn {\"rev\":sdb:revision($v),\"price\":$v.price}"
+ },
+ {
+  "q": "jn:diff('shop','products',1,3)"
+ }
+]

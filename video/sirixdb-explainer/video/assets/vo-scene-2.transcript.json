@@ -1,0 +1,150 @@
+{
+  "audio": "assets/vo-scene-2.wav",
+  "language": "en",
+  "words": [
+    {
+      "text": "Ceryx",
+      "start": 0.24,
+      "end": 0.56,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "DB",
+      "start": 0.62,
+      "end": 0.94,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "keeps",
+      "start": 1.16,
+      "end": 1.4,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "every",
+      "start": 1.48,
+      "end": 1.66,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "version.",
+      "start": 1.76,
+      "end": 2.16,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "Each",
+      "start": 2.98,
+      "end": 3.14,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "commit",
+      "start": 3.24,
+      "end": 3.64,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "writes",
+      "start": 3.84,
+      "end": 4.12,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "only",
+      "start": 4.2,
+      "end": 4.4,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "what",
+      "start": 4.42,
+      "end": 4.56,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "changed",
+      "start": 4.64,
+      "end": 5.06,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "and",
+      "start": 5.32,
+      "end": 5.4,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "shares",
+      "start": 5.46,
+      "end": 5.74,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "the",
+      "start": 5.78,
+      "end": 5.86,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "rest.",
+      "start": 5.9,
+      "end": 6.12,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "So",
+      "start": 6.92,
+      "end": 7.06,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "storage",
+      "start": 7.14,
+      "end": 7.56,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "grows",
+      "start": 7.68,
+      "end": 8.06,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "with",
+      "start": 8.1,
+      "end": 8.2,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "the",
+      "start": 8.22,
+      "end": 8.32,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "change,",
+      "start": 8.38,
+      "end": 8.7,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "not",
+      "start": 9.02,
+      "end": 9.18,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "the",
+      "start": 9.24,
+      "end": 9.3,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "history",
+      "start": 9.34,
+      "end": 9.72,
+      "speaker": "speaker_0"
+    }
+  ]
+}

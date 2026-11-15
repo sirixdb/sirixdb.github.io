@@ -1,0 +1,89 @@
+<template>
+  <style>
+#root { position: absolute; inset: 0; font-family: 'Inter', sans-serif; color: #ecebe8; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.kicker { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #F7924A; }
+.h1 { font-size: 76px; font-weight: 800; letter-spacing: -.035em; line-height: 1.06; }
+.h2 { font-size: 58px; font-weight: 800; letter-spacing: -.03em; line-height: 1.08; }
+.grad { background: linear-gradient(100deg, #F47B20 10%, #42B6F0 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sub { font-size: 28px; color: #a8afba; line-height: 1.4; }
+.panel { background: #17181b; border: 1px solid rgba(255,255,255,.12); border-radius: 14px; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); }
+.chip { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 28px; padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,255,255,.18); color: #a8afba; background: #17181b; }
+.a-k { color: #42B6F0; } .a-o { color: #F47B20; } .a-s { color: #98C379; } .a-d { color: #8b93a1; }
+
+#s5-svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+#s5-svg text { font-family: 'Inter', sans-serif; }
+.s5-ax { stroke: #a8afba; stroke-width: 2; }
+.s5-at { font-size: 26px; fill: #a8afba; }
+.s5-rt { font-size: 40px; font-weight: 800; letter-spacing: -.02em; }
+.s5-rs { font-size: 26px; fill: #a8afba; }
+.s5-tick { font-family: 'JetBrains Mono', monospace; font-size: 26px; fill: #ecebe8; }
+#s5-left { position: absolute; left: 110px; top: 200px; width: 690px; }
+#s5-left .kicker { margin-bottom: 26px; }
+#s5-code { margin-top: 30px; font-size: 25px; line-height: 1.5; padding: 18px 22px; }
+#s5-ans { margin-top: 26px; padding: 18px 22px; height: 128px; position: relative; }
+#s5-ans .q { font-size: 27px; color: #a8afba; }
+#s5-ans .a { font-size: 44px; font-weight: 800; letter-spacing: -.02em; margin-top: 4px; }
+.s5-ansset { position: absolute; left: 22px; top: 18px; right: 22px; }
+</style>
+  <div data-hf-id="hf-4473" id="root" data-composition-id="s5" data-width="1920" data-height="1080">
+    <svg data-hf-id="hf-1fnp" id="s5-svg" viewBox="0 0 1920 1080">
+      <g data-hf-id="hf-fhmx" id="s5-regs">
+        <rect data-hf-id="hf-blbw" id="s5-r1" x="854" y="164" width="572" height="622" rx="8" fill="rgba(66,182,240,.13)" stroke="rgba(66,182,240,.55)" stroke-width="1.5"/>
+        <text data-hf-id="hf-8kt4" id="s5-r1t" x="1135" y="515" text-anchor="middle"><tspan data-hf-id="hf-rw6c" class="s5-rt" fill="#6CC6F3">Berlin</tspan><tspan data-hf-id="hf-wd8p" class="s5-rs" x="1135" dy="36">rev 1 &middot; move not reported yet</tspan></text>
+        <rect data-hf-id="hf-pbiz" id="s5-r2" x="1434" y="164" width="356" height="302" rx="8" fill="rgba(244,123,32,.15)" stroke="rgba(244,123,32,.6)" stroke-width="1.5"/>
+        <text data-hf-id="hf-r3k8" id="s5-r2t" x="1620" y="304" text-anchor="middle"><tspan data-hf-id="hf-vet6" class="s5-rt" fill="#F7924A">Munich</tspan><tspan data-hf-id="hf-gi13" class="s5-rs" x="1620" dy="34">rev 2 &middot; from Mar 1</tspan></text>
+        <rect data-hf-id="hf-c5y9" id="s5-r3" x="1434" y="474" width="356" height="312" rx="8" fill="rgba(66,182,240,.13)" stroke="rgba(66,182,240,.55)" stroke-width="1.5"/>
+        <text data-hf-id="hf-vicq" id="s5-r3t" x="1620" y="639" text-anchor="middle"><tspan data-hf-id="hf-0o64" class="s5-rt" fill="#6CC6F3">Berlin</tspan><tspan data-hf-id="hf-3mdb" class="s5-rs" x="1620" dy="34">rev 2 &middot; until Mar 1</tspan></text>
+      </g>
+      <g data-hf-id="hf-w6bv" id="s5-xax"><line data-hf-id="hf-0l04" class="s5-ax" x1="840" y1="800" x2="1820" y2="800"/><polygon data-hf-id="hf-vy2j" points="1828,800 1814,792 1814,808" fill="#a8afba"/>
+        <text data-hf-id="hf-yldv" class="s5-at" x="1325" y="852" text-anchor="middle">transaction time &mdash; when SirixDB recorded it &rarr;</text>
+        <text data-hf-id="hf-m81h" class="s5-tick" x="1430" y="826" text-anchor="middle" id="s5-mar10">Mar 10</text></g>
+      <g data-hf-id="hf-kjd2" id="s5-yax"><line data-hf-id="hf-ixur" class="s5-ax" x1="840" y1="800" x2="840" y2="136"/><polygon data-hf-id="hf-936o" points="840,128 832,142 848,142" fill="#a8afba"/>
+        <text data-hf-id="hf-v2c4" class="s5-at" x="814" y="475" text-anchor="middle" transform="rotate(-90 814 475)">valid time &mdash; when it was true &rarr;</text>
+        <text data-hf-id="hf-6ajx" class="s5-tick" x="852" y="462" id="s5-mar1">Mar 1</text></g>
+      <g data-hf-id="hf-53js" id="s5-xh">
+        <line data-hf-id="hf-b5tu" id="s5-v" x1="1150" y1="800" x2="1150" y2="150" stroke="#ecebe8" stroke-width="2" stroke-dasharray="6 6"/>
+        <line data-hf-id="hf-tdy7" id="s5-h" x1="840" y1="360" x2="1810" y2="360" stroke="#ecebe8" stroke-width="2" stroke-dasharray="6 6" opacity=".7"/>
+        <circle data-hf-id="hf-wsp6" id="s5-dot" cx="1150" cy="360" r="10" fill="#ecebe8"/>
+        <circle data-hf-id="hf-sje2" id="s5-ring" cx="1150" cy="360" r="22" fill="none" stroke="#ecebe8" stroke-width="2" opacity=".5"/>
+      </g>
+    </svg>
+    <div data-hf-id="hf-y5q5" id="s5-left">
+      <div data-hf-id="hf-dv8q" id="s5-kick" class="kicker">native valid time</div>
+      <div data-hf-id="hf-vm7u" id="s5-h1" class="h1">Two kinds of time.</div>
+      <div data-hf-id="hf-51z6" id="s5-h2" class="h1 grad">One query.</div>
+      <div data-hf-id="hf-hl2w" id="s5-code" class="panel mono"><span data-hf-id="hf-1aj0" class="a-k">jn:open-bitemporal</span>(<span data-hf-id="hf-xd1u" class="a-s">'crm'</span>,<span data-hf-id="hf-f75t" class="a-s">'customers'</span>,<br data-hf-id="hf-x5px">&nbsp;&nbsp;<span data-hf-id="hf-gvk7" class="a-d">commit-timestamp,</span> <span data-hf-id="hf-6s0t" class="a-d">valid-timestamp</span>)</div>
+      <div data-hf-id="hf-4hqr" id="s5-ans" class="panel">
+        <div data-hf-id="hf-6sya" class="s5-ansset" id="s5-a1"><div data-hf-id="hf-p5ss" class="q">Alice, recorded Mar 5 &middot; valid Mar 5</div><div data-hf-id="hf-apq6" class="a" style="color:#6CC6F3">Berlin <span data-hf-id="hf-e7ip" style="font-size:27px;font-weight:500;color:#a8afba">what you knew then</span></div></div>
+        <div data-hf-id="hf-2uu9" class="s5-ansset" id="s5-a2"><div data-hf-id="hf-4ddm" class="q">Alice, recorded today &middot; valid Mar 5</div><div data-hf-id="hf-8uxg" class="a" style="color:#F7924A">Munich <span data-hf-id="hf-e79d" style="font-size:27px;font-weight:500;color:#a8afba">what was true</span></div></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const C = {"bitemporal": 1.04, "recorded": 4.17, "true": 5.55, "correction": 7.02, "knew": 9.67, "end": 11.59};
+    const D = 11.59;
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s5-kick", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out"}, 0.0);
+    tl.fromTo("#s5-h1", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out"}, C.bitemporal - 0.1);
+    tl.fromTo("#s5-xax", {opacity: 0}, {opacity: 1, duration: 0.5, ease: "power2.out"}, C.recorded - 0.2);
+    tl.fromTo("#s5-yax", {opacity: 0}, {opacity: 1, duration: 0.5, ease: "power2.out"}, C.true - 0.3);
+    tl.fromTo("#s5-r1", {opacity: 0, scaleX: 0.6, transformOrigin: "0% 50%"}, {opacity: 1, scaleX: 1, duration: 0.7, ease: "expo.out"}, C.recorded);
+    tl.fromTo("#s5-r1t", {opacity: 0}, {opacity: 1, duration: 0.4}, C.recorded + 0.3);
+    tl.fromTo("#s5-h2", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out"}, C.true - 0.05);
+    tl.fromTo("#s5-code", {opacity: 0, y: 14, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out"}, C.true + 0.4);
+    tl.fromTo(["#s5-r2", "#s5-r3"], {opacity: 0, scaleX: 0.6, transformOrigin: "0% 50%"}, {opacity: 1, scaleX: 1, duration: 0.7, ease: "expo.out", stagger: 0.08}, C.correction - 0.1);
+    tl.fromTo(["#s5-r2t", "#s5-r3t", "#s5-mar10", "#s5-mar1"], {opacity: 0}, {opacity: 1, duration: 0.4}, C.correction + 0.2);
+    tl.fromTo("#s5-xh", {opacity: 0}, {opacity: 1, duration: 0.35}, C.correction + 0.6);
+    tl.fromTo("#s5-ans", {opacity: 0, y: 10, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out"}, C.correction + 0.6);
+    tl.fromTo("#s5-a1", {opacity: 0}, {opacity: 1, duration: 0.3}, C.correction + 0.75);
+    gsap.set("#s5-a2", {opacity: 0});
+    tl.to("#s5-v", {attr: {x1: 1660, x2: 1660}, duration: 0.8, ease: "power2.inOut"}, (C.knew - 0.1));
+    tl.to(["#s5-dot", "#s5-ring"], {attr: {cx: 1660}, duration: 0.8, ease: "power2.inOut"}, (C.knew - 0.1));
+    tl.to("#s5-a1", {opacity: 0, duration: 0.2}, (C.knew - 0.1) + 0.3);
+    tl.to("#s5-a2", {opacity: 1, duration: 0.3}, (C.knew - 0.1) + 0.6);
+    tl.to(["#s5-svg", "#s5-left"], {opacity: 0, filter: "blur(8px)", duration: 0.3, ease: "power3.in"}, D - 0.3);
+
+    window.__timelines["s5"] = tl;
+  </script>
+</template>

@@ -1,0 +1,14 @@
+# generated or local-only
+out/
+audio/work/
+audio/replaced/
+audio/takes/old/
+video/assets/music-ducked.wav
+video/.hyperframes/
+video/.thumbnails/
+video/.waveform-cache/
+video.bak-*/
+.render-clean/
+node_modules/
+__pycache__/
+*.tmp.*
