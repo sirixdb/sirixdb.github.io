@@ -185,14 +185,25 @@ Commit or rollback changes within a write transaction.
 | `sdb:commit` | `($node, $message, $dateTime)` | Commit with a message and a custom timestamp. |
 | `sdb:rollback` | `($node)` | Discard all uncommitted changes. Returns the aborted revision number. |
 
+To commit a JSONiq update with a message, use `CommitStrategy.EXPLICIT` and
+evaluate the following queries separately, in order, using the same context and
+store. First, evaluate the update completely:
+
 ```xquery
-(: Commit with a message :)
 let $doc := jn:doc('shop', 'products')
-return (
-  replace json value of $doc[0].price with 799,
-  sdb:commit($doc, "Summer sale pricing")
-)
+return replace json value of $doc[0].price with 799
 ```
+
+Then evaluate the commit:
+
+```xquery
+sdb:commit(jn:doc('shop', 'products'), "Summer sale pricing")
+```
+
+Update expressions are queued until evaluation finishes; `sdb:commit` commits
+immediately, so it must not share the update's query. See the
+[Java example in the API guide](/docs/jsoniq-api.html#updating-data) for explicit
+context setup and both evaluations.
 
 ## Indexes
 

@@ -118,15 +118,29 @@ let $arr := jn:doc('shop', 'products')
 return insert json {"name":"Monitor","price":349} into $arr at position 1
 ```
 
-With an explicit commit strategy, you can commit with a message:
+With an explicit commit strategy, finish evaluating the update before committing
+with a message. Use two separate evaluations with the same context and store:
 
-```xquery
-let $doc := jn:doc('shop', 'products')
-return (
-  replace json value of $doc[0].price with 799,
-  sdb:commit($doc, "Summer sale pricing")
-)
+```java
+try (final var store = BasicJsonDBStore.newBuilder().build();
+     final var ctx = SirixQueryContext.createWithJsonStoreAndCommitStrategy(
+         store, SirixQueryContext.CommitStrategy.EXPLICIT);
+     final var chain = SirixCompileChain.createWithJsonStore(store)) {
+
+  new Query(chain,
+      "let $doc := jn:doc('shop', 'products') "
+      + "return replace json value of $doc[0].price with 799")
+      .evaluate(ctx);
+
+  new Query(chain,
+      "sdb:commit(jn:doc('shop', 'products'), 'Summer sale pricing')")
+      .evaluate(ctx);
+}
 ```
+
+The example assumes `shop/products` already exists. JSONiq queues update
+expressions until evaluation finishes, while `sdb:commit` commits immediately.
+Putting both in one query commits before the replacement is applied.
 
 ## Temporal Queries
 
