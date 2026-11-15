@@ -193,14 +193,14 @@ description: >-
       <figure class="cap__fig" style="margin:0">
         <svg class="df-fig" id="df" viewBox="0 0 640 312" role="img" aria-labelledby="df-t df-d">
           <title id="df-t">Node-level diff between revision 1 and revision 4</title>
-          <desc id="df-d">Two trees side by side. Node 6, the laptop price, exists in both revisions and changes from 999 to 899: an update. The tablet object, node 12, is new in revision 4: an insert. The phone object, node 7, exists only in revision 1: a delete. Dotted lines connect the same node key across revisions.</desc>
+          <desc id="df-d">Two trees side by side. Node 4, the laptop price, exists in both revisions and changes from 999 to 899: an update. The tablet object, node 8, is new in revision 4: an insert. The phone object, node 5, exists only in revision 1: a delete. Dotted lines connect the same node key across revisions.</desc>
           <text class="hdr" x="4" y="24">rev 1</text><text class="hdr-sub" x="60" y="24">Mon</text>
           <text class="hdr" x="362" y="24">rev 4</text><text class="hdr-sub" x="418" y="24">Thu</text>
           <g id="df-g"></g>
         </svg>
-        <div class="code df-out" aria-live="polite"><div class="code__head"><span>Response (abridged)</span><span>/diff</span></div><pre id="df-out"><span class="op upd">{"update": {"nodeKey": 6,  "type": "number", "value": 899}}</span><span class="op ins">{"insert": {"nodeKey": 12, "type": "jsonFragment", …}}</span><span class="op del">{"delete": {"nodeKey": 7}}</span></pre></div>
+        <div class="code df-out" aria-live="polite"><div class="code__head"><span>Response (abridged, real run)</span><span>/diff</span></div><pre id="df-out"><span class="op upd">{"update": {"nodeKey": 4, "path": "/[0]/price", "type": "number", "value": 899}}</span><span class="op ins">{"insert": {"nodeKey": 8, "path": "/[1]", "type": "jsonFragment", …}}</span><span class="op del">{"delete": {"nodeKey": 5, "path": "/[1]"}}</span></pre></div>
         <div class="fig-ctrl"><button type="button" class="chip" data-df="upd" aria-pressed="false">update</button><button type="button" class="chip" data-df="ins" aria-pressed="false">insert</button><button type="button" class="chip" data-df="del" aria-pressed="false">delete</button><button type="button" class="chip" data-df="all" aria-pressed="true">all</button></div>
-        <figcaption class="cap__figcap">Diagram 3 · Node keys are illustrative; field names follow the REST <code>Diff</code> schema. The dotted lines are the point: node #6 is the <em>same</em> node in both revisions.</figcaption>
+        <figcaption class="cap__figcap">Diagram 3 · Node keys and the response are from a real run of this catalog (abridged). The dotted lines are the point: node #4 is the <em>same</em> node in both revisions.</figcaption>
       </figure>
     </article>
 

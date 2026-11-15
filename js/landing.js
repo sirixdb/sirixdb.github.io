@@ -260,20 +260,21 @@
     var L = 4, R = 362;
     var a1 = node(L, 44, 74, '[ ]', 1, '', 'df-l-1');
     var o2 = node(L + 24, 84, 70, '{ }', 2, '', 'df-l-2');
-    var n4 = node(L + 48, 122, 220, 'name: "Laptop"', 4, '', 'df-l-4');
-    var p6 = node(L + 48, 156, 220, 'price: 999', 6, 'upd', 'df-l-6');
-    var o7 = node(L + 24, 198, 70, '{ }', 7, 'del', 'df-l-7');
-    var n9 = node(L + 48, 236, 220, 'name: "Phone"', 9, 'del', 'df-l-9');
-    var p11 = node(L + 48, 270, 220, 'price: 699', 11, 'del', 'df-l-11');
+    // node keys from a real run of this catalog (sdb:nodekey, SirixDB 1.0.0-beta7)
+    var n4 = node(L + 48, 122, 220, 'name: "Laptop"', 3, '', 'df-l-3');
+    var p6 = node(L + 48, 156, 220, 'price: 999', 4, 'upd', 'df-l-4');
+    var o7 = node(L + 24, 198, 70, '{ }', 5, 'del', 'df-l-5');
+    var n9 = node(L + 48, 236, 220, 'name: "Phone"', 6, 'del', 'df-l-6');
+    var p11 = node(L + 48, 270, 220, 'price: 699', 7, 'del', 'df-l-7');
     edge(a1, o2); edge(o2, n4); edge(o2, p6); edge(a1, o7); edge(o7, n9); edge(o7, p11);
     // rev 4 tree
     var b1 = node(R, 44, 74, '[ ]', 1, '', 'df-r-1');
     var q2 = node(R + 24, 84, 70, '{ }', 2, '', 'df-r-2');
-    var m4 = node(R + 48, 122, 220, 'name: "Laptop"', 4, '', 'df-r-4');
-    var r6 = node(R + 48, 156, 220, 'price: 899', 6, 'upd', 'df-r-6');
-    var q12 = node(R + 24, 198, 70, '{ }', 12, 'ins', 'df-r-12');
-    var m14 = node(R + 48, 236, 220, 'name: "Tablet"', 14, 'ins', 'df-r-14');
-    var r16 = node(R + 48, 270, 220, 'price: 449', 16, 'ins', 'df-r-16');
+    var m4 = node(R + 48, 122, 220, 'name: "Laptop"', 3, '', 'df-r-3');
+    var r6 = node(R + 48, 156, 220, 'price: 899', 4, 'upd', 'df-r-4');
+    var q12 = node(R + 24, 198, 70, '{ }', 8, 'ins', 'df-r-8');
+    var m14 = node(R + 48, 236, 220, 'name: "Tablet"', 9, 'ins', 'df-r-9');
+    var r16 = node(R + 48, 270, 220, 'price: 449', 10, 'ins', 'df-r-10');
     edge(b1, q2); edge(q2, m4); edge(q2, r6); edge(b1, q12); edge(q12, m14); edge(q12, r16);
     // identity lines: same node key across revisions
     [[a1, b1], [o2, q2], [n4, m4], [p6, r6]].forEach(function (p) {
