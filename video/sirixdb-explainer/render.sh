@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Render the film from video/ exactly as it is (your Studio edits included). Free: no credits.
-#   ./render.sh            film + SRT + poster in out/
-#   ./render.sh --quick    draft-quality film only
+# Render modes and output files: EDITING.md, "Re-render (free)".
 # Before rendering, the music is re-ducked under the voice clips where they sit now
 # (tools/remix.py) and the SRT is derived from the caption composition (tools/srt.py).
 set -euo pipefail

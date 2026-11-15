@@ -47,8 +47,8 @@ def take_pauses(src, cap=None, pauses=None):
 
     Each internal pause keeps its natural length up to `cap`. `pauses` (a beat's "take_pauses" in
     build/script.json) can set single pauses by position: a number is that pause's length in
-    seconds, null keeps the natural one. It only applies while it has one entry per pause of the
-    take, so a re-recorded take falls back to its natural pauses instead of pausing mid-word.
+    seconds, null uses the natural one capped at `cap`. It only applies while it has one entry
+    per pause of the take, so a re-recorded take falls back to capped natural pauses.
     """
     cap = CFG["timing"]["max_pause_in_take"] if cap is None else cap
     _, regs = speech_regions(src)
@@ -84,7 +84,7 @@ def tighten(src, dst, cap=None, tempo=None, gain_db=0.0, pauses=None):
 
 def _attr(tag, name, default=None):
     # whole attribute name only: Studio stamps data-hf-id="..." on every element, and a plain \b
-    # would read that as id="..." (then no voice clip is found and remix.py fails)
+    # would read that as id="..." and hide valid voice clips from the ducking and caption helpers
     m = re.search(rf'(?<![\w-]){name}="([^"]*)"', tag)
     return m.group(1) if m else default
 

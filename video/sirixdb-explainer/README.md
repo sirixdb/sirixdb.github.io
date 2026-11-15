@@ -8,34 +8,25 @@ scenes show a real `sirix-shell` session.
 
 ## Edit it in HyperFrames Studio
 
-1. Install the HyperFrames desktop app (hyperframes.studio), or use the browser preview below.
-2. Once after cloning: `python3 tools/remix.py`. This creates the ducked music track
-   `video/assets/music-ducked.wav`, which is generated rather than committed.
-3. Open the folder `video/sirixdb-explainer/video/` in the app. Without the app, run
-   `cd video/sirixdb-explainer/video && npx --yes hyperframes@0.9.42 preview`.
-4. Change text, timing or layout. Studio writes straight into `video/`, which is the source of truth.
+Follow [Open it in Studio](EDITING.md#open-it-in-studio) for setup and browser-preview
+instructions. Studio writes straight into `video/`, which is the source of truth.
 
 ## Re-render
 
 ```bash
 cd video/sirixdb-explainer
-./render.sh          # captioned MP4, site-clean MP4, SRT and poster in out/
-./render.sh --quick  # draft-quality MP4 only
+./render.sh
 ```
 
-Rendering is free. It needs Node 22+, ffmpeg, python3 and Chrome. To publish the new cut on the
-site, see "Publishing a new cut on sirix.io" in `EDITING.md`.
+Rendering is free. It needs Node 22+, ffmpeg, python3 and Chrome. See
+[Re-render](EDITING.md#re-render-free) for output files and the `--quick` draft mode, and
+[Publishing a new cut on sirix.io](EDITING.md#publishing-a-new-cut-on-sirixio) to update the site.
 
 ## What costs money
 
 Only new audio does, through the Higgsfield CLI. Both scripts show the estimate and ask first.
-- `./gen_voice.sh N` re-voices line N, about 1.4-1.7 credits on the configured `seed_audio` voice.
-- `./gen_music.sh` makes a new music bed, about 4 credits for 64 s.
-
-The configured voice model (`seed_audio`) has no language setting, and one early take of the last
-line came out in Mandarin. After re-voicing, transcribe each new take and check that it is English.
-Higgsfield's `qwen_audio_tts` takes `language=en` and costs about 0.06 credits per line, if a switch
-is ever wanted.
+See [Re-voicing a line](EDITING.md#re-voicing-a-line-costs-higgsfield-credits) and
+[New music](EDITING.md#new-music-costs-higgsfield-credits) for the commands and observed costs.
 
 ## Layout
 

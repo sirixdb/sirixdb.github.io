@@ -1,5 +1,5 @@
 {
- "_doc": "Script, voice, music and pacing. 'text' = caption words for the beat; 'tts' = what the voice model reads ('Sirix-DB' so the name is spoken as one word; 'by-temporal' so bitemporal is pronounced right). Used by gen_voice.sh, gen_music.sh, tools/*.py. Changing text/tts only takes effect after ./gen_voice.sh N (costs credits).",
+ "_doc": "Script, voice, music and pacing. 'text' = caption words for the beat; 'tts' = what the voice model reads ('Sirix-DB' so the name is spoken as one word; 'by-temporal' so bitemporal is pronounced right). Used by gen_voice.sh, gen_music.sh, tools/*.py. Apply text changes with python3 tools/captions.py (free; replaces manual caption edits), and tts changes with ./gen_voice.sh N (costs credits).",
  "voice": {
   "model": "seed_audio",
   "voice_name": "Marcus",
@@ -12,7 +12,7 @@
   "duration": 93,
   "file": "audio/music.m4a",
   "skip_lead_in": 0.0,
-  "_slowed": "audio/music.m4a is the generated track audio/music.20261115-190734.m4a played 1.1324 times slower (resampled, so about 2 semitones lower) with two repeats so it covers the slower film: its 18.1 s main passage (19.1 s to 37.2 s) plays twice, and one 3.0 s bar (from 43.75 s of the slowed track) plays twice; each join is a 0.3 s crossfade. That puts the track's last chord right after the last spoken word. audio/music.slowed-72s.m4a is the version without repeats. skip_lead_in is how much of the track's start is skipped; a newly generated track needs it set again",
+  "_slowed": "audio/music.m4a is the generated track audio/music.20261115-190734.m4a played 1.1324 times slower (resampled, so about 2 semitones lower) with two repeats so it covers the slower film: its 18.1 s main passage (19.1 s to 37.2 s) plays twice, and one 3.0 s bar (from 43.75 s of the slowed track) plays twice; each join is a 0.3 s crossfade. That puts the track's last chord right after the last spoken word. skip_lead_in is how much of the track's start is skipped; a newly generated track needs it set again",
   "prompt": "Understated modern electronic background music for a calm technical product explainer. Warm analog pads, a soft pulsing synth arpeggio, light restrained percussion, about 92 BPM, steady and confident, no vocals, no big drops, mixes well under a voiceover, ends with a gentle resolved final chord.",
   "level_db": -15
  },
@@ -23,7 +23,7 @@
   "max_pause_in_take": 0.85,
   "tempo": 0.9,
   "voice_lufs": -16.0,
-  "_pace": "tempo 0.9 plays the voice 10% slower (pitch kept); pauses inside a take keep their natural length up to max_pause_in_take. A beat's take_pauses sets single pauses of its take by position (seconds before tempo, null = natural), used on beat 3 so each shell query has time to run."
+  "_pace": "tempo 0.9 plays the voice 10% slower (pitch kept); pauses inside a take keep their natural length up to max_pause_in_take. A beat's take_pauses sets single pauses of its take by position (seconds before tempo, null = natural capped at max_pause_in_take), used on beat 3 so each shell query has time to run."
  },
  "beats": [
   {
