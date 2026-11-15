@@ -4,65 +4,37 @@ doctitle: DOM-alike API
 title: SirixDB - DOM-alike API
 ---
 
-### Maven artifacts
+[Edit this page on GitHub](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/dom-alike-api.md)
 
-First, you have to get the dependency on our Sirix query project. At this stage of development, please use the latest SNAPSHOT artifacts from the OSS snapshot repository. Just add the following repository section to your POM file:
+## Maven artifacts
 
-```xml
-<repository>
-  <id>central-snapshots</id>
-  <name>Sonatype Central Snapshots</name>
-  <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-  <releases>
-    <enabled>false</enabled>
-  </releases>
-  <snapshots>
-    <enabled>true</enabled>
-  </snapshots>
-</repository>
-```
+Use **JDK 25** for current SirixDB source builds. Follow the
+[embedded-library setup](https://github.com/sirixdb/sirix#as-an-embedded-library)
+for published Maven/Gradle coordinates and the required JVM flags. The query
+layer uses the `io.sirix:sirix-query` artifact; the cursor API uses
+`io.sirix:sirix-core`. Keep module versions aligned. For the current source
+version and snapshot repositories, use the repository's
+[Gradle properties](https://github.com/sirixdb/sirix/blob/main/gradle.properties)
+and [build configuration](https://github.com/sirixdb/sirix/blob/main/build.gradle).
+Source builds use the provided Gradle wrapper; published artifacts can be
+consumed from Maven or Gradle applications.
 
-Or for Gradle:
-```gradle
-apply plugin: 'java'
-apply plugin: 'maven'
+## Working with nodes
 
-repositories {
-    maven {
-          url "https://central.sonatype.com/repository/maven-snapshots/"
-    }
-}
-```
+The query module adapts SirixDB's transactional cursors to Brackit's node and JSON
+item interfaces. XML nodes use
+[`XmlDBNode`](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-query/src/main/java/io/sirix/query/node/XmlDBNode.java)
+and [`BasicXmlDBStore`](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-query/src/main/java/io/sirix/query/node/BasicXmlDBStore.java).
+JSON objects, arrays and scalar values use the
+[`JsonDBItem`](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-query/src/main/java/io/sirix/query/json/JsonDBItem.java)
+interface and `BasicJsonDBStore`.
 
-Maven artifacts are deployed to the central maven repository (however, please use the SNAPSHOT-variants as of now). Currently, the following artifacts are available. Make sure that snapshots are getting updated with newer versions in your IDE.
+These objects reference a resource transaction; they do not materialize an entire
+document in memory. Keep the store and query context open while using them.
+Read-only nodes refer to their revision's snapshot. Updates are applied through
+`SirixQueryContext`, whose commit strategy controls publication.
 
-Query project:
-
-```xml
-<dependency>
-  <groupId>io.sirix</groupId>
-  <artifactId>sirix-query</artifactId>
-  <version>0.9.7-SNAPSHOT</version>
-</dependency>
-```
-
-To add the dependency in Gradle:
-```gradle
-dependencies {
-  compile 'io.sirix:sirix-query:0.9.7-SNAPSHOT'
-}
-```
-
-### TODO
-
-```xquery
-let $doc := jn:open('mycol.jn','mydoc.jn', xs:dateTime('2019-04-13T16:24:27Z'))
-let $statuses := $doc=>statuses
-let $foundStatus := for $status in bit:array-values($statuses)
-  let $dateTimeCreated := xs:dateTime($status=>created_at)
-  where $dateTimeCreated > xs:dateTime("2018-02-01T00:00:00")
-        and not(exists(jn:previous($status)))
-  order by $dateTimeCreated
-  return $status
-return {"revision": sdb:revision($foundStatus), $foundStatus{text}}
-```
+Use the [JSONiq API examples](/docs/jsoniq-api.html#running-queries-from-java)
+to create a store, query context and compile chain together. For explicit
+navigation and transaction lifecycle management, see the
+[transactional cursor API](/docs/transactional-cursor-api.html).

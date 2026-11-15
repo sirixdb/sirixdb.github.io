@@ -11,7 +11,7 @@ Get SirixDB running and query temporal data in minutes. Pick the path that fits 
 | Path | Time | Best for |
 |---|---|---|
 | [REST API](#rest-api) | ~5 min | Building web/mobile apps, language-agnostic integration |
-| [Embedded Java Library](#embedded-java-library) | ~10 min | JVM applications, maximum performance, full control |
+| [Embedded Java Library](#embedded-java-library) | ~10 min | JVM applications, direct transaction access, full control |
 | [CLI Tools](#cli-tools) | ~10 min | Ad-hoc queries, scripting, interactive JSONiq |
 
 **Prerequisites:** [Docker](https://docs.docker.com/get-docker/) for the REST API path; for the embedded and CLI paths, see the [supported JVM and required launch flags](/docs/operations.html).
@@ -30,12 +30,12 @@ cd sirix
 docker compose up -d
 ```
 
-Wait for Keycloak's health check to pass (~30 s), then the SirixDB server starts on `https://localhost:9443`.
+Wait for Keycloak's health check to pass, then the SirixDB server starts on `http://localhost:9443`.
 
 ### Authenticate
 
 ```bash
-TOKEN=$(curl -sk -X POST "https://localhost:9443/token" \
+TOKEN=$(curl -sS -X POST "http://localhost:9443/token" \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin"}' \
   | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
@@ -44,7 +44,7 @@ TOKEN=$(curl -sk -X POST "https://localhost:9443/token" \
 ### Store a JSON document
 
 ```bash
-curl -sk -X PUT "https://localhost:9443/shop/products" \
+curl -sS -X PUT "http://localhost:9443/shop/products?hashType=ROLLING" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -60,7 +60,7 @@ This creates a JSON database called `shop` with a resource called `products` —
 ### Read it back
 
 ```bash
-curl -sk "https://localhost:9443/shop/products" \
+curl -sS "http://localhost:9443/shop/products" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
 ```
@@ -70,7 +70,7 @@ curl -sk "https://localhost:9443/shop/products" \
 First, get the ETag of the root node:
 
 ```bash
-ETAG=$(curl -skI "https://localhost:9443/shop/products?nodeId=1" \
+ETAG=$(curl -sSI "http://localhost:9443/shop/products?nodeId=1" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json" \
   | grep -i etag | tr -d '\r' | cut -d' ' -f2)
@@ -79,18 +79,18 @@ ETAG=$(curl -skI "https://localhost:9443/shop/products?nodeId=1" \
 Then insert a new product:
 
 ```bash
-curl -sk -X POST "https://localhost:9443/shop/products?nodeId=1&insert=asFirstChild" \
+curl -sS -X POST "http://localhost:9443/shop/products?nodeId=1&insert=asFirstChild" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
-  -H "ETag: $ETAG" \
+  -H "If-Match: $ETAG" \
   -d '{"name": "Monitor", "price": 349}'
 ```
 
 ### Time travel — read revision 1
 
 ```bash
-curl -sk "https://localhost:9443/shop/products?revision=1" \
+curl -sS "http://localhost:9443/shop/products?revision=1" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
 ```
@@ -98,7 +98,7 @@ curl -sk "https://localhost:9443/shop/products?revision=1" \
 ### Diff two revisions
 
 ```bash
-curl -sk "https://localhost:9443/shop/products/diff?first-revision=1&second-revision=2" \
+curl -sS "http://localhost:9443/shop/products/diff?first-revision=1&second-revision=2" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
 ```
@@ -108,7 +108,7 @@ curl -sk "https://localhost:9443/shop/products/diff?first-revision=1&second-revi
 Retrieve all revisions of the entire document:
 
 ```bash
-curl -sk -X POST "https://localhost:9443/" \
+curl -sS -X POST "http://localhost:9443/" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -127,7 +127,7 @@ For the full endpoint reference, see [REST API](/docs/rest-api.html).
 
 ## Embedded Java Library
 
-Use SirixDB directly inside your JVM application for maximum performance and fine-grained control.
+Use SirixDB directly inside your JVM application for direct transaction access and fine-grained control.
 
 Follow the [embedded-library setup in the SirixDB README](https://github.com/sirixdb/sirix#as-an-embedded-library) for current Maven and Gradle coordinates and the command to run the example. It distinguishes the published library from source builds.
 
@@ -138,7 +138,7 @@ The [standalone embedded example](https://github.com/sirixdb/sirix/tree/main/doc
 - A **database** holds multiple **resources** (each is an independent versioned document)
 - A **write transaction** (`JsonNodeTrx`) auto-creates a new revision on each `commit()`
 - A **read-only transaction** (`JsonNodeReadOnlyTrx`) can open any historical revision
-- Every past revision is immutable and permanently queryable
+- Past revisions remain queryable while the resource exists; deleting the resource or database also deletes its history
 
 For the full cursor API, see [Cursor API](/docs/transactional-cursor-api.html). For the DOM-alike layer, see [DOM-alike API](/docs/dom-alike-api.html).
 
@@ -153,13 +153,13 @@ Build and run the Kotlin CLI for basic database operations:
 ```bash
 git clone https://github.com/sirixdb/sirix.git
 cd sirix
-./gradlew :sirix-kotlin-cli:build
+./gradlew :sirix-kotlin-cli:installDist
 ```
 
 Usage:
 
 ```bash
-java -jar bundles/sirix-kotlin-cli/build/libs/sirix-kotlin-cli-*-all.jar --help
+bundles/sirix-kotlin-cli/build/install/sirix-kotlin-cli/bin/sirix-kotlin-cli --help
 ```
 
 ### Interactive JSONiq shell
@@ -167,7 +167,7 @@ java -jar bundles/sirix-kotlin-cli/build/libs/sirix-kotlin-cli-*-all.jar --help
 Launch an interactive shell to run JSONiq queries:
 
 ```bash
-./gradlew :sirix-query:run
+./gradlew :sirix-query:run --args="-iq"
 ```
 
 This opens a REPL where you can run temporal queries against local databases. See the [JSONiq Tutorial](/docs/jsoniq-tutorial.html) for query examples.

@@ -7,39 +7,21 @@ title: SirixDB - Using the Java CLI via JSONiq queries
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/jsoniq-tutorial.md)
 
 ## Setup a Shell
-First, you should make sure to download the current sirix-query-all.jar (SNAPSHOT)-release from [the Sonatype Central snapshot repository](https://central.sonatype.com/repository/maven-snapshots/) in the `sirix-query` subfolder. (or you can get it locally in your `/bundles/sirix-query/build/libs` directory after doing `./gradlew build`)
-
-You can then add a shell script on linux(like) systems, for instance named `sirix-shell.sh`:
+Use JDK 25 and build the query module's distribution from a SirixDB checkout:
 
 ```bash
-#!/bin/bash
-
-java -DLOGGER_HOME=~/sirix-data -Xms3g -Xmx8g --enable-preview --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED --add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED -XX:+UseZGC -jar sirix-query-0.10.4-all.jar -iq
+./gradlew :sirix-query:installDist
+bundles/sirix-query/build/install/sirix-query/bin/sirix-query -iq
 ```
 
-Make sure to adapt the JAR file to the downloaded version. (Rename the JAR `sirix-query-0.10.4-all.jar` in `sirix-shell.sh` script to the JAR you are using)
+The generated launcher includes the module's JVM arguments. On Windows use the
+corresponding `sirix-query.bat` launcher. The `-iq` option starts interactive query
+input; enter a blank line after each query to evaluate it.
 
-In order to execute queries, open sirix shell through following command:
-
-```xquery
-./sirix-shell.sh
-```
-
-Example to execute queries: 
-
-```xquery
-sirix > let $doc := jn:doc('mycol.jn','resource2')
-> return rename json $doc.foo as "bar"
-> (make sure to give last as NULL, Simply Enter)
-
-Query result:
-//RESULT
-```
-
-On Windows, you can create a batch file accordingly.
+For source-build prerequisites, see [Operations](/docs/operations.html).
 
 ## Import of data
-[Download and unpack](https://github.com/sirixdb/sirixdb.github.io/raw/master/files/json.tar.gz) a zipped directory with two simple JSON files, an `object.json` and an `array.json` file into the same directory as the JAR and the shell-script.
+[Download and unpack](/files/json.tar.gz) a zipped directory with two simple JSON files, an `object.json` and an `array.json` file into the same directory as the JAR and the shell-script.
 
 The array JSON file is as simple as:
 
@@ -53,16 +35,15 @@ The object JSON file:
 {"foo": true}
 ```
 
-Now we can import the directory into a SirixDB `database` as follows:
+Import the files with explicit resource names so the queries below use the same
+names on every run. Replace the paths with the extracted files' locations:
 
 ```xquery
-jn:load('mycol', (), io:ls('/path/to/your/json/directory', '\\.json$'))
+jn:load('mycol', 'resource1', '/path/to/json/array.json')
 ```
 
-If your JSON directory (named `json`) is in same folder as `sirix-shell.sh` and JAR, give path to query as follows:
-
 ```xquery
-jn:load('mycol', (), io:ls('json', '\\.json$'))
+jn:load('mycol', 'resource2', '/path/to/json/object.json', false())
 ```
 
 In order to query the contents we can open the database using the `jn:collection` function:
@@ -71,7 +52,7 @@ In order to query the contents we can open the database using the `jn:collection
 jn:collection('mycol')
 ```
 
-The quey result will be:
+The query result will be:
 
 ```json
 {"foo":true} ["bla","blubb"]
@@ -80,20 +61,20 @@ The quey result will be:
 Of course you can query single documents either by looping over the result of `jn:collection` or via `jn:doc`:
 
 ```xquery
-jn:doc('mycol.jn','resource1')
+jn:doc('mycol','resource1')
 ```
 
 ```xquery
-jn:doc('mycol.jn','resource2')
+jn:doc('mycol','resource2')
 ```
 
 
 ## Updates and time travel queries
 
-You can update `resource2` in the database/collection `mycol.jn` via JSONiq update statements:
+You can update `resource2` in the database/collection `mycol` via JSONiq update statements:
 
 ```xquery
-let $doc := jn:doc('mycol.jn','resource2')
+let $doc := jn:doc('mycol','resource2')
 return rename json $doc.foo as "bar"
 ```
 This query renames the field `foo` to `bar`. The implicit read-write transaction is automatically committed.
@@ -101,7 +82,7 @@ This query renames the field `foo` to `bar`. The implicit read-write transaction
 SirixDB only ever appends data and never overwrites old revisions. Thus, we can, of course, load the first revision via an optional third parameter to the `jn:doc` function:
 
 ```xquery
-jn:doc('mycol.jn','resource2',1)
+jn:doc('mycol','resource2',1)
 ```
 
 will retrieve the first revision of the resource:
@@ -113,7 +94,7 @@ will retrieve the first revision of the resource:
 The new revision can be queried using (we can omit specifying revision 2 as it's equivalent):
 
 ```xquery
-jn:doc('mycol.jn','resource2',2)
+jn:doc('mycol','resource2',2)
 ```
 
 Result is:
@@ -127,7 +108,7 @@ Result is:
 With the function `jn:all-times` we can retrieve all revisions of the resource (or any node in the revision):
 
 ```xquery
-jn:all-times(jn:doc('mycol.jn','resource2'))
+jn:all-times(jn:doc('mycol','resource2'))
 ```
 
 Result is:
@@ -147,14 +128,14 @@ Other temporal functions exist to navigate not only in space, but also in time.
 we can also change the value via:
 
 ```xquery
-let $doc := jn:doc('mycol.jn','resource2')
+let $doc := jn:doc('mycol','resource2')
 return replace json value of $doc.bar with false
 ```
 
 Thus, we now have 3 revisions:
 
 ```xquery
-let $revisions := jn:all-times(jn:doc('mycol.jn','resource2'))
+let $revisions := jn:all-times(jn:doc('mycol','resource2'))
 for $revision in $revisions
 return {"revision": sdb:revision($revision), "timestamp":sdb:timestamp($revision), "data": $revision}
 ```
@@ -162,7 +143,7 @@ return {"revision": sdb:revision($revision), "timestamp":sdb:timestamp($revision
 Result is:
 
 ```json
-{"revision":1,"timestamp":"2023-11-19T22:17:55:717000Z","data":{"foo":true}} {"revision":2,"timestamp":"2023-11-19T22:19:38:157000Z","data":{"bar":true}} {"revision":3,"timestamp":"2023-11-20T17:59:38:68000Z","data":{"bar":false}}
+{"revision":1,"timestamp":"2023-11-19T22:17:55.717000Z","data":{"foo":true}} {"revision":2,"timestamp":"2023-11-19T22:19:38.157000Z","data":{"bar":true}} {"revision":3,"timestamp":"2023-11-20T17:59:38.068000Z","data":{"bar":false}}
 ```
 
 The timestamps are the transactional commit timestamps, the system time when data is known to the system (one axis of the bitemporality).
@@ -170,7 +151,7 @@ The timestamps are the transactional commit timestamps, the system time when dat
 If we want to search for a specific timestamp, we can for instance specify:
 
 ```xquery
-jn:open('mycol.jn','resource2',xs:dateTime('2023-11-19T22:23:00'))
+jn:open('mycol','resource2',xs:dateTime('2023-11-19T22:23:00'))
 ```
 
 The result is the second revision (as the third revision was committed one day later):
@@ -178,11 +159,11 @@ The result is the second revision (as the third revision was committed one day l
 ```json
 {"bar":true}
 ```
-### System Time: retrieve all states of a resource between two given timestamps 
+### System Time: retrieve all states of a resource between two given timestamps
 If you want to retrieve all states of a resource between two timestamps (transaction/system commit time), you can invoke the following:
 
 ```xquery
-let $revisions := jn:open-revisions('mycol.jn','resource2',xs:dateTime('2023-11-19T00:00:00-00:00'),xs:dateTime('2023-11-19T23:00:00-00:00'))
+let $revisions := jn:open-revisions('mycol','resource2',xs:dateTime('2023-11-19T00:00:00-00:00'),xs:dateTime('2023-11-19T23:00:00-00:00'))
 for $revision in $revisions
 return {"revision": sdb:revision($revision), "timestamp":sdb:timestamp($revision), "data": $revision}
 ```
@@ -190,7 +171,7 @@ return {"revision": sdb:revision($revision), "timestamp":sdb:timestamp($revision
 The result for my database is as follows:
 
 ```json
-{"revision":1,"timestamp":"2023-11-19T22:17:55:717000Z","data":{"foo":true}} {"revision":2,"timestamp":"2023-11-19T22:19:38:157000Z","data":{"bar":true}}
+{"revision":1,"timestamp":"2023-11-19T22:17:55.717000Z","data":{"foo":true}} {"revision":2,"timestamp":"2023-11-19T22:19:38.157000Z","data":{"bar":true}}
 ```
 
 Of course, the system times when a specific revision has been created are different on your computer.
@@ -199,16 +180,16 @@ Of course, the system times when a specific revision has been created are differ
 To check what has been updated between revisions of a resource we can use the following query:
 
 ```xquery
-let $maxRevision := sdb:revision(jn:doc('mycol.jn','resource2'))
+let $maxRevision := sdb:revision(jn:doc('mycol','resource2'))
 let $result := for $i in (1 to $maxRevision)
                return
                  if ($i > 1) then
-                   jn:diff('mycol.jn','resource2',$i - 1, $i)
+                   jn:diff('mycol','resource2',$i - 1, $i)
                  else
                    ()
 return [
   for $diff at $pos in $result
-  return {"diffRev" || $pos || "toRev" || $pos + 1: jn:parse($diff).diffs}
+  return {"diffRev" || $pos || "toRev" || $pos + 1: $diff.diffs}
 ]
 ```
 
@@ -224,7 +205,7 @@ In our example we first updated the field name in revision 2 to `"bar"`. We then
 We can also add resources from a specific URL (as in this [Twitter](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/test/resources/json/twitter.json) example):
 
 ```xquery
-jn:load('mycol.jn','mydoc.jn','https://raw.githubusercontent.com/sirixdb/sirix/main/bundles/sirix-core/src/test/resources/json/twitter.json')
+jn:load('mycol','mydoc.jn','https://raw.githubusercontent.com/sirixdb/sirix/main/bundles/sirix-core/src/test/resources/json/twitter.json')
 ```
 
 ## Indexing
@@ -237,20 +218,20 @@ jn:store('json-path1','mydoc.jn','[{"test": "test string"},{"test": ["a", {"test
 ```
 
 ```xquery
-let $doc := jn:doc('mycol.jn','mydoc.jn')
+let $doc := jn:doc('json-path1','mydoc.jn')
 let $stats := jn:create-name-index($doc, ('testfield','test'))
 return {"revision": sdb:commit($doc)}
 ```
 
 ```xquery
-let $doc := jn:doc('mycol.jn','mydoc.jn')
+let $doc := jn:doc('json-path1','mydoc.jn')
 let $nameIndexNumber := jn:find-name-index($doc, 'testfield')
 for $node in jn:scan-name-index($doc, $nameIndexNumber, 'testfield')
 order by sdb:revision($node), sdb:nodekey($node)
 return {"nodeKey": sdb:nodekey($node), "path": sdb:path($node), "revision": sdb:revision($node)}
 ```
 
-### Path indexes
+For path index creation and scans, see the [function reference](/docs/jsoniq-functions.html#indexes).
 
 ### CAS (content-and-structure) indexes
 

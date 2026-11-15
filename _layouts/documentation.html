@@ -3,37 +3,40 @@
   {% include head.html %}
   <body class="page-docs">
     {% include header.html %}
-    <main class="docs-layout">
+    <div class="docs-layout">
       <aside class="docs-sidebar">
+        <details class="docs-navigation" open>
+          <summary class="docs-nav__toggle">Browse documentation</summary>
         <nav class="docs-nav" aria-label="Documentation">
-          <h3 class="docs-nav__title">Documentation</h3>
+          <p class="docs-nav__title">Documentation</p>
           <ul class="docs-nav__list">
-            <li><a href="/docs/getting-started.html" {% if page.url == '/docs/getting-started.html' %}class="active"{% endif %}>Getting Started</a></li>
-            <li><a href="/docs/index.html" {% if page.url == '/docs/index.html' %}class="active"{% endif %}>Introduction</a></li>
-            <li><a href="/docs/features.html" {% if page.url == '/docs/features.html' %}class="active"{% endif %}>Features</a></li>
-            <li><a href="/docs/architecture.html" {% if page.url == '/docs/architecture.html' %}class="active"{% endif %}>Architecture</a></li>
-            <li><a href="/docs/comparison.html" {% if page.url == '/docs/comparison.html' %}class="active"{% endif %}>Comparison</a></li>
-            <li><a href="/docs/use-cases.html" {% if page.url == '/docs/use-cases.html' %}class="active"{% endif %}>Use Cases</a></li>
-            <li><a href="/docs/operations.html" {% if page.url == '/docs/operations.html' %}class="active"{% endif %}>Operations</a></li>
+            <li><a href="/docs/getting-started.html" {% if page.url == '/docs/getting-started.html' %}class="active" aria-current="page"{% endif %}>Getting Started</a></li>
+            <li><a href="/docs/index.html" {% if page.url == '/docs/index.html' %}class="active" aria-current="page"{% endif %}>Introduction</a></li>
+            <li><a href="/docs/features.html" {% if page.url == '/docs/features.html' %}class="active" aria-current="page"{% endif %}>Features</a></li>
+            <li><a href="/docs/architecture.html" {% if page.url == '/docs/architecture.html' %}class="active" aria-current="page"{% endif %}>Architecture</a></li>
+            <li><a href="/docs/comparison.html" {% if page.url == '/docs/comparison.html' %}class="active" aria-current="page"{% endif %}>Comparison</a></li>
+            <li><a href="/docs/use-cases.html" {% if page.url == '/docs/use-cases.html' %}class="active" aria-current="page"{% endif %}>Use Cases</a></li>
+            <li><a href="/docs/operations.html" {% if page.url == '/docs/operations.html' %}class="active" aria-current="page"{% endif %}>Operations</a></li>
             <li class="docs-nav__group-label">APIs</li>
-            <li><a href="/docs/rest-api.html" {% if page.url == '/docs/rest-api.html' %}class="active"{% endif %}>REST API</a></li>
-            <li><a href="/docs/jsoniq-api.html" {% if page.url == '/docs/jsoniq-api.html' %}class="active"{% endif %}>JSONiq API</a></li>
-            <li><a href="/docs/jsoniq-functions.html" {% if page.url == '/docs/jsoniq-functions.html' %}class="active"{% endif %}>Function Reference</a></li>
-            <li><a href="/docs/dom-alike-api.html" {% if page.url == '/docs/dom-alike-api.html' %}class="active"{% endif %}>DOM-alike API</a></li>
-            <li><a href="/docs/transactional-cursor-api.html" {% if page.url == '/docs/transactional-cursor-api.html' %}class="active"{% endif %}>Cursor API</a></li>
+            <li><a href="/docs/rest-api.html" {% if page.url == '/docs/rest-api.html' %}class="active" aria-current="page"{% endif %}>REST API</a></li>
+            <li><a href="/docs/jsoniq-api.html" {% if page.url == '/docs/jsoniq-api.html' %}class="active" aria-current="page"{% endif %}>JSONiq API</a></li>
+            <li><a href="/docs/jsoniq-functions.html" {% if page.url == '/docs/jsoniq-functions.html' %}class="active" aria-current="page"{% endif %}>Function Reference</a></li>
+            <li><a href="/docs/dom-alike-api.html" {% if page.url == '/docs/dom-alike-api.html' %}class="active" aria-current="page"{% endif %}>DOM-alike API</a></li>
+            <li><a href="/docs/transactional-cursor-api.html" {% if page.url == '/docs/transactional-cursor-api.html' %}class="active" aria-current="page"{% endif %}>Cursor API</a></li>
             <li class="docs-nav__group-label">SDKs</li>
-            <li><a href="/docs/python-sdk.html" {% if page.url == '/docs/python-sdk.html' %}class="active"{% endif %}>Python SDK</a></li>
+            <li><a href="/docs/python-sdk.html" {% if page.url == '/docs/python-sdk.html' %}class="active" aria-current="page"{% endif %}>Python SDK</a></li>
             <li class="docs-nav__group-label">Tutorials</li>
-            <li><a href="/docs/jsoniq-tutorial.html" {% if page.url == '/docs/jsoniq-tutorial.html' %}class="active"{% endif %}>JSONiq Tutorial</a></li>
+            <li><a href="/docs/jsoniq-tutorial.html" {% if page.url == '/docs/jsoniq-tutorial.html' %}class="active" aria-current="page"{% endif %}>JSONiq Tutorial</a></li>
           </ul>
         </nav>
+        </details>
       </aside>
-      <article class="docs-content">
+      <main class="docs-content" id="main-content" tabindex="-1">
         {% if page.doctitle %}<h1 class="docs-content__title">{{ page.doctitle }}</h1>{% endif %}
         {{ content }}
-      </article>
-    </main>
+      </main>
+    </div>
     {% include footer.html %}
-    <script src="/js/main.js?v=5"></script>
+    <script src="/js/main.js?v=7"></script>
   </body>
 </html>

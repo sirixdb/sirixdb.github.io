@@ -5,7 +5,7 @@ description: >-
     SirixDB is an evolutionary, bitemporal NoSQL document store for JSON and XML.
     Keep the full history of your data with minimal storage overhead.
 baseurl: "" # the subpath of your site, e.g. /blog/
-url: "" # the base hostname & protocol for your site
+url: "https://sirix.io" # the base hostname & protocol for your site
 twitter_username: sirixdb
 github_username:  sirixdb
 
@@ -23,3 +23,8 @@ plugins:
 exclude:
   - vendor
   - Gemfile.lock
+  - Gemfile
+  - README.md
+  - scripts
+  - tests
+  - __pycache__

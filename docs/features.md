@@ -5,24 +5,25 @@ doctitle: Features
 
 [Edit document on Github](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/features.md)
 
-### Features in a nutshell
-- Currently native XML and JSON storage (other data types might follow).
-- No write-ahead log needed, always consistent on the flash drive as the UberPage is the main entry point to the storage and written last to a new location.
-- No background compaction process or gradual merging/compaction is needed as in LSM-trees.
-- Natural multi-version concurrency control (MVCC), each read-only transaction operates on one revision/snapshot, only one read/write transaction can co-exist. We only need a lock for the single writer (in the future we might apply optimistic concurrency control On the database level)
-- Rollback to a past revision of a document/resource is supported, which encourages doing experiments or to solve human- or application errors.
-- Transactional, versioned, typed user-defined index-structures, which are automatically updated once a transaction commits.
-- Through XPath-axis extensions we support the navigation not only in space but also in time (future::, past::, first::, last::…). Furthermore, we provide several temporal XQuery functions due to our integral versioning approach. Temporal navigation for JSON resources is done via built-in XQuery functions.
-- An in-memory path summary, which is persisted during a transaction commit and always kept up-to-date.
-- Per-resource versioning strategies; see [Sliding Snapshot Versioning](/docs/architecture.html#sliding-snapshot-versioning) for the supported strategies and read/write trade-offs.
-- Log-structured sequential writes and random reads due to transactional copy-on-write (COW) semantics. This offers nice benefits as no locking for concurrent reading transactions and it takes full advantage of flash disks while avoiding their weaknesses.
-- Complete isolation of currently N read-transactions and a single write-transaction per resource.
-- The page structure is heavily inspired by ZFS and therefore also forms a tree. We’ll implement a similar merkle-tree and store hashes of each page in parent-pointers for integrity checks.
-- Support of XQuery and XQuery Update due to a slightly modified version of brackit(.org).
-- Moves for the XML layer are additionally supported.
-- Automatic path-rewriting of descendant-axis to child-axis if appropriate.
-- Import of differences between two XML-documents, that is after the first version of an XML-document is imported an algorithm tries to update the Sirix resource with a minimum of operations to change the first version into the new version.
-- A fast ID-based diff-algorithm which can determine differences between any two versions of a resource stored in Sirix optionally taking hashes of a node into account.
-- The number of children of a node, the number of descendants, a hash as well as an ORDPATH / DeweyID label which is compressed on disk to efficiently determine document order as well as to support other nice properties of hierarchical node labels is optionally stored with each node. Currently, the number of children is always stored and the number of descendants is stored if hashing is enabled.
-- Flexible backend.
-- Optional encryption and/or compression of each page on disk.
+## Features in a nutshell
+
+- Native JSON and XML tree storage with stable node keys.
+- Copy-on-write revision history. Committed revisions remain readable until the resource or database is deleted.
+- Multiple read-only transactions and one writer per resource. Read-only transactions select a committed snapshot.
+- Revert a resource to a past revision and commit a new revision while retaining the intervening history.
+- Versioned name, path and content-and-structure (CAS) indexes.
+- Temporal JSONiq functions and XML temporal XPath axes for navigation across revisions.
+- Application-supplied valid-time configuration for [bitemporal queries](/docs/jsoniq-functions.html#bitemporal-queries).
+- A persisted path summary, enabled by default and configurable per resource.
+- [Per-resource versioning strategies](/docs/architecture.html#sliding-snapshot-versioning): full, incremental, differential and sliding snapshot.
+- Shadow paging with sequential page writes; no separate redo write-ahead log or LSM-style background compaction.
+- [Synchronous and asynchronous commit modes](/docs/architecture.html#auto-commit-and-the-asynchronous-pre-flush), with different revision-publication semantics.
+- [JSONiq / XQuery integration](/docs/jsoniq-api.html) through Brackit and a [REST API](/docs/rest-api.html) through Vert.x.
+- XML subtree moves and XML revision import through FMSE.
+- Structural diffs between resource revisions.
+- Optional DeweyIDs, subtree hashes and configurable page byte-handler pipelines.
+
+See [Architecture](/docs/architecture.html) for the storage model and
+[Operations](/docs/operations.html) for deployment requirements and limitations.
+The [source configuration](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/main/java/io/sirix/access/ResourceConfiguration.java)
+defines the current defaults and builder options.

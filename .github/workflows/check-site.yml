@@ -1,0 +1,30 @@
+name: Check website
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+      - name: Verify validation catches seeded defects
+        run: python3 -m unittest discover -s tests -v
+      - name: Build production site
+        run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+      - name: Check rendered links, anchors, headings, images and feed
+        run: python3 scripts/check_site.py _site
+      - name: Check shared JavaScript syntax
+        run: node --check js/main.js

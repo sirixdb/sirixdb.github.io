@@ -6,7 +6,7 @@ title: SirixDB - JSONiq Function Reference
 
 [Edit this page on GitHub](https://github.com/sirixdb/sirixdb.github.io/edit/master/docs/jsoniq-functions.md)
 
-Complete reference of all JSONiq and SirixDB extension functions. Functions use two namespaces: `jn:` (JSON/temporal) and `sdb:` (SirixDB core). For usage patterns and examples, see the [JSONiq API guide](/docs/jsoniq-api.html).
+Reference of commonly used JSONiq and SirixDB extension functions. Functions use two namespaces: `jn:` (JSON/temporal) and `sdb:` (SirixDB core). For usage patterns and examples, see the [JSONiq API guide](/docs/jsoniq-api.html).
 
 ## Data Management
 
@@ -75,7 +75,7 @@ return sdb:revision($v)
 
 ## Bitemporal Queries
 
-Query along two time axes: *system time* (when SirixDB recorded it) and *valid time* (when it was true in the real world). Requires resources configured with valid-time support.
+Query along two time axes: *system time* (when SirixDB recorded it) and *valid time* (when it was true in the real world). Requires resources configured with application-supplied valid-time paths; ordinary JSON timestamps alone do not enable valid-time filtering. See [`ResourceConfiguration.validTimePaths`](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-core/src/main/java/io/sirix/access/ResourceConfiguration.java).
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
@@ -91,15 +91,17 @@ jn:open-bitemporal('customers', 'addresses',
   xs:dateTime('2024-02-01T00:00:00Z'))
 ```
 
+Store imports with valid-time options create the supporting indexes automatically. Resources created directly through Java need explicit index creation as documented by `ResourceConfiguration.validTimeConfig(...)`.
+
 The argument order follows the [OpenBitemporal implementation](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-query/src/main/java/io/sirix/query/function/jn/temporal/OpenBitemporal.java).
 
 ## Diffing
 
-Compute structural differences between any two revisions.
+Compute structural differences from an older revision to a newer revision (`1 ≤ $rev1 < $rev2`).
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
-| `jn:diff` | `($coll, $res, $rev1, $rev2)` | Returns a JSON diff between two revisions. |
+| `jn:diff` | `($coll, $res, $rev1, $rev2)` | Returns a JSON diff object between two revisions. |
 | `jn:diff` | `($coll, $res, $rev1, $rev2, $startNodeKey)` | Diff starting from a specific node key. |
 | `jn:diff` | `($coll, $res, $rev1, $rev2, $startNodeKey, $maxLevel)` | Diff with a depth limit. |
 
@@ -107,14 +109,14 @@ The result is a JSON object with `database`, `resource`, `old-revision`, `new-re
 
 ```xquery
 jn:diff('shop', 'products', 1, 4)
-(: =>
+(: Illustrative diff shape =>
   {"database":"shop", "resource":"products",
    "old-revision":1, "new-revision":4,
    "diffs":[
-     {"update": {"nodeKey":6, "path":"/[0]/price", "type":"number", "value":899}},
-     {"insert": {"nodeKey":12, "path":"/[1]", "type":"jsonFragment",
+     {"update": {"nodeKey":6, "type":"number", "value":899}},
+     {"insert": {"nodeKey":12, "type":"jsonFragment",
                  "data":"{\"name\":\"Tablet\",\"price\":449}"}},
-     {"delete": {"nodeKey":7, "path":"/[1]"}}
+     {"delete": {"nodeKey":7}}
    ]}
 :)
 ```
@@ -203,7 +205,6 @@ Create and query indexes for faster lookups. Three index types are supported: **
 | `jn:create-name-index` | `($doc, $names)` | Create a name index on specific field names. |
 | `jn:create-path-index` | `($doc)` | Create a path index on all paths. |
 | `jn:create-path-index` | `($doc, $paths)` | Create a path index on specific paths. |
-| `jn:create-cas-index` | `($doc)` | Create a CAS index on all values. |
 | `jn:create-cas-index` | `($doc, $type)` | Create a CAS index for a specific type (`xs:string`, `xs:integer`, etc.). |
 | `jn:create-cas-index` | `($doc, $type, $paths)` | Create a CAS index for a type on specific paths. |
 
@@ -213,11 +214,11 @@ Create and query indexes for faster lookups. Three index types are supported: **
 |----------|-----------|-------------|
 | `jn:find-name-index` | `($doc, $name)` | Find the index number for a name index on `$name`. |
 | `jn:find-path-index` | `($doc, $path)` | Find the index number for a path index on `$path`. |
-| `jn:find-cas-index` | `($doc, $type, $value)` | Find the index number for a CAS index matching `$type` and `$value`. |
+| `jn:find-cas-index` | `($doc, $type, $path)` | Find the index number for a CAS index matching `$type` and `$path`. |
 | `jn:scan-name-index` | `($doc, $idx, $name)` | Scan all entries in a name index. |
 | `jn:scan-path-index` | `($doc, $idx, $paths)` | Scan all entries in a path index. |
-| `jn:scan-cas-index` | `($doc, $idx, $key, $include, $type)` | Scan a CAS index for a specific key. |
-| `jn:scan-cas-index-range` | `($doc, $idx, $low, $high, $incLow, $incHigh, $type)` | Scan a CAS index for a range of values. |
+| `jn:scan-cas-index` | `($doc, $idx, $key, $searchMode, $paths)` | Scan using `<`, `<=`, `==`, `>` or `>=`; optional semicolon-separated path filter. |
+| `jn:scan-cas-index-range` | `($doc, $idx, $low, $high, $incLow, $incHigh, $paths)` | Scan a CAS index for a range of values. |
 
 ```xquery
 (: Create a CAS index on the "price" path for fast numeric lookups :)
@@ -228,7 +229,7 @@ return $stats
 (: Query the index :)
 let $doc := jn:doc('shop', 'products')
 let $idx := jn:find-cas-index($doc, 'xs:decimal', '/[]/price')
-return jn:scan-cas-index-range($doc, $idx, 0, 500, true(), true(), 'xs:decimal')
+return jn:scan-cas-index-range($doc, $idx, 0, 500, true(), true(), '/[]/price')
 ```
 
 ## JSONiq Update Expressions

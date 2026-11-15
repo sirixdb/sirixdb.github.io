@@ -12,37 +12,16 @@ For a complete list of all available functions, see the [Function Reference](/do
 
 ## Setup
 
-Add the SirixDB query module to your project.
-
-**Maven:**
-
-```xml
-<dependency>
-  <groupId>io.sirix</groupId>
-  <artifactId>sirix-query</artifactId>
-  <version>0.10.1-SNAPSHOT</version>
-</dependency>
-```
-
-**Gradle:**
-
-```gradle
-dependencies {
-  implementation 'io.sirix:sirix-query:0.10.1-SNAPSHOT'
-}
-```
-
-For snapshot versions, add the Sonatype snapshot repository:
-
-```xml
-<repository>
-  <id>central-snapshots</id>
-  <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-  <snapshots><enabled>true</enabled></snapshots>
-</repository>
-```
-
-**Requires Java 25 and the provided Gradle wrapper.**
+Use **JDK 25** for current SirixDB source builds. Follow the
+[embedded-library setup](https://github.com/sirixdb/sirix#as-an-embedded-library)
+for published Maven/Gradle coordinates and the required JVM flags. The query
+layer uses the `io.sirix:sirix-query` artifact; the cursor API uses
+`io.sirix:sirix-core`. Keep module versions aligned. For the current source
+version and snapshot repositories, use the repository's
+[Gradle properties](https://github.com/sirixdb/sirix/blob/main/gradle.properties)
+and [build configuration](https://github.com/sirixdb/sirix/blob/main/build.gradle).
+Source builds use the provided Gradle wrapper; published artifacts can be
+consumed from Maven or Gradle applications.
 
 ## Running Queries from Java
 
@@ -113,7 +92,7 @@ return {
 
 ## Updating Data
 
-SirixDB supports all JSONiq update expressions. Each update automatically creates a new revision.
+SirixDB supports JSONiq update expressions. The default `SirixQueryContext` commit strategy publishes pending updates after successful query evaluation; explicit commit mode requires the caller to commit.
 
 ```xquery
 (: Replace a value :)
@@ -141,7 +120,7 @@ let $arr := jn:doc('shop', 'products')
 return insert json {"name":"Monitor","price":349} into $arr at position 1
 ```
 
-You can also commit with a message or rollback changes:
+With an explicit commit strategy, you can commit with a message:
 
 ```xquery
 let $doc := jn:doc('shop', 'products')
@@ -232,7 +211,7 @@ return jn:create-cas-index($doc, 'xs:decimal', '/[]/price')
 (: Query the index for prices between 0 and 500 :)
 let $doc := jn:doc('shop', 'products')
 let $idx := jn:find-cas-index($doc, 'xs:decimal', '/[]/price')
-return jn:scan-cas-index-range($doc, $idx, 0, 500, true(), true(), 'xs:decimal')
+return jn:scan-cas-index-range($doc, $idx, 0, 500, true(), true(), '/[]/price')
 
 (: Create a name index on specific fields :)
 let $doc := jn:doc('shop', 'products')

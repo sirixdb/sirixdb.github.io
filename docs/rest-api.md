@@ -8,15 +8,15 @@ title: SirixDB - REST API
 
 ## Overview
 
-The SirixDB REST API is fully asynchronous, built on Vert.x and Netty. It supports both JSON and XML databases through content negotiation. All mutating operations automatically commit a new revision, making every previous state permanently queryable.
+The SirixDB REST API is fully asynchronous, built on Vert.x and Netty. It supports both JSON and XML databases through content negotiation. Resource updates commit new revisions. Deleting a whole resource or database also removes its history.
 
-**Base URL:** `https://localhost:9443`
+**Local Docker base URL:** `http://localhost:9443` (`use.http: true` in the bundled Docker configuration). Configure TLS for remote deployments. The [source OpenAPI specification](https://github.com/sirixdb/sirix/blob/main/bundles/sirix-rest-api/src/main/resources/openapi.yaml) describes the current endpoint contract.
 
 **Content negotiation:** every request must include `Content-Type` and/or `Accept` headers set to `application/json` or `application/xml`.
 
 **Authentication:** OAuth2 via Keycloak. Obtain a token from `POST /token` and include it as `Authorization: Bearer <token>` on all subsequent requests.
 
-**Concurrency control:** updates and deletes require an `ETag` header containing the rolling hash of the context node (obtained via `HEAD` or `GET`). If the hash has changed since the read, the server rejects the write to prevent lost updates.
+**Concurrency control:** create a resource with `hashType=ROLLING` to enable node hashes (the REST default is `NONE`). For updates and subtree deletes on hashed nodes, read the response `ETag` with `HEAD` or `GET`, then send that value in `If-Match`. A missing or stale precondition returns **400**. The legacy request `ETag` header is also accepted.
 
 ---
 
@@ -151,6 +151,7 @@ Create a new resource with initial content. If the database does not exist, it i
 
 | Parameter | Type | Description |
 |---|---|---|
+| `hashType` | string | `NONE` (default), `ROLLING`, or `POSTORDER`; enable hashing for optimistic concurrency |
 | `commitMessage` | string | Optional commit message for the initial revision |
 | `commitTimestamp` | string | Optional custom timestamp (`yyyy-MM-ddTHH:mm:ss` or `yyyy-MM-dd HH:mm:ss.SSS`, UTC). Use only when importing existing versioned data. |
 
@@ -159,14 +160,14 @@ Create a new resource with initial content. If the database does not exist, it i
 **Example:**
 
 ```bash
-curl -X PUT https://localhost:9443/shop/products \
+curl -X PUT "http://localhost:9443/shop/products?hashType=ROLLING" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '[{"name":"Laptop","price":999},{"name":"Phone","price":699}]'
 ```
 
-**Response:** the stored document, enriched with SirixDB metadata when `withMetadata` is used.
+**Response:** small resources are serialized back; larger resources can return an empty body. Use `GET` to read the stored data.
 
 ### `GET /:database/:resource` {#get-resource}
 
@@ -190,7 +191,7 @@ Retrieve a resource or query it with JSONiq.
 | Parameter | Type | Description |
 |---|---|---|
 | `nodeId` | long | Retrieve a specific node by its stable key |
-| `withMetadata` | boolean | Include `nodeKey`, `hash`, and `descendantCount` for every node |
+| `withMetaData` | string | `nodeKey`, `nodeKeyAndChildCount`, or `true` for full metadata; hashes and descendant counts require hashing |
 | `maxLevel` | integer | Maximum tree depth to serialize (deeper subtrees are skipped) |
 | `prettyPrint` | boolean | Format the output for readability |
 
@@ -199,7 +200,7 @@ Retrieve a resource or query it with JSONiq.
 | Parameter | Type | Description |
 |---|---|---|
 | `nextTopLevelNodes` | integer | Return the next N top-level nodes |
-| `lastTopLevelNodeKey` | long | Node key to start pagination from |
+| `startNodeKey` | long | Continue after this node key (omit or use 0 to start) |
 
 #### Query execution
 
@@ -212,7 +213,7 @@ Retrieve a resource or query it with JSONiq.
 **Example — retrieve revision 1:**
 
 ```bash
-curl https://localhost:9443/shop/products?revision=1 \
+curl http://localhost:9443/shop/products?revision=1 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
 ```
@@ -220,7 +221,8 @@ curl https://localhost:9443/shop/products?revision=1 \
 **Example — temporal query (all revisions of the root):**
 
 ```bash
-curl "https://localhost:9443/shop/products?query=jn:all-times(jn:doc('shop','products'))" \
+curl --get "http://localhost:9443/shop/products" \
+  --data-urlencode "query=jn:all-times(jn:doc('shop','products'))" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
 ```
@@ -248,41 +250,41 @@ Insert, replace, or modify content within a resource. Each POST creates a new re
 
 **Role:** `modify`
 
-**Required header:** `ETag` — the hash obtained from a prior `HEAD` request.
+**Precondition:** on hashed context nodes, send `If-Match` with the hash obtained from a prior `HEAD` request.
 
 | Parameter | Type | Description |
 |---|---|---|
 | `nodeId` | long | Context node for the operation |
-| `insert` | string | Insertion mode: `asFirstChild`, `asLeftSibling`, `asRightSibling`, or `replace` |
+| `insert` | string | JSON: required `asFirstChild`, `asLeftSibling`, or `asRightSibling`. XML also supports `replace` (the default). |
 | `commitMessage` | string | Optional commit message |
 | `commitTimestamp` | string | Optional custom timestamp (UTC) |
 
-If both `nodeId` and `insert` are omitted, the root node is replaced entirely.
+If `nodeId` is omitted, the context is the document root’s first child. JSON insertion requires `insert`; to replace a JSON value, use a JSONiq update via `POST /`. XML defaults to replacing the context node.
 
-**Example — insert a new product as the last child:**
+**Example — insert a new product as the first child:**
 
 ```bash
 # 1. Get the ETag of the array node
-ETAG=$(curl -sI "https://localhost:9443/shop/products?nodeId=1" \
+ETAG=$(curl -sI "http://localhost:9443/shop/products?nodeId=1" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json" | grep -i etag | tr -d '\r' | cut -d' ' -f2)
 
 # 2. Insert a new element
-curl -X POST "https://localhost:9443/shop/products?nodeId=1&insert=asFirstChild" \
+curl -X POST "http://localhost:9443/shop/products?nodeId=1&insert=asFirstChild" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
-  -H "ETag: $ETAG" \
+  -H "If-Match: $ETAG" \
   -d '{"name":"Tablet","price":449}'
 ```
 
 ### `DELETE /:database/:resource` {#delete-resource}
 
-Delete a resource or a subtree within it.
+Delete a resource or a subtree within it. Deleting the entire resource removes all of its revisions; deleting a subtree creates a new revision.
 
 **Role:** `delete`
 
-**Required header:** `ETag` — the hash obtained from a prior `HEAD` request.
+**Precondition:** on hashed context nodes, send `If-Match` with the hash obtained from a prior `HEAD` request.
 
 | Parameter | Type | Description |
 |---|---|---|
@@ -334,7 +336,7 @@ Get the revision history of a resource.
 | `startRevision` | integer | Start of revision range |
 | `endRevision` | integer | End of revision range |
 
-If no parameters are given, the full history is returned.
+If no parameters are given, the full history is returned, newest first. Supply `startRevision` and `endRevision` together; do not combine this range with `revisions`.
 
 **Response:**
 
@@ -359,7 +361,7 @@ If no parameters are given, the full history is returned.
 
 ### `GET /:database/:resource/diff` {#diff}
 
-Compute the diff between two revisions (JSON resources only).
+Compute the diff between two revisions (JSON resources only), with `1 ≤ first-revision < second-revision`.
 
 **Role:** `view`
 
@@ -382,8 +384,8 @@ Compute the diff between two revisions (JSON resources only).
   "old-revision": 1,
   "new-revision": 2,
   "diffs": [
-    {"type": "update", "nodeKey": 6, "value": 899},
-    {"type": "insert", "nodeKey": 10, "insertPosition": "asRightSibling", "data": "{\"name\":\"Tablet\",\"price\":449}"}
+    {"update": {"nodeKey": 6, "type": "number", "value": 899}},
+    {"insert": {"nodeKey": 10, "insertPositionNodeKey": 1, "insertPosition": "asFirstChild", "type": "jsonFragment"}}
   ]
 }
 ```
@@ -467,11 +469,12 @@ See the [JSONiq Function Reference](/docs/jsoniq-functions.html) for the full li
 | Status | Meaning |
 |---|---|
 | `200` | Success |
-| `400` | Bad request (malformed body, missing required parameters) |
+| `400` | Bad request (malformed body, missing parameters, or failed `If-Match` precondition) |
 | `401` | Unauthorized (missing or invalid token) |
 | `403` | Forbidden (insufficient role) |
 | `404` | Database, resource, or node not found |
-| `409` | Conflict (ETag mismatch — concurrent modification detected) |
+| `204` | Resource or subtree deleted |
+| `500` | Server error |
 
 ---
 
@@ -496,21 +499,21 @@ Roles can be scoped to a specific database by prefixing: `shop-create`, `shop-vi
 # Start SirixDB + Keycloak
 git clone https://github.com/sirixdb/sirix.git
 cd sirix
-docker-compose up
+docker compose up -d
 
 # Get a token
-TOKEN=$(curl -s -X POST https://localhost:9443/token \
+TOKEN=$(curl -s -X POST http://localhost:9443/token \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin"}' | jq -r .access_token)
 
 # Store a JSON document
-curl -X PUT https://localhost:9443/shop/products \
+curl -X PUT "http://localhost:9443/shop/products?hashType=ROLLING" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '[{"name":"Laptop","price":999},{"name":"Phone","price":699}]'
 
 # Query it
-curl "https://localhost:9443/shop/products" \
+curl "http://localhost:9443/shop/products" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Accept: application/json"
 ```

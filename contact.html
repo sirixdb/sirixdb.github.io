@@ -6,19 +6,21 @@ title: Contact - SirixDB
   <header class="page-header">
     <h1>Get In Touch</h1>
     <p>Questions? Comments? Use the form below or join our
-      <a href="https://sirix.discourse.group">community forum</a>.</p>
+      <a href="https://sirix.discourse.group">community forum</a>. You can also email
+      <a href="mailto:{{ site.email }}">{{ site.email }}</a>.</p>
   </header>
+  <noscript><p>The contact form requires JavaScript. Please use the email link above.</p></noscript>
   <form class="contact-form" id="contact-form">
     <!-- Honeypot — hidden from humans, bots fill it in -->
-    <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+    <input type="text" name="website" aria-label="Leave this field empty" style="display:none" tabindex="-1" autocomplete="off">
     <div class="contact-form__row">
       <div class="contact-form__field">
         <label for="from_name">Name</label>
-        <input type="text" id="from_name" name="from_name" required>
+        <input type="text" id="from_name" name="from_name" autocomplete="name" required>
       </div>
       <div class="contact-form__field">
         <label for="from_email">Email</label>
-        <input type="email" id="from_email" name="from_email" required>
+        <input type="email" id="from_email" name="from_email" autocomplete="email" required>
       </div>
     </div>
     <div class="contact-form__field">
