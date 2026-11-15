@@ -131,16 +131,23 @@ try (final var store = BasicJsonDBStore.newBuilder().build();
       "let $doc := jn:doc('shop', 'products') "
       + "return replace json value of $doc[0].price with 799")
       .evaluate(ctx);
+  ctx.getUpdateList().list().clear();
 
-  new Query(chain,
-      "sdb:commit(jn:doc('shop', 'products'), 'Summer sale pricing')")
-      .evaluate(ctx);
+  try (final var writer = store.lookup("shop").getDatabase()
+      .beginResourceSession("products").getNodeTrx().orElseThrow()) {
+    new Query(chain,
+        "sdb:commit(jn:doc('shop', 'products'), 'Summer sale pricing')")
+        .evaluate(ctx);
+  }
 }
 ```
 
 The example assumes `shop/products` already exists. JSONiq queues update
 expressions until evaluation finishes, while `sdb:commit` commits immediately.
 Putting both in one query commits before the replacement is applied.
+In explicit mode, clear the already-applied update list before the next
+evaluation to prevent replay. The inner try-with-resources closes the existing
+writer after the named commit, so store shutdown cannot commit it again.
 
 ## Temporal Queries
 

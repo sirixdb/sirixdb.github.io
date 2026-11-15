@@ -186,24 +186,30 @@ Commit or rollback changes within a write transaction.
 | `sdb:rollback` | `($node)` | Discard all uncommitted changes. Returns the aborted revision number. |
 
 To commit a JSONiq update with a message, use `CommitStrategy.EXPLICIT` and
-evaluate the following queries separately, in order, using the same context and
-store. First, evaluate the update completely:
+evaluate the update and commit separately using the same context and store.
+After the update evaluation, clear its already-applied update list before
+evaluating another query. Close the existing writer after the named commit:
 
-```xquery
-let $doc := jn:doc('shop', 'products')
-return replace json value of $doc[0].price with 799
-```
+```java
+new Query(chain,
+    "let $doc := jn:doc('shop', 'products') "
+    + "return replace json value of $doc[0].price with 799")
+    .evaluate(ctx);
+ctx.getUpdateList().list().clear();
 
-Then evaluate the commit:
-
-```xquery
-sdb:commit(jn:doc('shop', 'products'), "Summer sale pricing")
+try (final var writer = store.lookup("shop").getDatabase()
+    .beginResourceSession("products").getNodeTrx().orElseThrow()) {
+  new Query(chain,
+      "sdb:commit(jn:doc('shop', 'products'), 'Summer sale pricing')")
+      .evaluate(ctx);
+}
 ```
 
 Update expressions are queued until evaluation finishes; `sdb:commit` commits
 immediately, so it must not share the update's query. See the
 [Java example in the API guide](/docs/jsoniq-api.html#updating-data) for explicit
-context setup and both evaluations.
+context setup. Clearing the applied list prevents replay during the commit
+evaluation; closing the writer prevents an extra commit during store shutdown.
 
 ## Indexes
 
