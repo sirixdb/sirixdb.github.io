@@ -529,3 +529,13 @@
   .lp .gui__stage { aspect-ratio: auto; }
   .lp .gui__tab { padding: 6px 11px; font-size: 12.5px; }
 }
+
+/* ---------- Watch: explainer video ---------- */
+.lp .explainer { max-width: 1020px; margin: 0 auto; }
+.lp .explainer__video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 14px;
+  background: #0e0f11; border: 1px solid rgba(255,255,255,.10); box-shadow: var(--shadow); }
+.lp .explainer__video:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
+.lp .explainer__video::cue { font-family: var(--font-sans); background: rgba(8,9,11,.72); color: #ecebe8; }
+.lp .explainer__cap { margin-top: 14px; font-size: 14px; color: var(--muted); text-align: center; }
+.lp .video-sec .sub code { white-space: nowrap; }
+@media (max-width: 640px) { .lp .explainer__video { border-radius: 10px; } }

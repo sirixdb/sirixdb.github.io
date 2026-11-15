@@ -1,0 +1,132 @@
+{
+  "audio": "assets/vo-scene-7.wav",
+  "language": "en",
+  "words": [
+    {
+      "text": "embed",
+      "start": 0.16,
+      "end": 0.54,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "it",
+      "start": 0.58,
+      "end": 0.72,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "as",
+      "start": 0.8,
+      "end": 0.9,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "a",
+      "start": 0.94,
+      "end": 1.02,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "Java",
+      "start": 1.06,
+      "end": 1.34,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "library,",
+      "start": 1.42,
+      "end": 1.86,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "run",
+      "start": 2.66,
+      "end": 2.84,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "the",
+      "start": 2.9,
+      "end": 2.96,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "REST",
+      "start": 3,
+      "end": 3.26,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "server,",
+      "start": 3.32,
+      "end": 3.64,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "use",
+      "start": 4.42,
+      "end": 4.6,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "the",
+      "start": 4.64,
+      "end": 4.76,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "shell,",
+      "start": 4.8,
+      "end": 5.08,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "or",
+      "start": 6.02,
+      "end": 6.1,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "let",
+      "start": 6.16,
+      "end": 6.34,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "AI",
+      "start": 6.5,
+      "end": 6.78,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "agents",
+      "start": 6.94,
+      "end": 7.44,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "edit",
+      "start": 7.6,
+      "end": 7.86,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "safely",
+      "start": 7.92,
+      "end": 8.44,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "over",
+      "start": 8.5,
+      "end": 8.7,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "MCP",
+      "start": 8.76,
+      "end": 9.26,
+      "speaker": "speaker_0"
+    }
+  ]
+}

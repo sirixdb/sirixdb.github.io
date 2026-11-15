@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #0e0f11; }
+      #root { width: 100%; height: 100%; position: relative; font-family: 'Inter', sans-serif; }
+      #bg { position: absolute; inset: 0; background: #0e0f11; z-index: 0; overflow: hidden; }
+      #bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 64px 64px; }
+      #bg-glow-o { position: absolute; left: -300px; top: -380px; width: 1300px; height: 1100px; background: radial-gradient(closest-side, rgba(244,123,32,.16), transparent 72%); }
+      #bg-glow-b { position: absolute; left: 900px; top: -120px; width: 1400px; height: 1200px; background: radial-gradient(closest-side, rgba(66,182,240,.15), transparent 72%); }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-eg2u" id="root" data-composition-id="main" data-start="0" data-duration="90.56" data-width="1920" data-height="1080">
+      <div data-hf-id="hf-2xc0" id="bg"><div data-hf-id="hf-r3kh" id="bg-grid"></div><div data-hf-id="hf-m3d6" id="bg-glow-o"></div><div data-hf-id="hf-4v2v" id="bg-glow-b"></div></div>
+      <div data-hf-id="hf-qfk4" id="s1" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0" data-duration="5.23" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" style="z-index: 2"></div>
+      <div data-hf-id="hf-phch" id="s2" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="5.23" data-duration="11.41" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" style="z-index: 2"></div>
+      <div data-hf-id="hf-lf1v" id="s3" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="16.64" data-duration="14.1" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" style="z-index: 2"></div>
+      <div data-hf-id="hf-mnmu" id="s4" data-composition-id="s4" data-composition-src="compositions/s4.html" data-start="30.74" data-duration="12.57" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" style="z-index: 2"></div>
+      <div data-hf-id="hf-7vvl" id="s5" data-composition-id="s5" data-composition-src="compositions/s5.html" data-start="43.31" data-duration="11.59" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" style="z-index: 2"></div>
+      <div data-hf-id="hf-9wmh" id="s6" data-composition-id="s6" data-composition-src="compositions/s6.html" data-start="54.9" data-duration="8.63" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" style="z-index: 2"></div>
+      <div data-hf-id="hf-2sbc" id="s7" data-composition-id="s7" data-composition-src="compositions/s7.html" data-start="63.53" data-duration="10.95" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" style="z-index: 2"></div>
+      <div data-hf-id="hf-nmd8" id="s8" data-composition-id="s8" data-composition-src="compositions/s8.html" data-start="74.48" data-duration="16.08" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080" style="z-index: 2"></div>
+      <div data-hf-id="hf-bphz" id="cap" data-composition-id="cap" data-composition-src="compositions/cap.html" data-start="0" data-duration="90.56" data-track-index="3" data-track-kind="captions" data-width="1920" data-height="1080" style="z-index: 5"></div>
+      <audio data-hf-id="hf-e1er" id="vo-1" src="assets/vo-scene-1.wav" data-start="0.6" data-duration="3.43" data-track-index="5" data-volume="1"></audio>
+      <audio data-hf-id="hf-t05m" id="vo-2" src="assets/vo-scene-2.wav" data-start="5.78" data-duration="9.862" data-track-index="5" data-volume="1"></audio>
+      <audio data-hf-id="hf-emxn" id="vo-3" src="assets/vo-scene-3.wav" data-start="17.19" data-duration="12.499" data-track-index="5" data-volume="1"></audio>
+      <audio data-hf-id="hf-6so4" id="vo-4" src="assets/vo-scene-4.wav" data-start="31.29" data-duration="11.020" data-track-index="5" data-volume="1"></audio>
+      <audio data-hf-id="hf-3qjx" id="vo-5" src="assets/vo-scene-5.wav" data-start="43.86" data-duration="9.442" data-track-index="5" data-volume="1"></audio>
+      <audio data-hf-id="hf-xd9t" id="vo-6" src="assets/vo-scene-6.wav" data-start="55.45" data-duration="7.08" data-track-index="5" data-volume="1"></audio>
+      <audio data-hf-id="hf-ycs2" id="vo-7" src="assets/vo-scene-7.wav" data-start="64.08" data-duration="9.400" data-track-index="5" data-volume="1"></audio>
+      <audio data-hf-id="hf-1scj" id="vo-8" src="assets/vo-scene-8.wav" data-start="75.03" data-duration="12.534" data-track-index="5" data-volume="1"></audio>
+      <audio data-hf-id="hf-fj73" id="music" src="assets/music-ducked.wav" data-start="0" data-duration="90.56" data-track-index="6" data-volume="1"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#bg-glow-o", {x: 0, y: 0}, {x: 220, y: 90, duration: 90.56, ease: "none"}, 0);
+      tl.fromTo("#bg-glow-b", {x: 0, y: 0}, {x: -260, y: 60, duration: 90.56, ease: "none"}, 0);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

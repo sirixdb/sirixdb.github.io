@@ -1,0 +1,126 @@
+{
+  "audio": "assets/vo-scene-3.wav",
+  "language": "en",
+  "words": [
+    {
+      "text": "Any",
+      "start": 0.14,
+      "end": 0.42,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "revision",
+      "start": 0.46,
+      "end": 0.86,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "opens",
+      "start": 0.98,
+      "end": 1.32,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "directly",
+      "start": 1.38,
+      "end": 1.84,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "by",
+      "start": 2.7,
+      "end": 2.84,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "number,",
+      "start": 2.88,
+      "end": 3.24,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "by",
+      "start": 4.44,
+      "end": 4.58,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "timestamp,",
+      "start": 4.64,
+      "end": 5.22,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "or",
+      "start": 6.4,
+      "end": 6.5,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "by",
+      "start": 6.54,
+      "end": 6.72,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "temporali.",
+      "start": 6.76,
+      "end": 7.32,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "Nothing",
+      "start": 8.64,
+      "end": 9.04,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "to",
+      "start": 9.08,
+      "end": 9.16,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "replay.",
+      "start": 9.2,
+      "end": 9.62,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "Revision",
+      "start": 10.42,
+      "end": 10.8,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "one",
+      "start": 10.9,
+      "end": 11.14,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "reads",
+      "start": 11.34,
+      "end": 11.64,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "like",
+      "start": 11.7,
+      "end": 11.86,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "the",
+      "start": 11.88,
+      "end": 11.96,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "latest",
+      "start": 12,
+      "end": 12.36,
+      "speaker": "speaker_0"
+    }
+  ]
+}

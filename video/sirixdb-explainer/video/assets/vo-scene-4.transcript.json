@@ -1,0 +1,138 @@
+{
+  "audio": "assets/vo-scene-4.wav",
+  "language": "en",
+  "words": [
+    {
+      "text": "Every",
+      "start": 0.02,
+      "end": 0.18,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "field",
+      "start": 0.3,
+      "end": 0.62,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "keeps",
+      "start": 0.84,
+      "end": 1.04,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "its",
+      "start": 1.08,
+      "end": 1.2,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "identity",
+      "start": 1.26,
+      "end": 1.8,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "across",
+      "start": 1.92,
+      "end": 2.18,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "revisions.",
+      "start": 2.24,
+      "end": 2.76,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "Follow",
+      "start": 3.76,
+      "end": 4.059,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "one",
+      "start": 4.16,
+      "end": 4.34,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "value",
+      "start": 4.38,
+      "end": 4.64,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "through",
+      "start": 4.7,
+      "end": 4.88,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "time",
+      "start": 4.92,
+      "end": 5.2,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "or",
+      "start": 5.62,
+      "end": 5.7,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "diff",
+      "start": 5.84,
+      "end": 6.08,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "any",
+      "start": 6.2,
+      "end": 6.42,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "two",
+      "start": 6.48,
+      "end": 6.62,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "revisions.",
+      "start": 6.7,
+      "end": 7.22,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "Exact",
+      "start": 8,
+      "end": 8.44,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "inserts,",
+      "start": 8.56,
+      "end": 9.02,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "updates,",
+      "start": 9.46,
+      "end": 9.94,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "and",
+      "start": 10.3,
+      "end": 10.4,
+      "speaker": "speaker_0"
+    },
+    {
+      "text": "deletes",
+      "start": 10.46,
+      "end": 10.86,
+      "speaker": "speaker_0"
+    }
+  ]
+}

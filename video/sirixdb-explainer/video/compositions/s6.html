@@ -1,0 +1,75 @@
+<template>
+  <style>
+#root { position: absolute; inset: 0; font-family: 'Inter', sans-serif; color: #ecebe8; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.kicker { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #F7924A; }
+.h1 { font-size: 76px; font-weight: 800; letter-spacing: -.035em; line-height: 1.06; }
+.h2 { font-size: 58px; font-weight: 800; letter-spacing: -.03em; line-height: 1.08; }
+.grad { background: linear-gradient(100deg, #F47B20 10%, #42B6F0 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sub { font-size: 28px; color: #a8afba; line-height: 1.4; }
+.panel { background: #17181b; border: 1px solid rgba(255,255,255,.12); border-radius: 14px; box-shadow: 0 24px 60px -24px rgba(0,0,0,.7); }
+.chip { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 28px; padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,255,255,.18); color: #a8afba; background: #17181b; }
+.a-k { color: #42B6F0; } .a-o { color: #F47B20; } .a-s { color: #98C379; } .a-d { color: #8b93a1; }
+
+#s6-left { position: absolute; left: 120px; top: 230px; width: 700px; }
+#s6-left .kicker { margin-bottom: 26px; }
+#s6-sub { margin-top: 28px; }
+#s6-scrub { position: absolute; left: 900px; top: 120px; display: flex; gap: 10px; align-items: center; }
+#s6-scrub .lab { font-family: 'JetBrains Mono', monospace; font-size: 27px; color: #8b93a1; margin-right: 10px; }
+#s6-scrub .p { width: 64px; height: 44px; border-radius: 10px; border: 1px solid rgba(255,255,255,.18); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: #a8afba; }
+#s6-grid { position: absolute; left: 900px; top: 200px; width: 900px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.s6-card { padding: 18px 22px; position: relative; height: 128px; }
+.s6-card .n { font-size: 32px; font-weight: 700; }
+.s6-card .d { font-size: 26px; color: #a8afba; margin-top: 2px; }
+.s6-card .rv { position: absolute; right: 18px; top: 20px; font-size: 26px; color: #6CC6F3; width: 220px; height: 30px; text-align: right; white-space: nowrap; }
+.s6-card .rv span { position: absolute; right: 0; top: 0; }
+#s6-proj { position: absolute; left: 900px; top: 500px; width: 900px; height: 300px; padding: 20px 24px; }
+#s6-proj .n { font-size: 32px; font-weight: 700; }
+#s6-proj .d { font-size: 26px; color: #a8afba; }
+#s6-proj .tag { position: absolute; right: 22px; top: 22px; font-size: 26px; color: #F7924A; }
+#s6-cols { position: absolute; left: 24px; right: 24px; bottom: 18px; display: flex; gap: 26px; }
+#s6-cols .col { flex: 1; }
+#s6-cols .bars { height: 92px; display: flex; align-items: flex-end; gap: 6px; border-bottom: 1px solid rgba(255,255,255,.18); }
+#s6-cols .bars i { flex: 1; background: linear-gradient(180deg, #42B6F0, rgba(66,182,240,.35)); border-radius: 3px 3px 0 0; transform-origin: 50% 100%; }
+#s6-cols .cn { font-size: 26px; color: #a8afba; margin-top: 8px; }
+</style>
+  <div data-hf-id="hf-7obi" id="root" data-composition-id="s6" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-vufw" id="s6-left">
+      <div data-hf-id="hf-9dfu" id="s6-kick" class="kicker">versioned indexes</div>
+      <div data-hf-id="hf-mhen" id="s6-h" class="h1">Indexes travel <span data-hf-id="hf-8z7j" class="grad">in time, too.</span></div>
+      <div data-hf-id="hf-enfg" id="s6-sub" class="sub">Opening an index at revision N returns its state as of N &mdash; for every index type.</div>
+    </div>
+    <div data-hf-id="hf-4erg" id="s6-scrub"><span data-hf-id="hf-xojf" class="lab">open at</span><div data-hf-id="hf-xp32" class="p" id="s6-p1">1</div><div data-hf-id="hf-bbuu" class="p" id="s6-p2">2</div><div data-hf-id="hf-p6ce" class="p" id="s6-p3">3</div><div data-hf-id="hf-h06m" class="p" id="s6-p4">4</div><div data-hf-id="hf-dty6" class="p" id="s6-p5">5</div></div>
+    <div data-hf-id="hf-obkf" id="s6-grid">
+      <div data-hf-id="hf-3mnb" class="s6-card panel" id="s6-c0"><div data-hf-id="hf-ach1" class="n">path</div><div data-hf-id="hf-w6s3" class="d">navigate JSON paths</div><div data-hf-id="hf-j7st" class="rv mono"><span data-hf-id="hf-h8jn" class="s6-rv1">as of rev 1</span><span data-hf-id="hf-icmj" class="s6-rv2">as of rev 2</span><span data-hf-id="hf-puin" class="s6-rv3">as of rev 3</span><span data-hf-id="hf-5p7b" class="s6-rv4">as of rev 4</span><span data-hf-id="hf-ryyz" class="s6-rv5">as of rev 5</span></div></div>
+      <div data-hf-id="hf-zoja" class="s6-card panel" id="s6-c1"><div data-hf-id="hf-w5s3" class="n">CAS</div><div data-hf-id="hf-i4eg" class="d">typed values, range lookups</div><div data-hf-id="hf-mngx" class="rv mono"><span data-hf-id="hf-4hz7" class="s6-rv1">as of rev 1</span><span data-hf-id="hf-5cgb" class="s6-rv2">as of rev 2</span><span data-hf-id="hf-y4e7" class="s6-rv3">as of rev 3</span><span data-hf-id="hf-ixnb" class="s6-rv4">as of rev 4</span><span data-hf-id="hf-c65n" class="s6-rv5">as of rev 5</span></div></div>
+      <div data-hf-id="hf-tith" class="s6-card panel" id="s6-c2"><div data-hf-id="hf-xnxp" class="n">name</div><div data-hf-id="hf-ed1d" class="d">object keys</div><div data-hf-id="hf-nue0" class="rv mono"><span data-hf-id="hf-43o6" class="s6-rv1">as of rev 1</span><span data-hf-id="hf-4y5a" class="s6-rv2">as of rev 2</span><span data-hf-id="hf-xq36" class="s6-rv3">as of rev 3</span><span data-hf-id="hf-ijca" class="s6-rv4">as of rev 4</span><span data-hf-id="hf-brum" class="s6-rv5">as of rev 5</span></div></div>
+      <div data-hf-id="hf-sr5o" class="s6-card panel" id="s6-c3"><div data-hf-id="hf-dp9i" class="n">valid-time</div><div data-hf-id="hf-ywb5" class="d">interval index for valid time</div><div data-hf-id="hf-ng2z" class="rv mono"><span data-hf-id="hf-3pd5" class="s6-rv1">as of rev 1</span><span data-hf-id="hf-4ju9" class="s6-rv2">as of rev 2</span><span data-hf-id="hf-xbs5" class="s6-rv3">as of rev 3</span><span data-hf-id="hf-i519" class="s6-rv4">as of rev 4</span><span data-hf-id="hf-bdjl" class="s6-rv5">as of rev 5</span></div></div>
+    </div>
+    <div data-hf-id="hf-o7gp" id="s6-proj" class="panel"><div data-hf-id="hf-vduz" class="n">projection <span data-hf-id="hf-bsop" style="font-weight:500;color:#a8afba">&middot; columnar</span></div><div data-hf-id="hf-hb04" class="d">SIMD kernels for aggregates, group-bys, counts</div><div data-hf-id="hf-2pyf" class="tag mono">experimental</div>
+      <div data-hf-id="hf-bc46" id="s6-cols"><div data-hf-id="hf-7s1i" class="col"><div data-hf-id="hf-umx2" class="bars"><i data-hf-id="hf-h9h2" style="height:62px"></i><i data-hf-id="hf-0inm" style="height:40px"></i><i data-hf-id="hf-wkpu" style="height:75px"></i><i data-hf-id="hf-opgn" style="height:52px"></i><i data-hf-id="hf-gcjn" style="height:30px"></i><i data-hf-id="hf-t1zo" style="height:68px"></i></div><div data-hf-id="hf-x9cb" class="cn mono">age</div></div><div data-hf-id="hf-vmze" class="col"><div data-hf-id="hf-rgy2" class="bars"><i data-hf-id="hf-l168" style="height:20px"></i><i data-hf-id="hf-rsaw" style="height:20px"></i><i data-hf-id="hf-qldt" style="height:20px"></i><i data-hf-id="hf-qzou" style="height:20px"></i><i data-hf-id="hf-psrr" style="height:20px"></i><i data-hf-id="hf-q72s" style="height:20px"></i></div><div data-hf-id="hf-5g4a" class="cn mono">active</div></div><div data-hf-id="hf-w1af" class="col"><div data-hf-id="hf-rv93" class="bars"><i data-hf-id="hf-tw9m" style="height:48px"></i><i data-hf-id="hf-9g8v" style="height:70px"></i><i data-hf-id="hf-bab9" style="height:36px"></i><i data-hf-id="hf-xep9" style="height:58px"></i><i data-hf-id="hf-5tg6" style="height:44px"></i><i data-hf-id="hf-h7zc" style="height:64px"></i></div><div data-hf-id="hf-0kzj" class="cn mono">dept</div></div><div data-hf-id="hf-wflg" class="col"><div data-hf-id="hf-s9k4" class="bars"><i data-hf-id="hf-6ops" style="height:55px"></i><i data-hf-id="hf-v8ow" style="height:33px"></i><i data-hf-id="hf-9hql" style="height:72px"></i><i data-hf-id="hf-swff" style="height:41px"></i><i data-hf-id="hf-a2wc" style="height:60px"></i><i data-hf-id="hf-myxn" style="height:38px"></i></div><div data-hf-id="hf-rrj3" class="cn mono">city</div></div></div></div>
+  </div>
+  <script>
+    const C = {"indexes": 0.91, "versioned": 1.79, "columnar": 3.61, "analytics": 5.86, "revision": 7.06, "end": 8.63};
+    const D = 8.63;
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s6-kick", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out"}, 0.0);
+    tl.fromTo("#s6-h", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out"}, C.indexes - 0.05);
+    tl.fromTo("#s6-sub", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out"}, C.versioned + 0.3);
+    tl.fromTo(".s6-card", {opacity: 0, y: 24}, {opacity: 1, y: 0, duration: 0.55, ease: "expo.out", stagger: 0.07}, C.indexes);
+    tl.fromTo("#s6-scrub", {opacity: 0, y: 0, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out"}, C.versioned - 0.1);
+    for (let r = 1; r <= 5; r++) { gsap.set(".s6-rv" + r, {opacity: r === 1 ? 1 : 0}); }
+    gsap.set("#s6-p1", {backgroundColor: "rgba(66,182,240,.18)", borderColor: "#42B6F0", color: "#ecebe8"});
+    const step = Math.max(0.35, (D - 0.6 - C.versioned) / 6);
+    for (let r = 2; r <= 5; r++) { const t = C.versioned + 0.2 + step * (r - 1);
+      tl.set("#s6-p" + (r - 1), {backgroundColor: "rgba(0,0,0,0)", borderColor: "rgba(255,255,255,.18)", color: "#a8afba"}, t);
+      tl.set("#s6-p" + r, {backgroundColor: "rgba(66,182,240,.18)", borderColor: "#42B6F0", color: "#ecebe8"}, t);
+      tl.set(".s6-rv" + (r - 1), {opacity: 0}, t); tl.set(".s6-rv" + r, {opacity: 1}, t);
+      if (t >= C.columnar + 1.05) tl.to("#s6-cols .bars i", {scaleY: (i) => 0.55 + 0.45 * Math.abs(Math.sin(i * 1.7 + r)), duration: 0.3, ease: "power2.out"}, t); }   // the bars answer a revision step only once they have grown in
+    tl.fromTo("#s6-proj", {opacity: 0, y: 30, filter: "blur(8px)"}, {opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out"}, C.columnar - 0.1);
+    tl.fromTo("#s6-cols .bars i", {scaleY: 0}, {scaleY: 1, duration: 0.5, ease: "expo.out", stagger: 0.015}, C.columnar + 0.15);
+    tl.to(["#s6-left", "#s6-scrub", "#s6-grid", "#s6-proj"], {opacity: 0, filter: "blur(8px)", duration: 0.3, ease: "power3.in"}, D - 0.3);
+
+    window.__timelines["s6"] = tl;
+  </script>
+</template>
