@@ -37,7 +37,7 @@ requirement's status and evidence before assuming it is implemented.
 The project's testing standard is **spec first, mutation testing, and explorative
 testing**: write behavior, invariants, and error cases, derive tests before
 implementation, mutation-test changed logic, and explore beyond the happy path.
-The contribution guide and [verification guide](https://github.com/sirixdb/sirix/blob/main/docs/VERIFICATION.md)
+The [contribution guide](https://github.com/sirixdb/sirix/blob/main/CONTRIBUTING.md) and [verification guide](https://github.com/sirixdb/sirix/blob/main/docs/VERIFICATION.md)
 explain the required evidence. Browse issues labeled
 [good first issue](https://github.com/sirixdb/sirix/labels/good%20first%20issue)
 for starting points. For larger changes, ask on Discord and discuss the proposal
