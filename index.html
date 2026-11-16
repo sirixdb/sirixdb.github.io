@@ -3,7 +3,7 @@ layout: landing-page
 title: SirixDB - the immutable, bitemporal time-travel database for JSON and XML
 description: >-
   Open-source, embeddable database that keeps every revision immutable and
-  queryable: time-travel queries, bitemporal (transaction and valid time),
+  queryable: fast bitemporal analytics (transaction and valid time), time-travel queries,
   field-level diffs, and safe undo for AI agents.
 ---
 <div class="lp" id="top">
@@ -11,7 +11,7 @@ description: >-
 <section class="lp-hero" aria-labelledby="hero-title">
   <div class="lp-container lp-hero__grid">
     <div class="lp-hero__text">
-      <div class="kicker lp-hero__kicker">The immutable, bitemporal time-travel database <span class="lp-hero__kicker-sep">·</span> open source</div>
+      <div class="kicker lp-hero__kicker">Fast bitemporal analytics <span class="lp-hero__kicker-sep">·</span> open source</div>
       <h1 id="hero-title" data-pos-slot="h1">Every change kept. <span class="grad">Every version queryable.</span></h1>
       <p class="lp-hero__lede">Query any past state of your JSON and XML documents &mdash; as it was recorded, or as it was true &mdash; see exactly which fields changed, and let AI agents edit real data you can always undo. Every change is an immutable revision. Open source and embeddable.</p>
       <div class="lp-hero__actions">
@@ -23,6 +23,7 @@ description: >-
         <li><a href="#cap-diff"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v7M8.5 7.5h7M8.5 17h7"/></svg><b>Field-level change tracking</b><span>Every field keeps its identity. Diff any two revisions node by node.</span></a></li>
         <li><a href="#cap-agents"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9.5 13.5h.01M14.5 13.5h.01"/></svg><b>Safe undo for AI agents</b><span>Agents edit through MCP; inspect, diff and revert every change.</span></a></li>
         <li><a href="#cap-storage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4M4 16l8 4 8-4"/></svg><b>History you control</b><span>Immutable revisions at the cost of what changed; prune by policy with Enterprise (in dev.).</span></a></li>
+        <li><a href="#measured"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6"/><path d="m14 4 3 1-1 3"/></svg><b>Fast analytics on any revision</b><span>Versioned columnar projection indexes and vectorized SIMD execution &mdash; past revisions query as fast as the present.</span></a></li>
       </ul>
     </div>
 
