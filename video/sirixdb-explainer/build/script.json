@@ -23,7 +23,7 @@
   "duration": 93,
   "file": "audio/music.m4a",
   "skip_lead_in": 0.0,
-  "_slowed": "audio/music.m4a is the generated track audio/music.20261115-190734.m4a played 1.1324 times slower (resampled, so about 2 semitones lower) with two repeats so it covers the slower film: its 18.1 s main passage (19.1 s to 37.2 s) plays twice, and one 3.0 s bar (from 43.75 s of the slowed track) plays twice; each join is a 0.3 s crossfade. That puts the track's last chord right after the last spoken word. skip_lead_in is how much of the track's start is skipped; a newly generated track needs it set again",
+  "_slowed": "Music retiming for the original Seed Audio cut: audio/music.m4a is the generated track audio/music.20261115-190734.m4a played 1.1324 times slower (resampled, so about 2 semitones lower) with two repeats so it covers the slower film: its 18.1 s main passage (19.1 s to 37.2 s) plays twice, and one 3.0 s bar (from 43.75 s of the slowed track) plays twice; each join is a 0.3 s crossfade. That placed the track's last chord right after the original cut's last spoken word. skip_lead_in is how much of the track's start is skipped; a newly generated track needs it set again",
   "prompt": "Understated modern electronic background music for a calm technical product explainer. Warm analog pads, a soft pulsing synth arpeggio, light restrained percussion, about 92 BPM, steady and confident, no vocals, no big drops, mixes well under a voiceover, ends with a gentle resolved final chord.",
   "level_db": -15
  },
@@ -97,7 +97,7 @@
    "text": "SirixDB. Every version of your data, kept and queryable as fast as the present. Append-only, bitemporal, embeddable, and open source.",
    "tts": "Sirix-DB. Every version of your data, kept and queryable as fast as the present. Append-only, by-temporal, embeddable, and open source.",
    "pause_after": 0.0,
-   "_take": "audio/takes/b8.wav is joined from two takes: the name from job 41de02b8, everything after it from job ac4a0e57 (audio/takes/b8.take-ac4a0e57.wav). That take was generated with one more sentence after 'open source.' ('That is Sirix-DB.', cut off again): this voice whispers or drops the vowel of the very last word of a recording, and of seven takes it is the one where 'source' is fully spoken. 'and' before the last item makes the sentence close on 'open source'."
+   "_take": "Historical Seed Audio cut, before the ElevenLabs regeneration: line 8 was joined from two takes: the name from job 41de02b8, everything after it from job ac4a0e57 (audio/takes/b8.take-ac4a0e57.wav). That take was generated with one more sentence after 'open source.' ('That is Sirix-DB.', cut off again): this voice whispers or drops the vowel of the very last word of a recording, and of seven takes it is the one where 'source' is fully spoken. 'and' before the last item makes the sentence close on 'open source'."
   }
  ]
 }

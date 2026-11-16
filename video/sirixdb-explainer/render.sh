@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Render the film from video/ exactly as it is (your Studio edits included). Free: no credits.
 # Render modes and output files: EDITING.md, "Re-render (free)".
-# Before rendering, the music is re-ducked under the voice clips where they sit now
+# Before rendering, the music track is rebuilt for the current voice positions and settings
 # (tools/remix.py) and the SRT is derived from the caption composition (tools/srt.py).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; V="$HERE/video"; OUT="$HERE/out"

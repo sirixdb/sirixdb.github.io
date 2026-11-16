@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Re-voice lines with Higgsfield (COSTS CREDITS: ElevenLabs v4 about 0.23 per line, Seed Audio about 1.4-1.7).
+# Re-voice lines with Higgsfield (COSTS CREDITS; observed costs: EDITING.md, "Re-voicing a line").
 #   ./gen_voice.sh 3       re-voice beat 3 (edit its "tts" and "text" in build/script.json first)
 #   ./gen_voice.sh all     re-voice every beat
 # The voice comes from build/script.json "voice": model "elevenlabs_v4" (default; voice_id, stability,
 # similarity_boost) or "seed_audio" (set "model": "seed_audio" and the fields under voice.seed_audio).
 # Shows the estimate and balance and asks before spending. Writes the new clip
-# straight into video/assets/vo-scene-N.wav (old clip kept in audio/replaced/), re-ducks the music, and
+# straight into video/assets/vo-scene-N.wav (old clip kept in audio/replaced/), rebuilds the music track, and
 # tells you if the line got longer or shorter. Then: check it in Studio, ./render.sh (free).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -27,7 +27,7 @@ PY
     } ;;
   seed_audio)
     S="c['voice']['seed_audio']"
-    VID=$(field "$S['voice_id']"); VT=$(field "$S['voice_type']"); CUE=$(field "$S['delivery']") ;;
+    VID=$(field "${S}['voice_id']"); VT=$(field "${S}['voice_type']"); CUE=$(field "${S}['delivery']") ;;
   *) echo "unknown voice.model: $MODEL"; exit 1 ;;
 esac
 common_el=(--stability "${ST:-0}" --similarity_boost "${SB:-0}")

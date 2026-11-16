@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Rebuild the music track so it ducks under the voice clips where they sit now.
+"""Rebuild the music track for the current voice positions and music settings.
 
 Usage: tools/remix.py
-Reads video/index.html (voice clips vo-1..vo-N, possibly moved/trimmed in Studio) and the music
-source audio/music.m4a; writes video/assets/music-ducked.wav (fitted to the film's length,
-faded out under the end card). Free: local ffmpeg only.
+Reads video/index.html (voice clips vo-1..vo-N, possibly moved/trimmed in Studio) and
+build/script.json; writes video/assets/music-ducked.wav fitted to the film's length.
+For music settings and enabling the retained source, see EDITING.md, "Everyday edits".
+Free: local ffmpeg only.
 """
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
