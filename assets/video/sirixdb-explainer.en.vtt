@@ -1,100 +1,100 @@
 WEBVTT
 
-00:00.560 --> 00:02.536
+00:00.600 --> 00:02.119
 You update a record.
 
-00:02.690 --> 00:04.341
+00:02.129 --> 00:04.621
 The old value is gone.
 
-00:05.740 --> 00:08.584
+00:05.780 --> 00:07.669
 SirixDB keeps every version.
 
-00:08.690 --> 00:10.990
-Each commit writes only what changed
+00:07.679 --> 00:11.235
+Each commit writes only what changed and
 
-00:11.050 --> 00:12.450
-and shares the rest,
+00:11.245 --> 00:12.366
+shares the rest,
 
-00:12.670 --> 00:14.736
+00:12.376 --> 00:15.027
 so storage grows with the change,
 
-00:14.758 --> 00:15.965
+00:15.037 --> 00:16.411
 not the history.
 
-00:17.150 --> 00:19.693
+00:17.190 --> 00:19.172
 Any revision opens directly:
 
-00:19.820 --> 00:21.130
-by number,
+00:19.182 --> 00:22.324
+by number, by timestamp,
 
-00:21.560 --> 00:23.110
-by timestamp,
-
-00:23.520 --> 00:25.310
+00:22.334 --> 00:24.464
 or bitemporally.
 
-00:25.768 --> 00:27.357
+00:24.474 --> 00:26.843
 Nothing to replay:
 
-00:27.514 --> 00:30.017
+00:26.853 --> 00:30.124
 revision one reads like the latest.
 
-00:31.250 --> 00:34.803
+00:31.290 --> 00:35.363
 Every field keeps its identity across revisions.
 
-00:34.976 --> 00:36.846
+00:35.373 --> 00:37.964
 Follow one value through time,
 
-00:36.868 --> 00:39.156
+00:37.974 --> 00:40.336
 or diff any two revisions:
 
-00:39.250 --> 00:42.594
+00:40.346 --> 00:43.074
 exact inserts, updates and deletes.
 
-00:43.820 --> 00:45.338
+00:43.860 --> 00:45.209
 And it's bitemporal:
 
-00:45.360 --> 00:48.027
+00:45.219 --> 00:48.721
 SirixDB knows when a fact was recorded
 
-00:48.049 --> 00:49.865
+00:48.731 --> 00:50.501
 and when it was true,
 
-00:49.968 --> 00:53.619
+00:50.511 --> 00:54.112
 so a correction never erases what you knew.
 
-00:55.410 --> 00:57.939
+00:55.450 --> 00:57.462
 Its indexes are versioned too,
 
-00:57.960 --> 01:00.000
-including columnar projections
+00:57.472 --> 01:02.572
+including columnar projections for fast analytics on any revision.
 
-01:00.040 --> 01:02.940
-for fast analytics on any revision.
+01:04.080 --> 01:06.871
+Embed it as a Java library or
 
-01:04.040 --> 01:06.571
-Embed it as a Java library,
+01:06.881 --> 01:08.185
+natively in C,
 
-01:06.683 --> 01:08.395
+01:08.195 --> 01:09.881
+C++, Rust and Python,
+
+01:09.891 --> 01:12.534
 run the REST server,
 
-01:08.462 --> 01:09.855
+01:12.544 --> 01:13.848
 use the shell,
 
-01:10.007 --> 01:13.805
+01:13.858 --> 01:17.580
 or let AI agents edit safely over MCP.
 
-01:14.990 --> 01:16.727
+01:19.020 --> 01:19.578
 SirixDB.
 
-01:16.900 --> 01:18.700
+01:19.588 --> 01:22.283
 Every version of your data,
 
-01:18.730 --> 01:22.200
+01:22.293 --> 01:26.537
 kept and queryable as fast as the present.
 
-01:22.560 --> 01:25.280
-Append-only, bitemporal,
+01:26.547 --> 01:29.234
+Append-only, bitemporal, embeddable,
 
-01:25.360 --> 01:28.010
-embeddable, and open source.
+01:29.244 --> 01:30.658
+and open source.

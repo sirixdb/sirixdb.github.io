@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # New music bed with Higgsfield Sonilo (COSTS CREDITS: 4 credits for 64 s observed).
 # Edit "music.prompt"/"duration" in build/script.json first. Shows the estimate, asks, then
-# replaces audio/music.m4a (old one kept as audio/music.<time>.m4a) and re-ducks it into
-# video/assets/music-ducked.wav. Then ./render.sh (free).
+# replaces audio/music.m4a (old one kept as audio/music.<time>.m4a) and rebuilds
+# video/assets/music-ducked.wav. Music on/off: EDITING.md, "Everyday edits". Then ./render.sh (free).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 P=$(python3 -c "import json;print(json.load(open('$HERE/build/script.json'))['music']['prompt'])")

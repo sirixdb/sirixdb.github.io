@@ -4,210 +4,210 @@
 .cg { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; }
 .cg span { display: inline-block; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 42px; line-height: 1.25; color: #ecebe8; background: rgba(8,9,11,.62); padding: 6px 20px; border-radius: 10px; max-width: 1600px; }
 </style>
-  <div data-hf-id="hf-ajwd" id="root" data-composition-id="cap" data-width="1920" data-height="1080">
-    <div data-hf-id="hf-4v5x" id="cap-band">
-      <div data-hf-id="hf-re3o" class="cg" id="cap-g0"><span data-hf-id="hf-asgr">You update a record.</span></div>
-      <div data-hf-id="hf-s5rh" class="cg" id="cap-g1"><span data-hf-id="hf-86u7">The old value is gone.</span></div>
-      <div data-hf-id="hf-w3vi" class="cg" id="cap-g2"><span data-hf-id="hf-xh37">SirixDB keeps every version.</span></div>
-      <div data-hf-id="hf-01zj" class="cg" id="cap-g3"><span data-hf-id="hf-hnbu">Each commit writes only what changed</span></div>
-      <div data-hf-id="hf-403k" class="cg" id="cap-g4"><span data-hf-id="hf-w5sg">and shares the rest,</span></div>
-      <div data-hf-id="hf-6zd5" class="cg" id="cap-g5"><span data-hf-id="hf-12ux">so storage grows with the change,</span></div>
-      <div data-hf-id="hf-axh6" class="cg" id="cap-g6"><span data-hf-id="hf-mw09">not the history.</span></div>
-      <div data-hf-id="hf-evl7" class="cg" id="cap-g7"><span data-hf-id="hf-aiat">Any revision opens directly:</span></div>
-      <div data-hf-id="hf-itp8" class="cg" id="cap-g8"><span data-hf-id="hf-w23k">by number,</span></div>
-      <div data-hf-id="hf-jntf" class="cg" id="cap-g29"><span data-hf-id="hf-rhh0">by timestamp,</span></div>
-      <div data-hf-id="hf-c55x" class="cg" id="cap-g30"><span data-hf-id="hf-stqu">or bitemporally.</span></div>
-      <div data-hf-id="hf-jld1" class="cg" id="cap-g9"><span data-hf-id="hf-1mlk">Nothing to replay:</span></div>
-      <div data-hf-id="hf-4h0v" class="cg" id="cap-g10"><span data-hf-id="hf-jt14">revision one reads like the latest.</span></div>
-      <div data-hf-id="hf-ybb2" class="cg" id="cap-g11"><span data-hf-id="hf-cgp5">Every field keeps its identity across revisions.</span></div>
-      <div data-hf-id="hf-ud71" class="cg" id="cap-g12"><span data-hf-id="hf-tkef">Follow one value through time,</span></div>
-      <div data-hf-id="hf-tlj8" class="cg" id="cap-g13"><span data-hf-id="hf-nt0h">or diff any two revisions:</span></div>
-      <div data-hf-id="hf-h30r" class="cg" id="cap-g14"><span data-hf-id="hf-86gx">exact inserts, updates and deletes.</span></div>
-      <div data-hf-id="hf-d4wq" class="cg" id="cap-g15"><span data-hf-id="hf-z9qm">And it&#x27;s bitemporal:</span></div>
-      <div data-hf-id="hf-96sp" class="cg" id="cap-g16"><span data-hf-id="hf-uv0s">SirixDB knows when a fact was recorded</span></div>
-      <div data-hf-id="hf-8f4w" class="cg" id="cap-g17"><span data-hf-id="hf-bl8i">and when it was true,</span></div>
-      <div data-hf-id="hf-vwmf" class="cg" id="cap-g18"><span data-hf-id="hf-wy7r">so a correction never erases what you knew.</span></div>
-      <div data-hf-id="hf-ryie" class="cg" id="cap-g19"><span data-hf-id="hf-1f4g">Its indexes are versioned too,</span></div>
-      <div data-hf-id="hf-oa3u" class="cg" id="cap-g20"><span data-hf-id="hf-7qo4">including columnar projections</span></div>
-      <div data-hf-id="hf-bdi4" class="cg" id="cap-g31"><span data-hf-id="hf-o84c">for fast analytics on any revision.</span></div>
-      <div data-hf-id="hf-s87v" class="cg" id="cap-g21"><span data-hf-id="hf-a1dj">Embed it as a Java library,</span></div>
-      <div data-hf-id="hf-hcq8" class="cg" id="cap-g22"><span data-hf-id="hf-qecg">run the REST server,</span></div>
-      <div data-hf-id="hf-i4e1" class="cg" id="cap-g23"><span data-hf-id="hf-yohn">use the shell,</span></div>
-      <div data-hf-id="hf-9gi6" class="cg" id="cap-g24"><span data-hf-id="hf-deyv">or let AI agents edit safely over MCP.</span></div>
-      <div data-hf-id="hf-dem7" class="cg" id="cap-g25"><span data-hf-id="hf-z8mo">SirixDB.</span></div>
-      <div data-hf-id="hf-4qqc" class="cg" id="cap-g26"><span data-hf-id="hf-vqkw">Every version of your data,</span></div>
-      <div data-hf-id="hf-5ie5" class="cg" id="cap-g27"><span data-hf-id="hf-8f3k">kept and queryable as fast as the present.</span></div>
-      <div data-hf-id="hf-fppe" class="cg" id="cap-g28"><span data-hf-id="hf-q8w6">Append-only, bitemporal,</span></div>
-      <div data-hf-id="hf-k1dz" class="cg" id="cap-g32"><span data-hf-id="hf-kh8k">embeddable, and open source.</span></div>
+  <div id="root" data-composition-id="cap" data-width="1920" data-height="1080">
+    <div id="cap-band">
+      <div class="cg" id="cap-g0"><span>You update a record.</span></div>
+      <div class="cg" id="cap-g1"><span>The old value is gone.</span></div>
+      <div class="cg" id="cap-g2"><span>SirixDB keeps every version.</span></div>
+      <div class="cg" id="cap-g3"><span>Each commit writes only what changed and</span></div>
+      <div class="cg" id="cap-g4"><span>shares the rest,</span></div>
+      <div class="cg" id="cap-g5"><span>so storage grows with the change,</span></div>
+      <div class="cg" id="cap-g6"><span>not the history.</span></div>
+      <div class="cg" id="cap-g7"><span>Any revision opens directly:</span></div>
+      <div class="cg" id="cap-g8"><span>by number, by timestamp,</span></div>
+      <div class="cg" id="cap-g9"><span>or bitemporally.</span></div>
+      <div class="cg" id="cap-g10"><span>Nothing to replay:</span></div>
+      <div class="cg" id="cap-g11"><span>revision one reads like the latest.</span></div>
+      <div class="cg" id="cap-g12"><span>Every field keeps its identity across revisions.</span></div>
+      <div class="cg" id="cap-g13"><span>Follow one value through time,</span></div>
+      <div class="cg" id="cap-g14"><span>or diff any two revisions:</span></div>
+      <div class="cg" id="cap-g15"><span>exact inserts, updates and deletes.</span></div>
+      <div class="cg" id="cap-g16"><span>And it&#x27;s bitemporal:</span></div>
+      <div class="cg" id="cap-g17"><span>SirixDB knows when a fact was recorded</span></div>
+      <div class="cg" id="cap-g18"><span>and when it was true,</span></div>
+      <div class="cg" id="cap-g19"><span>so a correction never erases what you knew.</span></div>
+      <div class="cg" id="cap-g20"><span>Its indexes are versioned too,</span></div>
+      <div class="cg" id="cap-g21"><span>including columnar projections for fast analytics on any revision.</span></div>
+      <div class="cg" id="cap-g22"><span>Embed it as a Java library or</span></div>
+      <div class="cg" id="cap-g23"><span>natively in C,</span></div>
+      <div class="cg" id="cap-g24"><span>C++, Rust and Python,</span></div>
+      <div class="cg" id="cap-g25"><span>run the REST server,</span></div>
+      <div class="cg" id="cap-g26"><span>use the shell,</span></div>
+      <div class="cg" id="cap-g27"><span>or let AI agents edit safely over MCP.</span></div>
+      <div class="cg" id="cap-g28"><span>SirixDB.</span></div>
+      <div class="cg" id="cap-g29"><span>Every version of your data,</span></div>
+      <div class="cg" id="cap-g30"><span>kept and queryable as fast as the present.</span></div>
+      <div class="cg" id="cap-g31"><span>Append-only, bitemporal, embeddable,</span></div>
+      <div class="cg" id="cap-g32"><span>and open source.</span></div>
     </div>
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
     gsap.set("#cap-g0", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g0", {visibility: "visible"}, 0.56);
-    tl.to("#cap-g0", {opacity: 1, duration: 0.1}, 0.56);
-    tl.to("#cap-g0", {opacity: 0, duration: 0.1, ease: "power2.in"}, 2.436);
-    tl.set("#cap-g0", {opacity: 0, visibility: "hidden"}, 2.536);
+    tl.set("#cap-g0", {visibility: "visible"}, 0.6);
+    tl.to("#cap-g0", {opacity: 1, duration: 0.100}, 0.6);
+    tl.to("#cap-g0", {opacity: 0, duration: 0.100, ease: "power2.in"}, 2.019);
+    tl.set("#cap-g0", {opacity: 0, visibility: "hidden"}, 2.119);
     gsap.set("#cap-g1", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g1", {visibility: "visible"}, 2.69);
-    tl.to("#cap-g1", {opacity: 1, duration: 0.1}, 2.69);
-    tl.to("#cap-g1", {opacity: 0, duration: 0.1, ease: "power2.in"}, 4.241);
-    tl.set("#cap-g1", {opacity: 0, visibility: "hidden"}, 4.341);
+    tl.set("#cap-g1", {visibility: "visible"}, 2.129);
+    tl.to("#cap-g1", {opacity: 1, duration: 0.100}, 2.129);
+    tl.to("#cap-g1", {opacity: 0, duration: 0.100, ease: "power2.in"}, 4.521);
+    tl.set("#cap-g1", {opacity: 0, visibility: "hidden"}, 4.621);
     gsap.set("#cap-g2", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g2", {visibility: "visible"}, 5.74);
-    tl.to("#cap-g2", {opacity: 1, duration: 0.1}, 5.74);
-    tl.to("#cap-g2", {opacity: 0, duration: 0.1, ease: "power2.in"}, 8.484);
-    tl.set("#cap-g2", {opacity: 0, visibility: "hidden"}, 8.584);
+    tl.set("#cap-g2", {visibility: "visible"}, 5.78);
+    tl.to("#cap-g2", {opacity: 1, duration: 0.100}, 5.78);
+    tl.to("#cap-g2", {opacity: 0, duration: 0.100, ease: "power2.in"}, 7.569);
+    tl.set("#cap-g2", {opacity: 0, visibility: "hidden"}, 7.669);
     gsap.set("#cap-g3", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g3", {visibility: "visible"}, 8.69);
-    tl.to("#cap-g3", {opacity: 1, duration: 0.1}, 8.69);
-    tl.to("#cap-g3", {opacity: 0, duration: 0.1, ease: "power2.in"}, 10.89);
-    tl.set("#cap-g3", {opacity: 0, visibility: "hidden"}, 10.99);
+    tl.set("#cap-g3", {visibility: "visible"}, 7.679);
+    tl.to("#cap-g3", {opacity: 1, duration: 0.100}, 7.679);
+    tl.to("#cap-g3", {opacity: 0, duration: 0.100, ease: "power2.in"}, 11.135);
+    tl.set("#cap-g3", {opacity: 0, visibility: "hidden"}, 11.235);
     gsap.set("#cap-g4", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g4", {visibility: "visible"}, 11.05);
-    tl.to("#cap-g4", {opacity: 1, duration: 0.1}, 11.05);
-    tl.to("#cap-g4", {opacity: 0, duration: 0.1, ease: "power2.in"}, 12.35);
-    tl.set("#cap-g4", {opacity: 0, visibility: "hidden"}, 12.45);
+    tl.set("#cap-g4", {visibility: "visible"}, 11.245);
+    tl.to("#cap-g4", {opacity: 1, duration: 0.100}, 11.245);
+    tl.to("#cap-g4", {opacity: 0, duration: 0.100, ease: "power2.in"}, 12.266);
+    tl.set("#cap-g4", {opacity: 0, visibility: "hidden"}, 12.366);
     gsap.set("#cap-g5", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g5", {visibility: "visible"}, 12.67);
-    tl.to("#cap-g5", {opacity: 1, duration: 0.1}, 12.67);
-    tl.to("#cap-g5", {opacity: 0, duration: 0.1, ease: "power2.in"}, 14.636);
-    tl.set("#cap-g5", {opacity: 0, visibility: "hidden"}, 14.736);
+    tl.set("#cap-g5", {visibility: "visible"}, 12.376);
+    tl.to("#cap-g5", {opacity: 1, duration: 0.100}, 12.376);
+    tl.to("#cap-g5", {opacity: 0, duration: 0.100, ease: "power2.in"}, 14.927);
+    tl.set("#cap-g5", {opacity: 0, visibility: "hidden"}, 15.027);
     gsap.set("#cap-g6", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g6", {visibility: "visible"}, 14.758);
-    tl.to("#cap-g6", {opacity: 1, duration: 0.1}, 14.758);
-    tl.to("#cap-g6", {opacity: 0, duration: 0.1, ease: "power2.in"}, 15.865);
-    tl.set("#cap-g6", {opacity: 0, visibility: "hidden"}, 15.965);
+    tl.set("#cap-g6", {visibility: "visible"}, 15.037);
+    tl.to("#cap-g6", {opacity: 1, duration: 0.100}, 15.037);
+    tl.to("#cap-g6", {opacity: 0, duration: 0.100, ease: "power2.in"}, 16.311);
+    tl.set("#cap-g6", {opacity: 0, visibility: "hidden"}, 16.411);
     gsap.set("#cap-g7", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g7", {visibility: "visible"}, 17.15);
-    tl.to("#cap-g7", {opacity: 1, duration: 0.1}, 17.15);
-    tl.to("#cap-g7", {opacity: 0, duration: 0.1, ease: "power2.in"}, 19.593);
-    tl.set("#cap-g7", {opacity: 0, visibility: "hidden"}, 19.693);
+    tl.set("#cap-g7", {visibility: "visible"}, 17.19);
+    tl.to("#cap-g7", {opacity: 1, duration: 0.100}, 17.19);
+    tl.to("#cap-g7", {opacity: 0, duration: 0.100, ease: "power2.in"}, 19.072);
+    tl.set("#cap-g7", {opacity: 0, visibility: "hidden"}, 19.172);
     gsap.set("#cap-g8", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g8", {visibility: "visible"}, 19.82);
-    tl.to("#cap-g8", {opacity: 1, duration: 0.1}, 19.82);
-    tl.to("#cap-g8", {opacity: 0, duration: 0.1, ease: "power2.in"}, 21.03);
-    tl.set("#cap-g8", {opacity: 0, visibility: "hidden"}, 21.13);
-    gsap.set("#cap-g29", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g29", {visibility: "visible"}, 21.56);
-    tl.to("#cap-g29", {opacity: 1, duration: 0.1}, 21.56);
-    tl.to("#cap-g29", {opacity: 0, duration: 0.1, ease: "power2.in"}, 23.01);
-    tl.set("#cap-g29", {opacity: 0, visibility: "hidden"}, 23.11);
-    gsap.set("#cap-g30", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g30", {visibility: "visible"}, 23.52);
-    tl.to("#cap-g30", {opacity: 1, duration: 0.1}, 23.52);
-    tl.to("#cap-g30", {opacity: 0, duration: 0.1, ease: "power2.in"}, 25.21);
-    tl.set("#cap-g30", {opacity: 0, visibility: "hidden"}, 25.31);
+    tl.set("#cap-g8", {visibility: "visible"}, 19.182);
+    tl.to("#cap-g8", {opacity: 1, duration: 0.100}, 19.182);
+    tl.to("#cap-g8", {opacity: 0, duration: 0.100, ease: "power2.in"}, 22.224);
+    tl.set("#cap-g8", {opacity: 0, visibility: "hidden"}, 22.324);
     gsap.set("#cap-g9", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g9", {visibility: "visible"}, 25.768);
-    tl.to("#cap-g9", {opacity: 1, duration: 0.1}, 25.768);
-    tl.to("#cap-g9", {opacity: 0, duration: 0.1, ease: "power2.in"}, 27.257);
-    tl.set("#cap-g9", {opacity: 0, visibility: "hidden"}, 27.357);
+    tl.set("#cap-g9", {visibility: "visible"}, 22.334);
+    tl.to("#cap-g9", {opacity: 1, duration: 0.100}, 22.334);
+    tl.to("#cap-g9", {opacity: 0, duration: 0.100, ease: "power2.in"}, 24.364);
+    tl.set("#cap-g9", {opacity: 0, visibility: "hidden"}, 24.464);
     gsap.set("#cap-g10", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g10", {visibility: "visible"}, 27.514);
-    tl.to("#cap-g10", {opacity: 1, duration: 0.1}, 27.514);
-    tl.to("#cap-g10", {opacity: 0, duration: 0.1, ease: "power2.in"}, 29.917);
-    tl.set("#cap-g10", {opacity: 0, visibility: "hidden"}, 30.017);
+    tl.set("#cap-g10", {visibility: "visible"}, 24.474);
+    tl.to("#cap-g10", {opacity: 1, duration: 0.100}, 24.474);
+    tl.to("#cap-g10", {opacity: 0, duration: 0.100, ease: "power2.in"}, 26.743);
+    tl.set("#cap-g10", {opacity: 0, visibility: "hidden"}, 26.843);
     gsap.set("#cap-g11", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g11", {visibility: "visible"}, 31.25);
-    tl.to("#cap-g11", {opacity: 1, duration: 0.1}, 31.25);
-    tl.to("#cap-g11", {opacity: 0, duration: 0.1, ease: "power2.in"}, 34.703);
-    tl.set("#cap-g11", {opacity: 0, visibility: "hidden"}, 34.803);
+    tl.set("#cap-g11", {visibility: "visible"}, 26.853);
+    tl.to("#cap-g11", {opacity: 1, duration: 0.100}, 26.853);
+    tl.to("#cap-g11", {opacity: 0, duration: 0.100, ease: "power2.in"}, 30.024);
+    tl.set("#cap-g11", {opacity: 0, visibility: "hidden"}, 30.124);
     gsap.set("#cap-g12", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g12", {visibility: "visible"}, 34.976);
-    tl.to("#cap-g12", {opacity: 1, duration: 0.1}, 34.976);
-    tl.to("#cap-g12", {opacity: 0, duration: 0.1, ease: "power2.in"}, 36.746);
-    tl.set("#cap-g12", {opacity: 0, visibility: "hidden"}, 36.846);
+    tl.set("#cap-g12", {visibility: "visible"}, 31.29);
+    tl.to("#cap-g12", {opacity: 1, duration: 0.100}, 31.29);
+    tl.to("#cap-g12", {opacity: 0, duration: 0.100, ease: "power2.in"}, 35.263);
+    tl.set("#cap-g12", {opacity: 0, visibility: "hidden"}, 35.363);
     gsap.set("#cap-g13", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g13", {visibility: "visible"}, 36.868);
-    tl.to("#cap-g13", {opacity: 1, duration: 0.1}, 36.868);
-    tl.to("#cap-g13", {opacity: 0, duration: 0.1, ease: "power2.in"}, 39.056);
-    tl.set("#cap-g13", {opacity: 0, visibility: "hidden"}, 39.156);
+    tl.set("#cap-g13", {visibility: "visible"}, 35.373);
+    tl.to("#cap-g13", {opacity: 1, duration: 0.100}, 35.373);
+    tl.to("#cap-g13", {opacity: 0, duration: 0.100, ease: "power2.in"}, 37.864);
+    tl.set("#cap-g13", {opacity: 0, visibility: "hidden"}, 37.964);
     gsap.set("#cap-g14", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g14", {visibility: "visible"}, 39.25);
-    tl.to("#cap-g14", {opacity: 1, duration: 0.1}, 39.25);
-    tl.to("#cap-g14", {opacity: 0, duration: 0.1, ease: "power2.in"}, 42.494);
-    tl.set("#cap-g14", {opacity: 0, visibility: "hidden"}, 42.594);
+    tl.set("#cap-g14", {visibility: "visible"}, 37.974);
+    tl.to("#cap-g14", {opacity: 1, duration: 0.100}, 37.974);
+    tl.to("#cap-g14", {opacity: 0, duration: 0.100, ease: "power2.in"}, 40.236);
+    tl.set("#cap-g14", {opacity: 0, visibility: "hidden"}, 40.336);
     gsap.set("#cap-g15", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g15", {visibility: "visible"}, 43.82);
-    tl.to("#cap-g15", {opacity: 1, duration: 0.1}, 43.82);
-    tl.to("#cap-g15", {opacity: 0, duration: 0.1, ease: "power2.in"}, 45.238);
-    tl.set("#cap-g15", {opacity: 0, visibility: "hidden"}, 45.338);
+    tl.set("#cap-g15", {visibility: "visible"}, 40.346);
+    tl.to("#cap-g15", {opacity: 1, duration: 0.100}, 40.346);
+    tl.to("#cap-g15", {opacity: 0, duration: 0.100, ease: "power2.in"}, 42.974);
+    tl.set("#cap-g15", {opacity: 0, visibility: "hidden"}, 43.074);
     gsap.set("#cap-g16", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g16", {visibility: "visible"}, 45.36);
-    tl.to("#cap-g16", {opacity: 1, duration: 0.1}, 45.36);
-    tl.to("#cap-g16", {opacity: 0, duration: 0.1, ease: "power2.in"}, 47.927);
-    tl.set("#cap-g16", {opacity: 0, visibility: "hidden"}, 48.027);
+    tl.set("#cap-g16", {visibility: "visible"}, 43.86);
+    tl.to("#cap-g16", {opacity: 1, duration: 0.100}, 43.86);
+    tl.to("#cap-g16", {opacity: 0, duration: 0.100, ease: "power2.in"}, 45.109);
+    tl.set("#cap-g16", {opacity: 0, visibility: "hidden"}, 45.209);
     gsap.set("#cap-g17", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g17", {visibility: "visible"}, 48.049);
-    tl.to("#cap-g17", {opacity: 1, duration: 0.1}, 48.049);
-    tl.to("#cap-g17", {opacity: 0, duration: 0.1, ease: "power2.in"}, 49.765);
-    tl.set("#cap-g17", {opacity: 0, visibility: "hidden"}, 49.865);
+    tl.set("#cap-g17", {visibility: "visible"}, 45.219);
+    tl.to("#cap-g17", {opacity: 1, duration: 0.100}, 45.219);
+    tl.to("#cap-g17", {opacity: 0, duration: 0.100, ease: "power2.in"}, 48.621);
+    tl.set("#cap-g17", {opacity: 0, visibility: "hidden"}, 48.721);
     gsap.set("#cap-g18", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g18", {visibility: "visible"}, 49.968);
-    tl.to("#cap-g18", {opacity: 1, duration: 0.1}, 49.968);
-    tl.to("#cap-g18", {opacity: 0, duration: 0.1, ease: "power2.in"}, 53.519);
-    tl.set("#cap-g18", {opacity: 0, visibility: "hidden"}, 53.619);
+    tl.set("#cap-g18", {visibility: "visible"}, 48.731);
+    tl.to("#cap-g18", {opacity: 1, duration: 0.100}, 48.731);
+    tl.to("#cap-g18", {opacity: 0, duration: 0.100, ease: "power2.in"}, 50.401);
+    tl.set("#cap-g18", {opacity: 0, visibility: "hidden"}, 50.501);
     gsap.set("#cap-g19", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g19", {visibility: "visible"}, 55.41);
-    tl.to("#cap-g19", {opacity: 1, duration: 0.1}, 55.41);
-    tl.to("#cap-g19", {opacity: 0, duration: 0.1, ease: "power2.in"}, 57.839);
-    tl.set("#cap-g19", {opacity: 0, visibility: "hidden"}, 57.939);
+    tl.set("#cap-g19", {visibility: "visible"}, 50.511);
+    tl.to("#cap-g19", {opacity: 1, duration: 0.100}, 50.511);
+    tl.to("#cap-g19", {opacity: 0, duration: 0.100, ease: "power2.in"}, 54.012);
+    tl.set("#cap-g19", {opacity: 0, visibility: "hidden"}, 54.112);
     gsap.set("#cap-g20", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g20", {visibility: "visible"}, 57.96);
-    tl.to("#cap-g20", {opacity: 1, duration: 0.1}, 57.96);
-    tl.to("#cap-g20", {opacity: 0, duration: 0.1, ease: "power2.in"}, 59.9);
-    tl.set("#cap-g20", {opacity: 0, visibility: "hidden"}, 60.0);
-    gsap.set("#cap-g31", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g31", {visibility: "visible"}, 60.04);
-    tl.to("#cap-g31", {opacity: 1, duration: 0.1}, 60.04);
-    tl.to("#cap-g31", {opacity: 0, duration: 0.1, ease: "power2.in"}, 62.84);
-    tl.set("#cap-g31", {opacity: 0, visibility: "hidden"}, 62.94);
+    tl.set("#cap-g20", {visibility: "visible"}, 55.45);
+    tl.to("#cap-g20", {opacity: 1, duration: 0.100}, 55.45);
+    tl.to("#cap-g20", {opacity: 0, duration: 0.100, ease: "power2.in"}, 57.362);
+    tl.set("#cap-g20", {opacity: 0, visibility: "hidden"}, 57.462);
     gsap.set("#cap-g21", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g21", {visibility: "visible"}, 64.04);
-    tl.to("#cap-g21", {opacity: 1, duration: 0.1}, 64.04);
-    tl.to("#cap-g21", {opacity: 0, duration: 0.1, ease: "power2.in"}, 66.471);
-    tl.set("#cap-g21", {opacity: 0, visibility: "hidden"}, 66.571);
+    tl.set("#cap-g21", {visibility: "visible"}, 57.472);
+    tl.to("#cap-g21", {opacity: 1, duration: 0.100}, 57.472);
+    tl.to("#cap-g21", {opacity: 0, duration: 0.100, ease: "power2.in"}, 62.472);
+    tl.set("#cap-g21", {opacity: 0, visibility: "hidden"}, 62.572);
     gsap.set("#cap-g22", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g22", {visibility: "visible"}, 66.683);
-    tl.to("#cap-g22", {opacity: 1, duration: 0.1}, 66.683);
-    tl.to("#cap-g22", {opacity: 0, duration: 0.1, ease: "power2.in"}, 68.295);
-    tl.set("#cap-g22", {opacity: 0, visibility: "hidden"}, 68.395);
+    tl.set("#cap-g22", {visibility: "visible"}, 64.08);
+    tl.to("#cap-g22", {opacity: 1, duration: 0.100}, 64.08);
+    tl.to("#cap-g22", {opacity: 0, duration: 0.100, ease: "power2.in"}, 66.771);
+    tl.set("#cap-g22", {opacity: 0, visibility: "hidden"}, 66.871);
     gsap.set("#cap-g23", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g23", {visibility: "visible"}, 68.462);
-    tl.to("#cap-g23", {opacity: 1, duration: 0.1}, 68.462);
-    tl.to("#cap-g23", {opacity: 0, duration: 0.1, ease: "power2.in"}, 69.755);
-    tl.set("#cap-g23", {opacity: 0, visibility: "hidden"}, 69.855);
+    tl.set("#cap-g23", {visibility: "visible"}, 66.881);
+    tl.to("#cap-g23", {opacity: 1, duration: 0.100}, 66.881);
+    tl.to("#cap-g23", {opacity: 0, duration: 0.100, ease: "power2.in"}, 68.085);
+    tl.set("#cap-g23", {opacity: 0, visibility: "hidden"}, 68.185);
     gsap.set("#cap-g24", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g24", {visibility: "visible"}, 70.007);
-    tl.to("#cap-g24", {opacity: 1, duration: 0.1}, 70.007);
-    tl.to("#cap-g24", {opacity: 0, duration: 0.1, ease: "power2.in"}, 73.705);
-    tl.set("#cap-g24", {opacity: 0, visibility: "hidden"}, 73.805);
+    tl.set("#cap-g24", {visibility: "visible"}, 68.195);
+    tl.to("#cap-g24", {opacity: 1, duration: 0.100}, 68.195);
+    tl.to("#cap-g24", {opacity: 0, duration: 0.100, ease: "power2.in"}, 69.781);
+    tl.set("#cap-g24", {opacity: 0, visibility: "hidden"}, 69.881);
     gsap.set("#cap-g25", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g25", {visibility: "visible"}, 74.99);
-    tl.to("#cap-g25", {opacity: 1, duration: 0.1}, 74.99);
-    tl.to("#cap-g25", {opacity: 0, duration: 0.1, ease: "power2.in"}, 76.627);
-    tl.set("#cap-g25", {opacity: 0, visibility: "hidden"}, 76.727);
+    tl.set("#cap-g25", {visibility: "visible"}, 69.891);
+    tl.to("#cap-g25", {opacity: 1, duration: 0.100}, 69.891);
+    tl.to("#cap-g25", {opacity: 0, duration: 0.100, ease: "power2.in"}, 72.434);
+    tl.set("#cap-g25", {opacity: 0, visibility: "hidden"}, 72.534);
     gsap.set("#cap-g26", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g26", {visibility: "visible"}, 76.9);
-    tl.to("#cap-g26", {opacity: 1, duration: 0.1}, 76.9);
-    tl.to("#cap-g26", {opacity: 0, duration: 0.1, ease: "power2.in"}, 78.6);
-    tl.set("#cap-g26", {opacity: 0, visibility: "hidden"}, 78.7);
+    tl.set("#cap-g26", {visibility: "visible"}, 72.544);
+    tl.to("#cap-g26", {opacity: 1, duration: 0.100}, 72.544);
+    tl.to("#cap-g26", {opacity: 0, duration: 0.100, ease: "power2.in"}, 73.748);
+    tl.set("#cap-g26", {opacity: 0, visibility: "hidden"}, 73.848);
     gsap.set("#cap-g27", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g27", {visibility: "visible"}, 78.73);
-    tl.to("#cap-g27", {opacity: 1, duration: 0.1}, 78.73);
-    tl.to("#cap-g27", {opacity: 0, duration: 0.1, ease: "power2.in"}, 82.1);
-    tl.set("#cap-g27", {opacity: 0, visibility: "hidden"}, 82.2);
+    tl.set("#cap-g27", {visibility: "visible"}, 73.858);
+    tl.to("#cap-g27", {opacity: 1, duration: 0.100}, 73.858);
+    tl.to("#cap-g27", {opacity: 0, duration: 0.100, ease: "power2.in"}, 77.480);
+    tl.set("#cap-g27", {opacity: 0, visibility: "hidden"}, 77.58);
     gsap.set("#cap-g28", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g28", {visibility: "visible"}, 82.56);
-    tl.to("#cap-g28", {opacity: 1, duration: 0.1}, 82.56);
-    tl.to("#cap-g28", {opacity: 0, duration: 0.1, ease: "power2.in"}, 85.18);
-    tl.set("#cap-g28", {opacity: 0, visibility: "hidden"}, 85.28);
+    tl.set("#cap-g28", {visibility: "visible"}, 79.02);
+    tl.to("#cap-g28", {opacity: 1, duration: 0.100}, 79.02);
+    tl.to("#cap-g28", {opacity: 0, duration: 0.100, ease: "power2.in"}, 79.478);
+    tl.set("#cap-g28", {opacity: 0, visibility: "hidden"}, 79.578);
+    gsap.set("#cap-g29", {opacity: 0, visibility: "hidden"});
+    tl.set("#cap-g29", {visibility: "visible"}, 79.588);
+    tl.to("#cap-g29", {opacity: 1, duration: 0.100}, 79.588);
+    tl.to("#cap-g29", {opacity: 0, duration: 0.100, ease: "power2.in"}, 82.183);
+    tl.set("#cap-g29", {opacity: 0, visibility: "hidden"}, 82.283);
+    gsap.set("#cap-g30", {opacity: 0, visibility: "hidden"});
+    tl.set("#cap-g30", {visibility: "visible"}, 82.293);
+    tl.to("#cap-g30", {opacity: 1, duration: 0.100}, 82.293);
+    tl.to("#cap-g30", {opacity: 0, duration: 0.100, ease: "power2.in"}, 86.437);
+    tl.set("#cap-g30", {opacity: 0, visibility: "hidden"}, 86.537);
+    gsap.set("#cap-g31", {opacity: 0, visibility: "hidden"});
+    tl.set("#cap-g31", {visibility: "visible"}, 86.547);
+    tl.to("#cap-g31", {opacity: 1, duration: 0.100}, 86.547);
+    tl.to("#cap-g31", {opacity: 0, duration: 0.100, ease: "power2.in"}, 89.134);
+    tl.set("#cap-g31", {opacity: 0, visibility: "hidden"}, 89.234);
     gsap.set("#cap-g32", {opacity: 0, visibility: "hidden"});
-    tl.set("#cap-g32", {visibility: "visible"}, 85.36);
-    tl.to("#cap-g32", {opacity: 1, duration: 0.1}, 85.36);
-    tl.to("#cap-g32", {opacity: 0, duration: 0.1, ease: "power2.in"}, 87.91);
-    tl.set("#cap-g32", {opacity: 0, visibility: "hidden"}, 88.01);
+    tl.set("#cap-g32", {visibility: "visible"}, 89.244);
+    tl.to("#cap-g32", {opacity: 1, duration: 0.100}, 89.244);
+    tl.to("#cap-g32", {opacity: 0, duration: 0.100, ease: "power2.in"}, 90.558);
+    tl.set("#cap-g32", {opacity: 0, visibility: "hidden"}, 90.658);
     window.__timelines["cap"] = tl;
   </script>
 </template>

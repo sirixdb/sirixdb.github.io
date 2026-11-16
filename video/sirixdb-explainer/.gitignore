@@ -11,3 +11,4 @@ video/.waveform-cache/
 node_modules/
 __pycache__/
 *.tmp.*
+audio/takes/*.json
