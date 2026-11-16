@@ -1,13 +1,24 @@
 {
  "_doc": "Script, voice, music and pacing. 'text' = caption words for the beat; 'tts' = what the voice model reads ('Sirix-DB' so the name is spoken as one word; 'by-temporal' so bitemporal is pronounced right). Used by gen_voice.sh, gen_music.sh, tools/*.py. Apply text changes with python3 tools/captions.py (free; replaces manual caption edits), and tts changes with ./gen_voice.sh N (costs credits).",
  "voice": {
-  "model": "seed_audio",
-  "voice_name": "Marcus",
-  "voice_id": "6f98d3dd-324f-4845-8c28-c1d1647a06cd",
+  "model": "elevenlabs_v4",
+  "voice_name": "Holden",
+  "voice_id": "3c9d6053-6334-592c-8997-4e325286af3f",
   "voice_type": "preset",
-  "delivery": "[voice: calm, credible, measured technical narrator; warm, clear, unhurried; starts speaking immediately]"
+  "stability": 0.35,
+  "similarity_boost": 0.75,
+  "_doc": "model is 'elevenlabs_v4' (Eleven v4 via Higgsfield; reads 'tts' as is, no delivery cue) or 'seed_audio' (uses 'delivery'). The Seed Audio setup used for the first cut is kept in seed_audio.",
+  "seed_audio": {
+   "model": "seed_audio",
+   "voice_name": "Marcus",
+   "voice_id": "6f98d3dd-324f-4845-8c28-c1d1647a06cd",
+   "voice_type": "preset",
+   "delivery": "[voice: calm, credible, measured technical narrator; warm, clear, unhurried; starts speaking immediately]"
+  }
  },
  "music": {
+  "enabled": false,
+  "_enabled": "false = the film is voice only: tools/remix.py writes a silent assets/music-ducked.wav and the music sources are kept; set true to bring the ducked music back (level_db applies)",
   "model": "sonilo_music",
   "duration": 93,
   "file": "audio/music.m4a",
@@ -44,13 +55,10 @@
    "tts": "Any revision opens directly: by number, by timestamp, or by-temporally. Nothing to replay: revision one reads like the latest.",
    "take_pauses": [
     null,
-    null,
-    0.75,
-    1.05,
-    1.05,
-    1.1,
-    0.8,
-    null
+    0.85,
+    0.9,
+    0.95,
+    0.6
    ],
    "pause_after": 0.0
   },
@@ -58,7 +66,13 @@
    "scene": "s4",
    "text": "Every field keeps its identity across revisions. Follow one value through time, or diff any two revisions: exact inserts, updates and deletes.",
    "tts": "Every field keeps its identity across revisions. Follow one value through time, or diff any two revisions: exact inserts, updates and deletes.",
-   "pause_after": 0.0
+   "pause_after": 0.0,
+   "take_pauses": [
+    0.3,
+    0.2,
+    0.25,
+    0.1
+   ]
   },
   {
    "scene": "s5",
@@ -74,8 +88,8 @@
   },
   {
    "scene": "s7",
-   "text": "Embed it as a Java library, run the REST server, use the shell, or let AI agents edit safely over MCP.",
-   "tts": "Embed it as a Java library, run the REST server, use the shell, or let AI agents edit safely over MCP.",
+   "text": "Embed it as a Java library or natively in C, C++, Rust and Python, run the REST server, use the shell, or let AI agents edit safely over MCP.",
+   "tts": "Embed it as a Java library or natively in C, C++, Rust and Python, run the REST server, use the shell, or let AI agents edit safely over MCP.",
    "pause_after": 0.0
   },
   {

@@ -64,6 +64,7 @@ words (for example `C.storage`); they are plain numbers you can change.
 - **Scene length:** drag the scene's edges on the timeline, or change `data-start`/`data-duration` of `<div id="s3" ...>` in `index.html`.
 - **Voice clips:** move or trim `vo-1` ... `vo-8` on the audio track. `render.sh` re-ducks the music to wherever they end up.
 - **Captions:** edit the text in `compositions/cap.html`. After moving or trimming voice clips, run `python3 tools/captions.py` to regenerate captions from the beat text in `build/script.json`, using the audible clip windows and current caption-track placement. This replaces manual caption edits and keeps a `cap.html.bak-<time>` copy; review the estimated timings and phrase boundaries afterwards.
+- **Music on/off:** `"enabled"` under `"music"` in `build/script.json`. It is `false` (voice only, the Holden cut): `tools/remix.py` then writes a silent `music-ducked.wav`; the music sources stay. Set it to `true` to bring the ducked music back.
 - **Music level:** `"level_db"` under `"music"` in `build/script.json` (default -15; it is read by `tools/remix.py`).
 
 ## Re-render (free)
@@ -82,7 +83,7 @@ Use it with the separate WebVTT track on sirix.io; `out/sirixdb-60s.mp4` has bur
 
 ## Pace (free)
 
-The film runs about 90 s. The tempo and pause settings under `"timing"` in `build/script.json`
+The film runs about 95 s. The tempo and pause settings under `"timing"` in `build/script.json`
 control the voice's pace; after changing one, run `python3 tools/voice.py N` for each line (it rebuilds the clip
 from the raw take in `audio/takes/`, no credits), then move the later clips and scenes.
 

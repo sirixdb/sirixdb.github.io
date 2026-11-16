@@ -1,9 +1,9 @@
 # SirixDB explainer video: source
 
-This is the editable source of the 90-second explainer on the sirix.io landing page
+This is the editable source of the 95-second explainer on the sirix.io landing page
 (`assets/video/sirixdb-explainer.mp4`). It is a [HyperFrames](https://hyperframes.heygen.com)
 0.9.42 project: every scene is HTML and GSAP, rendered frame by frame, so text, colours, timing and
-layout are all plain files. The voice and music were generated with Higgsfield. The terminal
+layout are all plain files. The narration is ElevenLabs Eleven v4 (voice "Holden") generated through Higgsfield; the film is voice only, with no music by default (the music sources are kept, `"music"."enabled"` in `build/script.json`). The terminal
 scenes show a real `sirix-shell` session.
 
 ## Edit it in HyperFrames Studio
@@ -36,7 +36,7 @@ See [Re-voicing a line](EDITING.md#re-voicing-a-line-costs-higgsfield-credits) a
 | `build/script.json` | the spoken script, voice, music and pacing settings |
 | `tools/` | free helpers: `remix.py` (music ducking), `voice.py` (process a take), `captions.py`, `srt.py` |
 | `audio/takes/` | the raw voice takes, one per line |
-| `audio/music.m4a` | the music bed |
+| `audio/music.m4a` | the music bed (kept, but off: `"music"."enabled"` is `false` in `build/script.json`; the film is voice only) |
 | `capture/` | the real sirix-shell sessions behind scenes 3-4 and the scripts that recorded them |
 | `build/ansi.py` | converts captured shell output into coloured HTML |
 

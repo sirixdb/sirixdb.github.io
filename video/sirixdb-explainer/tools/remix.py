@@ -28,6 +28,11 @@ else:
     filt = [f"[0:a]atrim=0:{total}[v]"]
 run(["ffmpeg", "-y", "-hide_banner", *inputs, "-filter_complex", ";".join(filt), "-map", "[v]", "-ar", SR, "-ac", 1, "-c:a", "pcm_s16le", work / "vo-full.wav"])
 
+if not CFG["music"].get("enabled", True):   # voice-only cut: keep the music sources, write a silent bed
+    run(["ffmpeg", "-y", "-hide_banner", "-f", "lavfi", "-i", f"anullsrc=r={SR}:cl=stereo", "-t", total, "-c:a", "pcm_s16le", assets / "music-ducked.wav"])
+    print(f"music-ducked.wav: {total:.2f} s, silent (music.enabled is false), {len(clips)} voice clips")
+    sys.exit(0)
+
 # music fitted to the film: skip the source's silent lead-in, fade in, fade out under the end card
 m = CFG["music"]; fade = 2.6
 run(["ffmpeg", "-y", "-hide_banner", "-ss", m["skip_lead_in"], "-i", PROJECT / m["file"], "-af",
