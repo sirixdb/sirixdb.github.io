@@ -108,4 +108,22 @@ assert(explainer.track && explainer.track.kind === 'captions' && explainer.track
 assert(explainer.fits && explainer.ratio === 1.78, 'Explainer video keeps 16:9 inside the viewport without horizontal scrolling');
 assert(explainer.focusable, 'Explainer video is reachable by keyboard');
 assert(!explainer.fetchedMedia, 'Explainer video does not download before play');
-console.log(JSON.stringify({viewport: mobile ? 'phone' : 'desktop', navigation: 'pass', skipLink: 'pass', diagram: 'pass', blockedContact: 'pass', shortHeaders: 'pass', emptyBlog: 'pass', emptyFeed: 'pass', explainerVideo: 'pass'}));
+// Follow the public contribution entry point through the real responsive menu.
+if (mobile) await page.click('#menu-toggle');
+await page.click('#site-nav a[href="/docs/get-involved.html"]');
+await page.wait('.docs-content__title');
+assert(await page.eval(() => location.pathname === '/docs/get-involved.html' && document.querySelector('h1')?.textContent === 'Get involved'), 'Header opens the contribution page');
+assert(await page.eval(() => document.querySelector('#site-nav [aria-current="page"]')?.getAttribute('href') === location.pathname), 'Contribution page is current in the header');
+assert(await page.eval(() => document.documentElement.scrollWidth <= innerWidth), 'Contribution page fits the viewport');
+assert(await page.eval(() => !!document.querySelector('.site-footer a[href="/docs/get-involved.html"]')), 'Footer offers the contribution page');
+if (mobile) {
+  assert(await page.eval(() => !document.querySelector('#site-nav').getClientRects().length), 'Contribution page starts with the mobile menu closed');
+  await page.click('#menu-toggle');
+  assert(await page.eval(() => {
+    const link = document.querySelector('#site-nav a[href="/docs/get-involved.html"]');
+    const box = link.getBoundingClientRect();
+    return box.width > 0 && box.left >= 0 && box.right <= innerWidth;
+  }), 'Get involved remains visible inside the expanded phone menu');
+  await page.click('#menu-toggle');
+}
+console.log(JSON.stringify({viewport: mobile ? 'phone' : 'desktop', navigation: 'pass', skipLink: 'pass', diagram: 'pass', blockedContact: 'pass', shortHeaders: 'pass', emptyBlog: 'pass', emptyFeed: 'pass', explainerVideo: 'pass', getInvolved: 'pass'}));
