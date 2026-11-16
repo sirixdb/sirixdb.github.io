@@ -125,6 +125,7 @@
 .lp .lp-hero__kicker { margin-bottom: 18px; font-size: 13.5px; }
 .lp .lp-hero__kicker-sep { color: var(--muted); }
 .lp .pillars { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+.lp .pillars > li:last-child { grid-column: 1 / -1; }
 .lp .pillars a { display: grid; grid-template-columns: 22px minmax(0,1fr); grid-template-rows: auto 1fr; align-content: start; column-gap: 10px; align-items: start; height: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: color-mix(in srgb, var(--surface) 75%, transparent); color: var(--text); transition: border-color .2s, transform .2s; }
 .lp .pillars a:hover { text-decoration: none; border-color: var(--orange); transform: translateY(-1px); }
 .lp .pillars svg { grid-row: span 2; width: 22px; height: 22px; fill: none; stroke: var(--orange); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }

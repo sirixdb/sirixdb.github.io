@@ -73,6 +73,22 @@ const emptyFeed = await page.eval(async () => {
 });
 assert(emptyFeed.ok && emptyFeed.valid && emptyFeed.items === 0 && emptyFeed.home === 'https://sirix.io/' && emptyFeed.self === 'https://sirix.io/feed.xml', 'RSS remains valid and absolute with zero posts');
 await page.open('http://127.0.0.1:4188/');
+await page.eval(async () => { await document.fonts.ready; return true; });
+const hero = await page.eval(() => {
+  const kicker = document.querySelector('.lp-hero__kicker');
+  const range = document.createRange();
+  range.selectNodeContents(kicker);
+  const lines = new Set([...range.getClientRects()].map(rect => Math.round(rect.top)));
+  const pillars = document.querySelector('.pillars').getBoundingClientRect();
+  const analytics = document.querySelector('.pillars a[href="#measured"]');
+  const box = analytics.getBoundingClientRect();
+  return {fits: document.documentElement.scrollWidth <= innerWidth,
+    kickerFits: innerWidth <= 900 || lines.size === 1,
+    balanced: Math.abs(box.width - pillars.width) < 1,
+    target: !!document.querySelector(analytics.getAttribute('href'))};
+});
+assert(hero.fits && hero.kickerFits && hero.balanced, 'Hero fits the viewport, desktop kicker stays on one line, and final pillar fills its row');
+assert(hero.target, 'Fast analytics pillar links to its benchmark evidence');
 const explainer = await page.eval(() => {
   const video = document.querySelector('#watch video');
   if (!video) return null;
