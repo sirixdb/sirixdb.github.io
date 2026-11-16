@@ -4,7 +4,7 @@
 #   ./gen_voice.sh all     re-voice every beat
 # The voice comes from build/script.json "voice": model "elevenlabs_v4" (default; voice_id, stability,
 # similarity_boost) or "seed_audio" (set "model": "seed_audio" and the fields under voice.seed_audio).
-# Shows the estimate and balance and asks before spending (YES=1 skips the question). Writes the new clip
+# Shows the estimate and balance and asks before spending. Writes the new clip
 # straight into video/assets/vo-scene-N.wav (old clip kept in audio/replaced/), re-ducks the music, and
 # tells you if the line got longer or shorter. Then: check it in Studio, ./render.sh (free).
 set -euo pipefail
@@ -40,7 +40,7 @@ cost(){
 }
 for b in $beats; do echo "beat $b: $(field "c['beats'][$b-1]['tts']")"; cost "$b"; done
 higgsfield account status
-if [ "${YES:-}" != 1 ]; then read -r -p "Generate (spends credits)? [y/N] " ok; [ "$ok" = y ] || exit 1; fi
+read -r -p "Generate (spends credits)? [y/N] " ok; [ "$ok" = y ] || exit 1
 mkdir -p "$HERE/audio/replaced"
 for b in $beats; do   # one at a time: the starter plan rejects a second concurrent job
   [ -f "$HERE/audio/takes/b$b.wav" ] && cp "$HERE/audio/takes/b$b.wav" "$HERE/audio/replaced/seed-b$b.$(date +%Y%m%d-%H%M%S).wav"

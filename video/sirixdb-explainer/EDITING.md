@@ -111,18 +111,21 @@ it split the long ones again by hand in `compositions/cap.html`.
    - re-ducks the music;
    - tells you whether the line got longer or shorter.
 
-   Observed cost: about 1.4-1.7 credits per line; `./gen_voice.sh all` re-voices all 8 for about 12-14 credits.
+   Observed ElevenLabs v4 cost: about 0.23 credits per line, or about 1.8 credits for all 8.
+   Seed Audio costs about 1.4-1.7 credits per line, or about 12-14 credits for all 8.
+   Use the displayed estimate before confirming; costs depend on the model and text.
 3. In Studio, nudge later clips or scenes if the line's length changed, and fix the caption text
    for that line in `cap.html` (or run `python3 tools/captions.py`).
 4. `./render.sh`.
 
-The configured voice model (`seed_audio`) has no language setting, and one early take of the last
-line came out in Mandarin. After re-voicing, transcribe each new take and check that it is English.
-Higgsfield's `qwen_audio_tts` takes `language=en` and costs about 0.06 credits per line, if a switch
-is ever wanted.
+The configured model is `elevenlabs_v4` through Higgsfield, with voice "Holden", `"stability": 0.35`
+and `"similarity_boost": 0.75`. It reads each beat's `"tts"` without a delivery cue.
+After re-voicing, transcribe each new take and check that it is English; one early take of the
+last line with the previous Seed Audio voice came out in Mandarin.
 
-Line 8 is joined from two takes (see `"_take"` on beat 8 in `build/script.json`). Three things go
-wrong with this voice at the end of a line, and all three can be measured without listening:
+In the original Seed Audio cut, line 8 was joined from two takes (the historical `"_take"` note
+on beat 8 in `build/script.json` describes that edit). Three problems occurred with that voice
+at the end of a line:
 - a list read without "and" ends with the voice lifting the last item as if more followed (the
   pitch of the last word rises);
 - a take can say the name with a pause in the middle (a pause inside the first word in the take's
@@ -131,8 +134,14 @@ wrong with this voice at the end of a line, and all three can be measured withou
   then has no vowel at all. Giving the voice one more sentence to read after the real ending, and
   cutting that sentence off, keeps the real last word intact; it still took several takes.
 
-Same voice, different delivery: edit `"delivery"` in `build/script.json`. Different voice:
-`higgsfield voices list`, put the id in `"voice_id"`, then `./gen_voice.sh all`.
+For ElevenLabs delivery, edit `"voice"` → `"stability"` and `"similarity_boost"` in
+`build/script.json`. For a different voice, use `higgsfield voices list` and update
+`"voice"` → `"voice_id"` (and its `"voice_name"` label and `"voice_type"`), then `./gen_voice.sh all`.
+
+To switch back to Seed Audio, set `"voice"` → `"model"` to `"seed_audio"`. That path reads
+`"voice"` → `"seed_audio"` → `"voice_id"`, `"voice_type"` and `"delivery"`; edit those nested
+fields for a different Seed Audio voice or delivery, then regenerate. The nested configuration
+keeps the original Marcus preset. `"delivery"` applies only to Seed Audio and is ignored by ElevenLabs.
 Run Higgsfield jobs one at a time: the starter plan rejects a second concurrent job (sometimes as
 "not_enough_credits").
 
