@@ -71,6 +71,8 @@ jn:doc('mycol','resource2')
 
 ## Updates and time travel queries
 
+See [JSONiq Update Patterns](/docs/jsoniq-update-patterns.html) for a walkthrough of nested updates and the revisions they create.
+
 You can update `resource2` in the database/collection `mycol` via JSONiq update statements:
 
 ```xquery
