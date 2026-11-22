@@ -45,6 +45,8 @@ We provide several APIs to interact with SirixDB.
 2. On top of this API, we built a [Brackit.io](https://github.com/sirixdb/brackit) binding for the [DOM-alike API](/docs/dom-alike-api.html) and [JSONiq API](/docs/jsoniq-api.html).
 3. We provide a powerful, asynchronous, non-blocking [RESTful-API](/docs/rest-api.html) to interact with a SirixDB HTTP server. Authorization is done via Keycloak.
 
+See [JSONiq Update Patterns](/docs/jsoniq-update-patterns.html) for examples of editing nested JSON and reading earlier revisions.
+
 ### Publications
 Articles published on Baeldung:
 - [A Guide to SirixDB](https://www.baeldung.com/sirix)
