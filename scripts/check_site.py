@@ -76,6 +76,9 @@ def check_site(root):
             continue
         target = urlsplit(urljoin('https://sirix.io/' + source, ref))
         relative = unquote(target.path).lstrip('/')
+        if relative == 'sirix' or relative.startswith('sirix/'):
+            external.add(urldefrag(target.geturl())[0])
+            continue
         path = root / relative
         if path.is_dir():
             path = path / 'index.html'

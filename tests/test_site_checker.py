@@ -93,6 +93,43 @@ class SiteMutationTests(unittest.TestCase):
     def test_same_site_absolute_anchor_is_checked(self):
         self.assert_mutation_killed('href="#detail"', 'href="https://sirix.io/#deleted"', 'missing anchor')
 
+    def test_separately_published_dashboard_urls_are_external(self):
+        for ref, expected in (
+            ('/sirix', 'https://sirix.io/sirix'),
+            ('/sirix/', 'https://sirix.io/sirix/'),
+            ('sirix/', 'https://sirix.io/sirix/'),
+            ('https://sirix.io/sirix/', 'https://sirix.io/sirix/'),
+            ('https://www.sirix.io/sirix/', 'https://www.sirix.io/sirix/'),
+            ('//sirix.io/sirix/', 'https://sirix.io/sirix/'),
+            ('/sirix/history/?range=30#chart', 'https://sirix.io/sirix/history/?range=30'),
+        ):
+            with self.subTest(ref=ref):
+                (self.root / 'index.html').write_text(self.html + f'<a href="{ref}">Dashboard</a>')
+                result = checker.check_site(self.root)
+                self.assertEqual([], result['errors'])
+                self.assertEqual([expected], result['external_urls'])
+
+    def test_nested_dashboard_references_are_external(self):
+        (self.root / 'dashboard').mkdir()
+        (self.root / 'dashboard/index.html').write_text(
+            '<h1>Dashboard</h1><link rel="canonical" href="https://sirix.io/sirix/">'
+            '<a href="../sirix/">Dashboard</a>')
+        (self.root / 'main.css').write_text('body { background: url(/sirix/chart.svg); }')
+        result = checker.check_site(self.root)
+        self.assertEqual([], result['errors'])
+        self.assertEqual(['https://sirix.io/sirix/', 'https://sirix.io/sirix/chart.svg'],
+                         result['external_urls'])
+
+    def test_other_same_site_paths_are_still_checked(self):
+        for ref in ('/sirix-other/', '/sirixdb/', '/dashboard/',
+                    'https://sirix.io/docs/missing.html',
+                    'https://www.sirix.io/docs/missing.html'):
+            with self.subTest(ref=ref):
+                (self.root / 'index.html').write_text(self.html + f'<a href="{ref}">Missing</a>')
+                result = checker.check_site(self.root)
+                self.assertEqual([f'index.html: missing target {ref}'], result['errors'])
+                self.assertEqual([], result['external_urls'])
+
     def test_encoded_relative_path(self):
         (self.root / 'with space.html').write_text('<h1 id="yes">Target</h1>')
         (self.root / 'index.html').write_text(self.html + '<a href="with%20space.html#yes">Encoded</a>')
