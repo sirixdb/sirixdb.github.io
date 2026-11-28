@@ -4,8 +4,11 @@ Source for [sirix.io](https://sirix.io) — the website for SirixDB, an open-sou
 
 Built with Jekyll 4 and hosted on GitHub Pages.
 
-The **Benchmarks** navigation link opens [sirix.io/dashboard/](https://sirix.io/dashboard/),
-which redirects to `/sirix/`, published separately by the Sirix repository on GitHub Pages.
+The **Benchmarks** link opens [sirix.io/dashboard/](https://sirix.io/dashboard/). The
+deploy workflow (`.github/workflows/jekyll.yml`) copies the dashboard files from the
+`gh-pages` branch of [sirixdb/sirix](https://github.com/sirixdb/sirix) into `_site/dashboard/`
+(on pushes, manual runs and nightly at 00:30 UTC). Until that branch exists,
+`dashboard/index.html` is served as a placeholder.
 
 ## Local Development
 
@@ -41,10 +44,8 @@ node --check js/main.js
 python3 scripts/check_site.py _site --external
 ```
 
-The PR check builds the actual output and verifies destinations/anchors owned by
-this build, image alternatives, heading structure and absolute RSS URLs. Separately
-published destinations on the same domain are included in the optional external-link
-audit. Seeded-defect tests
+The PR check builds the actual output and verifies internal destinations/anchors,
+image alternatives, heading structure and absolute RSS URLs. Seeded-defect tests
 mutate valid fixtures (broken anchors/assets, duplicate IDs, heading gaps and relative
 feed URLs) so regressions in the checker cannot silently turn these failures green.
 These targeted mutation tests are not a general mutation-coverage measurement.

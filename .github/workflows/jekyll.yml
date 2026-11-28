@@ -4,6 +4,10 @@ on:
   push:
     branches: ["master"]
   workflow_dispatch:
+  schedule:
+    # Nightly, after the sirix benchmark run (starts 21:17 UTC, up to ~2.5 h).
+    # 00:30 UTC is 01:30/02:30 Europe/Berlin, never inside weekdays 04:00-17:30.
+    - cron: "30 0 * * *"
 
 permissions:
   contents: read
@@ -15,7 +19,28 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  guard:
+    # Scheduled deploys must never land on weekdays 04:00-17:30 Europe/Berlin.
+    runs-on: ubuntu-latest
+    outputs:
+      allowed: ${{ steps.check.outputs.allowed }}
+    steps:
+      - id: check
+        run: |
+          allowed=true
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            dow=$(TZ=Europe/Berlin date +%u)
+            hm=$(TZ=Europe/Berlin date +%H%M)
+            if [ "$dow" -le 5 ] && [ "$hm" -ge 0400 ] && [ "$hm" -lt 1730 ]; then
+              allowed=false
+              echo "Skipping scheduled deploy inside weekday 04:00-17:30 Europe/Berlin"
+            fi
+          fi
+          echo "allowed=$allowed" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: guard
+    if: needs.guard.outputs.allowed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,6 +59,21 @@ jobs:
         run: bundle exec jekyll build --destination ./_site
         env:
           JEKYLL_ENV: production
+
+      - name: Add benchmark dashboard from sirixdb/sirix gh-pages
+        # If the gh-pages branch does not exist yet, keep the placeholder
+        # page built from dashboard/index.html.
+        run: |
+          repo=https://github.com/sirixdb/sirix.git
+          if git ls-remote --exit-code --heads "$repo" gh-pages >/dev/null; then
+            git clone --depth 1 --branch gh-pages "$repo" "$RUNNER_TEMP/dashboard"
+            rm -rf "$RUNNER_TEMP/dashboard/.git"
+            rm -rf _site/dashboard
+            mkdir -p _site/dashboard
+            cp -a "$RUNNER_TEMP/dashboard/." _site/dashboard/
+          else
+            echo "gh-pages not found in sirixdb/sirix; publishing placeholder"
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
