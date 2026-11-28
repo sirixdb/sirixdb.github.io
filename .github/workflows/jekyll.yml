@@ -29,11 +29,10 @@ jobs:
         run: |
           allowed=true
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            dow=$(TZ=Europe/Berlin date +%u)
-            hm=$(TZ=Europe/Berlin date +%H%M)
-            if [ "$dow" -le 5 ] && [ "$hm" -ge 0400 ] && [ "$hm" -lt 1730 ]; then
+            read -r dow hm <<< "$(TZ=Europe/Berlin date '+%u %H%M')"
+            if [ "$dow" -le 5 ] && [ "$hm" -ge 0340 ] && [ "$hm" -le 1730 ]; then
               allowed=false
-              echo "Skipping scheduled deploy inside weekday 04:00-17:30 Europe/Berlin"
+              echo "Skipping scheduled deploy inside weekday 03:40-17:30 Europe/Berlin"
             fi
           fi
           echo "allowed=$allowed" >> "$GITHUB_OUTPUT"
@@ -42,6 +41,7 @@ jobs:
     needs: guard
     if: needs.guard.outputs.allowed == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -72,6 +72,10 @@ jobs:
             mkdir -p _site/dashboard
             cp -a "$RUNNER_TEMP/dashboard/." _site/dashboard/
           else
+            status=$?
+            if [ "$status" -ne 2 ]; then
+              exit "$status"
+            fi
             echo "gh-pages not found in sirixdb/sirix; publishing placeholder"
           fi
 
@@ -84,7 +88,22 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    timeout-minutes: 15
     steps:
+      - name: Check scheduled deployment window
+        id: check
+        run: |
+          allowed=true
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            read -r dow hm <<< "$(TZ=Europe/Berlin date '+%u %H%M')"
+            if [ "$dow" -le 5 ] && [ "$hm" -ge 0340 ] && [ "$hm" -le 1730 ]; then
+              allowed=false
+              echo "Skipping scheduled deploy inside weekday 03:40-17:30 Europe/Berlin"
+            fi
+          fi
+          echo "allowed=$allowed" >> "$GITHUB_OUTPUT"
+
       - name: Deploy to GitHub Pages
+        if: steps.check.outputs.allowed == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
