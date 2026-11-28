@@ -5,10 +5,11 @@ Source for [sirix.io](https://sirix.io) — the website for SirixDB, an open-sou
 Built with Jekyll 4 and hosted on GitHub Pages.
 
 The **Benchmarks** link opens [sirix.io/dashboard/](https://sirix.io/dashboard/). The
-deploy workflow (`.github/workflows/jekyll.yml`) copies the dashboard files from the
+[deploy workflow](.github/workflows/jekyll.yml) copies the dashboard files from the
 `gh-pages` branch of [sirixdb/sirix](https://github.com/sirixdb/sirix) into `_site/dashboard/`
-(on pushes, manual runs and nightly at 00:30 UTC). Until that branch exists,
-`dashboard/index.html` is served as a placeholder.
+during deployment. Local Jekyll builds serve `dashboard/index.html` as a placeholder;
+deployment retains it only if that upstream branch does not exist. See the workflow
+for triggers and scheduled deployment window guards.
 
 ## Local Development
 
